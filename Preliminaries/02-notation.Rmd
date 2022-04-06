@@ -1,42 +1,8 @@
 # Notation & computing {#notation-and-computing}
 
-<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Preliminaries/02-notation.Rmd)</div>
-
-```{r include=FALSE}
-source("../_common.R")
+```{r child="../starter.Rmd"}
 ```
 
-$\newcommand{\line}{\text{line}}
-\newcommand{\hump}{\text{hump}}
-\newcommand{\sigmoid}{\text{sigmoid}}
-\newcommand{\recip}{\text{recip}}
-\newcommand{\diff}[1]{{\cal D}_#1}
-\newcommand{\pnorm}{\text{pnorm}}
-\newcommand{\dnorm}{\text{dnorm}}
-\let\origvec\vec
-\let\origmathit\mathit
-\let\orighat\hat
-\let\origbar\bar
-\newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
-\newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
-\newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
-\newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
-\newcommand{\len}[1]{{\|{\mathbf #1}\|}}
-\newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
-\newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
-\newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
-\newcommand{\modeledby}[2]{#1\!\sim\!#2}
-\newcommand{\CC}[1]{\color{#648fff}{#1}}
-\newcommand{\CE}[1]{\color{#785ef0}{#1}}
-\newcommand{\CA}[1]{\color{#dc267f}{#1}}
-\newcommand{\CB}[1]{\color{#fe6100}{#1}}
-\newcommand{\CD}[1]{\color{#ffb000}{#1}}$
-
-
-```{r include=FALSE}
-book_file_name <- "preliminaries/02-notation.html"
-library(Zcalc)
-```
 
 > *The ideas which are here expressed so laboriously are extremely simple .... The difficulty lies, not in the new ideas, but in escaping from the old ones, which [branch]^[Original word: "ramify"], for those brought up as most of us have been, into every corner of our minds.* --- J. M Keynes, 1936, [*The General Theory of Employment, Interest, and Money*](files.ethz.ch/isn/125515/1366_KeynesTheoryofEmployment.pdf), 1936
 
@@ -80,7 +46,7 @@ We'll tend to avoid hard-to-read input names like $zebra$. Instead, we'll mostly
 Other input names we will use often in this book include $u$, $v$, $w$, following the 17th-century convention introduced by Newton that input names come from the end of the alphabet. But we won't shy away from more descriptive names, like $T$ for "temperature" or $V$ for volume, or even $\text{altitude}$ (which describes itself). 
 
 When a function has more than one input, the input names serve to indicate where each input goes in the formula defining the calculation.  For instance:
-$h(x, y) \equiv x^2 e^y\ .$
+$$h(x, y) \equiv x^2 e^y\ .$$
 $h()$ is a completely different function than, say,
 $f(x, y) \equiv y^2 e^x$. 
 
@@ -89,7 +55,7 @@ You may have noticed that we've used the names $f()$, $g()$, and $h()$ a lot. Co
 We will also have many occasions where we need to give a name to a quantity. Of course, a quantity is different from a function; functions are ***relationships*** between quantities.
 
 For example, we will use names for quantities that are ***parameters*** in a function, like:
-$$g(x) \equiv a x^2 + b x + c\. $$ Here, $x$ is the name given to the input to $g()$, while $a$, $b$, and $c$ are names for other quantities involved in the formula.
+$$g(x) \equiv a x^2 + b x + c\ .$$ Here, $x$ is the name given to the input to $g()$, while $a$, $b$, and $c$ are names for other quantities involved in the formula.
 
 Again following Newton's convention, names for quantities will come from the beginning of the alphabet. For instance, here is a definition of a function called a "cubic polynomial": 
 $$h(x)\equiv a + b x + c x^2 + d x^3\ .$$
@@ -128,11 +94,14 @@ Mathematical notation is effective for **describing** functions and operations, 
 
 With computers, writing an expression in computer notation goes hand-in-hand with ***evaluating*** the notation. We'll start with the simplest mode of evaluation, where you are writing the expression in the ***console*** for the language. Figure \@ref(fig:R-console) shows and example the console tab provided by the RStudio application. 
 
-```{r R-console, echo=FALSE, fig.cap="An RStudio console tab for writing expressions and evaluating them. The `>` is the ***prompt*** after which you write your expression, here shown in $\\color{blue}{\\text{blue}}$. Pressing the \"return\" key causes the language interpreter to evaluate the command."}
+```{r echo=FALSE}
+#| label: fig-r-console
+#| fig-cap: "An RStudio console tab for writing expressions and evaluating them. The `>` is the ***prompt*** after which you write your expression, here shown in $\\color{blue}{\\text{blue}}$. Pressing the \"return\" key causes the language interpreter to evaluate the command."
+#| fig-cap-location: margin
 knitr::include_graphics("www/console.png")
 ```
 
-In Figure \@ref(fig:R-console) we have come in to the story in the middle of the action. To start, there was just a prompt character.
+In @fig-r-console we have come in to the story in the middle of the action. To start, there was just a prompt character.
 
 $\color{blue}{\mathtt >}$
 
@@ -145,28 +114,33 @@ $\color{blue}{\mathtt >\  2 + 3}\\\mathtt{[1]\ 5}$
 
 Note that the value of the expression is simply the number `5`. The R language is set up to **format** numbers with an index, which is helpful when the value of the expressions is a large set of numbers. In the case here, with just a single number in the result of evaluating the expression, the index is simply stating the obvious. 
 
-Having printed the result of evaluating the `2 + 3` expression, RStudio shows another prompt, signally that it's ready for you to enter your next expression. In Figure \@ref(fig:R-console) we're seeing the console after the person at the keyboard has responded to the prompt by writing another expression, pressed return, had RStudio print the value of that expression, and displayed a new prompt. 
+Having printed the result of evaluating the `2 + 3` expression, RStudio shows another prompt, signally that it's ready for you to enter your next expression. In @fig-r-console) we're seeing the console after the person at the keyboard has responded to the prompt by writing another expression, pressed return, had RStudio print the value of that expression, and displayed a new prompt. 
 
-The two expressions shown in the console in Figure \@ref(fig:R-console) both evaluate to single numbers. We say, "the command returns a value."  The ***command*** is a valid R expression followed by the instruction ("Return") to evaluate the command. The ***value*** of the expression is the result of evaluating the command.
+The two expressions shown in the console in @fig-r-console both evaluate to single numbers. We say, "the command returns a value."  The ***command*** is a valid R expression followed by the instruction ("Return") to evaluate the command. The ***value*** of the expression is the result of evaluating the command.
 
 Another common form of R expression is called ***assignment***. An assignment means "giving a name to a value." It's done with a more complicated expression, like this:
+
 ```{r}
 b <- 22/7
 ```
 
 The result of evaluating this command is to store in the computer memory, under the name `b`, the value of `22/7`. Because the value is being stored, R is designed *not* to display the value as happened with the first two commands in the console. If you want to see the value printed out, give the name as a command:
+
 ```{r collapse=TRUE}
 b
 ```
 
 ::: {.takenote}
 This book displays the command being evaluated in a gray box, without a prompt. The value returned by the command is displayed underneath the command, prefaced by $\color{red}{\mathtt{\#\#}}$. In the book formatting, the four commands we have just described would be displayed in this way:
+
 ```{r collapse=TRUE}
+#| layout-ncol: 2
 2 + 3
 sqrt(16)
 b <- 22/7
 b
 ```
+
 When reading this book, take care to distinguish between the display of a command and the display of the value returned by that command. The first is something you type, the second is printed by the computer.
 :::
 
@@ -181,10 +155,13 @@ h <- makeFun(1.5*t^2 - 2 ~ t)
 
 ```
 Once you have defined a function, you can evaluate it on an input. The R notation for evaluating functions is exactly the same as with mathematical notation, for instance,
+
 ```{r}
 h(4)
 ```
+
 or 
+
 ```{r}
 h(t=4)
 ```
@@ -196,7 +173,9 @@ There are obvious differences, however, between the mathematical and computing n
 3. the calculation that the function performs, written in terms of the input name. $1.5 t^2 -2$ or `1.5 * t^2 - 2`.
 
 Laying out the two notation forms side by side let's us label the elements they share:
+
 ```{r echo=FALSE}
+#| column: page-left
 knitr::include_graphics("www/formula-rosetta.png")
 ```
 
@@ -208,10 +187,12 @@ In R, things like `makeFun()` are called "functions" because, like mathematical 
 
 ## Names and assignment
 
-A command like 
+The command
+
 ```{r}
 h <- makeFun(1.5*t^2 - 2 ~ t)
 ``` 
+
 gives the name `h` to the function created by `makeFun()`. Good choice of names makes your commands much easier for the human reader. 
 
 The R language puts some restrictions on the names that are allowed. Keep these in mind as you create R names in your future work:
