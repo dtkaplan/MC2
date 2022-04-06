@@ -1,0 +1,40 @@
+---
+id: "cheetah-lay-roof"
+created: "Wed Mar 30 18:48:19 2022"
+global_id: "bCD1KG"
+skill: "read contour plots"
+---
+
+The text introduced the area of a triangle as a function of the lengths of the three sides.
+
+$$A(a,b,c) \equiv \frac{1}{4}\sqrt{\strut 4a^2b^2-(a^2+b^2-c^2)^2}\ .$$
+```{r}
+area <- makeFun(sqrt(4*a^2*b^2 - (a^2+b^2-c^2)^2)/4 ~ a & b & c)
+```
+
+There are three inputs to `area()`, but a contour or surface plot can represent at most two of them. One possibility is to set one of the inputs to a specific value and represent each of the two remaining inputs as one coordinate axis. For instance, the following plot shows `area(a, b, c=4)`: the area of triangles one side of which has length 4.
+
+```{r, warning=FALSE}
+contour_plot(area(a,b,4)  ~ a & b, 
+             domain(a=0:6, b=0:6), npts=200)
+```
+(Aside: The `npts=200` argument instructs the computer to draw a high-resolution graph.)
+
+1. According to the above graph, what is the area of an equilateral triangle each of whose sides has length 4?
+
+2. Give the abc side lengths for 4 different triangles, each of which has area 5. 
+
+3. How many different triangles are there with $c=4$ and area 3? <!-- infinitely many -->
+
+4. The interval of the $(a, b)$ space shown in the plot is  the square region $0 \leq a \leq 6$ and $0 \leq b \leq 6$. Yet there are empty places not marked with any output value. Why?  (Hint: What's the smallest possible area for a triangle?)
+
+The input space for the area function is three dimensional. In the previous plot we took a planar slice of that space with $c=4$. The graph below shows a different type of slice, the one that includes only right triangles, that is triangles where $c=a^2 + b^2$.
+
+```{r, echo=FALSE, warning=FALSE}
+contour_plot(area(a,b,sqrt(a^2+b^2))  ~ a & b, 
+             contours_at = 1:15,
+             domain(a=0:6, b=0:6), npts=200)
+```
+
+5. Write down the R/mosaic command that will draw this graphic showing the area of right triangles.
+

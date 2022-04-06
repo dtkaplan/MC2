@@ -1,0 +1,120 @@
+# Notation for functions {#fun-notation}
+
+
+<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Block-1/05-notation.Rmd)</div>
+
+Part of the difficulty of mathematics for many people is making sense of the nomenclature and notation. What you were taught in high school is a highly idiomatic system that can be mastered only with extensive experience. Mathematicians are undoubtedly skilled in logic, but mathematics itself has an ancient history which has littered the language with synonyms, near synonyms, inconsistencies, diacritical marks, and letters in unfamiliar alphabets. `r mark(500)`
+
+::: {.intheworld  data-latex=""}
+To illustrate the cultural admiration for abstraction in mathematics, consider this famous poem, *The Jabberwocky*, by a University of Oxford mathematician, Charles Lutwidge Dodgson (1832-1898):
+
+*’Twas brillig, and the slithy toves  
+       Did gyre and gimble in the wabe:  
+All mimsy were the borogoves,  
+       And the mome raths outgrabe.*  
+:::
+
+Here are some words commonly encountered in traditional mathematics notation. 
+
+**equation**, **formula**, **function**, **variable**, **unknown**, **root** 
+
+And here are a few mathematical sentences.
+
+i. $y = x$
+ii. $y = \sqrt{x}$
+iii. $y^2 = x$
+iv. $x^2 = x$
+v. $x = \sqrt{x}$
+
+All five sentences are *equations*. That's easy, because they each have an equal sign between the two sides. Which are *formulas*? Which are *functions*? You're used to calling $x$ and $y$ *variables*. When do they become *unknowns*? Sentence (v) involves *roots* (as in "square root"). But sentence (v) says the same thing as (iv) which is about squares rather than roots.`r mark(510)`
+
+## A notation for computing
+
+The traditional notation is practically useless for computing. A programmer has to have a deep understanding of what the notation is intended to mean in any given circumstance before she can construct a computer expression that will carry that same meaning in the computer's work.
+
+
+::: {.scaffolding  data-latex=""}
+To illustrate, consider these statements in traditional math notation, each of which has a sensible meaning. 
+$$y = x\\
+y = \sqrt{x}\\
+y^2 = 3\\
+y = \sqrt{3}\\
+y - x = 0\\
+0 = (x+3)(x-2)$$
+
+Imagine translating these statements into R, fixing things a little by inserting the required `*` in  `(x+3)*(x-2)`, and using `sqrt()` instead of $\sqrt{\strut\ }$. `r mark(520)`
+
+```{r eval=FALSE}
+y = x
+y = sqrt(x)
+y^2 = 3
+y = sqrt(3)
+y - x = 0
+0 = (x+3) * (x-2)
+```
+Running these statements in R (for instance, by copying them to a `r sandbox_link()`) will generate an error. Even if you copy and run the statements individually, one at a time, into the sandbox, you'll get an error for all but one of the statements. 
+
+Before reading on, see if you can figure out, just by reading the R statements, which one is valid.
+
+For some of the statements, the left-hand side of `<-` is not a valid name in R (`0` and `y^2` and `y-x`). For others, the name `x` is being used before any value has been assigned to it.
+
+One of the reasons we use `<-` for assignment in R, rather than `=` (which, technically, is allowed) is to remind us that ***assignment*** is different from equality.
+:::
+
+The student who knows how to make sense of math notation will find this not of much help in writing computer notation. It's like a well educated foreigner trying to make sense of how some of these sentences are meaningful and others not.
+
+"Chair a meeting," but not "seat a meeting." 
+"Seat a guest," but not "chair a guest."  
+"I'm bushed," but not "I'm treed."  
+"Tree a cat," but not "bush a cat."  
+"Table a motion," but not "desk a motion."  
+"Bench a player," but not "couch a player."   
+"Couch a meaning" but not "bench a meaning."  
+
+
+In this book, we're going to use a mathematical notation that corresponds to a usable computer notation. The first step is to stop using $=$ to mean so many different things. `r mark(530)`
+
+
+## Formulas and algorithms {#algorithms}
+
+In high-school math, you got used to seeing ***formula***s like $3x + 2$ or $x^2 \sin(y)$. So it will likely be natural to you to think of defining mathematical functions in R with tilde expressions like `3*x + 2 ~ x` or `x^2 * sin(y) ~ x & y`. 
+
+But formulas are hardly the only way to define a function. Functions can also be defined using another kind of computation of the sort not typically covered in high-school math: an iterative process, a branching process, a neural network, and so on. These processes are usually expressed using a computer programming language and so they will be unfamiliar to many students.
+
+The idea of "algorithm" generalizes that of formulas. You will be using many mathematical computations that do not involve evaluating formulas but instead are written in terms of ***iteration***, ***branching***, and ***searching***.  A computer programming course is a good place to learn about these concepts but, for now, what's important is that you know that much of the work going on behind the scenes in a computation is "algorithmic" rather than based on formulas.
+    
+A starter definition is:
+
+> An ***algorithm*** is a set of instructions for performing a computation. 
+
+High-school math typically involves presenting an algorithm as a formula. You learned, maybe in middle school, how to follow the arithmetic steps involved in algorithms described as formulas. You also have likely used a calculator to perform some of the arithmetic or to evaluate functions such as $\sin()$ and $\ln()$ and $\sqrt{\strut}$ for which you don't know how to evaluate using simple arithmetic. The calculator is implementing an algorithm with which its been programmed to enable the calculation of $\sin()$ and $\ln()$ and such.
+
+A slightly more detailed definition of "algorithm" highlights that algorithms are written in terms of other, simpler algorithms.
+
+> An ***algorithm*** is a set of instructions for performing a computation written in terms of other algorithms that we already know how to perform.
+
+For our purposes, the "algorithms that we already know how to perform" will be taken to be arithmetic---addition, subtraction, multiplication, division---as well as the evaluation of the pattern-book functions. Admittedly, people cannot compute logarithms as fluently as they can add numbers, but you already have the R implementations of the basic modeling functions: `exp()`, `log()`, `sin()`, power-law, `dnorm()`, and `pnorm()`. 
+The vast majority of functions you will see in this book (and in mathematical modeling in general) can be constructed out of basic arithmetic and the application of the pattern-book functions. `r mark(560)`
+
+## Algorithms without formulas
+
+Many functions are described by algorithms that use concepts common in computer programming but unknown to traditional mathematical notation. Some of these have names like ***iteration*** or ***branching*** and many refer to stored lists of fixed numbers (like the office workers in the street, building, floor, corridor, door image of a function). We'll deal with some of these things later, but for now ...
+
+> We are going to use the word ***algorithm*** to name the kind of expression to the right of $\equiv$ in a function definition. A ***formula*** is a specific kind of algorithm generally written in traditional math notation.
+
+Algorithms, including the ones that are formulas, are written in terms of a set of ***symbols*** that stand for inputs. For instance, in $mx + b$, the $x$, $m$, and $b$ are the names we give to the quantities being used in the calculation.
+
+The notation we are using for function definition lists some of these names in two places, and others in only one place. Again, look at $$g(x) \equiv m x + b$$
+The $x$ appears both in the algorithm and the list of input name $(x)$ to the left of $\equiv$.
+
+The $m$ and $b$ are different; they appear **only** in the algorithm. The word for such quantities in mathematics is ***parameter***. Eventually, when the algorithm is followed, we're going to have to put in specific numerical values in place of each parameter. `r mark(570)`
+
+**Where will these parameter values come from?** This is a subject on which mathematical notation is silent. You have to figure it out from context and experience. This is potentially very confusing, especially when a human is not around to sort things out.
+
+## Computer notation
+
+The notation used in computer programming lets us be explicit about which symbols refer to function inputs and which to parameters of the function. 
+
+
+## Exercises
+

@@ -1,0 +1,592 @@
+# Notation & computing {#notation-and-computing}
+
+<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Preliminaries/02-notation.Rmd)</div>
+
+```{r include=FALSE}
+source("../_common.R")
+```
+
+$\newcommand{\line}{\text{line}}
+\newcommand{\hump}{\text{hump}}
+\newcommand{\sigmoid}{\text{sigmoid}}
+\newcommand{\recip}{\text{recip}}
+\newcommand{\diff}[1]{{\cal D}_#1}
+\newcommand{\pnorm}{\text{pnorm}}
+\newcommand{\dnorm}{\text{dnorm}}
+\let\origvec\vec
+\let\origmathit\mathit
+\let\orighat\hat
+\let\origbar\bar
+\newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+\newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+\newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+\newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+\newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+\newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+\newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+\newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+\newcommand{\modeledby}[2]{#1\!\sim\!#2}
+\newcommand{\CC}[1]{\color{#648fff}{#1}}
+\newcommand{\CE}[1]{\color{#785ef0}{#1}}
+\newcommand{\CA}[1]{\color{#dc267f}{#1}}
+\newcommand{\CB}[1]{\color{#fe6100}{#1}}
+\newcommand{\CD}[1]{\color{#ffb000}{#1}}$
+
+
+```{r include=FALSE}
+book_file_name <- "preliminaries/02-notation.html"
+library(Zcalc)
+```
+
+> *The ideas which are here expressed so laboriously are extremely simple .... The difficulty lies, not in the new ideas, but in escaping from the old ones, which [branch]^[Original word: "ramify"], for those brought up as most of us have been, into every corner of our minds.* --- J. M Keynes, 1936, [*The General Theory of Employment, Interest, and Money*](files.ethz.ch/isn/125515/1366_KeynesTheoryofEmployment.pdf), 1936
+
+In addition to the specialized words we will use to express concepts and uses of calculus, we will also make extensive use of mathematical and computer-language notation. This chapter introduces you to the notation we'll be using. 
+
+One goal of good notation is to make clear which of these object types it is referring to. Another goal is to build on what you already know about how mathematics is written. For historical reasons these two goals are sometimes in conflict. 
+
+Yet another goal for notation has to with the central role of computing in the contemporary technical environment. Ideally, the mathematical notation we use should extend directly to computer-language notation. But in practice there is an incompatibility stemming from two sources:
+
+1. Traditional mathematical notation makes extensive use of spatial arrangement, as for instance in $\frac{3}{4}$ or $x^{-3}$ or $\sqrt[4]{\strut y^2 - 6}$. For those familiar with it, this notation can be both concise and beautiful. But it was developed in an era of parchment and pen, without any inkling of keyboards and the strictly linear sequence of characters so widely used in written communication. Most mainstream computer languages are based on keyboard input.
+
+2. Traditional mathematical notation was developed for communicating between *people* and, like everyday language, has gaps and ambiguities that get sorted out (not always correctly) by human common sense. Computer languages, on the other hand, need to be precise, unambiguous, and interpreted by machines.
+
+We'll attempt to use mathematical notation in a way that limits the conflict between tradition and computer notation. This conflict is particularly acute when it comes to the idea of an "equation," so widely used in high-school mathematics but not a component of mainstream computer languages.
+
+## Functions, inputs, and quantities
+
+Our style of notation will be to give functions and their inputs *explicit names*. The basic principle is that a function name is a sequence of letters followed by an empty pair of parentheses, for instance $\sin()$ an $\ln()$.
+
+Traditional mathematical notation writes many functions both without a name and without the parentheses. Examples that you have likely seen are $x^2$, $\sqrt{\strut x}$, and $e^x$. If we were to absolutely impose the name/parentheses principle we would refer to these functions as, say, square() and sqrt() and exp(). Notice that the $x$ is not part of the name.
+
+Sometimes will will use names like square() just to emphasize the point that we are talking about a function. But for the most part we will stick to the traditional form because it is ubiquitous and recognizable by most readers. 
+
+The name/parentheses notation, like exp() or sin() allows us to avoid having to write $x$ as the indicator of where the input to the function goes. That's helpful because, after all, the actual input might be something completely different from $x$.
+
+Still, there are times in which we do need to state the name of the input to functions. One of these is when ***defining a function***. To define a function, we will use an expression like
+$$g(y) \equiv y \cos(y)\ .$$
+On the left of the $\equiv$ goes the name of the function, with the name of the input(s) in parentheses.  On the right of $\equiv$ goes a formula for computing the output from the input. This formula is written in terms of the input name given on the left side of the definition.
+
+In situations where there is just one input to a function, as in $g()$ above, we could use any name for the input. For instance, all of these are exactly equivalent to the definition for $g()$ given above:
+
+$$g(x) \equiv x \cos(x)\\
+g(z) \equiv z \cos(z))\\
+g(zebra) \equiv zebra\ \cos(zebra)$$
+
+We'll tend to avoid hard-to-read input names like $zebra$. Instead, we'll mostly use :
+
+- $\large x$ or $\large y$ or $\large z$. 
+- $\large t$. This name is typically used when the input is meant to be ***time***. So if we were creating a function to represent the relationship between time (of day) and outdoor brightness, we might use this notation: $\text{brightness}(t)$
+
+Other input names we will use often in this book include $u$, $v$, $w$, following the 17th-century convention introduced by Newton that input names come from the end of the alphabet. But we won't shy away from more descriptive names, like $T$ for "temperature" or $V$ for volume, or even $\text{altitude}$ (which describes itself). 
+
+When a function has more than one input, the input names serve to indicate where each input goes in the formula defining the calculation.  For instance:
+$h(x, y) \equiv x^2 e^y\ .$
+$h()$ is a completely different function than, say,
+$f(x, y) \equiv y^2 e^x$. 
+
+You may have noticed that we've used the names $f()$, $g()$, and $h()$ a lot. Consider these names to be the equivalent of pronouns in English like "this", "that", "it", and so on. Function names like $f()$ or $F()$ will be used when we need to refer to a function for a moment: a sentence, a paragraph, a section. 
+
+We will also have many occasions where we need to give a name to a quantity. Of course, a quantity is different from a function; functions are ***relationships*** between quantities.
+
+For example, we will use names for quantities that are ***parameters*** in a function, like:
+$$g(x) \equiv a x^2 + b x + c\. $$ Here, $x$ is the name given to the input to $g()$, while $a$, $b$, and $c$ are names for other quantities involved in the formula.
+
+Again following Newton's convention, names for quantities will come from the beginning of the alphabet. For instance, here is a definition of a function called a "cubic polynomial": 
+$$h(x)\equiv a + b x + c x^2 + d x^3\ .$$
+But there will be occasions where we need to compare two or more functions and run out of appropriate names from the start of the alphabet. A way to keep things organized is to use subscripts on the letters, for instancecomparing
+$$g(x) \equiv a_0 + a_1 x^2 + a_2 x^2 + a_3 x^3 + a_4 x^4$$
+to 
+$$f(x) \equiv b_0 + b_1 x^2 + b_2 x^2\ .$$
+
+Other ways professionals expand the set of letters from the start of the alphabet:
+
+- Use capital letters: $A$, $B$, $C$, and so on
+- Use Greek letters: $\alpha$, $\beta$, $\gamma$, $\delta$, ...
+
+## Function output
+
+We will often ***apply a function to *** specific input quantities in order to produce an output from the function. An equivalent phrase is ***evaluate a function on*** an input. For instance, to apply the function $g()$ to the input quantity 3, any of the following mathematical expressions might be used:
+$$g(3)\ \ \ \text{or}\ \ \ \ g(x=3) \ \ \ \text{or}\ \ \ \ g(x)\left.\Large\strut\right|_{x=3}\ .$$
+Remember that $g(3)$ or its equivalents are not themselves functions. They are the quantity that results from applying a the function to an input quantity.
+
+## Inputs, arguments, and variables
+
+In everyday speech, an "argument" is a discussion between people with differing views. But in mathematics and computing, ***argument*** means something else entirely: it is a synonym for "input to a function."
+
+In this text, we'll mostly use "input" to refer to what goes into a mathematical function, although using "argument" would be fine. As regards computer functions ... In Section \@ref(makefun) you'll see how to instruct the computer to create a mathematical function like $g()$ or $f()$ from the previous section. The names and format of such  instructions---e.g. make a mathematical function from a formula, draw a graph of a function, plot data---are given in the same function notation we use in math. For example, `makeFun()` constructs a function from a formula, `slice_plot()` graphs a function, `gf_point()` makes one style of data graphic. These R entities saying "do this" are also called "functions." 
+
+When referring to such R "do this" functions, we'll refer to the stuff that goes in between the parentheses as "arguments." The word "input" would also be fine. The point of using "input" for math functions and "argument" for R "do this" functions is merely to help you identify when we are talking about mathematics and when we are talking about computing.
+
+A word we will **not** make much use of is "variable." You are probably used to statements like, "$x$ and $y$ are the variables," and it will take you a while to stop using them reflexively. The reason we will use "input" or "argument" instead of "variable" is that variable means too many different things in different contexts. For instance, in the algebra-course instruction, "Solve $3x - 2 = x^2$," the $x$ is really a quantity, unknown at first but soon to be resolved by your algebraic skills. The $x$ in the solving problem would often be called a "variable," but it's not at all an "input" or an "argument."
+
+There are two contexts in which we will use "variable," neither of which has to do with inputs to functions. In talking about data, we will use "variable" in the statistical sense, meaning "a type of quantity" like height or pH. And in the final part of the text, involving system whose configuration changes in time, we'll use "variable" in the sense of "a quantity that varies over time."
+
+## Computing: commands and evaluation
+
+
+Mathematical notation is effective for **describing** functions and operations, but ***computing notation*** provides a way to go beyond the description to actually **carry out** the operations.  Computer notation will be an equal partner to mathematical notation in *MOSAIC Calculus*. 
+
+With computers, writing an expression in computer notation goes hand-in-hand with ***evaluating*** the notation. We'll start with the simplest mode of evaluation, where you are writing the expression in the ***console*** for the language. Figure \@ref(fig:R-console) shows and example the console tab provided by the RStudio application. 
+
+```{r R-console, echo=FALSE, fig.cap="An RStudio console tab for writing expressions and evaluating them. The `>` is the ***prompt*** after which you write your expression, here shown in $\\color{blue}{\\text{blue}}$. Pressing the \"return\" key causes the language interpreter to evaluate the command."}
+knitr::include_graphics("www/console.png")
+```
+
+In Figure \@ref(fig:R-console) we have come in to the story in the middle of the action. To start, there was just a prompt character.
+
+$\color{blue}{\mathtt >}$
+
+The person at the keyboard then typed a simple expression: `2 + 3`
+
+$\color{blue}{\mathtt >\  2 + 3}$
+
+Having completed the expression, the keyboarder presses "return." The RStudio application sends the expression to the software that "interprets" it according to the rules of the R language. Since `2 + 3` is a complete, valid R expression, the R-language software carries out the action specified---adding 2 and 3---and returns the result to RStudio, which displays it just below the expression itself. 
+$\color{blue}{\mathtt >\  2 + 3}\\\mathtt{[1]\ 5}$
+
+Note that the value of the expression is simply the number `5`. The R language is set up to **format** numbers with an index, which is helpful when the value of the expressions is a large set of numbers. In the case here, with just a single number in the result of evaluating the expression, the index is simply stating the obvious. 
+
+Having printed the result of evaluating the `2 + 3` expression, RStudio shows another prompt, signally that it's ready for you to enter your next expression. In Figure \@ref(fig:R-console) we're seeing the console after the person at the keyboard has responded to the prompt by writing another expression, pressed return, had RStudio print the value of that expression, and displayed a new prompt. 
+
+The two expressions shown in the console in Figure \@ref(fig:R-console) both evaluate to single numbers. We say, "the command returns a value."  The ***command*** is a valid R expression followed by the instruction ("Return") to evaluate the command. The ***value*** of the expression is the result of evaluating the command.
+
+Another common form of R expression is called ***assignment***. An assignment means "giving a name to a value." It's done with a more complicated expression, like this:
+```{r}
+b <- 22/7
+```
+
+The result of evaluating this command is to store in the computer memory, under the name `b`, the value of `22/7`. Because the value is being stored, R is designed *not* to display the value as happened with the first two commands in the console. If you want to see the value printed out, give the name as a command:
+```{r collapse=TRUE}
+b
+```
+
+::: {.takenote}
+This book displays the command being evaluated in a gray box, without a prompt. The value returned by the command is displayed underneath the command, prefaced by $\color{red}{\mathtt{\#\#}}$. In the book formatting, the four commands we have just described would be displayed in this way:
+```{r collapse=TRUE}
+2 + 3
+sqrt(16)
+b <- 22/7
+b
+```
+When reading this book, take care to distinguish between the display of a command and the display of the value returned by that command. The first is something you type, the second is printed by the computer.
+:::
+
+## Functions in R/mosaic {#makefun}
+
+One of the fundamental mathematical operations in this book is ***defining functions***. You've already seen the way we use mathematical notation to define a function, for instance, 
+$$h(t) \equiv 1.5\, t^2 - 2\ .$$
+The R/mosaic equivalent to the definition of $h()$ is:
+```{r}
+
+h <- makeFun(1.5*t^2 - 2 ~ t)
+
+```
+Once you have defined a function, you can evaluate it on an input. The R notation for evaluating functions is exactly the same as with mathematical notation, for instance,
+```{r}
+h(4)
+```
+or 
+```{r}
+h(t=4)
+```
+
+There are obvious differences, however, between the mathematical and computing notation used to define a function. All the same information is being provided, but the format is different. That information is:
+
+1. the name of the function: $h()$ or `h`. When writing the name of a computer-defined function, we'll put the reminder parentheses after the name, as in `h()`. 
+2. the name of the input to the function: $x$ or `x`
+3. the calculation that the function performs, written in terms of the input name. $1.5 t^2 -2$ or `1.5 * t^2 - 2`.
+
+Laying out the two notation forms side by side let's us label the elements they share:
+```{r echo=FALSE}
+knitr::include_graphics("www/formula-rosetta.png")
+```
+
+For the human reading the mathematical notation, you know that the statement defines a function because you have been told so. Likewise, the computer needs to be told what to do with the provided information. That's the point of `makeFun()`. There are other R/mosaic commands that could take the same information and do something else with it, for example create a graph of the function or (for those who have had some calculus) create the derivative or the anti-derivative of the function.
+
+::: {.takenote data-latex=""}
+In R, things like `makeFun()` are called "functions" because, like mathematical functions, they turn inputs into outputs. In the case of `makeFun()`, the input is a form called a ***tilde expression***, owing to the character tilde (<span style="font-size:250%'">~</span>) in the middle. On the right-hand side of the tilde goes the name of the input. On the left-hand side is the R expression for the formula to be used, written as always in terms of the input name. The whole tilde expression is taken as the one argument to `makeFun()`. Although it may seem odd to have punctuation in the middle of an argument, remember that something similar happens when we write $h(t=3)$.
+:::
+
+## Names and assignment
+
+A command like 
+```{r}
+h <- makeFun(1.5*t^2 - 2 ~ t)
+``` 
+gives the name `h` to the function created by `makeFun()`. Good choice of names makes your commands much easier for the human reader. 
+
+The R language puts some restrictions on the names that are allowed. Keep these in mind as you create R names in your future work:
+
+1. A name is the **only**^[Note for R experts: Strictly speaking, the thing to the left of `<-` must be an "assignable," which includes names with indices (e.g. `Engines$hp` or `Engines$hp[3:5]`
+and other forms). We will not use indexing in *MOSAIC Calculus*; we won't need it.] thing allowed on the left side of the assignment symbol `<-`. 
+2. A name must *begin* with a letter of the alphabet, e.g. `able`, `Baker`, and so on.
+3. Numerals can be used after the initial letter, as in `final4` or `g20`. You can also use the period `.` and underscore `_` as in `third_place`. No other characters can be used in names: no minus sign, no `@` sign, no `/` or `+`, no quotation marks, and so on. 
+
+For instance, while `third_place` is a perfectly legitimate name in R, the following are not: `3rd_place`, `third-place`. But it's OK to have names like `place_3rd` or `place3`, etc., which start with a letter.
+
+R also distinguishes between letter case. For example, `Henry` is a different name than `henry`, even though they look the same to a human reader.
+
+
+
+
+## Formulas in R
+
+The constraint of the keyboard means that computer formulas are written in a slightly different way than the traditional mathematical notation. This is most evident when writing multiplication and exponentiation. Multiplication must *always* be indicated with the `*` symbol, for instance $3 \pi$ is written `3*pi`. For exponentiation, instead of using superscripts like $2^3$ you use the "caret" character, as in `2^3`. The best way to learn to implement mathematical formulas in a computer language is to read examples and practice writing them. 
+
+Here are some examples:
+
+Traditional notation | R notation 
+---------------------|-------------
+$3 + 2$              | `3 + 2`
+$3 \div 2$           | `3 / 2`
+$6 \times 4$         | `6 * 4`
+$\sqrt{\strut4}$     | `sqrt(4)`
+$\ln 5$              | `log(5)`
+$2 \pi$              | `2 * pi`
+$\frac{1}{2} 17$     | `(1 / 2) * 17`
+$17 - 5 \div 2$      | `17 - 5 / 2`
+$\frac{17 - 5}{\strut 2}$   | `(17 - 5) / 2`
+$3^2$                | `3^2`
+$e^{-2}$             | `exp(-2)`
+
+
+Each of these examples has been written using numbers as inputs to the mathematical operations. The syntax will be exactly the same when using an input name such as `x` or `y` or `altitude`, for instance `(x - y) / 2`. In order for that command using `x` and `y` to work, some meaning must have been previously attached to the symbols. We'll come back to this important topic on another day.
+
+
+
+
+
+
+## Exercises
+
+`r Znotes::insert_calcZ_exercise(2.1, "TKWEW", "Exercises/convention-drill.Rmd")`
+
+`r Znotes::insert_calcZ_exercise(2.2, "LDNE", "Exercises/function-notation.Rmd")`
+
+`r Znotes::insert_calcZ_exercise("2.3", "kZG5Fj", "Exercises/puppy-build-radio.Rmd")`
+
+`r Znotes::insert_calcZ_exercise("2.4", "aeOnO5", "Exercises/horse-sing-drawer.Rmd")`
+
+`r Znotes::insert_calcZ_exercise("2.5", "ooJK5d", "Exercises/pine-light-mug.Rmd")`
+
+<!-- basic R instructions -->
+`r Znotes::insert_calcZ_exercise("2.6", "BXCA4", "Exercises/fish-sees-tree.Rmd")`
+
+`r Znotes::insert_calcZ_exercise("2.7", "0V510o", "Exercises/goat-look-boat.Rmd", skill="R formula notation")`
+
+`r Znotes::insert_calcZ_exercise("2.8", "Ce79t3", "Exercises/pollen-fly-lamp.Rmd", skill="makeFun()")`
+
+<!-- when things go wrong -->
+`r Znotes::insert_calcZ_exercise("2.9", "BaEJkS", "Exercises/seahorse-take-pen.Rmd")`
+
+## Drill questions
+
+`r Znotes:::MC_counter$reset(labels="roman")`
+
+```{r drill-M01-1, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which of these is the symbol for "is defined as"? )",
+r"($=$)" = r"(An equals sign says that the two sides happen to be equal, not that the left side is **defined** as the right side.)",
+  r"(+$\equiv$+)" = r"(Three parallel bars signify a definition.)",
+  r"($\sim$)" = r"( )",
+  r"($\approx$)" = r"( )",
+  random_answer_order=TRUE
+)
+```
+
+```{r drill-M01-2, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(What is the name of the function defined by $$f(y) \equiv \sin(y) + e^y \ ?$$ )",
+r"(+$f$+)" = r"(Note that we will usually write function names with trailing parentheses, like $f()$, in order to remind you that $f$ refers to a function rather than an input or parameter or whatever.)",
+  r"($\sin$)" = r"( )",
+  r"($f(y)$)" = r"(This isn't a function name. This is how we write the **output** from applying function $f()$ to the input denoted by the name $y$.)",
+  random_answer_order=TRUE
+)
+```
+
+```{r drill-M01-3, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(How do we refer to the output generated by applying $g(x) \equiv x+3$ to the input 3?  )",
+r"($g(x)$)" = r"( )",
+  r"(+$g(3)$+)" = r"( )",
+  r"($y = 6$)" = r"(It's a habit from high-school math to use the name $y$ for outputs. Breaking that habit will help you learn and use calculus.)",
+  random_answer_order=TRUE
+)
+```
+
+
+```{r drill-M02-1, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Is `xx` a legitimate name in R? )",
+r"(+True+)" = r"( )",
+  r"(False)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-2, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Is `x_x` a legitimate name in R? )",
+r"(+True+)" = r"( )",
+  r"(False)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-3, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Is `-x` a legitimate name in R? )",
+r"(True)" = r"( )",
+  r"(+False+)" = r"(The minus sign are other such symbols are not allowed characters in an R name.)",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-4, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Is `3x` a legitimate name in R? )",
+r"(True)" = r"( )",
+  r"(+False+)" = r"(Names should start with a letter)",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-5, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Is `x3` a legitimate name in R? )",
+r"(+True+)" = r"(Numbers are OK in names, so long as the first character is a letter)",
+  r"(False)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-6, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Is `sqrt` a legitimate name in R? )",
+r"(+True+)" = r"(In fact, it is the name of an oft-used function in R.)",
+  r"(False)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-7, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Is `x + y` a legitimate name in R? )",
+r"(True)" = r"( )",
+  r"(+False+)" = r"(`x + y` is an R expression that uses names, but the expression is not itself a name.)",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-8, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Is `3 * x` a legitimate name in R? )",
+r"(True)" = r"( )",
+  r"(+False+)" = r"(`*` and <space> are not acceptable characters in a name.)",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-9, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Is `xprime` a legitimate name in R? )",
+r"(+True+)" = r"( )",
+  r"(False)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-10, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Is `x prime` a legitimate name in R? )",
+r"(True)" = r"( )",
+  r"(+False+)" = r"(Names cannot have blank spaces internally.)",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-11, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Is `dx` a legitimate name in R? )",
+r"(+True+)" = r"( )",
+  r"(False)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-12, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Is `xx` a legitimate name in R? )",
+r"(+True+)" = r"( )",
+  r"(False)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-13, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Is `dx_f` a legitimate name in R? )",
+r"(+True+)" = r"( )",
+  r"(False)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-14, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(What's wrong with this assignment statement?<br> `x < 4` )",
+r"(Nothing)" = r"( )",
+  r"(+It's missing part of the `<-` token.+)" = r"( )",
+  r"( `x` is an improper name.)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-15, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(What's wrong with this assignment statement?<br> `3*x <- 4` )",
+r"(Nothing)" = r"(The item to the left of `<-` needs to be a valid name. `3*x` is not.)",
+  r"(It should use addition instead of multiplication.)" = r"( )",
+  r"(+The item to the left of `<-` needs to be a name+)" = r"(`3 * x` is an instruction to multiply 3 times x. It is not a name.)",
+  r"(There's no `x` on the right-hand side of the assignment arrow.)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-16, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(What's wrong with this assignment statement?<br> `x -> 3+4` )",
+r"(Nothing)" = r"( )",
+  r"(You can't use addition in an assignment statement.)" = r"(You can, but it has to be on the right side of the assignment, where you construct the value to be assigned to the name on the left side.)",
+  r"(+The assignment has to point toward the **name**, not the *value*+)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M02-17, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(We can write something like <br>$f(x) \equiv x^2$ </br> in mathematical notation. Is it legit in R to write `f(x) <- x^2` ? )",
+r"(Yes, it's fine.)" = r"( )",
+  r"(+`f(x)` is not a valid name in R.+)" = r"( )",
+  r"(Almost. You need to use \(\equiv\) instead of `<-` .)" = r"(There's no symbol \(\equiv\) on the keyboard or recognized in the R language.)",
+  random_answer_order=FALSE
+)
+```
+
+
+
+
+```{r drill-M03-22, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Using our notation conventions from the textbook, which one of the following kinds of things is $y_0 ?$ )",
+r"(+A constant+)" = r"( )",
+  r"(A function name)" = r"( )",
+  r"(An input name)" = r"(A subscript (like $_0$ here) or non-numeric superscript (like $^\star$) on what would otherwise be an input name will be instead a **constant**.)",
+  random_answer_order=FALSE
+)
+```
+
+
+```{r drill-M04-1, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Using our notation conventions from the textbook, which one of the following kinds of things is $t^\star?$ )",
+r"(+A constant+)" = r"( )",
+  r"(A function name)" = r"( )",
+  r"(An input name)" = r"(A subscript (like $_0$ here) or non-numeric superscript (like $^\star$) on what would otherwise be an input name will be instead a **constant**.)",
+  random_answer_order=FALSE
+)
+```
+
+
+```{r drill-M04-2, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Using our notation conventions from the textbook, which one of the following kinds of things is $B ?$ )",
+r"(+A constant+)" = r"( )",
+  r"(A function name)" = r"( )",
+  r"(An input name)" = r"(The letters from the start of the alphabet, a-d, or A-D will refer to a **constant**. )",
+  random_answer_order=FALSE
+)
+```
+
+
+```{r drill-M04-3, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Using our notation conventions from the textbook, which one of the following kinds of things is $F() ?$ )",
+r"(A constant)" = r"( )",
+  r"(+A function name+)" = r"(Our standard pronouns for functions are $f(), g(), h()$ and $F(), G(), H()$)",
+  r"(An input name)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+```{r drill-M04-4, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Using our notation conventions from the textbook, which one of the following kinds of things is $u ?$ )",
+r"(A constant)" = r"( )",
+  r"(A function name)" = r"( )",
+  r"(+An input name+)" = r"(Letters from the end of the alphabet, $u, v, w, x, y, z$, generally refer to an input to a function. But, remember, something like $x_0$ will always be a constant.)",
+  random_answer_order=FALSE
+)
+```
+
+
+```{r drill-M04-5, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Can function names be multiple letters, e.g. `g3()` or `altitude()`? )",
+r"(+Yes+)" = r"(And they often do. Almost all R functions have multi-letter names, like `exp()`, `sin()`, `dnorm()`, and such. When you are building a model, it's helpful to use *mnemonic* function names rather than the usual pronouns like $f(), g()$, an $h()$. We use the short pronouns throughout the book whenever we are discussing general mathematical properties rather than specific models.)",
+  r"(No)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+```{r drill-M04-7, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(In the book, will input names have subscripts, like $x_0$ or  $u_2 ?$ )",
+r"(Yes)" = r"( )",
+  r"(+No+)" = r"(In the textbook, we try to reserve names like $x_0$ or $u_2$ for **constants**. But mathematics usage generally doesn't always adopt this helpful convention.)",
+  random_answer_order=FALSE
+)
+```
+
+
+```{r drill-M04-8, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(In the book, what is meant by the word "**variable**"? )",
+r"(It's the same as input.)" = r"(Use **input** rather than variable! Even if you're used to calling quantities like $x$ and $y$ variables, it's a confusing practice since it can mean so many different things. In calculus, in this course, we'll try to be strict about using the words **input** and **output**)",
+  r"(It's the same as output.)" = r"( )",
+  r"(+A column in a data table.+)" = r"(This is the use in statistics and data science. In calculus, we'll try to avoid confusing by using **input** and **output** instead.)",
+  random_answer_order=TRUE
+)
+```

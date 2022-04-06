@@ -1,0 +1,79 @@
+---
+id: "goat-walk-window"
+created: "Thu Sep 30 06:32:05 2021"
+global_id: "E9e7c6"
+---
+
+```{r}
+library(Zcalc)
+```
+
+If you are unlucky and develop a serious ear or throat or other infection, and if the infection is bacterial and not viral, you may be prescribed antibiotics. You probably know how it goes. You go to the pharmacy to pick up a bottle of pills. There might be anywhere between  10 pills and 40. The directions will certainly tell you to make sure to finish the bottle; to take the full course of medication. It may say take a pill twice a day, or three times, or every six hours, perhaps with food.
+
+The details of this regimen are determined largely by the details of whether food inhibits or buffers absorption of the medicine and by the efficiency by which your body metabolizes the medicine and then removes it from your blood via your liver.
+
+Modeling this process---often called the ***pharmacokinetics** of the drug---is an important step in drug development. A simple but effective model of the drug concentration over time is a piecewise function: zero before you take the pill, then an exponential decay from an initial level of one unit after you take the pill.
+
+```{r}
+pill <- makeFun(ifelse(t < 0, 0, exp(-k * t)) ~ t, k = log(2)/1.5)
+```
+
+The shape of the `pill()` function is seen in Figure \@ref(fig:pharma1). Another part of the model is the ***therapeutic threshold***, the minimal concentration for medical effectiveness. Keep in mind that this is a model. In reality, the drug not is absorbed instantaneously as in the model, and the medical effectiveness varies smoothly with concentration rather than being an all-or-nothing affair.
+
+```{r pharma1, fig.cap="A simple illustrative model of drug availability from taking a unit dose at time zero. The therapeutic threshold depends on the drug: 0.25 is shown here."}
+
+slice_plot(pill(t) ~ t, domain(t=-2:10)) %>%
+  gf_hline(yintercept = ~ 0.25, color="magenta") %>%
+  gf_text(0.25 ~ 8, label="Therapeutic threshold", color="magenta", 
+          vjust=0, nudge_y=0.02) %>%
+  gf_labs(y="Drug availability", x = "Time (hrs)")
+```
+The critical features of the model are the half-life of the drug in the body and the therapeutic threshold, both of which depend on the particular drug in question.
+
+```{r gww7-1, echo=FALSE, results="markup"}
+askMC(
+  "What is the half life of the drug depicted in the Figure \\@ref(fig:pharma1)?",
+  "60 minutes",
+  "+90 minutes+",
+  "120 minutes",
+  "180 minutes",
+  random_answer_order = FALSE
+)
+```
+
+Figure \@ref(fig:pharma1) shows the availability from a single pill. The goal of taking multiple pills, spread out over time, is to keep the drug availability above the therapeutic threshold for an extended time, e.g. 10 days. There are three parameters to the therapy: how often you take a pill, and the dose delivered by a single pill, and the medicine's half-life. 
+
+```{r gww7-2, echo=FALSE, results="markup"}
+askMC(
+  "Occasionally, the prescription directs you to take a single pill once a day. Suppose the half-life of the medicine is 3 hours. How big would the dose `A` need to be in order to keep the availability above a threshold of 0.25 for a 24-hour period?",
+  "2 units",
+  "16 units",
+  "+64 units+", 
+  "1024 units",
+  random_answer_order = FALSE
+)
+```
+
+Let's explore a familiar-sounding directive: Take one pill every six hours. We can model this by a linear combination of time-shifted `pill()` functions. Each pill provides a dose of size `A`.
+
+```{r}
+six_hours <- 
+  makeFun(A*pill(t, k) + A*pill(t-6, k) + 
+          A*pill(t-12, k) + A*pill(t-18, k) +
+          A*pill(t-24, k) ~ t, 
+          k=log(2)/3, A  = 1)
+slice_plot(six_hours(t) ~ t, domain(t=-1:24))
+```
+The graph shows that the drug is above the therapeutic threshold (0.25) for the entire first day. 
+
+> From the graph of drug availability versus time, do you think continuing the one-pill-every-6-hours regimen will continue to keep the drug level over the therapeutic threshold for the remainder of the course of treatment? Explain why or why not.
+
+Let's switch to an one-pill every 8 hour regimen, the pills being taken at midnight, 8am, and 4pm, ... 
+
+> How big a dose `A` will be needed to keep the drug availability above the therapeutic threshold for the entire course of treatment? (Hint: Construct a function analogous to `six_hours()` and plot out the drug availability over the 24 hours of the first day. Then vary the dose `A` until you find the minimum dose that keeps the availability over the threshold of 0.25 for the entire day.)
+
+> Suppose the instructions were to take 2 pills when you start treatment and then an additional pill every 8 hours. How big a dose `A` would be needed to keep the drug availability above the therapeutic threshold for the entire course of treatment?
+
+> Which of the three regimens described (6-hour, 8-hour, 8-hour-double-first-dose) involves the smallest **total dose**? (The total dose is the sum of the doses for each pill administration.)
+
+

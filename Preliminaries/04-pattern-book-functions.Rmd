@@ -1,0 +1,542 @@
+# The pattern-book functions {#pattern-book-functions}
+
+<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Preliminaries/04-pattern-book-functions.Rmd)</div>
+
+```{r include=FALSE}
+book_file_name <- "preliminaries/04-pattern-book-functions.html"
+```
+
+## Pattern-book functions
+
+In this Chapter, we introduce the ***Pattern-book functions***--a short list of simple mathematical functions that provide a large majority of the tools for representing the real world as a mathematical object. 
+Think of the items in this list as different actors, each of whom is skilled in portraying an archetypal character: hero, outlaw, lover, fool, comic. A play brings together different characters, costumes them, and relates them to one another through dialog or other means. All this is for the purpose of telling a story and providing insight into human relationships and emotions. 
+
+A mathematical model is a kind of story and a mathematical modeler a kind of playwright. She combines mathematical character types to tell a story about relationships. We need only a handful of mathematical functions, the analog of the character actors in drama and comedy in order to rough-out a model. In creating a mathematical model, you clothe the actors to suit the era and location and assemble them together in harmony or discord.
+
+Costume designers and others do not start from nothing. There are reference guides that collect patterns which a designer can customize to the needs at hand. These reference guides are sometimes called "pattern books." (See Figure \@ref(fig:pattern-book) for an example.) 
+
+```{r pattern-book, echo=FALSE, fig.cap="A pattern book of theatrical costumes", out.width="50%", fig.align="center"}
+knitr::include_graphics(normalizePath("www/theatrical-pattern-book.jpg"))
+```
+
+Similarly, we will start with a pattern set of functions that have been collected from generations of experience. To remind us of their role in modeling, we'll call these ***pattern-book functions***. These pattern-book functions are useful in describing diverse aspects of the real world and have simple calculus-related properties that make them relatively easy to deal with. There are just a handful pattern-book functions from which untold numbers of useful modeling functions can be constructed. Mastering calculus is in part a matter of becoming familiar with the mathematical connections among the pattern-book functions. (You'll see these in due time.) 
+
+Here is a list of our pattern-book functions showing both a traditional and the R notation:
+
+```{r child="pattern-book-list.Rmd"}
+```
+     
+These functions are shown with a traditional formula notation to highlight the connections to the math you already studied, and $x$ is used as the input to these functions out of tradition. 
+
+
+::: {.takenote  data-latex=""}
+The list of pattern-book functions is short. You should memorize the names and be able easily to associate each name with the traditional notation.
+
+Over the next several chapters, we will introduce several features of functions. These features include:
+
+- monotonicity up or down
+- concavity up or down
+- horizontal asymptotes
+- vertical asymptotes
+- periodicity
+- continuity
+
+By the end of Chapter \@ref(describing-functions), you should be able to list all the basic pattern-book functions and describe the features relevant to each.
+:::
+
+These pattern-book functions are widely applicable. But nobody would confuse the pictures in a pattern book with costumes that are ready for wear. Each pattern must be tailored to fit the actor and customized to fit the theme, setting, and action of the story. We'll study how this is done starting in Chapter \@ref(parameters).
+
+::: {.why  data-latex=""}
+There is universal agreement about the names of all of the pattern-book functions except for two: the gaussian and the logarithm.
+
+The name "gaussian" is not descriptive; the graph of a gaussian function looks like a camel's hump, the curve of a bell, or a bump in the road. There are all sorts of bell-shaped functions that differ slightly in their origins and detailed shape. In this book, we may use the terms "hump", "bell", or "bump" to remind you of the basic shape, but the specific mathematical function we have in mind is called the ***gaussian function***, named after a tremendously influential mathematician, Carl Friedrich Gauss (1777-1855). This function, first published in 1718 (before Gauss was born), has an important role throughout physical science, technology, and data science. In probability theory and the social sciences, the shape of the function is given the simple name "normal distribution"; it shows up in so many places to be considered utterly unsurprising and "normal."
+
+The name "logarithm" is anything but descriptive. The name was coined by the inventor, John Napier (1550-1617), to emphasize the original purpose of his invention: to simplify the work of multiplication and exponentiation. The name comes from the Greek words *logos*, meaning "reasoning" or "reckoning," and *arithmos*, meaning "number." A catchy marketing term for the new invention, at least for those who speak Greek!
+
+Although invented for the practical work of numerical calculation, the logarithm function has become central to mathematical theory as well as modern disciplines such as thermodynamics and information theory. The logarithm is key to the measurement of information and magnitude. As you know, there are units of information used particularly to describe the information storage capacity of computers: bits, bytes, megabytes, gigabytes, and so on. Very much in the way that there are different units for length (cm, meter, kilometer, inch, mile, ...), there are different units for information and magnitude. For almost everything that is measured, we speak of the "units" of measurement. For logarithms, instead of "units" by tradition another word is used: the ***base*** of the logarithm. The most common units outside of theoretical mathematics are base-2 ("***bit***") and base-10 ("***decade***"). But the unit that is most convenient in mathematical notation is "base e," where $e = 2.71828182845905...$. This is genuinely a good choice for the units of the logarithm, but that's hardly obvious to anyone encountering it for the first time. To make the choice more palatable, it's marketed as the "base of the natural logarithm." In this book, we'll be using this ***natural logarithm*** as our official pattern-book logarithm.
+:::
+
+
+
+## Function shapes
+
+You are going to be building models by selecting an appropriate function or by putting functions together in various ways. This might remind you of Lego blocks. As you know, Legos come in different shapes: $6\times 2$, $4\times 2$, $2\times 2$, and so on. Similarly, each of the pattern-book functions has a distinctively shaped graph. Knowing the shapes by name will help you when you need to build a model. `r mark(280)`
+
+
+```{r echo=FALSE, warning=FALSE}
+my_arrow <- arrow(angle = 30, length = unit(0.15, "inches"), 
+                  ends = "last", type = "open")
+dom <- interval(x=-1.25:1.25)
+Pa <- slice_plot(x ~ x, dom) %>%
+  gf_labs(subtitle="Proportional function", x="input") %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed") %>%
+  gf_segment(1.2 + 1.25 ~  1.2 + 1.25, arrow=my_arrow) %>%
+  gf_segment(-1.2+ -1.25 ~  -1.2 + -1.25, arrow=my_arrow)
+Pb <- slice_plot(1 ~ x, dom) %>%
+  gf_labs(subtitle="One() function", x="input") %>%
+  gf_lims(y=c(-1.25, 1.25)) %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
+dom <- interval(x=-3:3)
+P1 <- slice_plot(pmax(-100, pmin(x^-1, 100)) ~ x, dom, npts=751, singularities=0) %>%
+  gf_labs(subtitle="Reciprocal function") %>%
+  gf_lims(y=c(-100, 100)) %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed") %>%
+  gf_segment(95 + 100 ~  .0105 + .01, arrow=my_arrow) %>%
+  gf_segment(-95 + -100 ~  -.0105 + -.01, arrow=my_arrow)
+Psquare <- slice_plot(x^2 ~ x, dom) %>% gf_labs(subtitle="Square function", x="input") %>%
+  slice_plot(-x^2 ~ x, alpha=0) %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed") %>%
+  gf_segment(8.7 + 9 ~  2.95 + 3, arrow=my_arrow) %>%
+  gf_segment(8.7 + 9 ~  -2.95 + -3, arrow=my_arrow)
+gridExtra::grid.arrange(Pa,Pb,P1, Psquare, ncol=2)
+```
+
+The ***proportional function*** and the ***constant function*** have extremely simple shapes. Note that the graph of a constant function is not just any line, but a line with zero slope. 
+
+It is tempting to deny that the constant function is a function. After all, the output does not depend on the input. Still, this situation arises frequently in modeling: you start out supposing that one quantity depends on another, but it sometimes turns out that it does not. Since functions are our way of representing relationships, it is helpful to have a function for the situation of "no relationship." The constant function does this job.
+
+You may also notice the proportional function shown above does nothing to change the input; it simply returns as output the same value it received as input. For this reason, the proportional pattern-book function ($f(x)=x$) is sometimes called the ***identity function***. Later we will show how this simple pattern-book function can be endowed with parameters that form the basis of many change relationships.
+
+```{r echo=FALSE, warning=FALSE}
+P1 <- slice_plot(exp(x) ~ x, dom) %>%
+  gf_labs(subtitle="Exponential", x="input") %>%
+  gf_lims(y=c(0, 10))  %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed") %>%
+  gf_segment(9.02 + 9.977 ~  2.2 + 2.3, arrow=my_arrow)
+P2 <- slice_plot(log(x) ~ x, dom) %>%
+  gf_labs(subtitle="Logarithm", x="input") %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed") %>%
+  gf_segment(1.065 + 1.099 ~  2.9 + 3, arrow=my_arrow) %>%
+  gf_segment(-2.8 + -3 ~  .0608 + 0.0498, arrow=my_arrow)
+P5 <- slice_plot(pnorm(x) ~ x, domain(x=c(-3,3))) %>%
+  gf_labs(subtitle="Sigmoid", x="input") %>% 
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
+
+
+P4 <- slice_plot(dnorm(x) ~ x, domain(x=c(-3,3))) %>%
+  gf_labs(subtitle="Gaussian", x="input") %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
+
+gridExtra::grid.arrange(P1, P4, P2, P5, ncol=2)
+```
+
+```{r echo=FALSE, warning=FALSE}
+P3 <- slice_plot(sin(x) ~ x, domain(x=c(-20,20)), npts=500) %>%
+  gf_labs(subtitle="Sinusoid", x="input") %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
+gridExtra::grid.arrange(P3, grid::grob(), ncol=1)
+```
+
+::: {.observation}
+Functions like `sin()`, `log()`, `pnorm()` are always referred to by name with parentheses enclosing the arguments. Other functions are traditionally written without a name, for instance, like $e^x$ or $1/x$. These two different conventions can lead to confusion. There is little that can be done to avoid that confusion, since the dual conventions appear throughout technical work. 
+
+If absolute consistency of notation were the prime goal, we could have written this book in a style that gives a name to every pattern-book function writes it in the name/parentheses style. Something like this:
+
+```{r}
+reciprocal <- makeFun(1/t ~ t)
+one <- makeFun(1 ~ z)
+square <- makeFun(x^2 ~ x)
+```
+
+These would be used in the ordinary way, for instance:
+```{r}
+reciprocal(7)
+one(123.67)
+square(19)
+```
+
+Writing reciprocal($x$) instead of $1/x$ is long-winded, which is perhaps why you never see it. But when you see $1/x$ you should think of it as a function being applied to $x$ and not as a bit of arithmetic.
+
+By the way ... I used different names for the inputs in these three functions just to remind the reader that, for functions with one input, the name has no significance. You just have to make sure to use the same name on the left- and right-hand sides of the tilde expression. 
+:::
+
+
+## The power-law family
+
+Three of the pattern-book functions---$1/x$, $x$, $x^2$---actually belong to an infinite family called the ***power-law functions***.  The three shown above occur so often and are so closely related to the other pattern-book functions that they receive their own special names (inverse, proportional, and square) and place in our list; however, it is the *family* of power-law functions that form the more general pattern needed for modeling. 
+
+Some other examples of power-law functions are $x^3, x^4, \ldots$ as well as $x^{1/2}$ (also written $\sqrt{x}$), $x^{1.36}$, and so on. Some of these also have special (albeit less frequently used) names, but *all* of the power-law functions can be written as $x^p$, where $x$ is the input and $p$ is a number. `r mark(290)`.
+
+Within the power-law family, it is helpful to know and be able to distinguish between several overlapping groups:
+
+1. The ***monomials***. These are power-law functions such as $m_0(x) \equiv x^0$, $m_1(x) \equiv x^1$, $m_2(x) \equiv x^2$, $\ldots$, $m_p(x) \equiv x^p$, $\ldots$, where $p$ is a whole number (i.e., a non-negative integer). Of course, $m_0()$ is exactly the same as the constant function, since $x^0 = 1$. Likewise, $m_1(x)$ is the same as the identity function since $x^1 = x$. As for the rest, they have just two general shapes: both arms up for even powers of $p$ (like in $x^2$, a parabola); one arm up and the other down for odd powers of $p$ (like in $x^3$, a cubic). 
+
+```{r echo=FALSE}
+dom <- interval(x=c(-1.25, 1.25))
+P0 <- slice_plot(1 ~ x, dom) %>% gf_labs(subtitle=expression(m[0](x) %==% x^0), x="input") %>%
+  gf_lims(y=c(-1, 2)) %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
+
+P1 <-slice_plot(x ~ x, dom) %>% gf_labs(subtitle=expression(m[1](x) %==% x^1), x="input") %>%
+  gf_lims(y=c(-2,2)) %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
+P2 <- slice_plot(x^2 ~ x, dom) %>% gf_labs(subtitle=expression(m[2](x) %==% x^2), x="input") %>%
+  slice_plot(-x^2 ~ x, alpha=0) %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
+P3 <- slice_plot(x^3 ~ x, dom) %>% gf_labs(subtitle=expression(m[3](x) %==% x^3), x="input") %>%
+  slice_plot(-x^2 ~ x, alpha=0) %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
+Blank <- grid::grob()
+gridExtra::grid.arrange(Blank, Blank, P0,P1, ncol=2)
+```
+  
+```{r monomial-graphs, echo=FALSE, warning=FALSE, fig.cap="Graphs of the monomial functions from order 0 to 5. The dashed $\\color{magenta}{\\text{magenta}}$ line marks zero output.", out.height="50%"}
+P4 <- slice_plot(x^4 ~ x, dom) %>% gf_labs(subtitle=expression(m[4](x) %==% x^4), x="input") %>%
+  slice_plot(-x^2 ~ x, alpha=0) %>%
+  gf_lims(y=c(-2.5,2.5)) %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
+P5 <- slice_plot(x^5 ~ x, dom) %>% gf_labs(subtitle=expression(m[5](x) %==% x^5), x="input") %>%
+  slice_plot(-x^2 ~ x, alpha=0) %>%
+  gf_lims(y=c(-2.5,2.5)) %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
+gridExtra::grid.arrange(P2,P3,P4,P5, ncol=2)
+```
+
+
+2. The ***negative powers***. These are power-law functions where $p<0$, such as $f(x) \equiv x^{-1}$, $g(x) \equiv x^{-2}$, $h(x) \equiv x^{-1.5}$. For negative powers, the  size of the output is ***inversely proportional*** to the size of the input. In other words, when the input is large (**not** close to zero) the output is small, and when the input is small (close to zero), the output is *very* large. This behavior happens because a negative exponent like $x^{-2}$ can be rewritten as $\frac{1}{x^2}$; the input is *inverted* and becomes the denominator, hence the term "inversely proportional".
+
+```{r negative-graphs, echo=FALSE, warning=FALSE, fig.cap="Graphs of power-law functions with negative integer exponents. The arrows point to the output being very large when $x$ is near zero."}
+dom <- domain(x=-1.5:1.5)
+P1 <- slice_plot(x^-1 ~ x, dom, npts=281, singularities=0) %>%
+  gf_labs(subtitle=expression(x^{-1})) %>%
+  gf_lims(y=c(-100, 100)) %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed") %>%
+  gf_segment(95 + 100 ~  .0105 + .01, arrow=my_arrow) %>%
+  gf_segment(-95 + -100 ~  -.0105 + -.01, arrow=my_arrow)
+P2 <- slice_plot(x^-2 ~ x, dom, npts=501, singularities=0) %>%
+  gf_labs(subtitle=expression(x^{-2})) %>%
+  gf_lims(y=c(-100, 100)) %>% 
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed")%>%
+  gf_segment(95 + 100 ~  -.1026 + -.1, arrow=my_arrow) %>%
+  gf_segment(95 + 100 ~  .1026 + .1, arrow=my_arrow)
+P3 <-slice_plot(x^-3 ~ x, dom, npts=351, singularities = 0) %>%
+  gf_labs(subtitle=expression(x^{-3})) %>%
+  gf_lims(y=c(-100, 100)) %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed") %>%
+  gf_segment(95 + 100 ~  .219 + .2154, arrow=my_arrow) %>%
+  gf_segment(-95 + -100 ~  -.219 + -.2154, arrow=my_arrow)
+P4 <- slice_plot(x^-4 ~ x, dom, npts=351, singularities = 0) %>%
+  gf_labs(subtitle=expression(x^{-4})) %>%
+  gf_lims(y=c(-100, 100)) %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed") %>%
+  gf_segment(95 + 100 ~  0.32 + 0.316, arrow=my_arrow) %>%
+  gf_segment(95 + 100 ~  -0.32 + -0.316, arrow=my_arrow)
+gridExtra::grid.arrange(P1, P2, P3, P4, ncol=2)
+```
+
+3. The **non-integer powers**, e.g. $f(x) = \sqrt{x}$, $g(x) = x^\pi$, and so on. When $p$ is either a fraction or an irrational number (like $\pi$), the real-valued power-function $x^p$ can only take non-negative numbers as input. In other words, the domain of $x^p$ is $0$ to $\infty$ when $p$ is not an integer. You have likely already encountered this domain restriction when using the power law with $p=\frac{1}{2}$, since $f(x)\equiv x^{1/2}=\sqrt{x}$, and the square root of a negative number is not a *real* number. You may have heard about the *imaginary* numbers that allow you to take the square root of a negative number, but for the moment, you only need to understand that when working with real-valued power-law functions with non-integer exponents, the input must be non-negative. (The story is actually a bit more complicated since, algebraically, rational exponents like $1/3$ or $1/5$ with an odd-valued denominator can be applied to negative numbers. Computer arithmetic, however, does not recognize these exceptions.)
+
+```{r non-integer-graphs, echo=FALSE,  warning=FALSE, fig.cap="The domain of power-law functions with non-integer power is $0 \\leq x < \\infty$."}
+dom <- domain(x=c(-1.5, 1.5))
+Pa <- slice_plot(x^(1/2) ~ x, dom, npts=501) %>%
+  gf_labs(title=expression(x^{1/2})) %>%
+  gf_lims(y=c(-2, 2)) %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed") %>%
+  gf_segment(1.22 + 1.225 ~  1.49 + 1.5, arrow=my_arrow)
+Pb <- slice_plot(x^pi ~ x, dom, npts=501) %>%
+  gf_labs(title=expression(x^{pi})) %>%
+  gf_lims(y=c(-4, 4)) %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed") %>%
+  gf_segment(3.5 + 3.57 ~  1.49 + 1.5, arrow=my_arrow)
+gridExtra::grid.arrange(Pa, Pb, ncol=2)
+  
+```
+
+
+## Domains of pattern-book functions
+
+Each of our basic modeling functions, with two exceptions, has a domain that is the entire number line $-\infty < x < \infty$. No matter how big or small is the value of the input, the function has an output. Such functions are particularly nice to work with, since we never have to worry about the input going out of bounds. `r mark(1500)` 
+
+The two exceptions are:
+
+1. the logarithm function, which is defined only for $0 < x$.
+2. some of the power-law functions: $x^p$. 
+    - When $p$ is negative, the output of the function is undefined when $x=0$. You can see why with a simple example: $g(x) \equiv x^{-2}$. Most students had it drilled into them that "division by zero is illegal," and $g(0) = \frac{1}{0} \frac{1}{0}$, a double law breaker. 
+    - When $p$ is not an integer, that is $p \neq 1, 2, 3, \cdots$ the domain of the power-law function does not include negative inputs. To see why, consider the function $h(x) \equiv x^{1/3}$. 
+    
+It can be tedious to make sure that you are on the right side of the law when dealing with functions whose domain is not the whole number line. The designers of the hardware that does computer arithmetic, after several decades of work, found a clever system to make it easier. It's a standard part of such hardware that whenever a function is handed an input that is not part of that function's domain, one of two special "numbers" is returned. To illustrate:
+```{r warning=FALSE}
+sqrt(-3)
+(-2)^0.9999
+1/0
+```
+`NaN` stands for "not a number." Just about any calculation involving `NaN` will generate `NaN` as a result, even those involving multiplication by zero or cancellation by subtraction or division.^[One that does produce a number is `NaN^0`.] For instance:
+```{r warning=FALSE}
+0 * NaN
+NaN - NaN
+NaN / NaN
+```
+
+Division by zero produces `Inf`, whose name is reminiscent of "infinity." `Inf` infiltrates any calculation in which it takes part:  `r mark(1510)` 
+```{r warning=FALSE}
+3 * Inf
+sqrt(Inf)
+0 * Inf
+Inf + Inf
+Inf - Inf
+1/Inf
+```
+
+To see the benefits of the `NaN` / `Inf` system let's plot out the logarithm function over the graphics domain $-5 \leq x \leq 5$. Of course, part of that graphics domain, $-5 \leq x \leq 0$ is not in the domain of the logarithm function and the computer is entitled to give us a slap on the wrists. The `NaN` provides some room for politeness. 
+
+Open an R console see what happens when you make the plot.
+```{r eval=FALSE}
+library(Zcalc)
+slice_plot(log(x) ~ x, interval(x=c(-5,5)))
+```
+
+## Symbolic manipulations
+
+Several of the pattern book functions appear so often in *MOSAIC Calculus* that it's worth reviewing how to manipulate them symbolically. As an example, consider the function $$g(x) \equiv e^x e^x\ .$$
+This is a perfectly good way of defining $g()$, but it's helpful to be able to recognize that the following definitions are exactly equivalent
+$$f(x) \equiv e^{x+x}\\
+h(x) \equiv e^{2 x}\ .$$
+The ***symbolic manipulation*** we touch on in this chapter involves being able to recall and apply such equivalences.  We'll need only a small set of them, all or most of which are found in a high-school algebra course.
+
+::: {.takenote}
+We'll be working with exponential and with power-law functions in this chapter. It is essential that you recognize that these are utterly different functions.
+
+An exponential function, for instance, $e^x$ or $2^x$ or $10^x$ has a constant quantity raised to a power set by the input to the function.
+
+A power-law function works the reverse way: the input is raised to a constant quantity, as in $x^2$ or $x^10$.
+
+A mnemonic phrase for exponentials functions is
+
+> *Exponential functions have $x$ in the exponent.*
+
+Of course, exponential functions can has inputs with names other than $x$, for instance $f(y) \equiv 2^y$, but the name "x" makes for a nice alliteration in the mnemonic.
+:::
+
+### Exponential and logarithm
+
+We will Basic symbolic patterns for exponentials are
+
+$$\mathbf{(i)}\ \ \ \ \ e^x e^y \leftrightarrow e^{x+y}$$    
+$$\mathbf{(ii)}\ \ \ \ \ \left(\strut e^x\right)^y \leftrightarrow e^{x y}$$
+
+Exponentials with a base other than $e$ can be converted to base $e$.
+
+$$\mathbf{(iii)}\ \ \ \ \ 2^x \leftrightarrow e^{\ln(2) x} = e^{0.69315 x}\\
+\ \\\mathbf{(iv)}\  \ \  10^x \leftrightarrow e^{\ln(10) x} = e^{2.30259 x}$$
+
+It's usually easier for people to deal with bases 2 and 10 because they can do the multiplications in their head. The base $e = 2.718282$ is not conducive to mental arithmetic. In Block 2 we'll discuss why it's standard to write an exponential function as $e^x$.
+
+The logarithms, which we'll return to in Chapter `r Chaps$magnitudes` are the ***inverse*** function of the exponential. That is:
+$$\mathbf{(v)}\ \ \ \ \ \ln(\exp(x)) = x \ \ \ \ \text{and conversely}\ \ \ \ \ \exp(\ln(x)) = x\ .$$
+One place that we will encounter rules (ii) and (v) is in Chapter `r Chaps$parameters` when we look a "doubling times" and "half lives." There we will deal with expressions such as $2^{x/\tau} = e^{\ln(2) x/\tau}$. 
+
+Important symbolic patterns for logarithms are
+
+$$\mathbf{(vi)}\ \ \ \ \ \ln(x\ \ \!y) \leftrightarrow \ln(x) + \ln(y)\\
+\ \\
+\mathbf{(vii)}\ \ \ \ \! \ln(x / y) \leftrightarrow \ln(x) - \ln(y)\\
+\ \\
+\mathbf{(viii)}\ \ \ \ \ \ln(x^p) \leftrightarrow p \ln(x)\ \ \ \ \ \ \ \ \ \ \ $$
+
+::: {.takenote data-latex=""}
+Notice that the symbolic patterns for logarithms involve multiplication, division, and exponentiation, but **not addition**: $\ln(x + y) \neq \ln(x) + \ln(y)$.
+
+### Power-law functions
+
+In power-law functions, the quantity in the exponent is constant: we'll call it $m$, $n$, or $p$ in the following examples.
+
+$$\mathbf{(ix)}\ \ \ \ x^m x^n \leftrightarrow x^{m+n}\\
+\ \\
+\mathbf{(x)}\ \ \ \ \ \ \frac{x^m}{x^n} \leftrightarrow x^{m-n}\\
+\ \\
+\mathbf{(xi)}\ \ \ \ \ \left(\strut x^n\right)^p \leftrightarrow x^{n\,p}\\
+\ \\
+\mathbf{(xii)}\ \ \ \ \ \ x^{-n} \leftrightarrow \frac{1}{x^n}\ \ \ \\
+\ \\
+\mathbf{(xiii)}\ \ \ \ \ \ \ x^0 \leftrightarrow 1\ \ \ \ \ \ \ $$
+
+
+
+
+
+
+### Sinusoids
+
+$\sin(x)$ is periodic with period $2\pi$. Zero-crossings of $\sin(x)$ are at $x=..., -2\pi, -\pi, 0, \pi, 2\pi, ...$
+
+$\cos(x) = \sin\left(x + \frac{\pi}{2}\right)$
+
+There's a sine and a cosine. They are shifted versions of one another. 
+
+Phase shift.
+
+
+
+Linear combination to represent phase shift.
+$\sin(x + \phi) = \cos(\phi)\sin(x) + \sin(\phi) \cos(x)$
+
+$C \sin(x +\phi) = A \sin(x) + B \cos(x)$ where $C^2 = A^2 + B^2$ and $\phi=\arctan(A/B)$
+
+
+::: {.takenote  data-latex=""}
+When a function like $\sqrt[3]{x}$ is written as $x^{1/3}$ make sure to include the exponent in grouping parentheses: `x^(1/3)`. Similarly,
+later in the course you will encounter power-law functions where the exponent is written as a formula. Particularly common will be power-law functions written $x^{n-1}$ or $x^{n+1}$. In translating this to computer notation, make sure to put the formula within grouping parentheses, for instance `x^(n-1)` or `x^(n+1)`.
+:::
+
+## The straight-line function
+
+You are probably used to a function that we call the "straight-line function" $$\line(x) \equiv m x + b\ .$$ The name comes from the shape of a graph of $\line(x)$ versus $x$, which is a straight line. An you are likely used to calling the parameter $m$ the "slope" of the line, and the parameter $b$ the "intercept." (In general, by "intercept" we will mean the value of the function output when the input is zero. In high-school, this is often called the "y-intercept.")
+
+There are two simple symbolic manipulations that you will be using often in *MOSAIC Calculus*:
+
+1. Find the input $x=x_0$ for which the output $\line(x=x_0) = 0$. This input has many names in mathematics: the "root," the "$x$-intercept," the "zero crossing," etc. We will call any input value that corresponds to an output of zero to be "a zero of the function."
+
+For the straight-line function, the zero is readily found symbolically: $$x_0 = - b/m\ .$$
+
+2. Re-write the straight-line function in the form $$\line(x) = a \left(x - x_0\right)\ .$$
+
+Here, the slope is designated with $a$. And, of course, $x_0$ is the zero of the function, as you can see by setting $x=x_0$:
+$\line(x=x_0) = a (x - x_0){\LARGE\left.\right|}_{x = x_0} = 0\ .$
+
+## Functions with multiple inputs
+
+::: {.underconstruction}
+
+Each of our pattern-book function has a single input. In most applications
+
+:::
+
+
+
+## Exercises
+
+`r insert_calcZ_exercise(4.1, "H2KG3", "Exercises/pattern-book-zeros.Rmd")`
+
+`r insert_calcZ_exercise("4.2", "Pdt9jy", "Exercises/lobster-ride-glasses.Rmd")`
+
+`r insert_calcZ_exercise(4.3, "VIW7T","Exercises/pattern-book-axis-crossing.Rmd")`
+
+`r insert_calcZ_exercise(4.4, "ILESX", "Exercises/cat-lend-futon.Rmd")`
+
+`r insert_calcZ_exercise("4.5", "Qj0JAr", "Exercises/bear-lay-plant.Rmd")`
+
+<!-- pattern-book domain -->
+`r insert_calcZ_exercise(4.6, "DLWSA", "Exercises/pattern-book-domain.Rmd")`
+
+
+<!-- pattern-book range -->
+`r insert_calcZ_exercise(4.7, "RLUCX", "Exercises/range-domain.Rmd")`
+
+`r insert_calcZ_exercise(4.8, "MNCLS2", "Exercises/pattern-book-range.Rmd")`
+
+
+EXERCISES:
+Show that $\ln(x^p) = p \ln(x)$
+
+## Drill
+
+`r Znotes:::MC_counter$reset(labels="roman")`
+
+```{r drill-M03-3, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which of the pattern book bofunctions has an output value very near zero over almost **all** of its domain? )",
+r"(+$\text{dnorm()}$+)" = r"(The gaussian function $\text{dnorm()}$ is practically zero everywhere except in $-4 < x < 4$)",
+  r"($\sin()$)" = r"( )",
+  r"($e^x$)" = r"( )",
+  r"($\ln()$)" = r"( )",
+  random_answer_order=TRUE
+)
+```
+
+```{r drill-M03-4, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which of these basic modeling functions has value very near zero over almost **half** of its domain? )",
+r"(+$\text{pnorm()}$+)" = r"(The sigmoid function is practically zero everwhere in $x < -4$)",
+  r"($\ln()$)" = r"( )",
+  r"($x^{-1}$)" = r"( )",
+  r"($x^{2}$)" = r"( )",
+  random_answer_order=TRUE
+)
+```
+
+```{r drill-M03-5, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which of these basic modeling functions has value very near zero over almost **half** of its domain? )",
+r"(+$e^x$+)" = r"(The exponential is less than 1 whenever $x < 0$, and it's less than 0.0001 whenever $x < -10$, even smaller for more negative $x$.)",
+  r"($\ln()$)" = r"(The domain of the logarithm is the positive real numbers, which is half the number line. But within the domain, the logarithm is very near zero only for a short interval centered on $x=1$.)",
+  r"($x^{-1}$)" = r"( )",
+  r"($x^{2}$)" = r"( )",
+  random_answer_order=TRUE
+)
+```
+
+```{r drill-M03-7, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which of these pattern-book functions is **not** a monomial? )",
+r"(+$\sqrt{x}$+)" = r"(Monomials are functions of the form $x^n$, where $n = 0, 1, 2, \ldots$, that is, an integer.)",
+  r"($x^2$)" = r"( )",
+  r"($x$)" = r"(It might be easier to see that this is a monomial if we write it as $x^1$)",
+  random_answer_order=TRUE
+)
+```
+
+
+
+
+
+
+```{r drill-M03-8, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which value(s) is **missing from** the domain of $x^{-1}$? )",
+r"(+Zero+)" = r"( )",
+  r"(All non-positive numbers)" = r"(This is another way of saying, "The number line except for zero and negative numbers.")",
+  r"(Negative numbers)" = r"( )",
+  r"(No numbers are missing.)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M03-9, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which value(s) is **missing from** the domain of $x^{1/2}$? )",
+r"(Zero)" = r"( )",
+  r"(All non-positive numbers)" = r"(This is another way of saying, "The number line except for zero and negative numbers.")",
+  r"(+Negative numbers+)" = r"( )",
+  r"(No numbers are missing.)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M03-10, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which value(s) is **missing from** the domain of $\ln(x)$? )",
+r"(Zero)" = r"( )",
+  r"(+All non-positive numbers+)" = r"(This is another way of saying, "The number line except for zero and negative numbers." The $\ln(x)$ function is not defined at $x=0$, although the value is often written as $-\infty$.)",
+  r"(Negative numbers)" = r"( )",
+  r"(No numbers are missing.)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M03-11, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which value(s) is **missing from** the domain of $\sin(x)$? )",
+r"(Zero)" = r"( )",
+  r"(All non-positive numbers)" = r"(This is another way of saying, "The number line except for zero and negative numbers.")",
+  r"(Negative numbers)" = r"( )",
+  r"(+No numbers are missing.+)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+```{r drill-M03-21, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which value(s) is **missing from** the domain of $x^{-1/2}$? )",
+r"(Zero)" = r"( )",
+  r"(+All non-positive numbers+)" = r"(This is another way of saying, "The number line except for zero and negative numbers.")",
+  r"(Negative numbers)" = r"(Power-law functions with non-integer exponents, e.g. $x^{3/2}$ or $\sqrt{x}$ or $x^{1.424}$ are not defined for negative $x$.)",
+  r"(No numbers are missing.)" = r"( )",
+  random_answer_order=FALSE
+)
+```

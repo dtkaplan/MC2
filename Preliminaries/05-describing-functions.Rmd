@@ -1,0 +1,420 @@
+# Describing functions {#describing-functions}
+
+<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Preliminaries/05-describing-functions.Rmd)</div>
+
+```{r include=FALSE}
+book_file_name <- "preliminaries/05-describing-functions.html"
+```
+
+
+Knowing and correctly using a handful of phrases about functions with a single input goes a long way in being able to communicate with other people . Often, the words make sense in everyday speech ("steep", "growing", "decaying", "goes up", "goes down", "flat").
+
+Sometimes the words are used in everyday speech but the casual person isn't sure exactly what they mean. For instance, you will often hear the phrase "growing exponentially." The graph of the exponential function illustrates exactly this sort of growth: flat for small $x$ and growing steadily steeper and steeper as $x$ increases. 
+
+Still other words are best understood by those who learn calculus. "Concave up," "concave down", "approaching 0 asymptotically," "continuous", "discontinuous", "smooth", "having a minimum **at** ...," "having a minimum **of** ...", "approaching $\infty$ asymptotically," "having a vertical asymptote."
+
+The next short sections describe seven simple function-shape concepts: slope, concavity, continuity, monotonicity,  periodicity, asymptotes, and local extrema. Each of these concepts has the idea of a function at the core, because each one depends on how the function output changes as the input is changed.
+
+I'll illustrate these concepts using three pattern-book functions graphed in Figure \@ref(fig:for-words). 
+
+```{r for-words, echo=FALSE,  fig.cap="Three of the pattern-book functions: (a) exponential, (b) sinusoid, (c) power-law $x^{-1}$."}
+Pa <- slice_plot(exp(x) ~ x, domain(x=c(-3,3))) %>%
+  gf_labs(subtitle="(a) exponential") %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
+Pb <- slice_plot(sin(x) ~ x, domain(x=c(-5,5))) %>%
+  gf_labs(subtitle="(b) sinusoid", y="") %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
+Pc <- slice_plot(1/x ~ x, domain(x=c(.01, 1.25))) %>%
+  slice_plot(1/x ~ x, domain(x=c(-1.25, -.01))) %>%
+  gf_labs(subtitle="(c) power-law with negative exponent", y="")%>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
+gridExtra::grid.arrange(Pa, Pb, Pc, ncol=3)
+```
+
+#Slope
+
+The slope describes whether the output goes up or down, and to what extent, as the input changes. Typically, the slope is different for different input values. The only function type that has a slope that is the same for all inputs is the straight-line function.
+
+Figure \@ref(fig:slope-at-point) graphs the sinusoid function (black curve). At numerous points in the domain, the function has been overlaid with a straight-line segment that has the same slope as does the function itself.  For $x$ near $-3$ the slope is negative; for $x$ near zero the slope is positive, then swings back to negative again for $x$ near $3$.
+
+```{r slope-at-point, echo=FALSE, fig.cap="Short straight-line segments laid over a graph of the sinusoid. The slope of each line segment is selected to match the local slope of the sinusoid."}
+Segs <- create_segments(sin(x) ~ x, domain(x=c(-5,5)), nsegs=100) %>%
+  mutate(y2end = 2.15*yend)
+
+gf_segment(yf + yfend ~ x + xend, data = Segs[seq(2,nrow(Segs), by=3),], 
+           color=~slope,alpha=0.65, size=3, lineend="round") %>%
+    slice_plot(sin(x) ~ x, domain(x=c(-5, 5)), inherit=FALSE) %>%
+    gf_labs(subtitle="sin(x)", y="output") %>%
+    gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
+  gf_theme(theme(legend.position = "none"))
+
+```
+When we speak of the slope of the sinusoid, or any other function, we mean the local slope as a function of the input. The value of the function doesn't enter into it, just the slope. Figure \@ref(fig:slope-at-point2) shows only the slope of the sinusoid, without the sinusoid output at all. Each line segment has a horizontal "run" of $0.1$, so you can measure the slope of each segment---rise over run---as the vertical extent $\Delta y$ of the segment divided by $0.1$. 
+
+```{r slope-at-point2, echo=FALSE, fig.cap="Showing just the slope of the sinusoid as a function of input $x$. Top: representing the slope by the steepness of line segments. Bottom: The numerical value of the slope of each segment."}
+Pa <- gf_segment(0 + y2end ~ x + xend, data = Segs[seq(1,nrow(Segs), by=2),], 
+           color=~slope,alpha=0.65, size=1, lineend="round") %>%
+  gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
+  gf_theme(theme(legend.position = "none")) %>%
+  gf_labs(y=latex2exp::TeX("$\\Delta y$"), subtitle="Slope as a line segment")
+Pb <-  gf_line(slope ~ x, data = Segs, color=~slope) %>%
+  gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
+    gf_labs(subtitle="Numerical slope of each segment.") %>%
+  gf_theme(theme(legend.position = "none")) %>%
+  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
+gridExtra::grid.arrange(Pa, Pb, ncol=1)
+```
+For instance, the $\Delta y$ for the slope segment at $x=0$ is 0.1, so the slope at $x=0$ is $\Delta y/0.1 = 1$. At $x=1$, $\Delta y \approx 0.05$, so the slope is 0.5. The graph colors the segment according to the slope, so large negative slopes are blue, slopes near zero are green, and large positive slopes are yellow.
+
+::: {.takenote data-latex=""}
+A more general word than "slope" for describing functions is ***rate of change***. It's absolutely crucial to distinguish between the ***change*** in the output value of a function and the ***rate of change*** of that output.
+
+To illustrate, suppose we have a function $f(x) \equiv x^2 + 3$. When we talk about "change" we imagine a situation where we have to different values of the function ***input***, say $x_1 = 3$ and $x_2 = 6$. 
+
+The "change" in output for these two different inputs is $f(x_2) - f(x_1)$, or in this case $39 - 12 = 27$. 
+
+In contrast, the "rate of change" is the change in output **divided by** the change in input, that is:
+
+$$\frac{f(x_2) - f(x_1)}{x_2 - x_1} = \frac{27}{3} = 9$$.
+
+A "rate" in mathematics is a ratio: one measure divided by another. For instance, a heart rate is measured as beats-per-minute. To measure it, count the number of pulse waves in a given interval of time. A typical medical practice is to count for 15 seconds, an interval long enough to get a reliable count but short enough not to unduly prolong the process. If 18 pulse waves were counted in the 15 seconds, the heart rate is 18 beats per 15 seconds, more usually reported as 72 beats-per-minute.
+
+In a rate of change, the ratio is the change in output divided by the change of input.
+:::
+
+#Concavity
+
+The slope of a function at a given input tells how fast the function **output** is increasing or decreasing as the input changes slightly. ***Concavity*** is not directly about how the function output changes, but about how the function's *slope* changes. For instance, a function might be growing slowly in some region of the domain and then gradually shift to larger growth in an adjacent region. Or, a function might be decaying steeply and then gradually shift to a slower decay. Both of these are instances of ***positive concavity***. The opposite pattern of change in slope is called ***negative concavity***. If the slope doesn't change at all---only straight-line functions are this way--- the concavity is zero. 
+
+Concavity has a very clear appearance in a function graph. If a function is positive concave in a region, the graph looks like a smile or cup.  Negative concavity looks like a frown. Zero concavity is a straight line.  
+
+Referring to the three function examples in Figure \@ref(fig:for-words), we'll use the traditional terms ***concave up*** and ***concave down*** to refer to positive and negative concavity respectively.
+
+a. The exponential is ***concave up*** everywhere in its domain.
+b. The sinusoid alternates back and forth between ***concave up*** and ***concave down***.
+c. This particular power law $x^{-1}$ is ***concave up*** for $0 < x$ and ***concave down*** for $x < 0$.
+
+When a function switches between positive concavity and negative concavity, as does the sinusoid as well as the gaussian and sigmoid functions, there is an input value where the switch occurs and the function has zero concavity. (Continuous functions that pass from negative to positive or *vice versa* must always cross zero.) Such in-between points of zero concavity are called ***inflection points***. A function can have zero, one, or many inflection points. For instance, the sinusoid has inflection points at $x = \ldots, -\pi, 0, \pi, 2\pi, \ldots$, the cubic power function $f(x)\equiv x^3$ has one, and the exponential has none.
+
+```{r echo=FALSE, out.width="70%", fig.align="center", fig.cap="A diagram showing a cubic function which is concave up until a point of inflection and concave down thereafter. [Source: Maj. Austin Davis]"}
+knitr::include_graphics(normalizePath("www/Concavity-diagram.png"))
+```
+
+"Inflection point" appears in news stories, so it is important to know what it means in context. The mathematical definition is about the change in the direction of curvature of a graph. In business, however, it generally means something less esoteric, "a time of significant change in a situation" or "a turning point."^[Google dictionary, provided by Oxford Languages] The business sense effectively means that the function---say profits as a function of time, or unemployment as a function of time---has a non-zero concavity, up or down. It's about the *existence* of concavity rather than about the change in the sign of concavity. 
+
+One of the benefits of learning calculus is to gain a way to think about the previous paragraph that's systematic, so it's always easy to know whether you are talking about the slope of a function or the ***change in slope*** of a function.
+
+
+#Continuity {#continuity-intro}
+
+A function is ***continuous*** if you can trace out the graph of the function without lifting pencil from the page. A function is ***continuous on an interval (a,b)*** if you can trace the function over that whole interval. All of the pattern-book functions are continuous over any interval in their domain except for power-law functions with negative exponents. (This includes the reciprocal since it is a power-law with a negative exponent:  $1/x = x^{-1}$.) Those exceptions are not defined at $x=0$. 
+
+To illustrate, consider the power-law function graphed in Figure \@ref(fig:for-words). On any interval (a,b) that does **not include 0**, the function is continuous.  For inputs $x < 0$, the function is negative. For inputs $0 < x$, the function is positive. So, on an interval that includes $x=0$ the function jumps discontinuously from negative to positive. 
+
+#Monotonicity {#monotonicity}
+
+A function is ***monotonic*** on a domain when the *sign* of the slope never changes on that domain. Monotonic functions either steadily **increase** in value or, alternatively, steadily **decrease** in value. 
+
+Another way of thinking about monotonicity is to consider the order of inputs and outputs compared to a number line. If a function is monotonically increasing then it will preserve the order of inputs along the number line when it maps inputs to outputs, whereas a monotonically decreasing function will reverse the order. For instance, if the input $x$ comes before an input $y$ (i.e., $x<y$), then $f(x)<f(y)$ for monotonically *increasing* functions (the order is preserved), but $f(y)<f(x)$ for monotonically *decreasing* functions (the order of outputs is reversed).
+
+Of the pattern-book functions in Figure \@ref(fig:for-words): both the exponential and the logarithm function are monotonic: the exponential grows monotonically as does the logarithm. The sinusoid is not monotonic over any domain longer than half a cycle: the function switchs between positive slope and negative slope in different parts of the cycle. 
+    
+#Periodicity
+
+A phenomenon is ***periodic*** if it repeats a pattern over and over again. The pattern that is repeated is called a **cycle**; the periodic function as a whole is one cycle placed next to the previous one and so forth. The day-night cycle is an example of a periodic phenomenon, as is the march of the seasons. The ***period*** is the duration of one complete cycle; the period of the day-night cycle is 24 hours, the period of the seasonal progression is 1 year. 
+
+Real-world periodic phenomena often show some slight variation from one cycle to the next. Of the pattern-book functions, only the sinusoid is periodic. And it is exactly periodic, repeating exactly the same cycle over and over again. The period---that is, the length of an input interval that contains exactly one cycle---has a value of $2\pi$ for the pattern-book sinusoid. When used to model a periodic phenomenon, the model function needs to be tailored to match the period of the phenomena.
+
+The idea of representing with sinusoids phenomena that are almost but not exactly periodic, for instance a communications signal or a vibration, is fundamental to many areas of physics and engineering. 
+
+#Asymptotic behavior
+
+***Asymptotic*** refers to two possible situations depending on whether the input *or* output is being considered:
+
+1. When the **input** to a function gets bigger and bigger in size, going to $\infty$ or $-\infty$. If, as the input changes in this way the output gets closer and closer to a specific value, the function is said to have a ***horizontal asymptote*** of that value.
+
+An example in Figure \@ref(fig:for-words) is the exponential function. As $x \rightarrow -\infty$, that is, as $x$ goes more and more to the left of the domain, the output tends asymptotically to zero.
+
+2. When the **output** of a function gets bigger and bigger in size, going to $\infty$ or $-\infty$ without the input doing likewise. The visual appearance on a graph is like a sky-rocket: the output changes tremendously fast even though the input changes only a little. The vertical line that the skyrocket approaches is called a ***vertical asymptote***. The power-law function $x^{-1}$ has a ***vertical asymptote*** at $x=0$. If you were to consider inputs closer and closer to $x=0$, the outputs would grow larger and larger is magnitude, tending toward $\infty$ or $-\infty$.
+
+Several of the pattern-book functions have horizontal or vertical asymptotes or both. For instance, the function $x^{-1}$ has a horizontal asymptote of zero for both $x \rightarrow \infty$ and $x \rightarrow -\infty$. 
+
+The sinusoid has neither a vertical nor a horizontal asymptote. As input $x$ increases either to $-\infty$ or $\infty$, the output of the sinusoid continues to oscillate, never settling down to a single value. And, of course, the output of the sinusoid is everywhere $-1 \leq \sin(x) \leq 1$, so there is no possibility for a vertical asymptote.
+
+#Locally extreme points {#local-extremes}
+
+Many continous functions have a region of the input domain where the output is gradually growing, then reaches a peak, then gradually diminishes. This is called a ***local maximum***. "Maximum" because the output reaches a peak at a particular input, "local" because in the neighborhood of the peak the function output is smaller than at the peak.
+
+Likewise, functions can have a ***local minimum***: the bottom of a bowl rather than the top of a peak.
+
+Of the three pattern-book functions in Figure \@ref(fig:for-words), only the sinusoid has a local maximum, and, being periodic, it repeats that every cycle. The sinusoid similarly has a local minimum in every cycle..
+
+Many modeling applications involve finding an input where the function output is maximized. Such an input is called an ***argmax***. "Argument" is a synonym for "input" in mathematical and computer functions, so "argmax" refers to the input at which the function reaches a maximum output. For instance, businesses attempt to set prices to maximize profit. At too low a price, sales are good but income is low. At too high a price, sales are too low to bring in much income. There's a sweet spot in the middle. 
+
+Other modeling applications involve finding an ***argmin***, the input for which the output is minimized. For instance, aircraft have a speed at which fuel consumption is at a minimum for the distance travelled. All other things being equal, it's best to operate at this speed.
+
+The process of finding an argmin or an argmax is called ***optimization***. And since maxima and minima are very much the same mathematically, collectively they are called ***extrema***.
+
+Any function that has an extremum cannot possibly be monotonic, since the growth is positive on one side of the extremum and negative on the other side. 
+
+## Exercises
+
+`r insert_calcZ_exercise(4.1, "H2eu2", "Exercises/pattern-book-descriptions.Rmd")`
+
+
+`r insert_calcZ_exercise(4.2, "PYKG5", "Exercises/pattern-book-concave.Rmd")`
+
+EXERCISE: Draw the slope at each of many points of these functions.
+
+EXERCISE: Show the slope diagram for a few functions: as the students to match the slope diagram to the function.
+
+## Drill
+
+`r Znotes:::MC_counter$reset(labels="roman")`
+
+```{r drill-M01-4, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(What is the **value** of $f(4)$ when $f(x) \equiv 2 x + 1\ ?$  )",
+r"(-2)" = r"( )",
+  r"(-4)" = r"( )",
+  r"(2)" = r"( )",
+  r"(4)" = r"( )",
+  r"(+9+)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M01-5, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(What is the **change** in the value of $f()$ when the input goes from 2 to 4? <br>Assume $f(x) \equiv 2 x + 1$    )",
+r"(-4)" = r"( )",
+  r"(-2)" = r"( )",
+  r"(2)" = r"( )",
+  r"(+4+)" = r"( )",
+  r"(9)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M01-6, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(What is the **rate of change** in the value of $f()$ when the input goes from 2 to 4? <br>Assume $f(x) \equiv 2 x + 1$   )",
+r"(-2)" = r"( )",
+  r"(-4)" = r"( )",
+  r"(+2+)" = r"( )",
+  r"(4)" = r"(You've calculated the net change, not the rate of change.)",
+  r"(9)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M01-7, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(What is the **change** in the value of $f()$ when the input goes from 4 to 2? <br>Assume $f(x) \equiv 2 x + 1$   )",
+r"(-2)" = r"( )",
+  r"(+-4+)" = r"( )",
+  r"(2)" = r"( )",
+  r"(4)" = r"(The change in the value of $f()$ when the input goes from $a$ to $b$ is $f(b) - f(a)$)",
+  r"(9)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M01-8, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(What is the **rate of change** in the value of $f()$ when the input goes from 4 to 2? <br>Assume $f(x) \equiv 2 x + 1$   )",
+r"(-2)" = r"( )",
+  r"(-4)" = r"( )",
+  r"(+2+)" = r"(The rate of change in the value of $f()$ when the input goes from $a$ to $b$ is $$\frac{f(b) - f(a)}{b-a}$$ This doesn't depend on the order of $a$ and $b$, so the rate of change is the same when the input goes from $a$ to $b$ as when it goes from $b$ to $a.$)",
+  r"(4)" = r"( )",
+  r"(9)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M01-9, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(What is the **rate of change** of the function $f(x) \equiv 3 x - 2$ when the input is 4?  )",
+r"(-2)" = r"( )",
+  r"(0.3)" = r"( )",
+  r"(2)" = r"( )",
+  r"(+3+)" = r"( )",
+  r"(10)" = r"(This is the **value** of $f(4)$, not the rate of change at $x=4$.)",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M01-10, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(What is the **change** in value of the  function $f(x) \equiv 3 x - 2$ as the input goes from 3 to 3.1?  )",
+r"(-2)" = r"( )",
+  r"(+0.3+)" = r"($f(3.1) = 7.3$ and $f(3) = 7$, so $f(3.1) - f(3) = 0.3$.)",
+  r"(2)" = r"( )",
+  r"(3)" = r"( )",
+  r"(10)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M01-11, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(What is the **rate of change** in value of the  function $$f(x) \equiv 3 x - 2$$ as the input goes from 3 to 3.1?  )",
+r"(-2)" = r"( )",
+  r"(0.3)" = r"( )",
+  r"(2)" = r"( )",
+  r"(+3+)" = r"(The rate of change is $$\frac{f(3.1) - f(3)}{3.1 - 3}$$)",
+  r"(10)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+```{r drill-M03-2, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(What is the period of the $\sin()$ function? )",
+r"(1)" = r"( )",
+  r"($2/\pi$)" = r"( )",
+  r"($\pi/2$)" = r"( )",
+  r"($\pi$)" = r"( )",
+  r"(+$2 \pi$+)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+
+```{r drill-M03-6, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which of these words is most appropriate to describe the function $g(x) \equiv 2 - 3 x + 4x^3 ?$ )",
+r"(+Polynomial+)" = r"( )",
+  r"(Discontinuous)" = r"( )",
+  r"(Periodic)" = r"( )",
+  r"(Power-law)" = r"(Each of the functions in the sum is a power-law, but added together they are no longer a power-law function.)",
+  random_answer_order=TRUE
+)
+```
+
+
+
+```{r drill-M03-12, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which of these functions is **concave up** over the domain shown in the graph? )",
+r"(+<img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/M3/M3-12-01.png">+)" = r"( )",
+  r"(<img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/M3/M3-12-02.png">)" = r"(This is concave down toward the left and concave up toward the right.)",
+  r"(<img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/M3/M3-12-03.png">)" = r"(This is concave down.)",
+  random_answer_order=TRUE
+)
+```
+
+
+
+```{r drill-M03-13, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which of these functions has a **vertical** asymptote? )",
+r"(+<img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/M3/M3-14-01.png">+)" = r"( )",
+  r"(<img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/M3/M3-14-05.png">)" = r"(The $\sin()$ function does not have a vertical or horizontal asymptote.)",
+  r"(<img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/M3/M3-12-02.png">)" = r"(This exponential function has a **horizontal** asymptote as $x \rightarrow -\infty$)",
+  random_answer_order=TRUE
+)
+```
+
+
+
+```{r drill-M03-14, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which of these functions has a **vertical** asymptote? )",
+r"(+<img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/M3/M3-14-03.png">+)" = r"( )",
+  r"(<img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/M3/M3-14-04.png">)" = r"(This sigmoidal function does not have a vertical asymptote, although it does have horizontal asymptotes. )",
+  r"(<img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/M3/M3-12-02.png">)" = r"(This exponential function has a **horizontal** asymptote as $x \rightarrow -\infty$, but not a vertical asymptote.)",
+  random_answer_order=TRUE
+)
+```
+
+
+
+```{r drill-M03-15, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(For this function <br><img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/M3/M3-14-06.png"></br> where is the **vertical** asymptote located? )",
+r"(At $x=0$)" = r"( )",
+  r"(+At $x=1$+)" = r"( )",
+  r"(At 20 as $x \rightarrow \pm\infty$)" = r"(For **horizontal** asymptotes, the description takes this form, but for vertical asymptotes specify the value of the input at which the function value skyrockets.)",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M03-16, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Does this function have an **inflection point**? <br><img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/M3/M3-12-03.png"> )",
+r"(yes)" = r"(But there's no spot where the function switches from concave up to concave down.)",
+  r"(+no+)" = r"(The function is concave down and never switches to concave up.)",
+  r"(can't tell)" = r"(Yes you can. You can see the curvature pretty easily on the graph.)",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M03-17, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Does this function have an **inflection point**? <br><img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/M3/M3-14-04.png"> )",
+r"(+yes+)" = r"(The function is concave up to the left of $x=0$, and concave down to the right. The concavity c70hanges at $x=0$ (although the exact point is hard to make out in the graph). A point where the concavity changes is an inflection point.)",
+  r"(no)" = r"(The concavity changes from positive on the left of the graph to negative on the right. So there must be an inflection point in between.)",
+  r"(can't tell)" = r"(Yes you can. You can see the curvature pretty easily on the graph.)",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M03-18, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(For this function <br><img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/M3/M3-14-06.png"></br> where is the **horizontal** asymptote located? )",
+r"(At $x=0$)" = r"(We're looking for a **horizontal** asymptote. This is a description of a **vertical** asymptote.)",
+  r"(At $x=1$)" = r"(We're looking for a **horizontal** asymptote. This is a description of a **vertical** asymptote.)",
+  r"(+At 20 as $x \rightarrow \pm\infty$+)" = r"( )",
+  random_answer_order=FALSE
+)
+```
+
+
+
+```{r drill-M03-19, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which of these is a correct description of a horizontal asymptote in the function shown in the graph?<br><img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/M3/M3-14-07.png"> )",
+r"(At 2 as $x \rightarrow \pm\infty$)" = r"(There are different horizontal asymptotes for $x \rightarrow \infty$ and for $x \rightarrow -\infty$)",
+  r"(+At 2 as $x \rightarrow -\infty$+)" = r"( )",
+  r"(At 6 as $x \rightarrow -\infty$)" = r"( )",
+  r"(There is no horizontal asymptote.)" = r"( )",
+  random_answer_order=TRUE
+)
+```
+
+
+
+```{r drill-M03-20, echo=FALSE, results='markup'}
+Znotes::askMC(
+  prompt = r"(Which of these is a correct description of a horizontal asymptote in the function shown in the graph?<br><img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/M3/M3-14-07.png"> )",
+r"(At 2 as $x \rightarrow \pm\infty$)" = r"(There are different horizontal asymptotes for $x \rightarrow \infty$ and for $x \rightarrow -\infty$)",
+  r"(At 2 as $x \rightarrow \infty$)" = r"( )",
+  r"(+At 6 as $x \rightarrow \infty$+)" = r"( )",
+  r"(There is no horizontal asymptote.)" = r"( )",
+  random_answer_order=TRUE
+)
+```
+

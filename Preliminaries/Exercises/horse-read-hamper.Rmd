@@ -1,0 +1,104 @@
+---
+id: "horse-read-hamper"
+created: "Mon Jul 19 15:43:04 2021"
+global_id: "H8THyA"
+topic: "code reading"
+---
+
+```{r echo=FALSE}
+piecewise_fun <- function(x, r=1, K=100) {
+  ifelse(x < K/2, 1.4*r*x/2, 1.4*r*K/4 - 1.4*r*(x-K/2)/2)
+}
+piecewise_fun <- function(x, r=1, K=100, center=K/2) {
+  peak <- 1.4*r*center/2
+  ifelse(x < center, 1.4*r*x/2, peak - peak*(x-center)/(K-center))
+}
+```
+
+Consider the code used to generate the following graphics:
+
+
+```{r eval=FALSE}
+slice_plot(2 * x * (1 - x/100) ~ x, domain(x=c(-10,110))) %>%
+  slice_plot(piecewise_fun(x, r=2, K=100) ~ x, color="orange3")
+```
+
+
+```{r gg-code1, echo=FALSE, results="markup"}
+askMC(
+"What is the `%>%` doing at the end of the first line in the graphics-making command?",
+  "It's punctuation to help the human reader distinguish between the two lines.",
+  "+It connects the graphics produced by the first `slice_plot()` application and two the second, so that the new (red) curve will be added on top of the old.+",
+  "It signals the computer to display the graphic.", 
+  "It identifies the command as one of the functions we use in CalcZ, something like 'branding.'"
+)
+```
+
+```{r gg-code1b, echo=FALSE, results="markup"}
+askMC(
+"Why is the `%>%` at the end of the first line rather than at the beginning of the second?",
+  "No good reason. You could do it either way.",
+  "+Without the `%>%, the computer wouldn't know to look to the next line of code to include in the overall chain of commands.+",
+  "That's a mistake. `%>%` should always be at the start of a command." = "Actually, `%>%` should **never** be at the start of a command."
+)
+```
+
+```{r gg-code1c, echo=FALSE, results="markup"}
+askMC(
+  "What is the `%>%` operator called?",
+  "+a pipe+" = "Although any of these names might do, it's important to use the right name so that you can communicate effectively with other people.",
+  "forwards",
+  "advances",
+  "a connection"
+)
+```
+
+```{r gg-code2, echo=FALSE, results="markup"}
+askMC(
+"What is an expression like `2*x*(1-x/100)` called?",
+  "+A tilde expression+",
+  "A wiggle expression",
+  "An argument",
+  "Applying a function to an argument"
+)
+```
+
+
+
+```{r gg-code3, echo=FALSE, results="markup"}
+askMC(
+"Which of the two function graphs is drawn in red?",
+  "The quadratic growth function",
+  "+The piecewise growth function+",
+  "Not enough information is given in the code to be sure." = "Successful code always has enough information to specify exactly what is to be done."
+)
+```
+
+```{r gg-code3b, echo=FALSE, results="markup"}
+askMC(
+  'How come `"orange3"` is in quotes?',
+  "+Without quotes, the interpreter would look for an R object named `red`+",
+  "Because the color isn't pure red.",
+  "The computer will use red if it is available in the graphics subsystem. If not, it will use dashes."
+)
+```
+
+```{r gg-code4, echo=FALSE, results="markup"}
+askMC(
+  "What would happen if the `%>%` were removed from the code? (Hint: Try it!)",
+  "An error message would be thrown.",
+  "Only the black curve would be drawn.",
+  "+The black and red curve would be drawn in separate graphics frames.+"
+)
+```
+
+```{r gg-code5, echo=FALSE, results="markup"}
+askMC(
+"Why is there a `domain()` argument given in the first line but not the second?",
+  "+Because of the pipe, the domain is inherited by the second part of the pipeline.+",
+  "The author was careless.",
+  "The piecewise function doesn't require a domain, because its derivative is not continuous." = "The derivative is not continuous, but that has nothing to do with the domain. To make a graph of a function, you always need to specify a domain or inherit it from a previous step in the pipeline."
+)
+```
+
+
