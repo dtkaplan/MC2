@@ -1,20 +1,24 @@
 # Data and data graphics
 
-<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Preliminaries/06-data-and-data-graphics.Rmd)</div>
-
-```{r include=FALSE}
-book_file_name <- "preliminaries/06-data-and-data-graphics.html"
+```{r child="../starter.Rmd"}
 ```
+
 
 The decade of the 1660s was hugely significant in the emergence of science, although no one realized it at the time. 1665 was a plague year, the last major outbreak of bubonic plague in England. The University of Cambridge closed to wait out the plague, and Isaac Newton, then a 24-year old Cambridge student returned home to Woolsthorpe where he lived and worked in isolation for two years. Biographer James Gleich wrote: "The plague year was his transfiguration. Solitary and almost incommunicado, he became the world’s paramount mathematician." During his years of isolation, Newton developed what we now call "calculus" and, associated with that, his theory of Universal Gravitation. He wrote a tract on his work in 1669, but withheld it from publication until 1711.
 
-```{r newton-first-pub, echo=FALSE, fig.cap="Newton's first tract (1669) on the roots of calculus: *On Analysis by Equations with an infinite number of terms*."}
+```{r echo=FALSE}
+#| label: fig-newton-first-pub
+#| fig-cap: "Newton's first tract (1669) on the roots of calculus: *On Analysis by Equations with an infinite number of terms*."
+#| column: margin
 knitr::include_graphics("www/Newton-infinite-terms.png")
 ```
 
 Plague was also the motivating factor in another important work, published in 1661, *Natural and Political Observations ... Made upon the Bills of Mortality* by [John Graunt](https://en.wikipedia.org/wiki/John_Graunt) (1620-1674). [Bills of mortality](https://en.wikipedia.org/wiki/Bills_of_mortality), listings of the number and causes of deaths in London, had been published intermittently starting in in the plague year of 1532, and then continuously from the onset of plague in 1603. Graunt, a haberdasher by profession, performed what we might now call ***data science***, the extraction of information from data. For instance, Graunt was the first to observe the high rate of child mortality and that the number of deaths attributed to plague was underestimated by about one quarter. Graunt's work led to his election to the Royal Society, the same august group of scientists of which Isaac Newton was a member (and later president). Graunt is considered the first demographer and epidemiologist.
 
-```{r graunt-cover, echo=FALSE, fig.cap="The title page of John Graunt's *Natural and Political Observations ... upon the Bills of Mortality*"}
+```{r echo=FALSE}
+#| label: fig-graunt-cover
+#| fig-cap: "The title page of John Graunt's *Natural and Political Observations ... upon the Bills of Mortality*"
+#| column: margin
 knitr::include_graphics("www/Graunt_Natural_and_political_observations.png")
 
 ```
@@ -31,13 +35,16 @@ This chapter introduces some pre-calculus basics of working with data which we'l
 
 Most people encounter data in the form of printed tables, such as the 1665 Bill of Mortality shown below. These tables were developed to be legible to humans and to be compact when printed. 
 
-```{r bill-of-mortality, echo=FALSE, fig.cap="Tables of data from the 1665 Bill of Mortality for London."}
+```{r echo=FALSE}
+#| label: fig-bill-of-mortality
+#| fig-cap: "Tables of data from the 1665 Bill of Mortality for London."
+#| column: margin
 knitr::include_graphics("www/Bill_of_Mortality.jpeg")
 ```
 
 Although published more than 350 years ago, it's still possible for a literate human to sort out what the table is saying. But the volume of data has exploded beyond any possibility of putting it in print. Instead, today's data are stored and accessed electronically. But the process of accessing such data is very much rooted in the notation of "table," albeit tables that follow a strict set of principles. We'll call such tables ***data frames*** and it's important for you to learn a few of the core principles of data organization.
 
-First, recognize that the data shown in Figure \@ref(fig:bill-of-mortality) consist of several different tables.  The first table, just under the title, starts with
+First, recognize that the data shown in  @fig-bill-of-mortality consist of several different tables.  The first table, just under the title, starts with
 
 $\ $   | Buried | Plague | $\ $ | Buried | Plague | $\cdots$   
 -----------------------|-----|-----|------------------------|----|----|-----
@@ -126,6 +133,7 @@ if (knitr::is_latex_output()) {
     kableExtra::kable_styling()
 }
 ```
+
 ## Variable names
 
 The fundamental questions to ask first about any data frame are:
@@ -134,6 +142,7 @@ i. What constitutes a row?
 ii. What are the variables and what do they stand for?
 
 The answers to these questions, for the data frames we will be using, are available via R documentation. To bring up the documentation for `Engines`, for instance, give the command:
+
 ```r
 ?Engines
 ```
@@ -152,7 +161,10 @@ In RStudio, the command `View(Engines)` is useful for showing a complete table o
 
 We will use just one graphical format for displaying data: the ***point plot***. In a point plot, also known as a "scatterplot," two variables are displayed, one on each graphical axis. Each case is presented as a dot, whose horizontal and vertical coordinates are the values of the variables for that case. For instance:
 
-```{r}
+```{r echo=FALSE}
+#| label: fig-stroke-vs-bore
+#| fig-cap: "A point plot showing the relationship between engine `stroke` and `bore`. Each individual point is one row of the data frame SHOWN IN GIVE TABLE A NAME"
+#| fig-cap-location: margin
 gf_point(stroke ~ bore, data = Engines)
 ```
 
@@ -163,6 +175,9 @@ For many modeling purposes, it's important to be able to represent a relationshi
 Later in *MOSAIC Calculus*, we'll discuss ways to construct functions that are a good match to data using the pattern-book functions. Here, our concern is graphing such functions on top of a point plot. So, without explanation (until later chapters), we'll construct a power-law function, called, stroke(bore), that might be a good match to the data. The we'll add a second layer to the point-plot graphic: a slice-plot of the function we've constructed.
 
 ```{r}
+#| label: fig-first-two-layers
+#| fig-cap: "A graphic composed of two layers: 1) a point plot; 2) a slice plot of a function fitted to the data in (1)."
+#| fig-cap-location: margin
 stroke <- fitModel(stroke ~ A*bore^b, data = Engines)
 gf_point(stroke ~ bore, data = Engines) %>%
   slice_plot(stroke(bore) ~ bore, color="blue")
@@ -170,7 +185,7 @@ gf_point(stroke ~ bore, data = Engines) %>%
 
 The second layer is made with an ordinary `slice_plot()` command. To place it on top of the point plot we connect the two commands with a bit of punctuation called a "pipe": `%>%`.
 
-The pipe punctuation can never go at the start of a line. Usually, we'll use the pipe at the very end of a line; think of the pipe as connecting one line to the next.
+[The pipe punctuation can never go at the start of a line. Usually, we'll use the pipe at the very end of a line; think of the pipe as connecting one line to the next.]{.aside}
 
 `slice_plot()` is a bit clever when it is used after a previous graphics command. Usually, you need to specify the interval of the domain over which you want to display the function, as with 
 
@@ -184,17 +199,20 @@ You can do that also when `slice_plot()` is the second layer in a graphics comma
 
 In the previous chapters, we've used ***formulas*** to define functions. The link between functions and formulas is important, but not at all essential to the idea of functions. 
 
-Arguably more important in practice to the representation of functions are ***tables*** and ***algorithms***. The computations behind the calculation of the output of functions such as $\sin()$ or $e^x$ or other foundational functions that we'll introduce in Chapter \@ref(pattern-book-functions) relies on computer software that loops and iterates and which is invisible to almost everybody who uses it. Before the advent of modern computing, functions were presented as printed tables. For instance, the logarithm function, invented about 1600, relied almost complete on printed tables, such as the one shown in Figure \@ref(fig:log-table).
+Arguably more important in practice to the representation of functions are ***tables*** and ***algorithms***. The computations behind the calculation of the output of functions such as $\sin()$ or $e^x$ or other foundational functions that we'll introduce in Chapter \@ref(pattern-book-functions) relies on computer software that loops and iterates and which is invisible to almost everybody who uses it. Before the advent of modern computing, functions were presented as printed tables. For instance, the logarithm function, invented about 1600, relied almost complete on printed tables, such as the one shown in @fig-log-table.
 
-```{r log-table, echo=FALSE, fig.cap="Part of the first table of logarithms, published by Henry Briggs in 1624."}
+```{r echo=FALSE}
+#| label: fig-log-table
+#| fig-cap: "Part of the first table of logarithms, published by Henry Briggs in 1624."
+#| fig-cap-location: margin
 knitr::include_graphics("www/Briggs-starttable.png")
 ```
 
-In Chapter \@ref(pattern-book-functions) we'll introduce a small set of functions which we call the "pattern-book functions." Each of the functions is indeed a pattern that could be written down once and for all in tabular form. Generating such tables originally required the work of human "computers" who undertook extensive and elaborate arithmetical calculations by hand. What's considered the first programmable engine, a mechanical device designed by Charles Babbage (1791-1871) and programmed by Ada Lovelace (1815-1852), was conceived for the specific purpose of generating printed tables of functions. 
+In  @chap-pattern-book-functions we'll introduce a small set of functions which we call the "pattern-book functions." Each of the functions is indeed a pattern that could be written down once and for all in tabular form. Generating such tables originally required the work of human "computers" who undertook extensive and elaborate arithmetical calculations by hand. What's considered the first programmable engine, a mechanical device designed by Charles Babbage (1791-1871) and programmed by Ada Lovelace (1815-1852), was conceived for the specific purpose of generating printed tables of functions. 
 
 It's helpful to think of functions, generally, as a sort of data storage and retrieval device that uses the input value to locate the corresponding output and return that output to the user. Any device capable of this, such as a table or graph with a human interpreter, is a suitable way of implementing a function.
 
-To reinforce this idea, we ask you to imagine a long corridor with a sequence of offices, each identified by a room number. The input to the function is the room number. To ***evaluate*** the function for that input, you knock on the appropriate door and, in response, you'll receive a piece of paper with a number to take away with you. That number is the output of the function. `r mark(320)`
+To reinforce this idea, we ask you to imagine a long corridor with a sequence of offices, each identified by a room number. The input to the function is the room number. To ***evaluate*** the function for that input, you knock on the appropriate door and, in response, you'll receive a piece of paper with a number to take away with you. That number is the output of the function. 
 
 This will sound at first too simple to be true, but ... In a mathematical function each office gives out exactly the same number every time someone knocks on the door. Obviously, being a worker in such an office is highly tedious and requires no special skill. Every time someone knocks on the worker's door, he or she writes down the *same* number on a piece of paper and hands it to the person knocking. What that person will do with the number is of absolutely no concern to the office worker.
 
@@ -227,7 +245,7 @@ It's very common in science to work with continuous domains by breaking them up 
 :::
 
 
-A table like this describes the general relationships between engine attributes. For instance, we might want to understand the relationship (if any) between RPM and engine mass, or relate the diameter (that is, "bore") and depth (that is, "stroke") of the cylinders to the power generated by the engine. Any single entry in the table doesn't tell us about such general relationships; we need to consider the rows and columns as a whole. `r mark(310)`
+A table like REFERENCE TO THE TABLE PREVIOUS describes the general relationships between engine attributes. For instance, we might want to understand the relationship (if any) between RPM and engine mass, or relate the diameter (that is, "bore") and depth (that is, "stroke") of the cylinders to the power generated by the engine. Any single entry in the table doesn't tell us about such general relationships; we need to consider the rows and columns as a whole. 
 
 If you examined the relationship between engine power (`BHP`) and bore, stroke, and RPM, you will find that (as a rule) the larger the bore and stroke, the more powerful the engine. That's a ***qualitative*** description of the relationship. Most educated people are able to understand such a qualitative description. Even if they don't know exactly what "power" means, they have some rough conception of it.
 
@@ -235,6 +253,8 @@ Often, we're interested in having a ***quantitative*** description of a relation
 
 
 ## Exercises
+
+`r if (knitr::is_latex_output()) knitr::knit_exit()`
 
 ::: {.underconstruction}
 `r insert_calcZ_exercise("XX.XX", "evn4OP", "Exercises/beech-tug-lamp.Rmd", skill="Handling data, plotting data")`
