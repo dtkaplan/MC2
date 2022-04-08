@@ -1,0 +1,378 @@
+# Magnitude {#magnitude}
+
+<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/modeling/08-magnitudes.Rmd)</div>
+
+```{r include=FALSE}
+book_file_name <- "modeling/08-magnitudes.html"
+```
+
+
+Undoubtedly you are comfortable with the standard way of writing numbers, for instance 33 or 512 or 1051. Elementary school students master the comparison of such numbers. Which is greater: 512 or 33? Which is less, 1051 or 512? You can answer such questions at a glance; the comparison can be accomplished simply by counting the number of digits. 1051 has four digits, so it is larger than the three-digit number 512. There are two digits in 33, so it smaller than 512. When two numerals have the same number of digits---say, 337 and 512---you can't answer the "greater than" question by simple counting. Instead, you proceed from left to right and compare the number in each place. So, for 512 and 337, you compare 5 to 3 and ... since 5 is greater than 3, 512 is greater than 337. If the two leading digits are the same, go on to the next digit and so on for all the digits in turn.  `r mark(1600)` 
+
+Things were not always this simple. Our number system that uses *place* and *Arabic* numerals is a human invention. An example of an earlier number system is Roman numerals. Here, comparison is hard. For instance, which of these three numbers is bigger?
+
+$$\text{MLI or CXII or XXXIII}$$
+The typographically shorter number is the largest, and vice versa. Even when two Roman numerals have the same length, it's not trivial to compare them on a place-by-place basis. For instance, IC is about fifteen times bigger than VI, even though I is much smaller than V.
+
+## Counting digits
+
+Digit counting provides an easy, fast way to perform many calculations, at least approximately. What is $\sqrt{10000}$? There are five digits, and the square root of a number will have "half the number of digits." So, $\sqrt{10000} = 100$. What is $10 \times 34$? Easy: 340. Just append the one zero from 10 to the end of 34. What is $1000 \times 13$? Just as easy: 13,000. We even punctuate written numbers with commas and a period in order to facilitate counting digits. 
+
+Imagine having a digit counting function called digit(). It takes a number as input and produces a number as output. We don't have a ***formula*** for digit(), but for some inputs the output can be calculated just be counting. For example:
+
+- digit(10) $\equiv$ 1
+- digit(100) $\equiv$ 2
+- digit(1000) $\equiv$ 3
+- ... and so on ...
+- digit(1,000,000) $\equiv$ 6
+- ... and on.
+
+The digit() function easily can be applied to the product of two numbers. For instance:
+
+- digit(1000 $\times$ 100) = digit(1000) + digit(100) = 3 + 2 = 5.
+
+Similarly, applying digit() to a ratio gives the difference of the digits of the numerator and denominator, like this:
+
+- digit(1,000,000 $\div$ 100) = digit(1,000,000) - digit(100) = 6 - 2 = 4
+
+## Using digit() to understand magnitude
+
+We haven't shown you the digit() function for anything but the handful of discrete inputs listed above. It was a heroic task to produce the continuous version of digit(). The method is sketched out in \@ref(fractional-digits). 
+
+In practice, digit() is so useful that it could well have been one of our basic modeling functions: 
+$$\text{digit(x)} = 2.302585 \ln(x)$$ or, in R, `log10()`. We elected  $\ln()$ rather than digit() for reasons that will be seen when we study ***differentiation***.
+
+<!-- Proposed exercise about binary digits
+
+`rrr insert_calcZ_exercise(15.1, "TLCIX", "Exercises/Dimension/count-the-digits.Rmd")`
+
+
+-->
+
+## Quantity and magnitude
+
+The familiar quantity 60 miles-per-hour is written as a number (60 here) followed by units. The quantity is neither the number nor the units: it is the combination of the two. For instance, 100 is obviously not the same as 60. And miles-per-hour is not the same as kilometers-per-hour. Yet, 60 miles-per-hour is almost exactly the same quantity as 100 kilometers-per hour.^[95.69 km/hr is exactly 60 mph.]  `r mark(1610)` 
+
+6, 60, 600, and 6000 miles-per-hour are quantities that differ in size by ***orders of magnitude***. Such differences often point to a substantial change in context. A jog is 6 mph, a car on a highway goes 60 mph, a cruising commercial jet goes 600 mph, a rocket passes through 6000 mph on its way to orbital velocity. 
+
+In everyday speech, the difference between 60 and 6 is 54; just subtract. Modelers and scientists routinely mean something else: the difference between 60 and 6 is "one order of magnitude." Similarly, 60 and 6000 are different by "two orders of magnitude," and 6 and 6000 by three orders of magnitude. 
+
+In everyday English, we have phrases like "a completely different situation" or "different in kind" or "qua**l**itatively different" (note the **l**) to indicate substantial differences. "Different orders of magnitude" expresses the same kind of idea but with specific reference to quantity. 
+
+The use of factors of 10 in counting orders of magnitude is arbitrary. A person walking and a person jogging are on the edge of being qualitatively different, although their speeds differ by a factor of only 2. Aircraft that cruise at 600 mph and 1200 mph are qualitatively different in design, although the speeds are only a factor of 2 apart. A professional basketball player (height 2 meters or more) is qualitatively different from a third grader (height about 1 meter).
+
+Modelers develop an intuitive sense for when to think about difference in terms of a subtractive difference (e.g. 60 - 6 = 54) and when to look at orders of magnitude (e.g. 60-to-6 is one order of magnitude). This seems to be a skill based in experience and judgment, as opposed to a mechanical process. 
+
+One clue that thinking in terms of orders of magnitude is appropriate is when you are working with a set of objects whose range of sizes spans one or many factors of 2. Comparing baseball and basketball players? Probably no need for orders of magnitudes. Comparing infants, children, and adults in terms of height or weight? Orders of magnitude may be useful. Comparing bicycles? Mostly they fit within a range of 2 in terms of size, weight, and speed (but not expense!). Comparing cars, SUVs, and trucks? Differences by a factor of 2 are routine, so thinking in terms of order of magnitude is likely to be appropriate.
+
+Another clue is whether "zero" means "nothing." Daily temperatures in the winter are often near "zero" on the Fahrenheit or Celcius scales, but that in no way means there is a complete absence of heat. Those scales are arbitrary. Another way to think about this clue is whether ***negative values*** are meaningful. If so, thinking in terms of orders of magnitude is not likely to be useful.
+
+You may have guessed that `digits()` is handy for computing differences in terms of orders of magnitude. Here's how:  `r mark(1620)` 
+
+1. Make sure that the quantities are expressed in the same ***units***. 
+2. Calculate the difference between the `digits()` of the numerical part of the quantity.
+
+::: {.workedexample}
+What is the order-of-magnitude difference in velocity between a snail and a walking human. A snail slides at about 1 mm/sec, a human walks at about 5 km per hour. Putting human speed in the same units as snail speed: 
+$$5 \frac{km}{hr} = \left[\frac{1}{3600} \frac{hr}{sec}\right] 5 \frac{km}{hr} = \left[10^6 \frac{mm}{km}\right] \left[\frac{1}{3600} \frac{hr}{sec}\right] 5 \frac{km}{hr} = 1390 \frac{mm}{sec} $$
+Calculating the difference in `digits()` between 1 and 1390:
+```{r}
+log10(1390) - log10(1)
+```
+So, about 3 orders of magnitude difference in speed. To a snail, we walking humans must seem like rockets on their way to orbit!
+:::
+
+::: {.intheworld  data-latex=""}
+Animals, including humans, go about the world in varying states of illumination, from the bright sunlight of high noon to the dim shadows of a half moon. To be able to see in such diverse conditions, the eye needs to respond to light intensity across many orders of magnitude. 
+
+The ***lux*** is the unit of illuminance in the Système international. This table^[Source: <https://en.wikipedia.org/wiki/Daylight>] shows the illumination in a range of familiar outdoor settings:
+
+Illuminance | Condition
+------------|---------------
+110,000 lux | Bright sunlight
+20,000 lux	| Shade illuminated by entire clear blue sky, midday
+1,000 lux	| Typical overcast day, midday
+400 lux	| Sunrise or sunset on a clear day (ambient illumination)
+0.25 lux |	A full Moon, clear night sky
+0.01 lux | 	A quarter Moon, clear night sky
+
+For a creature active both night and day, they eye needs to be sensitive over 7 orders of magnitude of illumination. To accomplish this, eyes use several mechanisms: contraction or dilation of the pupil accounts for about 1 order of magnitude, photopic (color, cones) versus scotopic (black-and-white, rods, nighttime) covers about 3 orders of magnitude, adaptation over minutes (1 order), squinting (1 order).
+
+:::
+
+
+
+## Composing $\ln()$ 
+
+The logarithm is the inverse of the exponential function. In other words, $$\ln(e^x) = x\ \ \text{and}\ \ e^{\ln(x)} = x$$
+
+Think about this in terms of the kinds of quantities that are the input and output to each function.  `r mark(1630)` 
+
+* Logarithm: The input is a quantity, the output is the magnitude of that quantity.
+* Exponential: The input is a magnitude, the output is the quantity with that magnitude.
+
+
+## Magnitude graphics {#magnitude-graphics}
+
+In order to display a variable from data that varies over multiple orders of magnitude, it helps to plot the ***logarithm*** rather than the variable itself. Let's illustrate using the `Engine` data frame, which contains measurements of many different internal combustion engines of widely varying size. For instance, we can graph engine RPM (revolutions per second) versus enging mass, as in Figure \@ref(fig:rpm-mass).
+
+```{r rpm-mass, fig.cap="Engine RPM versus mass for 39 different enginges plotted on the standard linear axis."}
+gf_point(RPM ~ mass, data = Engines)
+```
+In the graph, most of the engines have a mass that is ... zero. At least that's what it appears to be. The horizontal scale is dominated by the two huge 100,000 pound monster engines plotted at the right end of the graph.
+
+Plotting the logarithm of the engine mass spreads things out, as in Figure \@ref(fig:rpm-mass-log).
+
+```{r rpm-mass-log, fig.cap="Engine RPM versus mass on semi-log axes."}
+gf_point(RPM ~ mass, data = Engines) %>%
+  gf_refine(scale_x_log10())
+```
+
+Note that the horizontal axis has been labelled with the actual mass (in pounds), with the labels  evenly spaced in terms of their logarithm. This presentation, with the horizontal axis constructed this way, is called a ***semi-log*** plot.
+
+When both axes are labeled this way, we have a ***log-log*** plot, as shown in Figure \@ref(fig:rpm-mass-log-log). 
+
+```{r rpm-mass-log-log, fig.cap="Engine RPM versus mass on log-log axes."}
+gf_point(RPM ~ mass, data = Engines) %>%
+  gf_refine(
+    scale_x_log10(),
+    scale_y_log10()
+    )
+```
+
+Semi-log and log-log axes are widely used in science and economics, whenever data spanning several orders of magnitude need to be displayed. In the case of the engine RPM and mass, the log-log axis shows that there is a graphically simple relationship between the variables. Such axes are very useful for displaying data, but can be hard for the newcomer to read quantitatively. For example, calculating the slope of the evident straight-line relationship in Figure \@ref(fig:rpm-mass-log-log) is extremely difficult for a human reader and requires translating the labels into their logarithms. 
+
+
+
+
+::: {.intheworld  data-latex=""}
+
+Robert Boyle (1627-1691) was a founder of modern chemistry and of the scientific method in general. As any chemistry student already knows, Boyle sought to understand the properties of gasses. His results are summarized in *Boyle's Law*.
+
+The data frame `Boyle` contains two variables from one of Boyle's experiments as reported in his lab notebook: pressure in a bag of air and volume of the bag. The units of pressure are mmHg and the units of volume are cubic inches.^[Boyle's notebooks are preserved at the Royal Society in London. The data in the `Boyle` dataframe have been copied from [this source](
+https://chem.libretexts.org/Courses/University_of_California_Davis/UCD_Chem_002A/UCD_Chem_2A/Text/Unit_III%3A_Physical_Properties_of_Gases/06.03_Relationships_among_Pressure%2C_Temperature%2C_Volume%2C_and_Amount).)] 
+
+Famously, Boyle's Law states that, at constant temperature, the pressure of a constant mass of gas is inversely proportional to the volume occupied by the gas. Figure \@ref(fig:boyle-movie) shows a cartoon of the relationship.
+
+```{r boyle-movie, echo=FALSE, fig.cap="A cartoon illustrating Boyle's Law. Source: [NASA Glenn Research Center](https://www.grc.nasa.gov/WWW/K-12/airplane/aboyle.html)"}
+if (knitr::is_html_output()) {
+    knitr::include_graphics("www/Boyles_Law_animated.gif")
+} else {
+  knitr::include_graphics("www/Boyle-snapshot.png")
+}
+```
+
+Figure \@ref(fig:boyle-data) plots out Boyle's actual experimental data. I
+
+```{r boyle-data, fig.cap="A plot of Boyle's pressure vs volume data on linear axes. The straight line model is a poor representation of the pattern seen in the data."}
+gf_point(pressure ~ volume, data = Boyle) %>%
+  gf_lm()
+```
+You can see a clear relationship between pressure and volume, but it's hardly a linear relationship.
+
+Plotting Boyle's data on log-log axes reveals that, in terms of the logarithm of pressure and the logarithm of volume, the relationship is linear.
+
+```{r boyle-data-log, fig.cap="Plotting the logarithm of pressure against the logarithm of volume reveals a straight-line relationship."}
+gf_point(log(pressure) ~ log(volume), data = Boyle) %>%
+  gf_lm()
+```
+:::
+
+Figure \@ref(fig:boyle-data-log) shows that Boyle's log-pressure and log-volume data are a straight-line function. In other words:
+
+$$\ln(\text{Pressure}) = a + b \ln(\text{Volume})$$
+
+You can find the slope $b$ and intercept $a$ from the graph. For now, we want to point out the consequences of the straight-line relationship between logarithms. 
+
+Exponentiating both sides gives
+$$e^{\ln(\text{Pressure})} = \text{Pressure} = e^{a + b \ln(\text{Volume})} = e^a\  \left[e^{ \ln(\text{Volume})}\right]^b = e^a\, \text{Volume}^b$$ or, more simply (and writing the number $e^a$ as $A$)
+
+$$\text{Pressure} = A\,  \text{Volume}^b$$
+A power-law relationship!
+
+
+## Reading logarithmic scales {#reading-log-axes}
+
+Plotting the logarithm of a quantity gives a visual display of the magnitude of the quantity and labels the axis as that magnitude. A useful graphical technique is to label the axis with the original quantity, letting the position on the axis show the magnitude.  `r mark(1640)` 
+
+To illustrate, Figure \@ref(fig:mag-scales-1)(left) is a log-log graph of horsepower versus displacement for the internal combustion engines reported in the `Engines` data frame. The points are admirably evenly spaced, but it is hard to translate the scales to the physical quantity. The right panel in Figure \@ref(fig:mag-scales-1) shows *exactly the same data points*, but now the scales are labeled using the original quantity.
+
+```{r mag-scales-1, out.width="50%", fig.show="hold", fig.cap="Horsepower versus displacement from the `Engines` data.frame plotted with log-log scales."}
+gf_point(log(BHP) ~ log(displacement), data = Engines)
+gf_point(BHP ~ displacement, data = Engines) %>%
+  gf_refine(scale_y_log10(), scale_x_log10()) 
+
+```
+
+The tick marks on the vertical axis in the left pane are labeled for 0, 2.5, 5.0, 7.5, and 10. That doesn't refer to the horsepower itself, but to the logarithm of the horsepower. The right pane has tick labels that are in horsepower at positions marked 1, 10, 100, 1000, 10000.  
+
+Such even splits of a 0-100 scale are not appropriate for logarithmic scales. One reason is that 0 cannot be on a logarithmic scale in the first place since $\log(0) = -\infty$.
+
+Another reason is that 1, 3, and 10 are pretty close to an even split of a logarithmic scale running from  1 to 10. It's something like this:
+
+```
+1              2            3          5            10     x
+|----------------------------------------------------|
+0               1/3         1/2        7/10          1     log(x)
+```
+
+It's nice to have the labels show round numbers. It's also nice for them to be evenly spaced along the axis. The 1-2-3-5-10 convention is a good compromise; almost evenly separated in space yet showing simple round numbers.
+
+
+
+
+
+
+## Fractional digits (optional) {#fractional-digits}
+
+So far, we have the digit() function in a tabular form:  `r mark(1650)` 
+
+input | output
+----|-----------
+$\vdots$ | $\vdots$
+0.01 | -2
+0.1 | -1
+1   | 0
+10   | 1
+100 | 2
+1000 | 3
+10,000 | 4
+100,000 | 5
+1,000,000 | 6
+$\vdots$ | $\vdots$
+
+Here's the point-plot presentation of the table:
+
+```{r log-1st-try, echo=FALSE, fig.cap = "Connecting the data points for the digit function to make a continuous function."}
+L10 <- tibble::tribble(
+  ~ input, ~ output,
+  0.01, -2,
+  0.1, -1,
+  1, 0,
+  10, 1,
+  100, 2,
+  1000, 3,
+  10000, 4,
+  100000, 5,
+  1000000, 6
+) 
+ticks <- c(1,10,100,10000,50000,
+           100000,200000,500000,750000, 1000000)
+gf_point(output ~ input, data = L10) %>%
+  gf_labs(title = "The digit function") %>%
+  gf_refine(scale_x_sqrt(breaks=ticks, 
+                         labels=format(ticks, scientific=FALSE, big.mark=","))) %>%
+  gf_line()
+```
+We've imagined digits() to be a continuous function so we've connected the gaps with a straight line. Now we have a function that has an output for any input between 0.01 and 1,000,000, for instance, 500,000.
+
+The angles between consecutive line segments give the function plotted in Figure \@ref(fig:log-1st-try) an unnatural look. Still, it is a continuous function with an output for any input even if that input is not listed in the table.
+
+Starting around 1600, two (now famous) mathematicians, [John Napier](https://en.wikipedia.org/wiki/Henry_Briggs_(mathematician)) (1550-1617) and [Henry Briggs](https://en.wikipedia.org/wiki/Henry_Briggs_(mathematician)) (1561-1630) had an idea for filling in gaps in the table. They saw the pattern that for any of the numbers $a$ and $b$ in the input column of the table
+$$ \text{digit}(a \times b) = \text{digit}(a) + \text{digit}(b)$$
+This is true even when $a=b$. For instance, digit(10)=1 and digit(10$\times$ 10) = 2.
+
+Consider the question what is digit(316.2278)? That seems a odd question unless you realize that $316.2278 \times 316.2278 = 100,000$. Since digit(100000) = 5, it must be that digit(316.2278) = 5/2.
+
+Another question: what is digit(17.7828)? This seems crazy, until you notice that $17.7828^2 = 316.2278$. So digit(17.78279) = 5/4.
+
+For a couple of thousand years mathematicians have known how to compute the square root of any number to a high precision. By taking square roots and dividing by two, it's easy to fill in more rows in the digit()-function table. You get even more rows by noticing other simple patterns like $$\text{digit}(a/10) = \text{digit}(a) -1  \ \ \text{and} \ \ \ \text{digit}(10 a) = \text{digit}(a) + 1$$
+
+Here are some additional rows in the table
+
+input | output | Why?
+------|--------|------
+316.2278 | 2.5 | From $\sqrt{\strut100,000}$
+17.17828 | 1.25 | From $\sqrt{\strut 316.2278}$
+4.21696 | 0.625 | From $\sqrt{\strut 17.17828}$
+31.62278 | 1.5  | From 316.2278/10
+3.162279 | 0.5 | From 31.62278/10
+
+```{r echo=FALSE}
+# Just to compute the timing statement in the next paragraph.
+#remotes::install_github("collectivemedia/tictoc")
+#library(tictoc)
+#tic()
+start <- tibble::tibble(input = 10^{-5:6}, output = -5:6)
+for (k in 1:6) {
+  root <- start %>% 
+    mutate(input = sqrt(input), output = output/2)
+  root2 <- start %>%
+    mutate(input = sqrt(sqrt(input)), output = output/4)
+  root3 <- start %>%
+    mutate(input = sqrt(sqrt(sqrt(input))), output = output/8)
+  square <- start %>%
+    mutate(input = input^2, output = 2*output)
+  cube <- start %>%
+    mutate(input = input^3, output = 3*output)
+  tenths <- start %>%
+    mutate(input = input/10, output = output - 1)
+  tens <- start %>%
+    mutate(input = input*10, output = output + 1)
+  start <- rbind(start, root, root2, root3, square, cube, tenths, tens) %>% unique() %>% 
+    arrange(input)
+}
+#toc()
+```
+
+You can play this game for weeks. We asked the computer to play the game for about half a second and expanded the original digit() table to `r nrow(start %>% filter(output >= -2, output <= 6))` rows.
+
+Figure \@ref(fig:expanded-log) plots the expanded digits() function table.
+
+```{r expanded-log, echo=FALSE, fig.cap="The digit function with more entries"}
+ticks <- 1:10
+
+gf_point(output ~ input, 
+         data = start %>% filter(output <= 1, output >= 0)) %>%
+  gf_refine(scale_x_continuous(breaks=ticks)) %>%
+  gf_line()
+```
+Now we have a smooth function that plays by the digit rules of multiplication.
+
+Henry Briggs and his assistants did a similar calculation by hand. Their work was published in 1617 as a table. 
+
+```{r briggs-first-page, echo=FALSE, out.width="100%", fig.cap="Part of the first page of Henry Briggs table of logarithms", fig.align="center"}
+knitr::include_graphics(normalizePath("www/Briggs-starttable.png"))
+```
+
+The table was called the *Chilias prima*, Latin for "First group of one thousand." True to its name, the table gives the output of digits() for the inputs 1, 2, 3, ..., 998, 999, 1000. For instance, as you can see from the top row of the right-most column, digits(67) = 1.82607480270082. 
+
+In everyday speech, 67 has two digits. The authors of *Chilias prima* sensibly didn't use the name "digit()" for the function. They chose something more abstract: "logarithm()". Nowadays, this function is named $\log_{10}()$. In R, the function is called `log10()`.  `r mark(1660)` 
+
+```{r}
+log10(67)
+```
+
+Our main use for $\log_{10}()$ (in R: `log10()`) will be to count digits in order to quickly compare the magnitude of numbers. The difference digits($x$) - digits($y$) tells how many factors of 10 separate the magnitude of the $x$ and $y$.
+
+Another important logarithmic/digit-counting function is $\log_2()$, written `log2()` in R. This counts how many ***binary digits** are in a number. For us, $\log_2(x)$ tells how many times we need to double, starting at 1, in order to reach $x$. For instance, $\log_2(67) = 6.06609$, which indicates that $67 = 2\times 2 \times 2 \times 2 \times 2 \times 2 \times 2^{0.06609}$
+
+$\log_2(x)$ and $\log_{10}(x)$ are proportional to one another. One way to think of this is that they both count "digits" but report the results in different units, much as you might report a temperature in either Celsius or Fahrenheit. For $\log_2(x)$ the units of output are in ***bits***. For $\log_{10}(x)$ the output is in ***decades***.
+
+A third version of the logarithm function is called the ***natural logarithm*** and is denoted $\ln()$ in math notation and simply `log()` in R. We'll need additional calculus concepts before we can understand what justifies calling $\ln()$ "natural."
+
+## Exercises
+
+`r insert_calcZ_exercise(15.2, "ILXEG", "Exercises/mag-blue.Rmd")`
+
+`r insert_calcZ_exercise(15.4, "j3xe", "Exercises/maple-hit-saucer.Rmd")`
+
+`r insert_calcZ_exercise(15.5, "RWESX", "Exercises/Boyles-data.Rmd")`
+
+`r insert_calcZ_exercise(15.6, "gmZiWh", "Exercises/lion-jump-kitchen.Rmd")`
+
+`r insert_calcZ_exercise(15.7, "EWLCI", "Exercises/engine-magnitude-new.Rmd")`
+
+`r insert_calcZ_exercise(15.8, "TLEXE", "Exercises/fish-walk-green.Rmd")`
+
+`r insert_calcZ_exercise(15.9, "SELIX", "Exercises/tiger-have-fork.Rmd")`
+
+`r insert_calcZ_exercise("15.10", "PeQJCA", "Exercises/octopus-look-radio.Rmd")`
+
+
+<!--
+`rrr insert_calcZ_exercise("15.10", "XzZn2N", "Exercises/Fun/deer-blow-bulb.Rmd")`
+-->
+
+
+`r insert_calcZ_exercise("3.2", "pUKm4c", "Exercises/sheep-buy-dress.Rmd")`

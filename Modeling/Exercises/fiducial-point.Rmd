@@ -1,0 +1,145 @@
+---
+id: "fiducial-point"
+author: "Daniel Kaplan"
+global-id: "MWLCS"
+---
+
+Recall that each ***basic modeling function*** is constructed from the corresponding pattern-book function by scaling the input.
+
+$$\text{pattern-book function}\ \ \underset{x\rightarrow a(x-x_0)}{\overset{\text{input scaling}}{\Large\Longrightarrow}} \ \ \text{basic modeling function}$$
+
+Figure \@ref(fig:fid-points) shows the pattern-book functions with some added annotations. When the function has horizontal or vertical asymptotes, the location is shown by orange arrows. There is also a blue dot placed on the graph of functions with asymptotes. For functions without asymptotes, there are two blue dots. The location of the asymptotes and blue dots mark characteristic features of each function. The positions of the blue dot and asymptotes, or the  positions of the two blue dots, are useful for figuring out the values of parameters in basic modeling functions. 
+
+For example, the basic modeling reciprocal function is $g(x) \equiv \frac{1}{m (x-x_0)} + C$. The parameter $C$ will be the value where the horizontal asymptote crosses the vertical axis. The parameter $x_0$ will be the value where the vertical asymptote crosses the horizontal axis. As for the parameter $m$: find the input where the function value is $C+1$. Let's call that $x^\star$. The $m = 1/(x^\star - x_0)$. 
+
+For the sinusoid, the blue dots mark the positive-going zero crossings of the baseline. The horizontal distance between the blue dots is the period parameter, $P$. The horizontal position of either of the two dots tells the phase offset $x_0$.
+
+
+
+```{r fid-points, echo=FALSE, warning=FALSE, out.width="50%", fig.show="hold"}
+dom1 <- list(x=c(-5,5))
+dom2 <- list(x=c(0.1,3))
+dom3 <- list(x=c(-2, 2))
+slice_plot(exp(x) ~ x, dom3) %>%
+  gf_point(1 ~ 0, color="purple", size=5, alpha = 0.1) %>%
+  gf_vline(xintercept = ~ 0, color="orange3") %>%
+  gf_hline(yintercept = ~ 1, color="dodgerblue") %>%
+  gf_refine(scale_y_continuous(breaks=c(0,1,2,4,6))) %>%
+  gf_segment(0 + 0 ~ 0 + (-2), color="orange", arrow=arrow(ends="last", type="closed")) %>%
+  slice_plot(exp(x) ~ x, dom3) %>%
+  gf_labs(title = "Pattern-book exponential")
+slice_plot(sin(x) ~ x, dom1) %>%
+  gf_point(0 ~ 0, color="purple", size=5, alpha = 0.1) %>%
+  gf_point(0 ~ pi, color="purple", size=5, alpha = 0.1) %>%
+  gf_vline(xintercept = ~ 0, color="orange3") %>%
+  gf_vline(xintercept = ~ pi, color="orange3") %>%
+  gf_hline(yintercept = ~ 0, color="dodgerblue") %>%
+  gf_refine(scale_x_continuous(breaks = c(-pi, 0, pi), labels=c("-\u03c0", 0, "\u03c0"))) %>%
+  gf_labs(title = "Pattern-book sine")
+slice_plot(log(x) ~ x, dom2) %>%
+  gf_point(0 ~ 1, color="purple", size=5, alpha = 0.1) %>%
+  gf_vline(xintercept = ~ 1, color="orange3") %>%
+  gf_hline(yintercept = ~ 0, color="dodgerblue") %>%
+  gf_segment(1 + (-2) ~ 0 + 0, color="orange", arrow=arrow(ends="last", type="closed")) %>%
+  gf_labs(title = "Pattern-book logarithm")
+slice_plot(pnorm(x) ~ x, dom3) %>%
+  gf_segment(1 + 1 ~ 0 + 2, color="orange", arrow=arrow(ends="last", type="closed")) %>%
+  gf_segment(0 + 0 ~ 0 + (-2), color="orange", arrow=arrow(ends="last", type="closed")) %>%
+  slice_plot(pnorm(x) ~ x, dom3) %>%
+  gf_point(0.5 ~ 0, color="purple", size=5, alpha = 0.2) %>%
+  gf_vline(xintercept = ~ 0, color="orange3") %>%
+  gf_hline(yintercept = ~ .5, color="dodgerblue") %>%
+  gf_labs(title = "Pattern-book sigmoid (pnorm())") %>%
+  gf_refine(scale_y_continuous(breaks=c(0, .5, 1), labels=c(0, "1/2", 1)))
+
+slice_plot(dnorm(x) ~ x, dom1) %>%
+  gf_segment(0 + 0 ~ 0 + 5, color="orange", arrow=arrow(ends="last", type="closed")) %>%
+  gf_segment(0 + 0 ~ 0 + (-5), color="orange", arrow=arrow(ends="last", type="closed")) %>%
+  slice_plot(dnorm(x) ~ x, dom1) %>%
+  gf_point(0.4 ~ 0, color="purple", size=5, alpha = 0.2) %>%
+  gf_vline(xintercept = ~ 0, color="orange3") %>%
+  gf_hline(yintercept = ~ .4, color="dodgerblue") %>%
+  gf_labs(title = "Gaussian (dnorm())") %>%
+  gf_lims(y=c(0,.5))
+slice_plot(x^2 ~ x, domain(x=c(-1.2, 1.2))) %>%
+  slice_plot(x^5 ~ x, color="gray") %>%
+  gf_point(0.0 ~ 0, color="purple", size=5, alpha = 0.2) %>%
+  gf_point(1 ~ 1, color="purple", size=5, alpha = 0.2) %>%
+  gf_vline(xintercept = ~ 0, color="orange3") %>%
+  gf_hline(yintercept = ~ 0, color="dodgerblue") %>%
+   gf_vline(xintercept = ~ 1, color="orange3") %>%
+  gf_hline(yintercept = ~ 1, color="dodgerblue") %>%
+  gf_labs(title = "Power law (positive integer exponent)") 
+slice_plot(1/x ~ x, domain(x=c(.01, 1.5))) %>%
+  slice_plot(1/x ~ x, domain(x=-c(.01, 1.5))) %>%
+  gf_segment(0 + 0 ~ -1.5 + 1.5, color="orange", arrow=arrow(ends="both", type="closed")) %>%
+  gf_segment(6 + -6 ~ 0 + 0, color="orange", arrow=arrow(ends="both", type="closed")) %>%
+  gf_point(1 ~ 1, color="purple", size=5, alpha = 0.2) %>%
+  gf_vline(xintercept = ~ 1, color="orange3") %>%
+  gf_hline(yintercept = ~ 1, color="dodgerblue") %>%
+  gf_labs(title = "Reciprocal (1/x)") %>%
+  gf_refine(scale_y_continuous(breaks=c(-5, -3, -1, 0, 1, 3, 5), lim=c(-6,6)))
+```
+
+Each of the following plots shows a basic modeling function whose input scaling has the form $x - x_0$. Your job is to figure out from the graph what is the numerical value of $x_0$. (Hint: For simplicity, $x_0$ in the questions will always be an integer.)
+
+```{r echo=FALSE}
+slice_plot(dnorm(x-2) ~ x, domain(x=c(-3,3))) %>% gf_labs(title="(A)")
+```
+
+```{r fp-dnorm, echo=FALSE, results="markup"}
+askMC(
+  "In plot (A), what is $x_0$?",
+  -2, -1, 0, 1, "+2+" = "Right. Look for the input that generates the peak output value.", random_answer_order = FALSE
+)
+```
+
+```{r echo=FALSE}
+slice_plot(sin(x+1) ~ x, domain(x=c(-4,4))) %>% gf_labs(title="(B)")
+```
+
+
+```{r fp-sin, echo=FALSE, results="markup"}
+askMC(
+  "In plot (B), what is $x_0$?",
+  "-2", "+-1+"= "The fiducial point is a positive-going zero crossing.", 0, 1, "2" , random_answer_order = FALSE
+)
+```
+
+```{r echo=FALSE, warning=FALSE}
+slice_plot(log(x -1) ~ x, domain(x=c(-2,5)), npts=500) %>% gf_labs(title="(C)") 
+```
+
+
+```{r fp-log, echo=FALSE, results="markup"}
+askMC(
+  "In plot (C), what is $x_0$?",
+  -2, "-1", 0, "+1+"= "The vertical asymptote is the clue.", "2" , random_answer_order = FALSE
+)
+```
+
+```{r echo=FALSE}
+slice_plot(pnorm(x -1) ~ x, domain(x=c(-3,3))) %>% gf_labs(title="(D)")
+```
+
+
+```{r fp-pnorm, echo=FALSE, results="markup"}
+askMC(
+  "In plot (D), what is $x_0$?",
+  -2, "-1", 0, "+1+"="The input where the output is half way between the two horizontal asymptotes", "2" , random_answer_order = FALSE
+)
+```
+
+```{r echo=FALSE}
+slice_plot(1/(x+2) ~ x, domain(x=c(-1.9,2))) %>% gf_labs(title="(E)") %>%
+  slice_plot(1/(x+2) ~ x, domain(x=c(-3,-2.1)))
+```
+
+```{r fp-recip, echo=FALSE, results="markup"}
+askMC(
+  "In plot (E), what is $x_0$?",
+  "+-2+" = "Right. The location of the vertical asymtote is the clue.", "-1", 0, "1", "2" , random_answer_order = FALSE
+)
+```
+
+

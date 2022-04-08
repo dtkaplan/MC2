@@ -1,0 +1,58 @@
+---
+id: "combining-hump-functions"
+author: "Daniel Kaplan"
+global-id: "JWUVA"
+---
+
+```{r include=FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+```
+
+The graph shows two gaussian functions, $g_1(t)$ and $g_2(t)$
+
+```{r echo=FALSE}
+g1 <- makeFun(20*dnorm(t, 50, 20) ~ t)
+g2 <- makeFun(20*dnorm(t, 125, 10) ~ t)
+slice_plot(g1(t) ~ t, domain(t=c(0,200)), color = "dodgerblue",
+           label_text = "g_1(t)",  label_x =.3) %>%
+  gf_labs(y = "Activity",  x = "Minute") %>%
+  slice_plot(g2(t) ~ t, color="orange3", label_text  = "g2(t)", label_x=.7)
+```
+
+A linear combination  of the gaussian functions is shown in Graph (A).
+
+```{r echo=FALSE}
+slice_plot(0.5 *  g1(t) + g2(t) ~ t, domain(t=c(0,200)) ) %>%
+  gf_labs(y = "Activity",  x = "Minute", title = "Graph A")
+```
+
+
+```{r daily-digital-09-QA17, echo=FALSE}
+askMC(
+  prompt = "What is the linear combination of  $g_1(t)$ and $g_2(t)$  shown in Graph (A)?",
+    "+$0.5\\,g_1(t) + g_2(t)$+" = "",
+    "$g_1(t) + 0.25\\,g_2(t)$" = "If this were the case, the right bump would be only one-quarter as big as the left bump.",
+    "$g_1(t) + 2\\,g_2(t)$" = "Since $g_2(t)$ has a maximum value  of 20, $2\\,g_2(t)$ would reach a value of 40.  That isn't what's shown in  the graph."
+)
+```
+
+Another linear combination  of the gaussian functions is shown in Graph (B).
+
+```{r echo=FALSE}
+slice_plot(g1(t) - 2*g2(t) ~ t, domain(t=c(0,200)) ) %>%
+  gf_labs(y = "Activity",  x = "Minute", title="Graph (B)")
+```
+
+
+```{r daily-digital-09-QA18, echo=FALSE}
+askMC(
+  prompt = "Which  linear combination of $g_1(t)$ and $g_2(t)$ is shown in Graph (B)?",
+    "+$g_1(t) - 2\\, g_2(t)$+" = "",
+    "$g_1(t) - g_2(t)$" = "The second (downward) gaussian hump is bigger than  the first  (upward) gaussian hump.",
+    "$0.5\\,g_1(t) - 0.5\\, g_2(t)$" = "If this were so, the second gaussian hump would reach a value of -4 rather than the -8 seen in Graph (B).",
+    "$-g_1(t) - g_2(t)$" = "The  first gaussian hump is  positive."
+)
+```
+

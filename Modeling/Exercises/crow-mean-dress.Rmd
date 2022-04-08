@@ -1,0 +1,91 @@
+---
+title: "Allometrics"
+author: "Danny Kaplan"
+date: 2020-06-03 
+tags: [power-law, allometrics, third]
+id: crow-mean-dress
+global-id: "KGYKY"
+---
+
+```{r include = FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+library(math141Z)
+```
+
+ 
+The surface area $S$ of a mammal is reasonably well approximated by the function $$S(M) \equiv k M^{2/3}$$ where $M$ is the body mass (in kg) and the constant $k$ depends on the particular species under consideration. 
+
+Note that $M^{2/3}$ is **not an allowed arithmetic operation**. $[M] = \text{mass}$, and mass, like any other dimension, cannot be raised to a non-integer power. More properly, the expression should be written $$\left(\frac{M}{1\  kg}\right)^{2/3}$$ The division by "1 kg" renders dimensionless the quantity in the parentheses: $$\left[\frac{M}{1\  kg}\right] = 1$$ 
+In order to render the quantity both dimensionless and *unitless*, $M$ should be specified in kg. The usual practice is to skip the "1 kg" business and simply say, "Where $M$ is in kg." You will see such notation frequently in your career and should take care to use the indicated units.
+
+You'll need to open a computing sandbox to do the calculations.
+
+```{r crow-mean-dress-1, echo=FALSE, results="markup"}
+askMC(
+  prompt = "Consider a baby and an adult. The adult's mass is $8$ times greater than the baby's. Then the adult's surface area is ...?",
+  "The same as the baby's", "1.5 times of the baby's", "+4 times the baby's+", "8 times the baby's",
+  random_answer_order = FALSE,
+  inline = FALSE
+)
+```
+
+
+
+
+```{r crow-mean-dress-2, echo=FALSE, results="markup"}
+# indicate correct choices with +_+ in the name of the list item.
+askMC(
+  prompt = "Consider a human of body mass 70 kg with a skin surface area of 18,600 cm^2^. Which of the following units for the constant of proportionality $k$ is correct?",
+    "cm$^2$ kg$^{-2/3}$" = "Kilograms to a fractional power is not a sensible unit.",
+    "+cm$^2$+" = "",
+    "cm$^2$ kg$^{2/3}$" = "When you multiply $(70 kg/kg)^{2/3}$ by $k$, you need to get a result in $cm^2$.",
+    "kg$^{-1}$" = "Would this produce $cm^2$ for the result?"
+)
+```
+
+```{r crow-mean-dress-3, echo=FALSE, results="markup"}
+askMC(
+  prompt = "In the units of part (B), which value is $k$ closest to?",
+  1, 10, 100, "+1000+",
+  random_answer_order = FALSE
+)
+```
+
+The numerical value of the constant $k$ changes depending on what units you want to express it in. The value you found in part (C) works for masses stated in kg and skin areas in cm$^2$. 
+
+Suppose you want to figure out a value of $k'$ that you can use in the formula for people who are used to talking about skin area in square inches and mass in pounds. The units of $k$ are cm$^2$, and we want the units of $k'$ to be in$^2$. That part is easy: just multiply $k$ by two flavors of one to change the units from cm to inches, like this:
+
+$$k' = k\ \underbrace{\frac{\text{in}}{2.6 \text{cm}}}_\text{flavor of 1}\  \underbrace{\frac{\text{in}}{2.6 \text{cm}}}_\text{flavor of 1} = \frac{k}{2.6^2}$$ where the flavor of 1 reflects that 1 inch is 2.6 cm.
+
+**But this is not the whole story**. We have to be very careful in dealing with the $\left(\frac{M}{1 kg}\right)^{2/3}$. Translated to pounds, $M = 70\ \text{kg} = 154\ \text{lbs}$, since, in the rough-and-ready way everyday people express themselves, 1 kg $\approx$ 2.2 lbs.^[Of course, pounds is a measure of force, not mass. But people use it as if it were mass. A mass of 70 kg corresponds to about 4.8 slugs. In Earth's gravity, the mass 4.8 slugs produces a force of 154 pounds.]
+
+ Plugging in $M=154$ lbs makes the power-law part of the formula for skin area
+$$\left(\frac{154\ \text{lbs}}{1\ \text{kg}}\right)^{2/3}$$
+You can't take (pounds)$^{2/3}$ or (kg)$^{2/3}$; you won't get a sensible unit in either case. But [pounds/kg] = [1], so taking the two-thirds power of the ratio is perfectly legitimate. 
+
+Still, there's a problem. Multiplying $k\ 154^{2/3} (\text{lbs}/\text{kg})^{2/3}$ has the right dimension, but strange-looking units that have nothing to do with skin area.
+
+The resolution to this paradox is to multiply $\frac{154\ \text{lbs}}{1\  \text{kg}}$ by an appropriate flavor of 1 to render the dimensionless quantity unitless as well as dimensionless. This flavor will be $\frac{1 \text{kg}}{2.2 lbs}$, giving a formula for skin area  in square inches: 
+
+<!--
+$$S_{in}(M)= \frac{k}{2.6^2}\left(\frac{154\ \bcancel{\text{lbs}}}{1\ \cancel{\text{kg}}}\ \underbrace{\frac{1\ \cancel{\text{kg}}}{2.2\ \bcancel{\text{lbs}}}}_\text{flavor of 1}\right)^{2/3} = \underbrace{\frac{k}{2.6^2}\ \left(\frac{1}{2.2}\right)^{2/3}}_{k'\ \text{for inches and pounds}} 154^{2/3}$$
+-->
+```{r echo=FALSE}
+knitr::include_graphics(normalizePath("www/EQ-cancel.png"))
+```
+
+```{r crow-mean-dress-5, echo=FALSE, results="markup"}
+askMC(
+  prompt = "Optional challenge) Assuming that $k = 1000 \\text{cm}^2$ when specifying mass in kilograms, what should be the numerical value of $k'$ in square-inches that should be used when body mass is given in pounds?",
+  8.7, 
+  "+87+",
+  870, 8700, 87000,
+  random_answer_order = FALSE
+)
+```
+
+
+
+

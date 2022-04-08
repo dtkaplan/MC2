@@ -1,0 +1,64 @@
+---
+id: "bumpy-road-1"
+author: "Daniel Kaplan"
+---
+
+
+
+```{r b-road-1-1, echo=FALSE}
+road <- makeFun(.3*dnorm(x-3.5) + .15*dnorm(x-0.5) + .2*dnorm(x+4) ~ x)
+slice_plot(road(x) ~ x, domain(x=c(-5,5))) %>%
+  gf_labs(title="Plot (A)")
+```
+
+The graph shows a function that is a linear combination of three x-shifted gaussian functions
+$$a_1 \dnorm(x-3.5) + a_2 \dnorm(x-0.5) + a_3 \dnorm(x-(-4))$$
+
+
+
+
+```{r b-road-1-1b, echo=FALSE, results="markup"}
+askMC(
+  "Estimate the scalars $a_1, a_2$, and $a_3$ for the function drawn in Plot (A). (Be sure to get the order right!)",
+  "+$a_1 = 0.3, a_2 = 0.15, a_3=0.2$+",
+  "$a_1 = 0.15, a_2 = 0.2, a_3=0.3$",
+  "$a_1 = 0.2, a_2 = 0.3, a_3=0.15$",
+  "$a_1 = 0.15, a_2 = 0.3, a_3=0.2$"
+)
+```
+
+
+
+```{r b-road-1-2, echo=FALSE}
+signal <- makeFun(pnorm(x+8) - pnorm(x+2) + pnorm(x-3)  -pnorm(x-7)~ x)
+slice_plot(signal(x) ~ x, domain(x=c(-10,10))) %>%
+  gf_labs(title="Plot (B)") %>%
+  gf_refine(scale_x_continuous(breaks=seq(-10, 10, by=2)))
+```
+
+Plot (B) shows a function that is a linear combination of four x-shifted sigmoid functions. Each the multiplicative scalars is either 1 or $-1$.  Recall that a handy fiducial point for the sigmoid function is the input at which the output is 1/2. 
+
+
+
+
+
+```{r b-road-1-2b, echo=FALSE, results="markup"}
+askMC(
+  "Where are the fiducial points for the four sigmoids?",
+  "+$-8, -2, 3, 7$+",
+  "$-6, -4, 0, 6$",
+  "$-9, -8, 1, 5$",
+  "$-2, 2, 4, 6$"
+)
+```
+
+```{r b-road-1-2c, echo=FALSE, results="markup"}
+askMC(
+  "What are the scalar multipliers on each sigmoid, in order from the leftmost to rightmost?",
+  "+$1, -1, 1, -1$+",
+  "$1, -1, -1, 1$",
+  "$-1, 1, 1, -1$",
+  "$-1, 1, -1, 1$"
+)
+```
+

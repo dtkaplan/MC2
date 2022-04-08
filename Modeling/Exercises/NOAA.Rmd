@@ -1,0 +1,86 @@
+---
+title: "NOAA table"
+author: "Daniel Kaplan"
+---
+
+```{r include=FALSE, context="setup"}
+library(etude2)
+```
+
+Many printed tables are meant to be used as functions; you plug in  the input values and read off the output. Here's a table  published by the National Oceanic and  Atmospheric Administration for  the [heat index](https://en.wikipedia.org/wiki/Heat_index
+), a way of summarizing the perceived comfort (or discomfort) of summer-like weather conditions.
+
+```{r echo=FALSE, out.width="90%", fig.align="center"}
+knitr::include_graphics(normalizePath("www/heat-index.png"))
+```
+
+
+```{r daily-digital-01-QA2, echo=FALSE}
+askMC(
+  prompt = "What are the inputs to the heat-index function",
+    "+temperature and relative humidity+",
+    "temperature and wind speed" = "Those are the inputs to the wind-chill function, not the heat index.",
+    "temperature, latitude, and longitude" = "The heat index doesn't depend on location."
+)
+```
+
+The table actually shows three different functions:
+
+1. The heat index in $^\circ$ F.
+2. The heat index in $^\circ$ C.
+3. A caution warning level.
+
+```{r daily-digital-01-QA3, echo=FALSE}
+askMC(
+  prompt = "For inputs of 70% relative humidity and $88^{\\circ}$ F, what are the outputs of the three functions?",
+    "+$100^{\\circ}$ F, $38^\\circ$ C, and \"extreme caution\".+" = "",
+    "$100^\\circ$ F, $38^\\circ$ C, and \"danger\"." = "Check again!",
+    "$100^\\circ$ F, $33^\\circ$ C, and \"extreme caution\"." = "33C does is not the same temperature as 100F."
+)
+```
+
+
+```{r daily-digital-01-QA4, echo=FALSE}
+askMC(
+  prompt = "Holding the relative humidity at 70%, how much would the ambient temperature have to increase (from $88^\\circ$ F) to change the caution-level output to \"dangerous\"?",
+    "+Increase by $2^\\circ$ F+" = "",
+    "Increase by  $6^\\circ$ F" = "It looks like you're increasing the humidity to the point where the heat index is $106^circ$ F. But we  asked you how much the temperature *input* has to change, not the heat-index output.",
+    "Increase relative humidity to 80%." = "It's true that at $100^\\circ$ F and 80% humidity, the caution-index is \"dangerous\". But the problem specified holding humidity constant."
+)
+```
+
+
+```{r daily-digital-01-QA5, echo=FALSE}
+askMC(
+  prompt = "From a starting point of $88^\\circ$ F and 70% humidity, what is the slope of the increase in heat index when moving to 80% humidity.",
+    "+$6^\\circ$ F per 10 percentage points humidity+" = "",
+    "$6^\\circ$ F" = "A slope is always \"rise over run\". You've got the rise right, but what about the run?",
+    "$6^\\circ$ F per 80% humidity." = "The slope is the change in output divided by the change in input, i.e. \"rise over run\". 80% is the humidity at the endpoint, but the run is the change in humidity from the starting point to the endpoint."
+)
+```
+
+```{r daily-digital-01-QA6, echo=FALSE}
+askMC(
+  prompt = "What is the heat-index output when the inputs are 52% relative humidity and $91^\\circ$ F? Choose the best answer.",
+  "+$98.4^\\circ$ F+" = "Of course, the 4 in the last digit is sketchy, but it's reasonable to calculate the interpolated output by averaging over neighboring outputs.",
+    "$101^\\circ$ F" = "That's the output at 55% humidity and $92^\\circ$ F.",
+    "The table doesn't say." = "While it's true that there is no table entry specifically for 52% and $91^\\circ$ F, you can make a very reasonable guess by  *interpolation*, that is, reading between the rows and columns."
+)
+```
+
+```{r daily-digital-01-TF1, echo=FALSE}
+askMC(
+  prompt = "True or false: The caution-level output could have been presented as a function of just one variable, rather than needing both temperature and humidity both.",
+  "+TRUE+" = "The caution-level output is not a function of ambient temperature alone or of humidity alone. But if you know the heat-index, you know that caution level exactly.",
+  "FALSE" = "Notice that the caution-level output is the same for any given level of the heat index, regardless of the ambient temperature or humidity separately."
+)
+```
+
+
+The US National Weather Service also publishes a heat index graphic, the one below.
+
+```{r echo=FALSE, fig.align="center", out.width="90%"}
+knitr::include_graphics(normalizePath("www/weather-service-heatindex.png"))
+```
+
+[Source link](https://www.weather.gov/images/oun/wxsafety/summerwx/heatindex.gif)

@@ -1,0 +1,168 @@
+# Fitting and polishing {#chap-fitting-polishing}
+
+<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/modeling/03-linear-combinations.Rmd)</div>
+
+```{r include=FALSE}
+book_file_name <- "modeling/03-linear-combinations.html"
+```
+
+In Chapter \@ref(assembling) we discussed a framework for building on pattern-book functions by use of ***input scaling*** and ***output scaling***, as with:
+
+$$\text{tide_level}(t) \equiv A \sin\left(a (t - t_0)\right) + B\ .$$
+In this chapter, we'll build on both these ideas to make them easier to use:
+
+- input scaling will become ***parameter selection***: We'll give standard procedures that allow you to determine by eye the input-scaling parameters for the functions $\exp()$, $\sin()$, gaussian(), and sigmoid(). These will be similar in spirit to the procedures you learned in high-school for finding the parameters of the straight-line function from visually identifiable aspects such as the slope and y-intercept.
+
+- output scaling will become finding ***linear combinations***: We'll generalize the idea beyond the A/B format used in Chapter \@ref(assembling) to include finding linear combinations of any numbers of functions, e.g. $A f(x) + B g(x) + C h(y) + \ldots$. The importance of building linear combinations can hardly be overstated. In fact, Block 5 of *MOSAIC Calculus* is entirely about this.
+
+Taken together, the tools of parameter selection and finding linear combination support a standard process for building model functions. 
+
+## Parameter names
+
+The functions we will work with in this chapter either have no parameters (e.g. one() or identity()) of have standard formats and names for parameters. 
+
+The gaussian and sigmoid share the same parameters: "mean" and "sd" (short for "standard deviation").
+
+The exponential function is written in several different forms with different parameter names. Perhaps the most standard is $\exp(k t)$ with "k" as the parameter name. Closely related is the form $\exp(-k t)$, which is used especially for exponential decay. Another form often seen is $\exp(-t / \tau)$, where the parameter $\tau$ (a Greek letter pronounced "tau") is the "time constant." In practice, as you'll see, it's common to estimate quantities called the "doubling time" or "half-life," which are relatively easy to read from a graph, but then have to be converted the $k$ or $\tau$ form.
+
+For the sinusoid, we will often use the form $\sin\left(\frac{2\pi}{P} (t- t_0)\right)$, where the parameter $P$ is the "period" of oscillation. But in fields such as engineering or physics one frequently encounters the sinusoid parameterized by "frequency" or "angular frequency" or "wave number" or "wavelength." All of these get at the same characteristic as "period," but in ways that are more or less convenient depending on the application. 
+
+## Straight-line function
+
+
+## Gaussian and Sigmoid
+
+## Sinusoid
+
+## Exponential
+
+
+
+
+
+## FROM EARLIER INTRO
+
+introduced three important techniques for constructing new functions out of existing ones:
+
+- Composition, e.g. $f(g(x))$
+- Multiplication, e.g. $f(x) g(x)$ or, a function with two inputs, $f(y) g(x)$
+- Linear combination, e.g. $A f(x) + B\, g(x)$ or, a function with two inputs, $A f(y) + B\, g(x)$
+
+Don't be misled by the short examples: any of the three techniques can be used to combine any number of combinations. In Chapter \@ref(low-order), for instance, you'll see instances when we flexibly build new functions with two inputs by linearly combining six standard functions.
+
+This chapter is about the uses of linear combination 
+
+
+
+
+
+We've discussed ***shifting the baseline*** of the exponential and sinusoid functions by adding a constant to the basic modeling function, like this:`r mark(864)`
+
+$$f(t) \equiv A e^{kt} + C\\
+\ \\
+g(t) \equiv A \sin\left(\frac{2\pi}{P} t\right) + C$$
+
+We've called this output scaling. It's an example of a much more general and powerful way of contructing modeling functions called ***linear combinations***.
+
+In a linear combination, you start with one or more basic functions. For discussion, let's call these $f_1(t)$, $f_2(t)$, $f_3(t)$ and so on. In making a linear combination, multiply each of the basic functions by some quantity and add the results together:
+
+$$\text{linear combination of}\ f_1(t)\ \text{and}\ f_2(t): \ \ A_1 f_1(t) + A_2 f_2(t)$$
+The quantities $A_1$ and $A_2$ are called ***scalars*** because they **scale** the functions. (In Chapter \@ref(vectors) you will see that we make a distinction between a **scalar**, which is a single quantity, and a **vector**, which is a set of scalars.)
+
+It's common to take linear combinations of functions with different inputs, for example
+$$h(x, y, t) \equiv 4 e^{-kt} + 7 y + 2\,\pnorm(x-3) - 19$$
+
+In fields like statistics and economics and other social sciences, as well as clinical medical research, a great number of modeling techniques involve such combinations of functions of various inputs. `r mark(866)`
+
+In engineering and physics, an important class of functions involves a linear combination of many sinusoids of different periods, e.g. 
+
+$$\text{signal}(t) \equiv A_1 \sin\left(\frac{2 \pi}{P_1}t\right) + 
+A_2 \sin\left(\frac{2 \pi}{P_2}t\right) + 
+A_3 \sin\left(\frac{2 \pi}{P_3}t\right) + \cdots$$
+
+Linear combination of functions provides a powerful and flexible general-purpose modeling technique in part because many physical systems seem to work this way and in part because the methods for finding the scalars---$A_1$, $A_2$, and so on---have an extremely strong theory and fast computer implementations that automatically solve the problem once the modeler has selected the functions she wants to combine. In Block 4, we use the name ***target problem*** to refer the problem of finding scalars to match as well as possible a linear combination to data.
+
+An expression like $A e^{kx} + C$ combines the exponential (obviously!) and a second function that isn't immediately obvious: the constant function $\text{constant}(x) \equiv 1$. It might be overkill to re-write the expression as $A e^{kx} + C\, \text{constant}(x)$ but get in the habit of seeing the constant function as a constant presence in linear combinations!
+
+Polynomials are an important example of linear combinations. Something like $p(x) \equiv a + b t + c t^2$ is a linear combination of the constant function, the proportional function, and the square function. 
+
+## Functions with multiple inputs
+
+We can use ***linear combination*** and ***function multiplication*** to build up custom functions from the basic modeling functions. Similarly, linear combination and function multiplication provide ways to construct functions of multiple inputs. `r mark(1400)` 
+
+## f(x) times g(t)
+
+For example, when a guitar string is at rest it forms a straight line connecting its two fixed ends: one set by finger pressure along the neck of the guitar and the other at the bridge near the center of the guitar body. When a guitar string is plucked, its oscillations follow a sinusoid pattern of **displacement**. With the right camera and lighting setup, we can see these oscillations in action:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/F0NsJ7J8rYM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+For a string of length $L$, the string displacement is a function of position $x$ along the string and is a linear combination of functions of the form $$g_k(x) \equiv \sin(k \pi x /L)$$ where $k$ is an integer.  A few of these functions are graphed in Figure \@ref(fig:guitar-string-modes) with $k=1$, $k=2$, and $k=3$.
+
+```{r guitar-string-modes, echo=FALSE, fig.height=3, fig.width=7, fig.show="hold", fig.cap="Vibrational modes of a guitar string."}
+slice_plot(sin(pi*x/100) ~ x, domain(x=c(0, 100)), 
+           label_text = "k=1") %>% 
+  slice_plot(sin(2* pi*x/100) ~ x, color="dodgerblue",
+             label_text="k=2", label_x = 0.95) %>%
+  slice_plot(sin(3* pi*x/100) ~ x, color="green",
+             label_text="k=3", label_x = 0.90) %>%
+  gf_labs(x="", y="", title="Three modes of a guitar string.")
+string_shape <- function(x, t) {
+  sin(pi*x/100)*sin(pi*t) - 2*sin(2*pi*x/100)*sin(2*pi*t) - 1.5*sin(3*pi*x/100)*sin(3*pi*t)
+}
+
+slice_plot(
+  string_shape(x, t=pi/2) ~ x,
+  domain(x=c(0,100))
+) %>%
+  gf_labs(x="Position along string (%)", y="Side-to-side displacement (mm) ", title="A linear combination of the modes")
+```
+
+Shapes of the sort in Figure \@ref(fig:guitar-string-modes) are a stop-motion flash snapshot of the string. The string's shape also changes in time, so the string's displacement is a function of both $x$ and $t$. The displacement itself is a sinusoid whose time period depends on the length and tension of the string as well as the number of cycles of the spatial sine: 
+$$g_k(x, t) \equiv \sin(\frac{k \pi}{L} x) \ \sin(\frac{k \pi}{P}t)$$ Figure \@ref(fig:string-motion) shows a few snapshots of the 1.5 cycle string at different moments in time, and the motion of the linear combination.`r mark(1410)` 
+
+```{r string-motion, echo=FALSE, fig.height=3, fig.width=7, fig.show="hold", fig.cap="String position changes over time."}
+slice_plot(sin(3*pi*x/100) * sin(.5) ~ x, 
+           domain(x=c(0,100))) %>%
+  slice_plot(sin(3*pi*x/100) * sin(.6) ~ x, alpha = 0.5) %>%
+  slice_plot(sin(3*pi*x/100) * sin(.7) ~ x, alpha = 0.25) %>%
+  gf_labs(title="Shape at three different instants",
+          x = "", y="Side-to-side displacement")
+slice_plot(string_shape(x, .5) ~ x, domain(x=c(0,100))) %>%
+  slice_plot(string_shape(x, .525) ~ x, alpha = 0.7) %>%
+  slice_plot(string_shape(x, .55) ~ x, alpha = 0.5) %>%
+  slice_plot(string_shape(x, .575) ~ x, alpha = 0.37) %>%
+  slice_plot(string_shape(x, .6) ~ x, alpha = 0.25) %>%
+  gf_labs(y="Side-to-side displacement (mm)",
+          x = "Position along string (%)",
+          title="Linear combination of vibrating modes at different times.")
+```
+::: {.why  data-latex=""}
+
+We left function ***composition*** out of the list of ways to build multivariable functions out of simpler functions with a single input.  
+
+For instance, consider the two functions $f(x)$ and $g(t)$. The composition $f(g(t))$ has only **one** input: $t$. Similarly, $g(f(x))$ has only one input: $x$.
+
+:::
+
+
+
+## Exercises
+
+
+<!-- functions with multiple inputs -->
+`r insert_calcZ_exercise(12.1, "ICLSE", "Exercises/NOAA.Rmd")`
+
+`r insert_calcZ_exercise(12.2, "EDKKW", "Exercises/pythagorus-two.Rmd")`
+
+
+
+`r insert_calcZ_exercise(12.4, "dB1r5F", "Exercises/spider-tear-plant.Rmd")`
+
+`r insert_calcZ_exercise(12.5, "drawing", "Exercises/drawing.Rmd")`
+
+`r insert_calcZ_exercise(12.6, "daylength", "Exercises/length-of-day.Rmd")`
+
+`r insert_calcZ_exercise("12.7", "kelxlB", "Exercises/gradient-field-pink.Rmd")`
+
+`r insert_calcZ_exercise("12.8", "ticlw", "Exercises/gradient-field-violet.Rmd")`
+

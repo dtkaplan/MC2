@@ -1,0 +1,40 @@
+# Fitting functions by eye {#fitting-by-eye}
+
+Bring in the algorithms from the original Block-1/08-modeling
+
+-----
+
+**Moved from 01-parameters.**
+
+
+Name        |  Pattern-book form | Modeling form
+------------|-------------|------------------
+exponential |  $e^x$      | $A e^{kx} + C$
+sinusoid    | $\sin(x)$   | $A \sin\left(\frac{2 \pi}{P} (x-x_0)\right) + C$
+proportional | $x$        | $a x + b$
+
+::: {.takenote  data-latex=""}
+The parameter $C$ is often called the ***baseline*** or the ***offset***. Statisticians call it the "intercept," because it plays the same role as $b$ in the straight-line function.
+
+When working with sinusoids, parameter $A$ is called the ***amplitude***.
+
+```{r show-sin-params, echo=FALSE, warning=FALSE, fig.cap="Baseline (blue), amplitude (red), and period (green) for the sinusoid."}
+# making waveforms for the figure
+slice_plot(sin(x) ~ x, domain(x=c(-1, 12))) %>%
+  gf_hline(yintercept=0, color="dodgerblue") %>%
+  gf_refine(theme_void()) %>%
+  gf_errorbar(0 + 1 ~ pi/2, color="orange3") %>%
+  gf_errorbar(-1 + 0 ~ 3*pi/2, color="orange3") +
+  geom_errorbarh(aes(y=1/2, xmin=0, xmax=2*pi), color="green", size=.5)
+```
+
+```{r show-exp-baseline, echo=FALSE, warning=FALSE, fig.cap="The baseline for the exponential is the horizontal asymptote. There is no vertical asymptote."}
+slice_plot(exp(x) ~ x, domain(x=c(-2, 2))) %>%
+  gf_hline(yintercept=0, color = "dodgerblue") %>%
+  gf_segment(0 + 0 ~ 0 + (-2), color="orange", arrow=arrow(ends="last", type="closed")) %>%
+
+  gf_refine(theme_void())
+```
+:::
+
+-----

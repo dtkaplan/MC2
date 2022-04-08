@@ -1,0 +1,400 @@
+# Assembling functions {#assembling}
+
+```{r child="../starter.Rmd"}
+```
+
+When we need a new function for some purpose, we practically always build it out of existing functions. For instance, a  parameterized function like $$f(x) \equiv A \sin\left(\frac{2 \pi}{P}x\right) + B$$ is built by assempling together a straight-line input scaling, a pattern-book $\sin()$ function, and another straight-line function for scaling the output from $\sin()$. This is an example of ***function composition*** where functions are "layered," the output of one function being given as the input to another. For instance,
+$f(x)$ is put together from three composed functions, $\text{output}()$, $\sin()$, $\text{input}()$ where $$f(x) = \text{output}(sin(\text{input}(x))$$ where 
+$$\text{output}(x) \equiv Ax + B \ \ \ \text{and}\ \ \ \text{input}(x) \equiv a x + b$$
+
+
+In this chapter, we'll review three general frameworks for combining functions: linear combination, composition, and multiplication. You have almost certainly seen all three of these frameworks in your previous mathematical studies, although you might not have known that they have names.
+
+## Linear combination 
+
+One of the most widely used sorts of combination is called a ***linear combination***. The mathematics of linear combination is, it happens, at the core of the use of math in applications, whether that be constructing a Google-like search engine or analyzing medical data to see if a treatment has a positive effect.
+
+You've worked for many years with one kind of linear combination: polynomials. No doubt you've seen functions^[It's likely that you saw polynomials as things to be factored, rather than as functions taking an input and producing an output. So they were written as *equations*: $3 x^2 + 5x - 2 = 0$.] like $$f(x) \equiv 3 x^2 + 5 x - 2$$
+
+There are three pattern-book functions in this polynomial. In  polynomials the functions being combined are all power-law functions: $g_0(x) \equiv 1$, $g_1(x) \equiv x$, and $g_2(x) \equiv x^2$. With these functions defined, we can write the polynomial $f(x)$ as $$f(x) \equiv 3 g_2(x) + 5 g_1(x) - 2 g_0(x)$$
+Each of the functions is being scaled by a quantity---3, 5, and -2 in this example---and the scaled functions are added up. That's a linear combination; scale and add. (Later, we'll see that the ***scalars*** generally come with units. So we might well have a metric polynomial and an equivalent traditional-unit polynomial. Just wait.)
+
+
+There are other places where you have seen linear combinations: 
+
+- The parameterized ***sinusoid***  $$A \sin\left(\frac{2 \pi}{P}t\right) + B$$ is a linear combination of the functions $h_1(t) \equiv \sin\left(\frac{2 \pi}{P} t\right)$ and $h_2(t) \equiv 1$. The linear combination is $A\,h_1(t) + B\, h_2(t)$.
+- The parameterized ***exponential*** $$A e^{kt} + B$$ The functions being combined are $e^{kt}$ and $1$. The scalars are, again, $A$ and $C$.
+- The straight line function, such as $\mbox{output}(x) \equiv A x + B$ and  $\mbox{input}(x) \equiv a x + b$. The functions being combined are $x$ and $1$, the scalars are $a$ and $b$.  
+
+Note that neither the parameterized exponential or the parameterized sinusoid is a polynomial simply because it is not constructed exclusively from monomials.
+
+There are a few reasons for us to be introducing linear combinations here.
+
+1. You will see linear combinations everywhere once you know to look for them.
+2. There is a highly refined mathematical theory of linear combinations that gives us powerful ways to think about them as well as computer software that can quickly find the best scalars to use to match input-output data.
+3. The concept of linear combination generalizes the simple idea that we have been calling "scaling the output." From now on, we'll use the linear-combination terminology and avoid the narrower idea of "scaling the output."
+4. Many physical systems are described by linear combinations. For instance, the motion of a vibrating molecule or a helicopter in flight or a building shaken by an earthquake are described in terms of simple "modes" which are linearly combined to make up the entire motion. More down to Earth, the timbre of a musical instrument is set by the scalars in a linear combination of pure tones.
+5. Many modeling tasks can be put into the framework of choosing an appropriate set of simple functions to combine and then figuring out the best scalars to use in the combination. (Generally, the computer does the figuring.)
+
+
+## Function composition {#function-composition}
+
+To ***compose*** two functions, $f(x)$ and $g(x)$, means to apply one of the functions to the output of the other. "$f()$ composed with $g()$" means $f(g(x))$. This is generally very different from "$g()$ composed with $f()$" which means $g(f(x))$.
+
+For instance, suppose you have recorded the outdoor temperature over the course of a day and packaged this into a function $\text{AirTemp}(t)$: temperature as a function of time $t$. Your digital thermometer uses degrees Celsius, but you want the output units to be degrees Kelvin. The conversion function is $$\text{CtoK}(C) \equiv C + 273.15$$
+Notice that CtoK() takes temperature in $^\circ C$ as input. With this, we can write the "Kelvin as a function of time" as $$\text{CtoK}\left(\text{AirTemp}(t)\right)$$
+
+It's important to distinguish the above time $\rightarrow$ Kelvin function from something that looks very much the same but is utterly different: $\text{AirTemp}\left(\text{CtoK}(C)\right)$. In the first, the input is time. In the second, it is temperature in celsius.
+
+
+Here is a model of the length of daylight (in hours) as a function of latitude $L$ and the declination angle $\delta$ of the sun. 
+
+$$\text{daylight}(L, \delta) \equiv {\small\frac{2}{15}} \arccos\left(-\tan(L)*\tan(\delta)\right)$$
+The declination angle is the latitude of the point on the earth's surface pierced by an imagined line connecting the centers of the earth and the sun. On the summer solstice, the longest day of the year, it is $23.44^\circ$. On $day$, where midnight before January 1 is $day=0$ and the end of December 31 is $day=365.25$, the declination is
+$$\delta(day) = 23.44 \sin\left({\small\frac{2\pi}{365.25}} (day-9)\right)\ ,$$
+a composition of $\sin()$ with the straight-line function ${\small\frac{2\pi}{365.25}} (day - 9)$.
+
+Composing day_length$(L, \delta)$ onto $\delta(day)$ gives the length of daylight as a function of day of the year:
+$$\text{light}(L, day) \equiv {\small\frac{2}{15}} \arccos\left(-\tan(L)*\tan(\delta(day))\right)\ .$$
+Function composition enables us to transform a function that takes one kind of thing as input (say, declination) and turn it into a function that takes another kind of thing as input (say, day of the year).
+
+
+
+::: {.intheworld  data-latex=""}
+Income inequality is a matter of perennial political debate. In the US, most people support Social Security, which is an income re-distribution programming dating back almost a century. But other re-distribution policies are controversial. Some believe they are essential to a healthy society, others that the "cure" is worse than the "disease." 
+
+Whatever one's views, it's helpful to have a way to quantify inequality. There are many ways that this might be done. A mathematically sophisticated one is called the ***Gini coefficient***.
+
+Imagine that society was divided statistically into income groups, from poorest to richest. Each of these income groups consists of a fraction of the population and has, in aggregate, a fraction of the national income. Poor people tend to be many in number but to have a very small fraction of income. Wealthy people are few in number, but have a large fraction of income. The table shows data for US households in 2009:^[These data, as well as the general idea for the topic come from La Haye and Zizler (2021), "The Lorenz Curve in the Classroom", *The American Statistician*, 75(2):217-225]
+
+group label  | population | aggregate income | cumulative income | cumulative pop.
+:------------|-----------:|-----------------:|:-------
+poorest      | 20%   | 3.4%  | 3.4%         | 20%
+low-middle   | 20%   | 8.6%  | 12.0%        | 40%
+middle       | 20%   | 14.6% | 26.6%        | 60%
+high-middle  | 20%   | 23.2% | 47.8%        | 80%
+richest      | 20%   | 50.2% | 100.0%       | 100%
+
+
+The ***cumulative*** income shows the fraction of income of all the people in that group or poorer.  The cumulative population adds up the population fraction in that row and previous rows. So, a cumulative population of 60% means "the poorest 60% of the population" which, as the table shows, earn as a group 14.6% of the total income for the whole population.
+
+A function that relates the cumulative population to the cumulative income is called a ***Lorenz function***. The data are graphed in @fig-lorenz-data and available as the `US_income` data frame in the `r sandbox_link()`. Later, in @fig-lorenz-one-fun, we'll fit parameterized functions to the data.
+
+```{r echo=FALSE}
+#| label: fig-lorenz-data
+#| fig-cap: "Data on household incomes in the US in 2009."
+#| fig-cap-location: margin
+Income <- tibble::tribble(
+  ~ income, ~ pop,
+  0,     0,
+  3.4,  20,
+  12.0, 40, 
+  26.6, 60,
+  47.8, 80,
+  100, 100
+) %>%
+  mutate(income=income/100, pop=pop/100)
+P <- gf_point(income ~ pop, data = Income) %>%
+  gf_labs(x="Population percentile (p)", y="Cumulative income percentile (L)") %>%
+  gf_refine(coord_fixed())
+P
+```
+
+Lorenz curves must:
+
+- Be concave up, which amounts to saying that the curve gets steeper and steeper as the population percentile increases. (Why? Because at any point, poorer people are to the left and richer to the right.) 
+- Connect (0,0) to (1, 1). 
+
+Calling the income percentile $L$ a function of the population percentile $p$, a Lorenz function is $L(p)$ that satisfies the requirements in the previous paragraph.
+Here are some functions that meet the requirements:
+
+- $L_b(p) \equiv p^b$ where $1 \leq b$.
+- $L_q(p) \equiv 1 - (1-p)^q$ where $0 < q \leq 1$
+
+Notice that each of these functions has just one parameter. It seems implausible that the workings of a complex society can be summarized with just one number. We can use the curve-polishing techniques that will be introduced in @chap-fitting-polishing to find the "best" parameter value to match the data. 
+
+```{r}
+Lb <- fitModel(income ~ pop^b, data = Income, start=list(b=1.5))
+Lq <- fitModel(income ~ 1 - (1-pop)^q, data = Income, start=list(q=0.5))
+```
+
+@fig-lorenz-one-fun compares the fitted functions to the data.
+
+```{r echo=FALSE}
+#| label: fig-lorenz-one-fun
+#| fig-cap: "Lorenz curves $L_b(p)$ (blue) and $L_q(p)$ (magenta) fitted to the household income data."
+#| fig-cap-location: margin
+P %>%
+  slice_plot(Lb(pop) ~ pop, color="dodgerblue", npts=500) %>%
+  slice_plot(Lq(pop) ~ pop, color="orange3", npts=500) %>%
+  slice_plot(.55*Lb(pop) + .45*Lq(pop) ~ pop, color="magenta")
+```
+
+Neither form $L_b(p)$ or $L_q(p)$ gives a compelling description of the data. Where should we go from here?
+
+We can provide more parameters by constructing more complicated Lorenz functions. Here are two ways to build a new Lorenz function out of an existing one:
+
+- The product of any two Lorenz functions, $L_1(p) L_2(p)$ is itself a Lorenz function.
+- A linear combination of any two Lorenz functions, $a L_1(p) + (1-a) L_2(p)$, so long as the scalars add up to 1, is itself a Lorenz function. For instance, the magenta curve in @fig-lorenz-one-fun is the linear combination of 0.45 times the tan curve plus 0.55 times the blue curve.
+
+Question: Is the composition of two Lorenz functions a Lorenz function? That is, does the composition meet the two requirements for being a Lorenz function?
+
+To get started, figure out whether or not $L_1(L_2(0)) = 0$ and $L_1(L_2(1)) = 1$. If the answer is yes, then we need to find a way to compute the concavity of a Lorenz function to determine if the composition will always be concave up. We'll need additional tools for this. We'll introduce these in Block 2.
+
+:::
+
+
+
+
+
+## Function multiplication
+
+The third in our repertoire of methods for making new function out of old is plain old multiplication. With two functions $f(x)$ and $g(x)$, the product is simply $f(x)g(x)$.
+
+It's essential to distinguish between function multiplication and function composition:
+
+$$\underbrace{f(x) g(x)}_\text{multiplication}\ \ \ \ \underbrace{f(g(x)) \ \ \text{or}\ \ \ g(f(x))}_\text{composition}$$
+
+In function composition, only one of the functions---the ***interior function*** is applied to the overall input, $x$ in the above example. The ***exterior function*** is fed its input from the output of the interior function. 
+
+In multiplication, each of the functions is applied to the input individually. Then their outputs are multiplied to produce the overall output.
+
+In function composition, the order of the functions matters: $f(g(x))$ and $g(f(x))$ are in general completely different functions.
+
+In function multiplication, the order doesn't matter because multiplication is ***commutative***, that is, if $f()$ and $g()$ are the functions to be multiplied $f(x) \times g(x) = g(x)\times f(x)$. 
+
+
+::: {.example data-latex=""}
+***Transient vibration***
+
+A guitar string is plucked to produce a note. The sound is, of course, vibrations of the air created by vibrations of the string. 
+
+After plucking, the note fades away. An important model of this is a sinusoid (of the correct period to correspond to the frequency of the note) times an exponential.
+
+Function multiplication is used so often in modeling that you'll see it in many modeling situations. Here's one example that is important in physics and communication: the ***wave packet***. Overall, the wave packet is a localized oscillation as in @fig-wave-packet. 
+
+```{r echo=FALSE}
+#| label: fig-wave-packet
+#| fig-cap: "A *wave packet* constructed by multiplying a sinusoid and a gaussian function."
+#| fig-cap-location: margin
+wave_packet <- function(x, A=1, center = 0, width = 5, P=1, phase = 0) {
+  A*sin(2*pi*x/P)*dnorm((x - center)/width)
+}
+slice_plot(wave_packet(x, A=2, center=3, width  = 4, P  = 10/5 ) ~ x, 
+           domain(x = c(-15, 15)), npts = 500)
+```
+
+This is the product of two simple functions: a gaussian times a sinusoid.
+
+```{r echo=FALSE, fig.show="hold"}
+#| label: fig-making-wave-packet  
+#| fig-cap: "The two components of the wave packet in @fig-wave-packet"
+#| fig-cap-location: margin
+sinusoid <- makeFun(sin(2*pi*x/P) ~ x, P=10/5)
+envelope <- makeFun(2*dnorm((x - center)/width) ~ x, center=3, width=4)
+Ptop <- slice_plot(envelope(x) ~ x, domain(x = c(-15, 15)), color="dodgerblue") %>%
+  gf_labs(title="The \"envelope\" of the wave packet")
+Pbottom <- slice_plot(sinusoid(x) ~ x, domain(x = c(-15, 15)),
+           color="orange3", npts=500) %>%
+  gf_labs(title="The oscillation in the wave packet. ")
+gridExtra::grid.arrange(Ptop, Pbottom, ncol=1)
+```
+:::
+
+
+
+::: {.intheworld  data-latex=""}
+The initial rise in popularity of the social media platform [Yik Yak](https://en.wikipedia.org/wiki/Yik_Yak) was exponential. Then popularity leveled off, promising a steady, if static, business into the future. But, the internet being what it is, popularity collapsed to near zero and the company closed.
+
+On way to model this pattern is by multiplying a sigmoid by an exponential.(See @fig-yikyak.)
+
+```{r echo=FALSE}
+#| label: fig-yikyak 
+#| fig-cap: "Subscriptions to the web messaging service Yik Yak grew exponentially in 2013 and 2014, then collapsed. The company closed in 2017."
+yikyak <- makeFun(
+  pnorm(year, mean=2014.5, sd=0.7) * exp(-(year-2014)) ~ year)
+slice_plot(yikyak(year) ~ year, domain(year=2010:2018))
+```
+:::
+
+
+
+
+
+Functions constructed as a ***product*** of simple functions can look like this in tradition notation:
+$$h(t) \equiv \sin(t) e^{-t}$$
+and like this in computer notation:
+
+```{r}
+h <- makeFun(sin(t)*exp(-t) ~ t)
+```
+
+
+
+## Watch your domain!
+
+Each of our pattern-book functions, with two exceptions, has a domain that is the entire number line $-\infty < x < \infty$. No matter how big or small is the value of the input, the function has an output. Such functions are particularly nice to work with, since we never have to worry about the input going out of bounds. 
+
+The two exceptions are:
+
+1. the logarithm function, which is defined only for $0 < x$.
+2. some of the power-law functions: $x^p$. 
+    - When $p$ is negative, the output of the function is undefined when $x=0$. You can see why with a simple example: $g(x) \equiv x^{-2}$. Most students had it drilled into them that "division by zero is illegal," and $g(0) = \frac{1}{0} \frac{1}{0}$, a double law breaker. 
+    - When $p$ is not an integer, that is $p \neq 1, 2, 3, \cdots$ the domain of the power-law function does not include negative inputs. To see why, consider the function $h(x) \equiv x^{1/3}$. 
+    
+::: {.rmosaic data-latex=""}
+It can be tedious to make sure that you are on the right side of the law when dealing with functions whose domain is not the whole number line. The designers of the hardware that does computer arithmetic, after several decades of work, found a clever system to make it easier. It's a standard part of such hardware that whenever a function is handed an input that is not part of that function's domain, one of two special "numbers" is returned. To illustrate:
+
+```{r warning=FALSE}
+sqrt(-3)
+(-2)^0.9999
+1/0
+```
+
+`NaN` stands for "not a number." Just about any calculation involving `NaN` will generate `NaN` as a result, even those involving multiplication by zero or cancellation by subtraction or division.^[One that does produce a number is `NaN^0`.] For instance:
+
+```{r warning=FALSE}
+0 * NaN
+NaN - NaN
+NaN / NaN
+```
+
+Division by zero produces `Inf`, whose name is reminiscent of "infinity." `Inf` infiltrates any calculation in which it takes part: 
+
+```{r warning=FALSE}
+3 * Inf
+sqrt(Inf)
+0 * Inf
+Inf + Inf
+Inf - Inf
+1/Inf
+```
+
+To see the benefits of the `NaN` / `Inf` system let's plot out the logarithm function over the graphics domain $-5 \leq x \leq 5$. Of course, part of that graphics domain, $-5 \leq x \leq 0$ is not in the domain of the logarithm function and the computer is entitled to give us a slap on the wrists. The `NaN` provides some room for politeness. 
+
+Open an R console and see what happens when you make the plot.
+
+```{r eval=FALSE}
+slice_plot(log(x) ~ x, domain(x=c(-5,5)))
+```
+
+:::
+
+## Splitting the domain
+
+Let's consider a familiar mathematical function: the absolute-value function:
+
+$$abs(x) = \left|x\right|$$
+Written this way, the definition of $abs()$ is a tautology. Unless you already know what $\left|x\right|$ means, you will have no clue what's going on.
+
+So, instead, let's define $abs()$ in terms of pattern-book functions and scaling. It will look like this:
+But with the ability to divide the domain into pieces, we gain access to a less mysterious sort of arithmetic operation and can re-write $$abs(x) \equiv \left\{ 
+\begin{array}{rl}  x & \text{for}\ 0 \leq x \\ 
+- x & \text{otherwise}\\\end{array}
+\right.$$ 
+
+This is an example of a ***piecewise function***, that is a function whose domain is split into two or more intervals and defined by different formulas on those intervals. In the conventional mathematical notation, there is a large $\LARGE\left\{\right.$ followed by two or more lines. Each line gives a formula for that part of the function and indicates to which interval the formula applies.
+
+Another piecewise function widely used in technical work, but not as familiar as $abs()$ is the ***Heaviside function***:
+Less familiar is the ***Heaviside function*** which has important uses in physics and engineering:
+
+$$\text{Heaviside}(x) \equiv \left\{ 
+\begin{array}{cl} 1 & \text{for}\ 0 \leq x \\0 & \text{otherwise}\end{array}
+\right.$$
+
+```{r echo=FALSE}
+slice_plot(0 ~ x, domain(x = c(-10, 0)), size=2) %>%
+  slice_plot(1 ~ x, domain(x = c(0,10)), size=2) %>%
+  gf_labs(subtitle="Heaviside function") %>%
+  gf_lims(y = c(-0.5, 1.5))
+```
+
+::: {.rmosaic}
+
+The traditional piecewise notation involving $\LARGE\left\{\right.$ is not directly useful as computer notation. In R, a handy way to define a piecewise function uses the R function `ifelse()` whose name is remarkably descriptive. The `ifelse()` function takes three arguments. The first is the question to be asked, the second is the value to return if the answer is "yes," and the third is the value to return for a "no" answer. Here's an example:
+
+```{r}
+H <- makeFun(ifelse(0 <= x, 1, 0) ~ x)
+```
+
+
+What takes getting used to here is the expression `0 <= x`. That expression is a ***question***; it is not a statement of fact. 
+
+The table shows computer notation for some common sorts of questions.  
+
+R notation              | English
+------------------------|---------
+`x > 2`      | "Is $x$ greater than 2?"
+`y >= 3`     | "Is $y$ greater than or equal to 3?"
+`x == 4`     | "Is $x$ exactly 4?"
+`2 < x & x < 5`| "Is $x$ between 2 and 5?"^[Literally, "Is $x$ both greater than 2 and less than 5?"]
+`x < 2 | x > 6` | "Is $x$ either less than 2 or greater than 6?"
+`abs(x-5) < 2` | "Is $x$ within two units of 5?"
+
+
+
+
+The vertical gap between the two pieces of the Heaviside function is called a ***discontinuity***. Intuitively, you cannot draw a discontinuous function ***without lifting the pencil from the paper***. The Heaviside function has a discontinuity at $x=0$.
+
+Similarly, the ***ramp function*** is a kind of one-sided absolute value:
+$$\text{ramp}(x) \equiv \left\{ 
+\begin{array}{cl} x & \text{for}\ 0 \leq x\\0 & \text{otherwise}\end{array}
+\right.$$
+Or, in computer notation:
+```{r}
+#| column: margin
+ramp <- makeFun(ifelse(0 < x, x, 0) ~ x)
+slice_plot(ramp(x) ~ x, domain(x=c(-3, 3)))
+```
+
+A linear combination of two input-shifted ramp functions gives a piecewise version of the sigmoid.
+```{r}
+#| column: margin
+sig <- makeFun(ramp(x+0.5) - ramp(x-0.5) ~ x)
+slice_plot(sig(x) ~ x, domain(x=c(-3, 3)), npts=501)
+```
+
+
+::: {.intheworld  data-latex=""}
+@fig-gas-use-two is a graph of monthly natural gas use in the author's household versus average temperature during the month. (Natural gas is measured in cubic feet, appreviated *ccf*.) 
+
+```{r echo=FALSE}
+#| label: fig-gas-use-two
+#| fig-cap: "The amount of natural gas used for heating the author's home varies with the outside temperature."
+#| fig-cap-location: margin
+gf_point(ccf ~ temp, data = Home_utilities, alpha=0.5) %>%
+  gf_labs(title="Household natural gas use", x = "Average temperature for the month (deg. F)", y = "Volume of gas used (cubic feet)") %>%
+  gf_lims(x = c(0, 85)) %>%
+  slice_plot(4.3*ramp(62 - temp) + 15 ~ temp, color="dodgerblue", size=2, alpha=0.5)
+```
+
+The graph looks somewhat like a hockey stick. A sloping straight-line dependence of ccf on temperature for temperatures below $60^\circ$F and constant for higher temperatures.  The shape originates from the dual uses of natural gas. Gas is used for cooking and domestic hot water, the demand for which is more of less independent of outdoor temperature at about 15 ccf per month. Gas is also used for heating the house, but that's needed only when the temperature is less than about $60^\circ$F.  
+
+We can accomplish the hockey-stick shape with a linear combination of the ramp() function and a constant. The ramp function represents gas used for heating, the constant is the other uses of gas (which are modeled as not depending on temperature. Overall, the model is  $$\text{gas}(x) \equiv 4.3\,  \text{ramp}(62-x)  + 15\ .$$
+Even simpler is the model for the other uses of natural gas:
+$$\text{other}(x) \equiv 15\ .$$ 
+:::
+
+
+
+## Exercises
+
+`r if (knitr::is_latex_output()) knitr::knit_exit()`
+
+`r insert_calcZ_exercise("XX.XX", "FCXT1L", "Exercises/seahorse-build-pot.Rmd", skill="function composition")`
+
+`r insert_calcZ_exercise("XX.XX", "3N3hCR", "Exercises/dog-dive-kitchen.Rmd",skill="function composition, function multiplication, linear combination")`
+
+`r insert_calcZ_exercise("XX.XX", "HMTG1w", "Exercises/pine-bring-dish.Rmd", skill="function multiplication")`
+
+
+Use `datasets::co2` as an example of a product of functions. Maybe pull out a smoother as the baseline and see if the amplitude changes with time. Or maybe look at successive differences, fit a sine with a time dependent amplitude.
+
+<!-- Piecewise functions -->
+
+`r insert_calcZ_exercise(13.05, "EDKYV", "Exercises/bigger-two.Rmd")`
+
+`r insert_calcZ_exercise("13.07", "E9e7c6", "Exercises/goat-walk-window.Rmd")`
+
+
+`r insert_calcZ_exercise("XX.XX", "mtHyvJ", "Exercises/beech-ride-table.Rmd", skill="asymptotes")`
