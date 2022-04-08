@@ -1,0 +1,77 @@
+---
+id: "falcon-tell-mug"
+author: "Daniel Kaplan"
+topic: "Integration by Eye
+---
+
+```{r include=FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+```
+
+
+The following graphic was produced based on data from the [US Centers for Disease Control](https://www.cdc.gov/nchs/nvss/vsrr/covid19/excess_deaths.htm) in early December 2020. It shows deaths as a function of time of year.
+
+```{r echo=FALSE}
+knitr::include_graphics(normalizePath("www/US-deaths.png"))
+```
+
+```{r ftm1, echo=FALSE}
+askMC(
+  "What are the units of the quantity on the vertical axis of the graph?",
+  "+people/week+" = "In the phrase \"weekly deaths,\" the 'weekly' is not an adjective (as might be the case in, say, \"traffic deaths,\" but a description of the time interval over which the count was made.",
+  "people weeks",
+  "people", 
+  "none of these"
+)
+```
+
+
+
+
+```{r ftm2, echo=FALSE}
+askMC(
+  "What is the *dimension* of the quantity on the vertical axis?",
+  "T",
+  "+T$^{-1}$+" = "Counts are not conventionally given a dimension.",
+  "L/T" = "What has length got to do with anything?",
+  "Dimensionless"
+)
+```
+
+```{r ftm3, echo=FALSE}
+askMC(
+  "What are the units of the quantity on the horizontal axis?",
+  "Unitless",
+  "+Months+",
+  "Weeks",
+  "Days"
+)
+```
+
+Suppose we want to use the information in the plot to estimate the total number of deaths in 2019. This is conceptually an integral of the death rate over the entire year. An integral has units that are the product of the vertical units times the horizontal units. Here, that's people.months/week.
+
+As a shortcut we'll model the 2019 death-rate function as a segment of a sine wave:
+ 
+```{r echo=TRUE}
+f2019 <- makeFun(60000 - 8000*sin(2*pi*t/24) ~ t)
+slice_plot(f2019(t) ~ t, domain(t=0:12)) %>%
+  gf_labs(y = "Deaths per week", x="Month") %>%
+  gf_lims(y = c(50000, 80000))
+```
+
+Here's the integral over the year:
+
+```{r echo=TRUE}
+F2019 <- antiD(f2019(t) ~ t)
+F2019(12) - F2019(0)
+```
+This is a precise-looking answer, but it is completely wrong. There were approximately 3,000,000 deaths in the US in 2019.
+
+
+```{r ftm4, echo=FALSE}
+etude2::etudeEssay(
+  prompt = "Explain what's wrong with the estimate based on `F2019(12) - F2019(0)` and how you can easily fix it. (Hint: What are the units of `F2019()`?)")
+```
+

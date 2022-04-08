@@ -1,0 +1,69 @@
+---
+id: "low-low-rates"
+origin: "141 DD30"
+author: "Daniel Kaplan"
+---
+
+```{r include = FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+```
+
+Suppose you want to borrow $L=$ $10,000 to buy a car. You'll have to make equal monthly payments $P$ for five  years (60 months) to pay off the loan. At an interest rate of $r$ per month, your payment will  be: $$P(L, r) = L r \frac{(1+r)^{60}}{(1+r)^{60} - 1}$$
+
+For example,  if the interest rate is 0.005 per month (roughly 6% = 0.06  per year), your monthly payment would be 
+
+::: {.scaffolding  data-latex=""}
+```{r}
+Payment <- function(L, r, m=60) {
+  L*r*((1+r)^m) / ((1+r)^m - 1)
+}
+Payment(10000, 0.005)
+```
+
+```
+
+You are a good negotiator and are trying to talk the car dealer down to a zero-percent loan. The dealer plugs $r=0$  into the mortgage calculator. His response to you: "Sorry, but our system can't handle zero-percent loans."
+
+```{r daily-digital-30-Essay1, echo=FALSE}
+etude2::etudeEssay(
+  prompt = "Explain what about the output of the calculator supports the dealer's response."
+)
+```
+
+You press the point. "Excuse me, Sir, but I'm in Math 141Z. That `NaN` appearing  on your screen is the result  of  a division by  zero  in the formula. But there's no reason to do that division. At zero percent interest, the monthly payment will  simply be the amount borrowed divided by the number of months of the loan, so  $10,000 divided by 60, giving a monthly payment of $166.6666... ." 
+
+"I'm sure you're very  good at math," the dealer says, "and I'm willing to agree to a monthly payment of $166.67, but I can't process any loan without going through this computer system. And zero percent won't fly."
+
+Having studied limits, you have an idea. "Suppose we agree on a non-zero interest rate--which your loan system can handle--that produces a monthly payment of $166.67? Can we write up the loan that way?"
+
+Dealer: "I'd be happy to do that, but obviously it's impossible to find an interest rate greater than zero that gives the same result as your calculation  for zero interest."
+
+You: "Let's try. Instead of 0.005 for the monthly interest rate, put in $r = 0.0005$. You're computer can work with that, right?"
+
+Dealer: "OK, let's see. ... Yes, the payment amount is $169.22. That'll work."
+
+You: "We're making progress. But my sense of mathematical honor insists that we find  an interest rate that gives $166.67,  as close as we can practically get to the exact  answer of $166.6666... ."
+
+```{r daily-digital-30-QA1, echo=FALSE}
+askMC(
+  prompt = "Work through  the sequence $r = 0.005$,  $r = 0.0005$, $r  = 0.00005$, making $r$ smaller and smaller. Is there a non-zero $r$ that brings the payment to the agreed-upon goal of $166.67? If so, what's the largest $r$ that will bring you there.",
+  0.0005, 0.00005, 0.000005, "+0.0000005+", 0.00000005, 0.000000005, 0.0000000005, "no such $r$",
+  random_answer_order = FALSE
+)
+```
+
+Later in the day, you tell  the story to your roommate, who is a computer science major. She says that you were lucky. "Computer arithmetic isn't exactly the same as mathematical arithmetic. Computer calculations with very small numbers sometimes give different results than you would expect mathematically. I bet if  you tried an even smaller $r$, you would have gotten different answers or even just nonsense."
+
+```{r daily-digital-30-QA2, echo=FALSE}
+askMC(
+  prompt = "Work through smaller and smaller $r$ in the mortgage calculator. What happens as you continue the sequence from the  previous question, adding in  more zeros before the 5?",
+    "The  result steadily gets closer  to  166.6666...."  = "",
+    "At first, the result gets closer to 166.6666, but then as $r$ gets smaller the result stays at the same answer." = "",
+    "The result falls below 166.666 and stays there." = "",
+    "+The computer output shows a result of infinity.+" = "Surprising, huh? These sorts of problems do arise. In the 1991 Gulf war, one Iraqi missile got through the Patriot missile  defense system due to a problem like this. There are special mathematical/programming techniques to help avoid these situations, but the Patriot system was not designed with  them. [News story here](https://www.nytimes.com/1991/06/06/world/us-details-flaw-in-patriot-missile.html).",
+  random_answer_order = FALSE
+)
+```
+

@@ -1,0 +1,78 @@
+---
+id: "aspen-dig-ship"
+created: "Thu Nov 11 08:48:43 2021"
+global_id: "THpUtP"
+---
+
+Create a function, which iterated sufficiently from a starting guess, will implement Newton's method to calculate $\sqrt{10}$. 
+
+```{r adsb-1, echo=FALSE, results="markup"}
+askMC(
+  "Which of these functions is appropriate to use in Newton's method for calculating $\\sqrt{10}$?",
+  "+$f(x) \\equiv x^2 - 10$+" = "This is easy to calculate and has output zero at $x=\\sqrt{10}$.",
+  "$f(x) \\equiv x - \\sqrt{10}$" = "The function has a zero at $x=\\sqrt{10}$ but in order to set up the function you would already have to know the value of $\\sqrt{10}$.",
+  "$f(x) \\equiv (x - 10)^2$" = "This function is easy to compute but does not have a zero at $x=\\sqrt{10}$."
+)
+```
+
+Now you are going to translate $f(x)$ into a function, when iterated from some starting guess $x_0$, will tend toward a zero of $f(x)$. The function will have the form $$N(x) \equiv x - \frac{f(x)}{f'(x)}\ .$$
+
+```{r adsb-2, echo=FALSE, results="markup"}
+response <- "This isn't $\\partial_x \\left[x^2 - 10\\right]$."
+askMC(
+  "What is the function $f'(x)$ for the $\\sqrt{10}$ problem?",
+  "$2x - 10$",
+  "+$2x$+" = response,
+  "$\\frac{1}{3} x^3 + 10 x + C$" = "You're anti-differentiating $f(x)$. You're supposed to be differentiating it.",
+  "$x$" = response)
+```
+
+```{r adsb-3, echo=FALSE, results="markup"}
+askMC(
+  "Which of these is the correct form for the Newtons-method iterator $N(x)  \\equiv x - \\frac{f(x)}{f'(x)}$?",
+  "+$N(x) \\equiv x - \\frac{x^2 - 10}{2 x}$+",
+   "$N(x) \\equiv x + \\frac{x^2 - 10}{2 x}$",
+  "$N(x) \\equiv x + \\frac{2x}{x^2 - 10}$",
+  "$N(x) \\equiv x - \\frac{2x}{x^2 - 10}$"
+)
+```
+
+In a `r sandbox_link()`, implement $N(x)$.
+
+```{r nstep1, echo=FALSE}
+askMC(
+  "Using $N()$ as the dynamics and starting with $x_0 = 1$, what is $x_5$?",
+  "5.5" = "That's $x_1$.",
+  "3.659091" = "That's $x_2$.",
+  "3.141593" = "That's $\\pi$, which incidentally is $\\neq \\sqrt{10}$.",
+  "3.196005" = "That's $x_3$.",
+  "3.162456" = "That's $x_4$.",
+  "3.162354",
+  "+3.162278+",
+  random_answer_order = FALSE
+)
+```
+
+```{r nstep2, echo=FALSE}
+askMC(
+  "Modify `N()` to find $\\sqrt{20}$. Starting at $x_0=1$, how many times do you have to apply your new `N()` to get an answer right to within 1% of the true number?",
+  "After 2 steps we get 4.202" = "No, after 2 steps you would get 6.202, which is about 40% away from the true answer.",
+  "After 3 steps we get 4.713." = "That's about 6% away from the true number.",
+  "After 3 steps we get 4.472." = "That's not the right answer for $x_3$.",
+  "After 4 steps we get 4.472." = "That's not the right answer for $x_4$.",
+  "+After 4 steps we get 4.478.+" = "Right. A bit closer than 1% to the true answer.",
+  random_answer_order = FALSE
+)
+```
+
+```{r nstep3, echo=FALSE}
+askMC(
+  "Modify your `N()` once again to find $\\sqrt[3]{10}$. (That is, the cube-root of 10.) Starting at $x_0 = 1$, take 3 Newton steps. What is $x_3$?",
+  "2.154" = "That's $x_{5}$.",
+  "+2.320+",
+  "2.875" = "That's $x_2$.",
+  "2.912",
+  random_answer_order = FALSE
+  
+)
+```

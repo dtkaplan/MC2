@@ -1,0 +1,137 @@
+---
+id: "available-health-care"
+author: "Daniel Kaplan"
+global-id: "TWLC"
+---
+
+```{r include=FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+library(MMAC)
+```
+
+One common measure of quality of life is "life expectancy at birth." A measure of the availability of  health  care is the number of physicians per 1000 people.
+
+The question we are going to examine is whether life expectancy is a function of the availability of health care  and, if so, what kind of function  it is.
+
+The data frame `LifeExpectancyPhysicians` contains the official 2010 figures from  many countries for life  expectancy and  the number of physicians per 1000 population.
+
+Graph `LifeExpectancy` versus `Physicians`. Use linear axes, semi-log axes, or log-log axes to determine a reasonable functional form. (Recall  that giving `scale_y_log10()` as  an argument to  `gf_refine()` will set the y axis on  a log scale, and  similarly for the x axis.)
+
+::: {.scaffolding  data-latex=""}
+```{r}
+gf_point(LifeExpectancy ~ Physicians,
+         data = LifeExpectancyPhysicians) %>%
+  gf_refine()
+```
+:::
+
+Using `fitModel()`, your instructor found the following model of life-expectancy (which we'll call L, in years) as a function of physicians-per-1000 people. (We'll call this "doctor-density" for short, so D.)
+
+The instructor's model is:
+
+$$L(D) \equiv 70.9 \times D^{0.0683}$$
+Define this function in R and graph it over your  data. Confirm that it is a reasonable match to the data. (If not, you've copied the parameters  wrong.)
+
+```{r daily-digital-09-QA5, echo=FALSE}
+askMC(
+  prompt = "What kind of function is the instructor's proposed model?",
+    "linear" = "Is it  a straight line on  linear axes?",
+    "exponential" = "Is it a straight line on semi-log axes?",
+    "+power-law+" = "C is a consonant, Chub",
+    "sigmoidal" = "Is it S-shaped"
+)
+```
+
+
+```{r daily-digital-09-QA6, echo=FALSE}
+askMC(
+  prompt = "According to  the instructor's model, what's the life expectancy when there are no physicians at all?",
+    "+0 years+" = "Not very believable, since there were (living) people before there were physicians. The power-law functional form always forces zero input to be zero output. So maybe not to be taken so seriously.",
+    "35 years" = "",
+    "50 years" = "",
+    "70 years" = "",
+    "100 years" = "",
+    "115 years" = "",
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-09-QA9, echo=FALSE}
+askMC(
+  prompt = "According to  the instructor's model, would be the  life expectancy if every person in the world were a physician? (Hint: Translate this into physicians/1000-people.)",
+    "0 years" = "",
+    "35 years" = "",
+    "50 years" = "",
+    "70 years" = "",
+    "100 years" = "",
+    "+110 years++" = "But probably  we would all starve to  death if everybody was a physician! This also is an unreasonable extrapolation.",
+  random_answer_order = FALSE
+)
+```
+
+```{r echo=FALSE, eval=FALSE}
+Life_mod <-  fitModel(LifeExpectancy ~ A*Physicians^b,
+                       data = LifeExpectancyPhysicians,
+                       start = list(A=70, b = 0.07) )
+
+L <- makeFun(70.9 * D^0.0683 ~ D)
+Dinv <- makeFun(70.9 * D^(1/9.8) ~ D)
+
+gf_point(LifeExpectancy ~ Physicians, data =  LifeExpectancyPhysicians) %>%
+ gf_refine(scale_y_log10(), scale_x_log10())  %>%
+  gf_hline(yintercept = c(80)) %>%
+  slice_plot(Life_mod(Physicians) ~ Physicians, color = "orange3", size=3) %>%
+  slice_plot(L(Physicians)  ~ Physicians, color = "dodgerblue") %>%
+  slice_plot(Dinv(Physicians) ~ Physicians, color = "orange")
+```
+It could  be argued that the doctor-density should be a function  of life  expectancy rather than  the other way around. (All those seniors consume a lot of medical care.)
+
+
+```{r daily-digital-09-QA7, echo=FALSE}
+askMC(
+  prompt = "Which of these models agrees reasonably well with the data? (Hint: You can plot the model over the data.)",
+  choices = list(
+    "+$D(L) \\equiv 7.24\\times 10^{-19} \\times L^9.8$+" = "",
+    "$D(L) \\equiv 3.19 \\times L^{3.1}$" = "",
+    "$D(L) \\equiv 8.64 \\times L^{6.3}$" = "",
+    "$D(L) \\equiv 5.50 \\times L^{2.4}$" = ""
+  ),
+  inline = FALSE
+)
+```
+
+The question now is whether the function $D(L)$ (from the previous question) which  is a good match to the data, is equivalent to  the function $L(D)$ which the instructor first proposed.
+
+In order to compare them, we have to make both of them  functions of the same input. Let's say we take  $D(L)$ and algebraically  find the inverse which we'll call $D^{inv}(D)$. That inverse function takes an input in the form D and produces an output  in the form L.
+
+Using algebra, confirm that
+
+$$D^{inv}(D) \equiv  70.9 \times D^{1/9.8}$$
+In the sandbox, plot both the instructor's proposed model $L(D)$ and the model $D^{inv}(D)$ on the same axes, along with  the data. (You'll have to decide which variable to put  on  the horizontal axis, but the notation $L(D)$ and $D^{inv}(D)$ should give you  a good clue.)
+
+```{r daily-digital-09-QA8, echo=FALSE}
+askMC(
+  prompt = "Which model,  $L(D)$ or $D^{inv}(D)$ is  a better match to the data when $D < 1$?",
+    "+$L(D)$+" = "",
+    "$D^{inv}(D)$" = "",
+    "They are the same function." = "",
+  inline  = FALSE,
+  random_answer_order = FALSE
+)
+```
+
+Complex social phenomena, like life expectancy, are  ... well, complex. Life expectancy depends on many factors other than health care: nutrition, war, automobile safety, etc.
+
+Notice from the data that the countries with the highest life expectancies are those where $D  \approx 3$. And yet, there  are many countries with $D \approx 3$ that have relatively low  life expectancy. One reason for this is inequality. In many countries, urbanites live at a high  standard  and people in the countryside have very little access to health care or reliably good nutrition, civil order, and so on.
+
+
+```{r echo=FALSE, eval=FALSE}
+lm(log(Physicians,  base=10) ~ log(LifeExpectancy, base=10), data = LifeExpectancyPhysicians)
+
+Dfun <- makeFun(7.24e-19 * LifeExpectancy^9.8 ~ LifeExpectancy)
+gf_point(Physicians ~ LifeExpectancy, data = LifeExpectancyPhysicians) %>%
+  slice_plot(Dfun(LifeExpectancy) ~ LifeExpectancy)
+```
+

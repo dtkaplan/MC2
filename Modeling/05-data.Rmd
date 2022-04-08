@@ -1,6 +1,7 @@
 # Data {#data-basics}
 
-<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/modeling/05-data.Rmd)</div>
+```{r child="../starter.Rmd"}
+```
 
 ```{r include=FALSE}
 book_file_name <- "modeling/05-data.html"
@@ -21,7 +22,7 @@ Returns a function: spliner, fitModel
 
 MODIFY THIS TO BE ABOUT OVERLAYING a function on data.
 
-You will often want to compare two functions, or compare a function to data. You can do this using the ordinary graphics functions, e.g. `slice_plot()` or `gf_point()`, arranging things so that both types of graphics are drawn together in the same graphics frame. To create this kind of compound graphic, arrange the individual graphics commands into a ***pipeline***, which is a list of commands connected together by `%>%`.  Your pipeline might include two commands or twenty, depending on how complicated is the graphic you want to draw. As long as you use `%>%` after each command, the next command is taken to build upon the previous command.  The very last command in that pipeline should not be followed by `%>%`.”  `r mark(720)`
+You will often want to compare two functions, or compare a function to data. You can do this using the ordinary graphics functions, e.g. `slice_plot()` or `gf_point()`, arranging things so that both types of graphics are drawn together in the same graphics frame. To create this kind of compound graphic, arrange the individual graphics commands into a ***pipeline***, which is a list of commands connected together by `%>%`.  Your pipeline might include two commands or twenty, depending on how complicated is the graphic you want to draw. As long as you use `%>%` after each command, the next command is taken to build upon the previous command.  The very last command in that pipeline should not be followed by `%>%`.”  
 
 ::: {.workedexample}
 Here is an just-for-demonstration plot composed from three graphs, each displaying one of the pattern-book functions. At the start of the pipeline, the `domain()` must be given explicitly as an argument to `slice_plot()`. You're welcome to specify other domains in the commands further along the pipeline, but if you don't the original `domain()` will be passed down the pipeline.
@@ -38,7 +39,7 @@ Just to show how these things are done, the functions have been drawn in differe
 
 ## Fitting parameters
 
-Seen very abstractly, a mathematical model is a set of ***functions*** that represent the relationships between inputs and outputs.  `r mark(900)`
+Seen very abstractly, a mathematical model is a set of ***functions*** that represent the relationships between inputs and outputs.  
 
 At the most simple level, building a model can be a short process:
 
@@ -57,9 +58,9 @@ We'll start then with empirical modeling: finding functions that are a good summ
 
 ## Variations from scaling
 
-A good place to start building a model is to pick one of the basic modeling functions. This works surprisingly often. To remind you, here are our nine ***pattern-book*** functions:   `r mark(910)`
+A good place to start building a model is to pick one of the basic modeling functions. This works surprisingly often. To remind you, here are our nine ***pattern-book*** functions:   
 
-```{r child="pattern-book-list.Rmd"}
+```{r child="../Preliminaries/pattern-book-list.Rmd"}
 ```
      
 The basic modeling functions are the same, but replace the plain $x$ in the pattern-book function with a straight-line function, for instance $ax + b$ or, equivalently $a(x - x_0)$.  In use, the parameter $a$ is often written with some other letter and, often, the $b$ or $-x_0$ part is not needed. 
@@ -148,7 +149,7 @@ Step 2: Find the parameters that correspond to the line you drew.
 
 ## Curve fitting a periodic function {#fit-periodic}
 
-Figure \@ref(fig:Fun-4-a-3-1) shows the tide level in [Providence, Rhode Island](https://www.google.com/maps/place/Providence,+RI/@41.8071,-71.4012,14z/data=!4m5!3m4!1s0x89e444e0437e735d:0x69df7c4d48b3b627!8m2!3d41.8071!4d-71.4012), starting at midnight on April 1, 2020 and recorded every minute for four and a half days. (These data were collected by the US National Oceanic and Atmospheric Administration. [Link](https://tidesandcurrents.noaa.gov/api/datagetter?begin_date=20200401%2010:00&end_date=20200405%201:59&station=8454000&product=one_minute_water_level&datum=mllw&units=metric&time_zone=gmt&application=web_services&format=csv))   `r mark(960)`
+Figure \@ref(fig:Fun-4-a-3-1) shows the tide level in [Providence, Rhode Island](https://www.google.com/maps/place/Providence,+RI/@41.8071,-71.4012,14z/data=!4m5!3m4!1s0x89e444e0437e735d:0x69df7c4d48b3b627!8m2!3d41.8071!4d-71.4012), starting at midnight on April 1, 2020 and recorded every minute for four and a half days. (These data were collected by the US National Oceanic and Atmospheric Administration. [Link](https://tidesandcurrents.noaa.gov/api/datagetter?begin_date=20200401%2010:00&end_date=20200405%201:59&station=8454000&product=one_minute_water_level&datum=mllw&units=metric&time_zone=gmt&application=web_services&format=csv))   
 
 ```{r Fun-4-a-3-1, echo=FALSE, fig.cap="About four days of tide-level data from Providence, Rhode Island"}
 #gf_line(level ~ hour, data = math141Z::Anchorage_tide[1:1000,])
@@ -219,7 +220,7 @@ Estimating $t_0$ can only be done once the period $P$ is known precisely. In pra
 
 ## Curve fitting an exponential function {#fit-exponential}
 
-The exponential function is particularly useful when the quantity we want to model shows ***constant proportional increase***. Many quantities in everyday life are this way. For instance, an increase in salary is typically presented in a format like "a 3% increase." The population growth of a country is often presented as "percent per year." Inflation in the price of goods is similarly described in percent per year. Interest on money in a bank savings account is also described as percent per year. But if you have the bad fortune to owe money to a loan shark, the proportional increase might be described as "percent per month" or "percent per week."   `r mark(920)`
+The exponential function is particularly useful when the quantity we want to model shows ***constant proportional increase***. Many quantities in everyday life are this way. For instance, an increase in salary is typically presented in a format like "a 3% increase." The population growth of a country is often presented as "percent per year." Inflation in the price of goods is similarly described in percent per year. Interest on money in a bank savings account is also described as percent per year. But if you have the bad fortune to owe money to a loan shark, the proportional increase might be described as "percent per month" or "percent per week."   
 
 When you know the "percent increase per time" of a quantity whose initial value is $A$, the exponential function is easy to write down: $$f(t) = A (1+r)^t$$ 
 The number $r$ is often called the ***interest rate*** or ***discount rate*** and is given in **percent**. 
@@ -236,7 +237,7 @@ Almost everybody is happier doing arithmetic with numbers like 2 and 10 rather t
 :::
 
 
-Exponential functions also describe ***decrease*** or ***decay***. Just replace $t$ with $-t$. That is, a movie of a decreasing quantity is just the movie of an increasing quantity played backwards in time!    `r mark(930)`
+Exponential functions also describe ***decrease*** or ***decay***. Just replace $t$ with $-t$. That is, a movie of a decreasing quantity is just the movie of an increasing quantity played backwards in time!    
 
 Figure \@ref(fig:Fun-4-intro-1) shows some data collected by Prof. Stan Wagon to support his making a detailed mechanistic model of an everyday phenomenon: [The cooling of a mug of hot beverage to room temperature](https://www.researchgate.net/profile/Gianluca_Argentini/post/Is_analogy_reasoning_between_heat_transfert_and_electriocity_allows_to_apply_the_electricity_laws_about_resistance_to_thermal_resistances/attachment/59d6573379197b80779ada64/AS%3A533325451403264%401504166104259/download/Stan+WAGON+How+quickly+does+water+cool.pdf). The mug started at room temperature, which was measured at 26 degrees C. At time 0 he poured in boiling water from a kettle and measured the temperature of the water over the next few hours.
 
@@ -288,7 +289,7 @@ The $2$ in $\ln(2)$ corresponds to idea of doubling/halving. The logarithm conve
 
 **Exponential curve fitting applied to the water-cooling data**
 
-Let's illustrate the general process on the water-cooling data, redrawn in Figure \@ref(fig:Fun-4-a-2-1).   `r mark(950)`
+Let's illustrate the general process on the water-cooling data, redrawn in Figure \@ref(fig:Fun-4-a-2-1).   
 
 ```{r Fun-4-a-2-1, echo=FALSE, fig.cap="The cooling-water data, repeated here for convenience. We've sketched in an exponential-like curve that matches the data pretty well."}
 set.seed(101)
@@ -329,7 +330,7 @@ Step 5: The flat zone of the data is to the right. So we've got exponential deca
 
 ## Curve fitting a power-law function
 
-You have been using power-law functions from early in your math and science education.  Some examples:   `r mark(970)`
+You have been using power-law functions from early in your math and science education.  Some examples:   
 
 Setting | Function formula | exponent
 --------|------------------|----------
@@ -352,7 +353,7 @@ As for finding the power law $f(x) \equiv A x^p$ that provides a good match to d
 
 ## Gaussian and sigmoid functions
 
-Our last two basic modeling functions express an important idea in modeling: ***localness***. To put this in concrete terms, imagine creating a function to depict the elevation above sea level of a long road as a function of distance in miles, $x$, from the start of the road. If the road were level at 1200 feet elevation, a sensible model would be $\text{elevation}(x) = 1200 \text{ft}$. If the road were gently sloping, a better model would be $\text{elevation}(x) = 1200 + 0.01 x$.   `r mark(980)`
+Our last two basic modeling functions express an important idea in modeling: ***localness***. To put this in concrete terms, imagine creating a function to depict the elevation above sea level of a long road as a function of distance in miles, $x$, from the start of the road. If the road were level at 1200 feet elevation, a sensible model would be $\text{elevation}(x) = 1200 \text{ft}$. If the road were gently sloping, a better model would be $\text{elevation}(x) = 1200 + 0.01 x$.   
 
 Now let's add a bump to the road. A bump is a local feature, often only a few feet wide. Or, perhaps the road is crossing a mountain range. That's also a local feature, but unlike a bump in the road a mountain range extends for many miles.
 
@@ -399,7 +400,7 @@ The parameters of the sigmoid function are the same as for the gaussian function
 
 Gaussian functions and sigmoid functions with the same center and width parameters have a very close relationship. The ***instantaneous rate of change*** of the sigmoid function is the corresponding ***gaussian*** function. Figures \@ref(fig:Fun-3C-1) and \@ref(fig:Fun-3C-2) show corresponding gaussian and sigmoid functions. To the very far left, the sigmoid function is effectively flat: a slope near zero. Moving toward the center the sigmoid has a gentle slope: a low number. In the center, the sigmoid is steepest: a higher number. Then the slope of the sigmoid becomes gentle again before gradually falling off to zero. Near zero, then low, then higher, then low again, then falling off to zero: that's also the description of a gaussian function!
 
-In R, the name of the sigmoid function is `pnorm()`. The gaussian is `dnorm()`. The parameters that specify center and spread are named `mean` and `sd`. The word "mean" accurately conveys the idea of "center." It would be nice to be able to say that `sd` comes from `s`prea`d`, but in fact `sd` is short for ***standard deviation***, a term familiar to students of statistics.   `r mark(1000)`
+In R, the name of the sigmoid function is `pnorm()`. The gaussian is `dnorm()`. The parameters that specify center and spread are named `mean` and `sd`. The word "mean" accurately conveys the idea of "center." It would be nice to be able to say that `sd` comes from `s`prea`d`, but in fact `sd` is short for ***standard deviation***, a term familiar to students of statistics.   
 
 
 
@@ -448,25 +449,28 @@ Here's a methodology for estimating the parameters `mean` and `sd` of a sigmoid 
 
 ## Exercises
 
-`r insert_calcZ_exercise("8.1", "0rvpbu", "Exercises/kid-type-boat.Rmd")`
+`r if (knitr::is_latex_output()) knitr::knit_exit()`
 
-`r insert_calcZ_exercise("8.3", "YLWP1", "Exercises/flipping-1.Rmd")`
 
-`r insert_calcZ_exercise(8.5, "YELXG", "Exercises/lamb-talk-gloves.Rmd")`
+`rr insert_calcZ_exercise("8.1", "0rvpbu", "Exercises/kid-type-boat.Rmd")`
 
-`r insert_calcZ_exercise(8.7, "VBWD", "Exercises/spirometer.Rmd")`
+`rr insert_calcZ_exercise("8.3", "YLWP1", "Exercises/flipping-1.Rmd")`
 
-`r insert_calcZ_exercise(8.9, "vkwl4", "Exercises/chicken-choose-vase.Rmd")`
+`rr insert_calcZ_exercise(8.5, "YELXG", "Exercises/lamb-talk-gloves.Rmd")`
 
-`r insert_calcZ_exercise(8.11, "asevss", "Exercises/cow-type-kayak.Rmd")`
+`rr insert_calcZ_exercise(8.7, "VBWD", "Exercises/spirometer.Rmd")`
 
-`r insert_calcZ_exercise(8.13, "IELWV", "Exercises/hump-intro.Rmd")`
+`rr insert_calcZ_exercise(8.9, "vkwl4", "Exercises/chicken-choose-vase.Rmd")`
 
-`r insert_calcZ_exercise(8.15, "CKSLE", "Exercises/sigmoid-intro.Rmd")`
+`rr insert_calcZ_exercise(8.11, "asevss", "Exercises/cow-type-kayak.Rmd")`
 
-`r insert_calcZ_exercise(8.17, "bllKR", "Exercises/sigmoid-bath.Rmd")`
+`rr insert_calcZ_exercise(8.13, "IELWV", "Exercises/hump-intro.Rmd")`
 
-`r insert_calcZ_exercise(8.19, "YLWP2", "Exercises/flipping-2.Rmd")`
+`rr insert_calcZ_exercise(8.15, "CKSLE", "Exercises/sigmoid-intro.Rmd")`
 
-`r insert_calcZ_exercise(8.21, "EKCIE", "Exercises/ebola-sigmoid.Rmd")`
+`rr insert_calcZ_exercise(8.17, "bllKR", "Exercises/sigmoid-bath.Rmd")`
+
+`rr insert_calcZ_exercise(8.19, "YLWP2", "Exercises/flipping-2.Rmd")`
+
+`rr insert_calcZ_exercise(8.21, "EKCIE", "Exercises/ebola-sigmoid.Rmd")`
 

@@ -1,0 +1,39 @@
+---
+id: "fir-lie-tv"
+created: "Sat Jan 29 09:10:02 2022"
+global_id: "rom1Q6" 
+---
+
+::: {.underconstruction}
+This needs re-organization. The 2-dimensional state space is awkward. There needs also to be a withdrawal policy that makes sense. 
+:::
+
+
+There are two basic forms of retirement plan: a ***pension*** and an ***individual retirement account*** (IRA). The dynamics are the same for both: $$\partial_t V = r V + M\ .$$ The major differences are who makes the contribution and what will be the monthly payout.
+
+In an individual retirement account, the retiree withdraws money from the account at whatever rate seems appropriate. Sensible people make a plan for withdrawals so that their savings will last them for the rest of their life. A rule of thumb is to withdraw a fraction of the principal equal to their age divided by 1000. Thus, a 70-year old would withdraw about $70/1000 = 0.07 = 7\%$ per year. Sensible people also keep their savings invested in some secure way such as government bonds. As of the start of 2022, 10-year US treasury bonds pay about 1.8% per year, although at the start of 2021 the rate was 1% per year.
+
+Let $S(\text{age})$ stand for the amount of savings at a given age, 
+then the dynamics are $$\partial_{\text{age}} S = - \underbrace{\frac{\text{age}}{1000} S}_{\text{rate of withdrawal}} + \underbrace{0.018 S}_{\text{investment gains}}\ .$$ If the age at retirement were 65,  initial condition is $S(65) =$accumulated retirements savings.
+
+Notice that the dynamical function, involves two inputs: the amount of savings $S$ and the age of the retiree. This means that the dynamical state has two components: $S$ and age. So we will write the dynamics as two differential equations, one for each component of the state.
+
+$$\partial_{\text{age}} S = -\frac{\text{age}}{1000} S +0.018 S\\
+\ \\
+\partial_{\text{age}} \text{age} = 1$$
+
+The second equation is so simple that it hardly needs to be given explicitly, but solving differential equations is a matter of careful book-keeping and we need to keep track of the retiree's age at any point in time.
+
+A solution to this dynamical system can be calculated by `integrateODE()`. The initial condition on age is, say, 65. As the initial condition on $S$, 
+we'll take an amount from the example in the book: $\928,000.
+
+```{r}
+Soln <- integrateODE(dage ~ 1, dS ~ - pmin(((age-10)/1000)*S, 45000) + 0.018*S, 
+                     S = 928000, age=65,
+                     tdur = 50)
+Assets <- makeFun(Soln$S(age - 65) ~ 65)
+
+
+slice_plot(Assets(age) ~ age, domain(age=65:110))
+slice_plot(pmin((age-10)/1000 * Assets(age), 45000) ~ age, domain(age=65:110))
+```

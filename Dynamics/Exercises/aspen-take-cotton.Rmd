@@ -1,0 +1,61 @@
+---
+id: "aspen-take-cotton"
+created: "Mon Jul 19 13:00:44 2021"
+global_id: "PTn8Yk"
+---
+
+Recall the medieval math problem about rabbits, which we wrote as a dynamical system $$x_{n+1} = x_n + y_n\\y_{n+1} = x_n \ \ \  \ \ \ \ \ \ $$  
+
+Rewrite this system in matrix form $${\mathbf X}_{n+1} = {\mathbf A} \cdot {\mathbf X}_n\ \ \ \text{where}\ \ {\mathbf X}_n \equiv \left[\begin{array}{c}x_n\\y_n\end{array}\right]$$
+
+Here are several candidates for the matrix ${\mathbf A}$ that implements the rabbit dynamics:
+
+$${\mathbf A}_1 \equiv \left[\begin{array}{cc}1 & 1 \\ 0 & 1\end{array}\right], \ \ 
+{\mathbf A}_2 \equiv \left[\begin{array}{cc}1 & 0 \\ 0 & 1\end{array}\right], \ \
+{\mathbf A}_3 \equiv \left[\begin{array}{cc}1 & 0 \\ 1 & 1\end{array}\right], \\ 
+{\mathbf A}_4 \equiv \left[\begin{array}{cc}1 & 1 \\ 1 & 1\end{array}\right], \ \
+{\mathbf A}_5 \equiv \left[\begin{array}{cc}1 & 1 \\ 1 & 0\end{array}\right], \ \
+{\mathbf A}_6 \equiv \left[\begin{array}{cc}1 & 0 \\ 1 & 0\end{array}\right]\ 
+$$
+
+```{r rm1-1, echo=FALSE, results="markup"}
+askMC(
+  "Which of the candidates will implement the rabbit dynamics?",
+  "${\\mathbf A}_1$",
+  "${\\mathbf A}_2$",
+  "${\\mathbf A}_3$",
+  "${\\mathbf A}_4$",
+  "+${\\mathbf A}_5$+",
+  "${\\mathbf A}_6$",
+random_answer_order = FALSE
+)
+```
+
+If you want to iterate the system ${\mathbf X}_{n+1} = {\mathbf A}\, {\mathbf X}_n$, you can use the `Iterate()` operator, handing it the matrix ${\mathbf A}$ as argument $A=$.
+
+Use the sandbox to create a matrix named `A` corresponding to the rabbit dynamics from the initial condition $(1, 0)$. (Note: the matrix that's given by default is just a placeholder. It's not the correct rabbit-dynamics matrix.)
+
+```{r rm2, exercise=TRUE, exercise.cap="Iterating A x", exercise.nlines=6, eval=FALSE}
+# enter your matrix here
+A <- matrix(c(0.5, 1, 1, 0), nrow=2, byrow=TRUE) 
+A # print the matrix so you can confirm you have it right
+Iterate(A = A, x0 = c(1, 0), n=10)
+```
+
+Once you have your matrix ${\mathbf A}$ correctly defined for the rabbit dynamics, and have confirmed the trajectory is what it should be, replace the initial condition `(1, 0)` with this one:
+`(0.5247311, -0.8506508)`
+
+That's a funny initial condition for modeling rabbits, because you can't have fractional rabbits and especially you can't have negative rabbits. But that initial condition---even if it's not about rabbits---produces a very special kind of dynamics.
+
+```{r rm3, echo=FALSE, results="markup"}
+askMC(
+  "Iterate the rabbit matrix ${\\mathbf A}$ from the initial condition $(0.5247311, -0.8506508)$. (Double check that you have entered it exactly as spelled out here.) The rabbit population starting at initial condition $(1, 0)$ grew in an unbounded way. What happens when you use the funny initial condition instead?",
+  "The fixed point at (0,0) becomes stable." = "The stability of the fixed point depends **only** on the ${\\mathbf A}$ matrix, not on the initial conditions.",
+  "The x value oscillates and grows, then gets smaller again.",
+  "+The x value oscillates and gets smaller, then grows without bound.+",
+  "The x value oscillates around and around, without getting larger in magnitude."
+)
+```
+
+This behavior may seem strange now. You'll understand it better when we introduce a powerful way of looking at matrix dynamics: eigenvalues and eigenvectors.
+

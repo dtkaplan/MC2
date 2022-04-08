@@ -1,0 +1,191 @@
+---
+id: "duck-tell-laundry"
+created: "Mon Jul 19 18:49:36 2021"
+global_id: "Yb6tVr"
+---
+
+We'd like to make a folded cardboard box in the most efficient way possible.  As you know, cardboard boxes have four sides as well as eight flaps, four for the top and four for the bottom. The flaps are arranged to provide *double coverage*; you fold the flaps from one direction and then fold over them the flaps from the other direction.
+
+```{r echo=FALSE, out.width="60%", fig.align="center"}
+knitr::include_graphics("www/folding-box.png")
+```
+
+The diagram depicts the box sides and flaps laid out on a flat piece of cardboard. The flaps are shaded with diagonal lines.
+
+Suppose the height, width, and depth of the box are $h$, $w$, and $d$ respectively. The box volume is easy:
+
+$$V = h w d$$
+The area of cardboard consists of the the four sides and the eight flaps. Each component's area is a product of the two edge lengths. For example, the box sides are either $w h$ or $d h$. The flaps, each of which extends half-way across the bottom or top have areas $w d/2$. 
+
+```{r fc1-1, echo=FALSE, results="markup"}
+askMC(
+  "Which of these formulas gives the area of the cardboard making up the box?",
+  "+$2 h(w + d) + 4 w d$+",
+  "$4 h(w + d) + 2 w d$",
+  "$2 h(w + d) + 8 w d$",
+  "$4 h(w + d) + 4 w d$"
+  )
+```
+
+A common size for a box is 1.3 cubic feet. We'll use feet as the units for $w$, $h$, and $d$.
+
+```{r fc1-2, echo=FALSE, results="markup"}
+askMC(
+  "The following formulas **do not** describe the area of the cardboard, but they are nonetheless formulas for something. Except one of them, which cannot be true. Which one? (Hint: Think about dimension.)",
+  "$h(w + d)/d + w d^2/h$",
+  "+$h(w + d) + w h d$+"="This formula is not dimensionally consistent",
+  "$h(w + d) + w^2 h/d$",
+  "$h(w^2/d + d) + d^2$"
+)
+```
+
+As $w$, $h$, or $d$ are changed, the volume and surface area of the box are changed. Asking for the $w$, $h$, and $d$ that minimize the surface area of the box is **not** a complete statement of a problem. The minimum surface area will be zero whenever two of the three dimensions have length zero. In other words, we can minimize the surface area by making a box that is no box at all!
+
+To complete the problem statement we need something else. Here, that something is a **constraint**: We demand that the box have a volume of $V = 1.3$ cubic feet.
+
+Often, a constraint plays the role of a *dimension reduction*. With $w$, $h$, and $d$, we have a 3-input optimization problem. But we can use the constraint equation to solve for one of the variables as a function of the other variables and the (known) volume. For instance, we can find $h$ as
+$$h = V/d w$$
+
+
+
+```{r fc1-4, echo=FALSE, results="markup"}
+askMC(
+  "Plug in the above expression for $h$ into the formula for the surface area of cardboard. Which of the following is the resulting formula in terms of $w$, $d$, and $V$?",
+  "+$2 V(w + d)/wd + 4 w d$+",
+  "$V(w + d)/w + V(w+d)/d  + 4 w d$",
+  "$2 w d (w + d)/V + 4 w d$",
+  "$2 (w + d)/wd + 4 V w d$"
+)
+```
+
+
+The following code contains the formula for the surface area $A(w, d, V)$ of a box of volume $V$. The graphics command draw a contour plot of $A()$ as a function of $w$ and $d$, holding $V = 1.3$ cubic feet. 
+
+```{r fc2-1}
+A <- makeFun(2*V*(w+d)/(w*d) + 4*w*d ~ w + d, V = 1.3)
+dom <- domain(w = c(0.5, 1.5), d=c(0.5, 1.5))
+contour_plot(A(w, d) ~ w + d, dom,
+              contours_at = NULL) %>%
+  gf_refine(coord_fixed()) # pipe to
+# gradient_plot( A(w, d) ~ w + d, dom)
+
+```
+
+There's a broad area near the center inside the contour at area = 9.5. Towards the upper-right and lower-left corners of the plot frame are contours at higher levels of area.
+
+```{r fc1-5, echo=FALSE, results="markup"}
+askMC(
+  "The spacing between the contours in the corners is tight, but there is no similarly spaced contour inside the region delimited by the contour at area=9.5. Why not?",
+  "We didn't ask for contours inside 9.5." = "We didn't ask, indeed. And we didn't ask for any of the other contours specifically, yet they appear in the graph.",
+  "The function shape inside the 9.5 contour is the top of a bowl, so it is pretty flat." = "Almost right!",
+  "+The function shape inside the 9.5 contour is the bottom of a bowl, so it is pretty flat.+",
+  "All the points inside the 9.5 contour are at exactly the same height." = "The function $C(w,d)$ is infinitely differentiable so it's not possible to make a sudden shift from a sloped form to one that is dead flat."
+)
+```
+
+Use the below sandbox and place contours at 10, 9.5, 9.4. You can do this by replacing the argument `contours_at = NULL` with this:
+
+```r
+contours_at = c(10, 9.5, 9.4))
+```
+
+Add more contours to build a fence tighter and tighter around the argmin. When the fenced region is tiny, you can read off the min from the contour label. (Remember, the "argmin" is the value of the inputs $w$ and $d$ at which the function is minimized. The "min" is the value of the function at the argmin.) But watch out as you do this. If you ask for a contour at a level that's lower than the min, it will simply not be drawn. Or, more precisely, there are no inputs that produce an output that's lower than the min. So you may have to change the interval between levels (e.g. 10, 9.5, 9.4, ...) in order to home in on the argmin. 
+
+```{r fc1-6, echo=FALSE, results="markup"}
+askMC(
+  "The following are values for the output of the function where you might be able to draw a contour. Which one of the values is the smallest for which a contour actually appears?",
+  9.1, 9.05, 9.01, "+9.005+", 9.0005, 9.0,
+  random_answer_order = FALSE
+)
+```
+
+
+```{r fc1-7, echo=FALSE, results="markup"}
+askMC(
+  "From your contour plot, read off the values of $w$ and $d$ that produce the minimum surface area for a 1.3 cubic-foot box. What are they? (Hint: You may need to zoom in on the domain to get the precision needed to answer the question.)",
+  "+$w \\approx 0.9; d\\approx 0.9$+",
+  "$w \\approx 0.9; d\\approx 0.6$",
+  "$w \\approx 0.5; d\\approx 0.9$",
+  "$w \\approx 1.9; d\\approx 0.9$"
+)
+```
+
+It's easy enough for a person to look at a contour plot and roughly locate the argmin. But this is not feasible if there are more than two inputs to the function being optimized. For such functions, another set of numerical techniques are used based on the **gradient** of the objective function. Remember that the gradient at any point is a vector that points in the **uphill** direction and whose **length** is proportional to the steepness of the slope. (Skiers, beware. In skiing what people call the gradient is the steepest *downhill* direction. This might account for all the mathematicians learning to ski who point their skis uphill in response to the ski instructor's instruction!) 
+
+You can display the gradient on the plot of the area function by piping (remember `%>%`) the contour plot into the commented-out command in the sandbox. (Also, replace `# pipe to` with `%>%`.)
+
+
+
+```{r fc1-9, echo=FALSE, results="markup"}
+askMC(
+  "Which of these best describes the gradient vector **at** the argmin?",
+  "The gradient points due North.",
+  "The length of the gradient vector is maximal.",
+  "The length of the gradient vector is minimal." = "You can give a better description than this.",
+  "+The length of the gradient vector is zero.+"
+  )
+```
+
+Occasionally, particularly in textbook problems, the argmin or argmax is found *algebraically*. This still involves calculating the gradient as a function of the input variables. Then, find the inputs that make all the components of the gradient vector zero.
+
+```{r fc1-10, echo=FALSE, results="markup"}
+askMC(
+  "Which of these formulas give the gradient vector of $A(w, d)$?",
+  "+$\\partial_w A = -2 \\frac{V}{w^2}+ 4 d, \\ \\ \\partial_d A = -2 \\frac{V}{d^2} - 4 w$+",
+  "$\\partial_w A = -2 \\frac{V}{d^2}+ 4 d, \\ \\ \\partial_d A = -2 \\frac{V}{w^2} - 4 w$",
+  "$\\partial_w A = -2 \\frac{V}{w^2}+ 4 w, \\ \\ \\partial_d A = -2 \\frac{V}{d^2} - 4 d$",
+  "$\\partial_w A = -2 \\frac{V}{d w}+ 4 w, \\ \\ \\partial_d A = -2 \\frac{V}{d w} - 4 d$"
+  )
+```
+
+```{r fc1-11, echo=FALSE, results="markup"}
+askMC(
+  "If the lengths $w$, $d$, $h$ are measured in *feet*, what unit will $\\partial_w A$ be in?",
+  "+feet+" = "Right. The area will be in square feet so the derivative of area with respect to $w$ will be in square feet per foot, that is, feet.",
+  "square feet",
+  "cubic feet",
+  "1/feet",
+  "dimensionless"
+)
+```
+
+For those of you who are pining for algebra problems, here you go.
+
+Taking the gradient of $A(w, d)$ (given in a previous question), set both components to zero, giving you two equations in the two variables $w$ and $d$. There's also a $V$ in the equations, but we've set up the problem saying that we already know $V$. Numerically, we used $V=1.3$ cubic-feet, but in the algebra solution we can just leave $V$ as a symbol, giving general formulas for $w$ and for $d$ in terms of $V$.
+
+```{r fc1-12, echo=FALSE, results="markup"}
+askMC(
+  "Which of these is the correct formula for the optimal $w^\\star$ as a function of $V$? (Hint: You can weed out one of the choices by checking for dimensional consistency.)",
+  "+$w^\\star = \\frac{\\sqrt[3]{V}}{\\sqrt[3]{2}}$+",
+  "$w^\\star = \\frac{\\sqrt[3]{V}}{\\sqrt[3]{3}}$",
+  "$w^\\star = \\frac{\\sqrt[2]{V}}{\\sqrt[2]{3}}$"
+)
+```
+
+The solution for $d^\star$ is the same as for $w^\star$. (An experienced algebraist would have noticed that in the formula for area, you can swap inputs $w$ and $d$ without changing the output.)
+
+Now compute the formula for the optimal value $h^\star$. (Hint: Early in the section we gave a formula that involves $V$, $h$, $w$, and $d$.)
+
+```{r fc1-13, echo=FALSE, results="markup"}
+askMC(
+  "Which of these is the correct formula for the optimal $h^\\star$ as a function of $V$?",
+  "+$h^\\star = 2^{2/3} \\sqrt[3]{V}$+",
+  "$h^\\star =  2^{1/3} \\sqrt[3]{V}$",
+  "$h^\\star =  3^{2/3} \\sqrt[3]{V}$",
+  "$h^\\star =  3^{1/3} \\sqrt[3]{V}$"
+)
+```
+
+It turns out that $h^\star$ is somewhat larger than either $w^\star$ or $d^\star$; the optimal box has a square top and bottom, but the sides are not square. 
+
+```{r fc1-14, echo=FALSE, results="markup"}
+askMC(
+  "Which of these is an appropriate explanation for why $h^\\star$ is larger than $w^\\star$ or $d^\\star$?",
+  "People don't like using boxes that are perfect cubes." = "Nice joke! But let's get real now. The objective was to minimize the amount of cardboard, not to make people happy.",
+  "$h$ multiplies both $w$ and $d$, but not *vice versa*, in the formula for surface area." = "Not true. There are terms $h w$ and $h d$ in the area formula.",
+  "The flaps need to get longer as $h$ gets longer, so smaller $h$ helps to minimize the amount of cardboard.",
+  "+The flap-length doesn't depend on $h$, only on $w d$. So we can make $h$ larger without contributing to the \"wasted\" area of the doubling over of flaps. The flaps get smaller as $wd$ gets smaller, so larger $h$ is preferred.+"
+)
+```
+
+

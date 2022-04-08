@@ -1,0 +1,73 @@
+---
+id: "gradient-field-pink"
+author: "Daniel Kaplan"
+global-id: "kelxlB"
+---
+
+```{r include = FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+```
+
+The contour plot below is marked with several colored lines which represent *slices* through the surface. Your job is to match these up with the slice plots presented below.
+
+```{r cache=TRUE, echo=FALSE, warning=FALSE}
+f <- rfun(~ x + y, seed = 12426)
+contour_plot(f(x, y) ~ x + y, domain(x=c(-5,5), y=c(-5,5)), filled=FALSE) %>%
+  gf_segment(4 + 4 ~ -5 + 5, color = "black", size=2, alpha=.5) %>% #3
+  gf_segment(-5 + 5 ~ 3 + -1, color = "dodgerblue", size=2, alpha=.5) %>% #
+  gf_segment(-5 + 0 ~ -5 + 5, color = "orange3", size=2, alpha = .5) %>% #1
+  gf_segment(-2 + -5  ~ -5 + 5, color = "yellow3", size=2, alpha=.5) %>% # 4
+  gf_segment(5 + -5 ~ 4 + -2.5, color= "gray", size=2, alpha = .5) # 2
+```
+
+
+```{r echo=FALSE, warning=FALSE, out.width="50%", fig.show="hold"}
+dom <- domain(t=c(0,1))
+slice_plot( f(-5 + 10*t, 4) ~ t, dom, label_text = "slice (3)", label_x=.5) %>% #black
+  slice_plot( f(-5 + 10 *t, -5 + 5*t) ~ t, label_text = "slice (1)", label_x=.75) # tan
+slice_plot(f(-5 + 10*t, -2 - t*3) ~ t, dom, label_text = "slice (4)", label_x = 3 ) %>% #yellow
+  slice_plot(f(-2.5 + 6.5*t, -5 + 10*t) ~ t, label_text = "slice (2)",label_x=.5) #gray
+```
+
+In the slice plots, the input $t$ reflects the position on the slice. At $t=0$, position is at the leftmost point of the slice, while at $t=1$ position is at the right terminus of the slice.
+
+
+```{r daily-digital-33-QA20, echo=FALSE}
+askMC(
+  prompt = "Which color line corresponds to slice 1?",
+  "black", "gray", "blue", "+tan+", "yellow",
+  inline = FALSE,
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-33-QA21, echo=FALSE}
+askMC(
+  prompt = "Which color line corresponds to slice 2?",
+  "black", "+gray+", "blue", "tan", "yellow",
+  inline = FALSE,
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-33-QA22, echo=FALSE}
+askMC(
+  prompt = "Which color line corresponds to slice 3?",
+  "+black+", "gray", "blue", "tan", "yellow",
+  inline = FALSE,
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-33-QA23, echo=FALSE}
+askMC(
+  prompt = "Which color line corresponds to slice 4?",
+  "black", "gray", "blue", "tan", "+yellow+",
+  inline = FALSE,
+  random_answer_order = FALSE
+)
+```
+
+

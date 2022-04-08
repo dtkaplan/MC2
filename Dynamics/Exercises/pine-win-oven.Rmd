@@ -1,0 +1,97 @@
+---
+id: "pine-win-oven"
+created: "Mon Jul 19 15:12:08 2021"
+global_id: "L6hTUu" 
+skill: "V-YGS71"
+---
+
+Consider a hay field that has just been harvested in the middle of summer. The grass has been cut short and the weather is still conducive to growth. What's going to happen?
+
+The grass will grow back, a very simple model of which will be $\partial_t G(t) \equiv C$. This rate, $\partial_t G(t)$, corresponds to the grass growing back at a constant rate. Imagine we measure this rate as *tons of biomass* per day, and measure time $t$ in days.
+
+```{r grass0, echo=FALSE}
+askMC(
+  "To model the everyday real world of growing grass, should $C$ be positive or negative?",
+  "+positive+",
+  "negative" = "The amount of grass would be decreasing. This is not what we ordinarily think of as \"growing\"",
+  "zero" = "$\\partial_t G(t) = 0$ implies no change at all.",
+  random_answer_order = FALSE
+)
+```
+
+```{r grass1, echo=FALSE}
+askMC(
+  "What units does the output $G(t)$ have?",
+  "tons per day" = "These are the units of $C$ and therefore, because of the equality, of $\\partial_t G(t)$. We're asking about the units of $G(t)$, not $\\partial_t G(t)$.",
+  "+tons+",
+  "days" = "This is the unit of the input $t$, not the output $G(t)$.",
+  "tons/day^2"
+)
+```
+
+```{r grass2, echo=FALSE}
+askMC(
+  "Which of these equations best describes the *trajectory* of the growing grass under the $\\partial_t G(t) = C$ dynamics?",
+  "$G(t) = G(0) + C$", 
+  "+$G(t) = G(0) + C t$+",
+  "$G(t) = G(0)\\sin(t/C)$",
+  "$G(t) = G(0) t + C$"
+)
+```
+
+```{r grass3, echo=FALSE}
+askMC(
+  "According to the dynamics $\\partial_t G(t) = C$, what will $G(t)$ look like (without future harvesting)?",
+  "Growth until the field is choked up with grass.",
+  "+Growth without limit.+",
+  "Oscillating growth and decline as the seasons pass." = "This might be the case in the real world, but the simple model does not incorporate seasonality."
+)
+```
+
+There are two obvious shortcomings of the model $\partial_t G(t) = C$. First, when the amount of grass is very small (think little spouts spread widely apart) growth should much smaller than when the grass is plentiful. Second, at some point the grass is so dense that further growth is impossible, so $\partial_t G(t)$ falls to zero (or even negative). The maximum amount of biomass that can be sustained by the field is called the grass's *carrying capacity*.
+
+The standard simple model for a system with growth to a carrying capacity is $$\partial_t G(t) = r G(t)(K-G(t))$$ This model is famous and has a name: *logistic growth*.
+
+```{r grass4, echo=FALSE}
+explain <- "Plug $-K$ into the dynamics in place of $G$. Do you get $\\partial_t G=0$?"
+askMC(
+  "The logistic growth model has two fixed points. What are they?",
+  "+$G=0$ and $G=K$+",
+  "$G=0$ and $G=1/K$" = "Plug $1/K$ into the dynamics in place of $G$. Do you get $\\partial_t G = 0$?",
+  "$G = \\pm K$" = explain ,
+  "$G=0$ and $G=-K$" = explain
+)
+```
+
+```{r grass5, echo=FALSE}
+askMC(
+  "Which of these stories best describes the trajectory of the logistics growth version of $G(t)$ starting with $G(0)$ very small but positive?",
+  "The grass grows slowly at first, then gradually growth speeds up and stays high.",
+  "The grass grows rapidly at first then declines gradually to no growth.",
+  "+The grass grows slowly, then grows faster until it reaches a biomass where the growth rate declines steadily to zero.+"
+)
+```
+
+Here are three graphs.
+
+```{r echo=FALSE, out.width="30%", fig.keep="hold"}
+f <- makeFun(2*g*(10-g) ~ g)
+slice_plot(f(t) ~ t, domain(t=c(0,10))) %>% 
+  gf_labs(x = "time", g = "grass biomass", title="Graph (A)")
+slice_plot(pnorm(t, mean = 5, sd=2) ~ t, domain(t=c(0,10)) ) %>%
+  gf_labs(x="time", y = "grass biomass", title = "Graph (B)")
+slice_plot(f(g) ~ g, domain(g=c(0,10))) %>%
+  gf_labs(x = "Grass biomass", y = "Growth", title = "Graph (C)")
+```
+
+```{r grass6, echo=FALSE}
+askMC(
+  "Which of the graphs represents a possible trajectory $G(t)$?",
+  "A",
+  "+B+",
+  "C" = "This is a graph of dynamics, not the trajectory. Look at the x-axis label.",
+  "none of them",
+  random_answer_order = FALSE
+)
+```
+

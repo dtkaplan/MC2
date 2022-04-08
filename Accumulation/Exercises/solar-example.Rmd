@@ -1,0 +1,134 @@
+---
+title: "Power and energy"
+author: "Daniel Kaplan"
+type: "shiny"
+---
+
+```{r include=FALSE, context="setup"}
+library(mosaic)
+library(mosaicCalc)
+```
+
+Your house has solar panels on the roof. In sunshine, these generate power. You use some of that power immediately for cooking, lighting, and such. Any power generated above your needs gets stored in a battery. Any power used above the solar generation gets supplied by the battery.
+
+Over the course of a day, your use of power fluctuates (you use the toaster, open the refrigerator, etc). Similarly, the solar generation fluctuates as clouds pass by and the sun rises and sets in the sky. The amount of energy stored in the battery fluctuates over the day as you consume energy in your home and produce it with the solar panels. 
+
+The unit used for electrical power is a "kilowatt" (kW). An old-fashioned incandescent light bulb consumes about 0.1 kW while lighted, a modern LED bulb generates about the same amount of light using only 0.01 kW. A refrigerator uses about 0.1 kW while a hair-dryer uses about 1 kW when it is running.
+
+Batteries store energy. The usual unit for energy is "kilowatt-hour" (kWh). A refrigerator will, over a 24-hour day, use 0.1 * 24 = 2.4 kWh. Power multiplied by time duration gives energy. If the power were constant, the energy could be calculated by a simple multiplication of the power over the duration. Since power fluctuates, we can't do the calculation with ordinary multiplication. Instead, we have to integrate power over time.
+
+The graphs show the situation over the course of a single day.The top graph shows net power produced as a function of time of day. The bottom graph shows net energy accumulated in the battery since 00:00.  
+
+Since you are obsessed with your solar system, you have installed an app on your phone. It beeps each time the stored energy in the battery changes by one kW-minute (that is 1/60 of a kWh). The beeps are recorded in the middle graph. The beeps have a low, sad tone when the energy stored is falling (shown as a red line). The beeps have a high, happy tone when the energy stored is rising (shown as a black line). 
+
+Note that by click-dragging the mouse over the beep graph---the one in the middle---you can highlight an interval of time. The top and bottom graphs will then show the information corresponding to the beeps during that interval.
+
+```{r context="setup", echo=FALSE}
+# construct the f(t) function
+source("cone-plot.R", local=TRUE)
+raw <- make_rand_fun(3222, center = 12, width = 4, aveval =4)
+solar <- function(x) raw(x) * dnorm(x, 13, 2)
+consumption <- make_rand_fun(231, center = 12, width =8)
+total <- function(x) 1.9*solar(x) - abs(consumption(x)/3)
+
+```
+```{r, echo=FALSE}
+plotOutput("fplot", height="200px")
+plotOutput("eplot", height="50px", brush = brushOpts("interval", direction="x",
+                                                     opacity=0.5))
+plotOutput("Fplot", height="200px")
+```
+
+```{r context="server"}
+create_plots <- reactive({
+  suppressWarnings(
+    cone_diagram(total, dom=list(x=c(0, 24)), 
+                 total_area = 11, 
+                 events_per_unit_area = 60,
+                 left = input$interval$xmin , 
+                 right = input$interval$xmax)
+  )
+})
+
+output$fplot <- renderPlot({
+  tmp <- create_plots()
+  tmp$fplot  %>%
+    gf_hline(yintercept = 0, color = "dodgerblue") %>%
+    gf_labs(y = "Net power production (kW)", x = "") %>%
+    gf_theme( axis.title.x = element_blank(),
+              axis.text.x = element_blank())
+
+})
+output$eplot <- renderPlot({
+  isolate({tmp <- create_plots()
+  tmp$eplot %>%
+    gf_labs(y = "Beeps")})
+})
+output$Fplot <- renderPlot({
+  tmp <- create_plots()
+  tmp$Fplot  %>%
+    gf_hline(yintercept = 0, color = "dodgerblue") %>%
+    gf_labs(y = "Battery level (kWh)", x = "Hour of day")
+})
+```
+
+```{r solarA, echo=FALSE}
+etude2::etudeQ(
+  "Why is it called \"net production\" instead of just \"production?\"",
+  "Because your house is connected to the utility electrical network in case you need extra power.",
+  "Because the system designer is something of a poet and wants you to think of the solar cells as a kind of fishing net harvesting photons.",
+  "Because the government will send you surplus hair nets to thank you for reducing CO2 production.",
+  "+Because it's not simply production from the solar panels but production *minus* consumption (the solar panels require energy to run). If you ignored consumption, you would call it \"gross energy produced.\"+"
+)
+```
+
+```{r solarB, echo=FALSE}
+etude2::etudeQ(
+  "The bottom graph shows energy accumulated in the battery since midnight. What does it mean that the energy accumulated is negative?",
+  "+The battery level is lower throughout the day than it was at midnight.+",
+  "The battery is discharging over the entire day." = "It's the top graph, net power production, that tells if if the battery is charging (positive net production) or discharging (negative net production). So this statement is not always accurate",
+  "The sign is not important." = "The sign is important"
+)
+```
+
+```{r solarC, echo=FALSE}
+etude2::etudeQ(
+  "During the interval from 05:00 to 20:00, how much did the energy stored by the battery change? Highlight that interval in the beeps graph.",
+  "-2.5 kWh" = "Is there more or less energy in the battery between these two points?",
+  "1.9 kW" = "Energy has units kWh, not kW.",
+  "15 hours" = "This is the length of the interval, not the energy stored.",
+  "+1.5 kWh+" = "You an calculate this by taking the difference between the relative battery level at the end of the interval and at the start of the interval. These values are shown as blue dots on the bottom graph (if you used the cursor to highlight the interval).",
+  random_answer_order = FALSE
+)
+```
+
+```{r solarD, echo=FALSE}
+etude2::etudeQ(
+  "Suppose the battery was holding 20 kWh at 00:00. How much energy was it holding at 15:00?",
+  "-2 kWh" = "This is the change in the battery energy level, what is the actual value at the level?",
+  "+18 kWh+",
+  "20 kWh",
+  "24 kWh",
+  random_answer_order = FALSE
+)
+```
+
+```{r solarE, echo=FALSE}
+etude2::etudeQ(
+  "When you choose a time interval in the beep graph, how come the energy stored (in kWh) is displayed as an area in the top graph? Keep in mind that the vertical scale of the top graph is kW, not kWh.",
+  "It's pretty." = "Thanks. But there's a better reason that's relevant to calculus.",
+  "To highlight visually the interval that that was selected." = "There would be other ways to show the interval.",
+  "+To convert kW to kWh, we are effectively multiplying the power (kW) by the time duration. Power is on the vertical axis, time duration is on the horizontal axis. Multiplying the two corresponds to the area under the graph.+" = "In this instance, energy is acting as the anti-derivative of the power function with respect to time"
+)
+```
+
+```{r solarF, echo=FALSE}
+etude2::etudeQ(
+  "How come two different colors are used to display the \"area\" under the net power curve?",
+  "The second derivative of the anti-derivative of $f(t)$ is equal to $f(t)$." = "The statement is true, but it's irrelevant to the question being asked.",
+  "No reason related to calculus *per se*. We like to make graphs pretty.",
+  "+Because it's not simply \"area.\" It's the product of net power and time duration, and sometimes this quantity is negative. The color indicates whether the quantity is positive or negative at any instant.+"
+)
+```
+
+

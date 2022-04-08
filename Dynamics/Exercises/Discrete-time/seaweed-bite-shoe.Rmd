@@ -1,0 +1,104 @@
+---
+id: "seaweed-bite-shoe"
+created: "Mon Jul 19 12:56:12 2021"
+global_id: "on164B"
+---
+
+The state of a dynamical system often consists of multiple components. To illustrate, consider this problem from the 1202 book *Liber Abaci* ("Book of the Abacus"):
+
+> A certain man put a pair of rabbits in a place surrounded on all sides by a wall. How many pairs of rabbits can be produced from that pair in a year if it is supposed that every month each pair begets a new pair which from the second month on becomes productive?
+
+Let $x_n$ be the number of pairs of breeding rabbits in month $n$. From the problem statement, we have an initial condition: $x_0 = 0$.  And let $y_n$ be the number of baby rabbit pairs born in month $n$.  The number of babies $y_n$ in month $n$ comes from the number of breeding pairs in month $n-1$, that is
+$$y_{n} = x_{n-1}$$
+This equation reads, "The number of baby rabbit pairs born this month is equal to the number of breeding pairs last month." But we can write exactly the same relationship as $$y_{n+1} = x_n$$ that is, "The number of baby pairs born *next* month depends on the number of breeding pairs this month."
+
+In month $n+1$ the number of breeding rabbits will be those who were already breeders in month $n$ as well as the babies from the previous month who have become breeders for month $n+1$. This gives us the *system* of two equations $$x_{n+1} = x_n + y_n\\y_{n+1} = x_n \ \ \  \ \ \ \ $$ 
+
+We still need an initial condition on the number of pairs of baby rabbits. *Liber abaci* doesn't mention any babies in month 0, so we'll say $y_0 = 0$.
+
+
+```{r rabbit1, echo=FALSE}
+askMC(
+  "How many baby pairs will there be in month $n=1$ how many baby pairs will become breeders?",
+  "0", 
+  "+1+", 
+  "2" = "There are two rabbits, but only one pair."
+)
+```
+
+```{r rabbit2, echo=FALSE}
+askMC(
+  "Starting with the initial state $(x_0=1, y_0=0)$, use the dynamics to find the state at month 1. What is that state?", 
+  "+$(x_1=1, y_1=1)$+",
+  "$(x_1=0, y_1=1)$",
+  "$(x_1=2, y_1=1)$"
+)
+```
+
+```{r rabbit3, echo=FALSE}
+askMC(
+  "What will be the state in month 2?",
+  "+$(x_2 = 2, y_2=1)$+",
+  "$(x_2=2, y_2=2)$",
+  "$(x_2 = 3, y_2 = 2)$"
+)
+```
+
+```{r rabbit4, echo=FALSE}
+askMC(
+  "What is the state in month 3? (Just apply the dynamics to the state in month2. It's a matter of arithmetic.)",
+  "+$(x_3 = 3, y_3 = 2)$+",
+  "$(x_3 = 2, y_3 = 3)$",
+  "$(x_3 = 4, y_3 = 2)$",
+  "$(x_3 = 2, y_3 = 1)$"
+)
+```
+
+The sandbox ... I mean, rabbit hutch ... below gives an R function that implements the initial state ($n=0$) and the dynamics for computing the next state from the initial state. 
+
+Note that in the computer code we need just one dynamical function even though there are two components to the state vector. That function, `f(x,y)` returns *both* components of the next state. The `c()` function puts its two arguments into a single vector. 
+
+When using `Iterate()`, you may be interested just in the starting few rows or the last few rows, and don't want to display *all* the rows. In R, you can use `head()`, which keeps only the first several rows. To look at the last several rows instead, use `tail()`. You can specify how many rows youy want by giving an argument to either `head()` or `tail()`, for instance `head(15)` will keep the first 15 rows of the trajectory.
+
+In the code chunk, we're using a special CalcZ function: `head_and_tail()`. You can probably figure out for yourself what that does.
+
+
+```{r rabbitbox, exercise=TRUE, exercise.cap="Rabbit dynamics", exercise.nlines = 8}
+# The dynamics
+f <- function(x, y) {
+  c(x + y, x)
+}
+state0 <- c(1, 0)
+Iterate(f, x0 = state0, n = 20) %>% 
+  head_and_tail(5)
+```
+
+```{r rabbit5, echo=FALSE}
+askMC(
+  "How many rabbit were there altogether in month $n=4$?",
+  0, 1, "1 ", 2, 3, "5", 8, 13, right_one="5",
+  random_answer_order = FALSE
+)
+```
+
+```{r rabbit6, echo=FALSE}
+askMC(
+  "By the end of month 12 that is, after applying `next_state()` 12 times to the initial state, how many rabbits total will there be?",
+  133,
+  "144" = "I think you only applied `next_state()` 11 times.",
+  233,
+  244,
+  253, right_one=233,
+  random_answer_order = FALSE
+)
+```
+
+```{r rabbit7, echo=FALSE, results="markup"}
+askMC(
+  "The dynamical system has a fixed point at (0,0). Is it stable? (Hint: Use `Iterate()` starting near the fixed point. Or think about what happens if you are happily having 0 pairs of rabbits and then a friend gives you a pair.)",
+  "+It's unstable.+",
+  "If you start at (0,0), the system remains at (0,0)." = "The statement is true, but irrelevant. The question is about stability, which is about dynamics *near* (not *on*) the fixed point.",
+  "It's stable."
+)
+```
+

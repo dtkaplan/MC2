@@ -1,0 +1,252 @@
+# Change & accumulation {#change-accumulation}
+
+```{r child="../starter.Rmd"}
+```
+
+Every 10 years, starting in 1790, the US Census Bureau carries out a constitutionally mandated census: a count of the current population. The overall count as a function of year is shown in Figure \@ref(fig:pop-graph). [[Source](https://en.wikipedia.org/wiki/Demographic_history_of_the_United_States)
+]
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+USPop <- readr::read_csv("www/census-totals.csv")
+Tmp <- USPop %>% 
+  mutate(population=prettyNum(population, big.mark=",")) %>%
+  select(-growth_rate)
+Table <- if (knitr::is_html_output()) {
+  DT::datatable(Tmp) 
+} else {
+  knitr::kable(Tmp)
+}
+USPop <- USPop %>% 
+  mutate(population = population/1e6)
+```
+
+In the 230 years spanned by the census data, the US population has grown 100-fold, from about 4 million in 1790 to about 330,000,000 in 2020.
+
+```{r pop-graph, echo=FALSE, fig.cap="US population since 1790. Left: linear axes. Right: semi-log axes", fig.margin=TRUE}
+popfun <- spliner(population ~ year, data = USPop)
+USPop <- USPop %>%
+  mutate(yearly_growth_rate = 100*((1+growth_rate/100)^(1/10) - 1))
+mod <- lm(population ~ poly(year, 2), data = USPop)
+modf <- makeFun(mod)
+P1 <-gf_point(population ~ year, data = USPop) %>%
+  gf_line(population ~ year) %>%
+  gf_labs(y="Population (millions)") %>%
+  gf_lims(x = c(1790, 2100), y=c(0,500))
+P2 <- gf_point(population ~ year, data = USPop) %>%
+  gf_point(500 ~ 2100, alpha=0) %>%
+  gf_line(population ~ year) %>%
+  gf_labs(y="Population (millions)") %>%
+  gf_refine(scale_y_log10(breaks=100*(0:5))) %>%
+  gf_lims(x = c(1790, 2100))
+gridExtra::grid.arrange(P1, P2, ncol=2)
+```
+
+
+
+
+It's tempting to look for simple patterns in such data. Perhaps the US population has been growing exponentially. A semi-log plot of the same data suggests that the growth is only very roughly exponential. A truly exponential process would present as a curve with a constant derivative, but the derivative of the function in the graph is decreasing over the centuries. 
+
+
+```{r pop-graph-log, echo=FALSE, fig.cap="Population since 1790.", fig.margin=TRUE}
+
+```
+
+Insofar as the slope over the semi-log graph is informative, it amounts to this quantity:
+$$\partial_t \ln(\text{pop}(t)) = \frac{\partial_t\, \text{pop}(t)}{\text{pop}}$$
+This is the *per-capita* rate of growth, that is, the rate of change in the population divided by the population. Conventionally, this fraction is presented as a percentage: percentage growth in the population per year, as in Figure \@ref(fig:pop-growth).
+
+```{r pop-growth, echo=FALSE, fig.cap="Annual per capita growth rate of the US population (percent)"}
+growth_mod <- lm(yearly_growth_rate ~ year, data = USPop)
+growth_fun <- makeFun(growth_mod)
+gf_point(yearly_growth_rate ~ year, data = USPop) %>%
+  gf_lims(x = c(1790, 2100), y=c(-.5,4)) %>%
+  gf_lm() %>%
+  gf_labs(y = "Per capita growth rate (% per year)") 
+```
+
+The dots in the graph are a direct calculation from the census data.  There's a lot of fluctuation, but an overall trend stands out: the population growth rate has been declining since the mid-to late 1800s. The deviations from the trend are telling and correspond to historical events. There's a relatively low growth rate seen from 1860 to 1870: that's the effect of the US Civil War. The Great depression is seen in the very low growth from 1930 to 1940. Baby Boom: look at the growth from 1950-1960. The bump from 1990 to 2000? Not coincidentally, the 1990 Immigration Act substantially increased the yearly rate of immigration. 
+
+If the trend in the growth rate continues, the US will reach zero net growth about 2070, then continue with negative growth. Of course, negative growth is just decline. A simple prediction from Figure \@ref(fig:pop-growth) is that the argmax of the US population---that is, the year that the growth rate reaches zero---will occur around 2070.
+
+How large will the population be when it reaches its maximum? 
+
+In Block 2, we dealt with situations where we know the function $f(t)$ and want to find the rate of change $\partial_t f(t)$. Here, we know the rate of change of the population and we need to figure out the population itself, in other words to figure out from a known $\partial_t f(t)$ what is the unknown function $f(t)$.  
+
+The process of figuring out $f(t) \longrightarrow \partial_t f(t)$ is, of course, called ***differentiation***. The opposite process, $\partial_t f(t) \longrightarrow f(t)$ is called ***anti-differentiation***. 
+
+In this block we'll explore the methods for calculating anti-derivatives and some of the settings in which anti-derivative problems arrive. 
+
+
+::: {.intheworld data-latex=""}
+The predictions from the accumulate-population-growth model are shown as a $\color{magenta}{\text{magenta}}$ line in Figure \@ref(fig:pop-prediction-bad).
+
+```{r pop-prediction-bad, echo=FALSE, warning=FALSE, fig.cap="Predicted US population based on the historical linear decline in per-capita growth."}
+growth_mod <- lm(yearly_growth_rate ~ year, data = USPop)
+growth_fun <- makeFun(growth_mod)
+accum <- tibble(year = 2021:2130,
+                pop = 331 * cumprod(1 + growth_fun(2021:2130)/100))
+
+gf_point(population ~ year, data = USPop) %>%
+  gf_labs(y="Population (millions)") %>%
+  gf_lims(x = c(1790, 2130), y=c(0,450)) %>%
+  gf_line(pop ~ year, data = accum, color="magenta") %>%
+  gf_point(404.4 ~ 2060, color="dodgerblue", size=1)
+```
+
+According to the accumulation model, the population peaks in 2075 at 390 million. We'll be back down to the present population level in about 100 years. 
+
+Professional demographers make much more sophisticated models using detailed data from many sources. The demographers at the US Census Bureau predict that the population will reach a maximum of 404 million in 2060, shown by the little blue dot in Figure \@ref(fig:pop-prediction-bad).  That's not too different from what we got by analyzing just the raw census numbers. `r mark(3135)`
+:::
+
+## Accumulation
+
+Imagine a simple setting: water flowing out of a tap into a basin or tank. The amount of water in the basin will be measured in a unit of volume, say liters. Measurement of the *flow* $f(t)$ of water from the tap into the tank has different units, say liters per second. If volume $V(t)$ is the volume of water in the tank as a function of time, $f(t)$ at any instant is $f(t) = \partial_t V(t)$. 
+
+Clearly there is a relationship between the two functions $f(t)$ and $V(t)$. With derivatives, we can give a good description of that relationship: $$f(t) = \partial_t V(t)$$ This description will be informative if we have measured the volume of water in the basin as a function of time and want to deduce the rate of flow from the tap. 
+Now suppose we have measured the flow $f(t)$ and want to figure out the volume. The volume at any instant is the past flow accumulated to that instant. As a matter of notation, we write this view of the relationship as $$V(t) = \int f(t) dt,$$ which you can read as "volume is the accumulated flow." 
+
+Other examples of accumulation and change:
+
+- velocity is the rate of change of position *with respect to time*. Likewise, position is the accumulation of velocity *over time*.
+- force is the rate of energy *with respect to position*. Likewise energy is the accumulation of force *as position changes*. 
+- deficit is the rate of change of debt with respect to time. Likewise, debt is the accumulation of deficit over time. 
+
+## Notation for anti-differentiation
+
+For differentiation we are using the notation $\partial_x$ as in $\partial_x f(x)$. Remember that the subscript on $\partial$ names the ***with-respect-to input***.  There are three pieces of information this notation:
+
+1. The $\color{magenta}{\partial}$ symbol which identifies the operation as partial ***differentiation***.
+2. The name of the with-respect-to input $\partial_{\color{magenta}{x}}$ written as a subscript to $\partial$.
+3. The function to be differentiated, $\partial_x \color{magenta}{f(x)}$.
+
+For ***anti-differentiation***, our notation must also specify the three pieces of information. It might be tempting to use the same notation as differentiation but replace the $\partial$ symbol with something else, perhaps $\eth$ or $\spadesuit$ or $\forall$, giving us something like $\spadesuit_x f(x)$.
+
+Convention has something different in store. The notation for anti-differentiation is $$\large \int f(x) dx$$
+1. The $\color{magenta}{\int}$ is the marker for anti-differentiation.
+2. The name of the with-respect to variable is contained in the "dx" at the end of the notation: $\int f(x) d\color{magenta}{x}$
+3. The function being anti-differentiated is in the middle $\int \color{magenta}{f(x)} dx$.
+
+For those starting out with anti-differentiation, the conventional notation can be confusing, especially the $dx$ part. It's easy confuse $d$ for a constant and $x$ for part of the function being anti-differentiated. 
+
+Think of the $\int$ and the $dx$ as **brackets** around the function. You need both brackets for correct notation, the $\int$ and the $dx$ together telling you what operation to perform. 
+
+Remember that just as $\partial_x f(x)$ is a function, so is $\int f(x) dx$.
+
+## R/mosaic notation
+
+Recall that the notation for differentiation in R/mosaic is `D(f(x) ~ x)`. The R/mosaic notation for anti-differentiation is very similar: 
+
+```r
+D(f(x) ~ x)
+```
+
+This has the same three pieces of information as $\partial_x f(x)$
+
+1. `D()` signifies differentiation whereas `antiD()` signifies anti-differentiation.
+2. `~ x` identifies the with-respect-to variable.
+3. `f(x) ~ ` is the function on which the operation is to be performed. 
+
+Remember that just as `D(f(x) ~ x)` creates a new function out of `f(x) ~ x`, so does `antiD(f(x) ~ x)`.
+
+## Dimension and anti-differentiation
+
+This entire block will be about anti-differentiation, its properties and its uses. You already know that anti-differentiation (as the name suggests) is the inverse of differentiation. There is one consequence of this that is helpful to keep in mind as we move on to other chapters. This being calculus, the functions that we construct and operate upon have inputs that are quantities and outputs that are also quantities. Every quantity has a dimension, as discussed in Chapter `r Chaps$dimension`. When you are working with any quantity, you should be sure that you know its dimension and its units.
+
+The dimension of the input to a function does not by any means have to be the same as the dimension of the output. For instance, we have been using many functions where the input has dimension **time** and the output is position (dimension L) or velocity (dimension L/T) or acceleration (dimension L/T$^2$).
+
+Imagine working with some function $f(y)$ that's relevant to some modeling project of interest to you. Returning to the bracket notation that we used in Chapter `r Chaps$dimension`, the dimension of the input quantity will be [$y$]. The dimension of the output quantity is [$f(y)$]. (Remember from `r Chaps$dimension` that [$y$] means "the dimension of quantity $y$" and that [$f(y)$] means "the dimension of the *output* from $f(y)$.")
+
+The function $\partial_y f(y)$ has the same input dimension $[y]$ but the output will be $[f(y)] / [y]$. For example, suppose $f(y)$ is the mass of fuel in a rocket as a function of time $y$. The output of $f(y)$ has dimension M. The input dimension $[y]$ is T.  
+
+The output of the function $\partial_y f(y)$ has dimension $[f(y)] / [y]$, which in this case will be M / T. (Less abstractly, if the fuel mass is given in kg, and time is measured in seconds, then $\partial_y f(y)$ will have units of kg-per-second.)
+
+How about the dimension of the anti-derivative $F(y) = \int f(y) dy$? Since $F(y)$ is the anti-derivative of $f(y)$ (with respect to $y$), we know that $\partial_y F(y) = f(y)$. Taking the dimension of both sides
+$$[\partial_y F(y)] = \frac{[F(y)]}{[y]} = \frac{[F(y)]}{\text{T}} = [f(y)] = \text{M}$$
+Consequently, $[F(y)] = \text{M}$. 
+
+To summarize: 
+
+- The dimension of derivative $\partial_y f(y)$ will be $[f(y)] / [y]$.
+- The dimension of the anti-derivative $\int f(y) dy$ will be $[f(y)]\times [y]$.
+
+Or, more concisely: 
+
+> Differentiation is like division, anti-differentiation is like multiplication.
+
+Paying attention to the dimensions (and units!) of input and output can be a boon to the calculus student. Often students have some function $f(y)$ and they are wondering which of the several calculus operations they are supposed to do: differentiation, anti-differentiation, finding a maximum, finding an argmax or a zero. Start by figuring out the dimension of the quantity you want. From that, you can often figure out which operation is appropriate.
+
+To illustrate, imagine that you have constructed $f(y)$ for your task and you know, say, $$[f(y)] = \text{M       and} \  \ \ \ \ [y] = \text{T}\ .$$  Look things up in the following table:
+
+Dimension of result | Calculus operation
+--------------------|--------------------
+M / T | differentiate
+M T   | anti-differentiate
+M     | find max or min
+T     | find argmax/argmin or a function zero
+M T$^2$ | anti-differentiate twice in succession
+M / T$^2$ | differentiate twice in succession
+
+For example, suppose the output of the accelerometer on your rocket has dimension L / T$^2$.  You are trying to figure out from the accelerometer reading what is your altitude. Altitude has dimension L. Look up in the table to see that you want to anti-differentiate acceleration twice in succession.
+
+## From *Calculus Made Easy* {#preliminary-terrors}
+
+[*Calculus Made Easy* ](https://en.wikipedia.org/wiki/Calculus_Made_Easy), by Silvanus P. Thompson, is a classic, concise, and elegant textbook from 1910. It takes a common-sense approach, sometimes lampooning the traditional approach to teaching calculus.
+
+> *Some calculus-tricks are quite easy. Some are enormously difficult. The fools who write the textbooks of advanced mathematics---and they are mostly clever fools---seldom take the trouble to show you how easy the easy calculations are. On the contrary, they seem to desire to impress you with their tremendous cleverness by going about it in the most difficult way.* --- From the preface
+
+Thompson's first chapter starts with the notation of accumulation, which he calls "the preliminary terror."
+
+::: {.made-easy data-latex=""}
+
+<span style="font-variant:small-caps;">The</span> preliminary terror ... can be abolished once for all by simply stating what is the meaning---in common-sense terms---of the two principal symbols that are used in calculating.
+
+These dreadful symbols are:
+
+(1) $\Large\  d$ which merely means "a little bit of."
+
+Thus $dx$ means a little bit of $x$; or $du$ means a little bit of $u$. Ordinary mathematicians think it more polite to say "an element of," instead of "a little bit of." Just as you please. But you will find that these little bits (or elements) may be considered to be indefinitely small.
+
+(2) $\ \ \large\int$ which is merely a long $S$, and may be called (if you like) "the sum of."
+
+Thus $\ \int dx$ means the sum of all the little bits
+of $x$; or $\ \int dt$ means the sum of all the little bits of $t$. Ordinary mathematicians call this symbol "the integral of." Now any fool can see that if $x$ is
+considered as made up of a lot of little bits, each of
+which is called $dx$, if you add them all up together
+you get the sum of all the $dx$'s, (which is the same
+thing as the whole of $x$). The word "integral" simply
+means "the whole." If you think of the duration
+of time for one hour, you may (if you like) think of
+it as cut up into $3600$ little bits called seconds. The
+whole of the $3600$ little bits added up together make
+one hour.
+
+When you see an expression that begins with this
+terrifying symbol, you will henceforth know that it
+is put there merely to give you instructions that you
+are now to perform the operation (if you can) of
+totaling up all the little bits that are indicated by
+the symbols that follow.
+:::
+
+<hr>
+
+The next chapter shows what it means to "total up all the little bits" of a function.
+
+## Exercises
+
+
+`r if (knitr::is_latex_output()) knitr::knit_exit()`
+
+`r insert_calcZ_exercise("27.02", "bcJnUq", "Exercises/wolf-beat-book.Rmd")`
+
+`r insert_calcZ_exercise("27.04", "Ya2cVq", "Exercises/fir-lead-canoe.Rmd")`
+
+`r insert_calcZ_exercise("27.06", "wmyERp", "Exercises/bee-bid-knife.Rmd")`
+
+
+`r insert_calcZ_exercise("27.08", "kEAW8g", "Exercises/dog-have-mattress.Rmd")`
+
+`r insert_calcZ_exercise("27.10", "NYPDR", "Exercises/horse-takes-pillow.Rmd")`
+

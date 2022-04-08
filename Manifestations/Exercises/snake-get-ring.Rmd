@@ -1,0 +1,63 @@
+---
+id: "snake-get-ring"
+created: "Sat Jan 22 08:13:18 2022"
+global_id: "JBw8oV"
+---
+
+A simple robot arm to move things in the $(x,y)$ plane consists of two links, the first connected to the base of the robot and the second to the free end of the first link, as in the diagram. At the end of the second link is a tool, such as a drill. Such a robot would be used to drill a series of precisely positioned whole in a metal plate.
+
+Each link is moved by a digitally-controlled motor. To position the robot, commands are sent to the two motors to set their respective angles. For instance, in the diagram the motor-1 angle, $\theta_1$ is set to 45 degrees, while the motor-2 angle $\theta_2$ is set to -60 degrees. 
+
+The problem faced by the robot designer is to allow the user to input a series of $(x,y)$ coordinates (where the holes are to be drilled) and have the robot controller calculate the resulting angles. 
+
+For simplicity, assume that the link lengths are both $L = 1$, but generalizing this to two different link lengths would not be difficult.
+
+At this point, play with the problem a bit. Mark a point on your desk or paper. This will be the location of the base of the robot. Take two pencils, let's call them "yellow" and "green," putting the eraser of yellow at the base location and the eraser of green at the tip of yellow. Now, pick another point on your desk or paper to be the target for the robot arm. (This must be closer to the base than the sum of lengths of the two pencils.)  Change the orientation of the pencils, keeping yellow attached to the base and green attached to the tip of yellow. Your job is to find an orientation that will place the tip of green on the target. Try different target points until you feel comfortable that you understand how to solve the problem.
+
+Now to create a mathematical model of the situation so that we can automate the solution. The purpose of this model is to find $\theta_1$ and $\theta_2$ given the $(x, y)$ position of the target.
+
+From your experience using pencils as the model of the robot, you may have noticed that the location of the "elbow" of the robot arm is key to the solution. Find the right position for the elbow and the angles can be calculated from trigonometry. 
+
+Note that the position of the elbow, which we will denote with coordinates $(u, v)$ is determined solely by $L$ and $\theta_1$.
+
+1. Write down a formula for the $u$ and for the $v$ position of the elbow as a function of $\theta_1$ (taking the base as the origin). Hint: sine and cosine functions are relevant.
+
+2. Implement the formulas from (1) into two functions, one called `elbow_u(theta1)` and the other `elbow_v(theta1)`. 
+
+3. Write another function, `elbow_to_target_dist(theta1, x, y)` that will use `elbow_u()` and `elbow_v()` to calculate the distance from the elbow to the target point $(x, y)$.  (The distance will be $\sqrt{\strut (x - u)^2 + (y-v)^2}$.)
+
+4. Write yet another function, `dist_at_theta(theta1, x, y)` that, given an angle theta, will return the distance from the elbow to the target. The logic is to use `elbow_u()` and `elbow_v()` to find the location of the elbow $u$ and $v$ and then give these as the argments to `elbow_to_target_dist()`.
+
+5. The next phase of the solution is to use `elbow_to_target_dist(theta1, x, y)` to find a value of `theta1` that will make the distance equal to the length $L$ of link2. When you have found this `theta1`, you'll know the position of the elbow that is consistent with reaching the target from the base with the two links.
+    i. Pick a target location. This can be anything within distance $2L$ from the base. We'll call the coordinates of your target `target_x` and `target_y`.
+    i. Plot out `elbow_to_target_dist(theta1, x=target_x, y=target_y)` as a function of `theta1` over the domain $-\pi \leq \theta_1 \leq  \pi$.
+    ii. Locate a value of $\theta_1$ where the output of the function is $L$.
+    
+6. Write another function, `elbow_theta1(x, y)` that takes the $(x, y)$ position as input and produces as output suitable value(s) of $\theta_1$. To do this  within the `elbow_theta1(x, y)` function, use `Zeros(dist_at_theta(theta1) - L, domain(theta1=-pi:pi))`.
+
+```{r echo=FALSE, eval=FALSE}
+# solution
+L <- 1
+elbow_u <- function(theta1) L*cos(theta1)
+elbow_v <- function(theta1) L*sin(theta1)
+elbow_to_target_dist <- function(theta1, x, y) {
+  sqrt( 
+    (x - elbow_u(theta1))^2 + 
+      (y - elbow_v(theta1))^2)
+}
+target_x = -0.5
+target_y = -1
+slice_plot(
+  elbow_to_target_dist(
+    theta,  x=target_x, y=target_y) ~ theta,
+  domain(theta=-pi:pi))
+
+elbow_theta1 <- function(x, y) {
+  Zeros(
+    elbow_to_target_dist(
+      theta,  x=target_x, y=target_y) - L ~ theta,
+      domain(theta=-pi:pi))
+}
+elbow_theta1(target_x, target_y)
+```
+

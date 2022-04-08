@@ -1,0 +1,157 @@
+# Statistical modeling and R^2^ {#stat-modeling}
+
+<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Block-5/B5-stat-modeling.Rmd)</div>
+
+So far, we've been looking at linear combinations from a distinctively mathematical point of view: vectors, collections of vectors (matrices), projection, angles and orthogonality. We've show a few applications of the techniques for working with linear combinations, but have always expressed those techniques using mathematical terminology. In this Chapter, we will take a detour to get a sense of the perspective and terminology of another field: statistics.
+
+In the quantitative world, including fields such as biology and genetics, the social sciences, business decision making, etc. there are far more people working with linear combinations with a statistical eye than there are people working with the mathematical form of notation. Statistics is a far wider field than linear combination, so this chapter is **not** an attempt to replace the need to study statistics and data science. The purpose is merely to show you how a mathematical process can be used as part of a broader framework to provide useful information to decision-makers.
+
+::: {.takenote data-latex=""}
+Since a statistics and data-science courses are part of a complete quantitative education, we want to point out from the beginning what you are likely to experience a traditional introductory statistics course and why that will seem largely disconnected from what you see here.
+
+Statistics did not start out as a branch of mathematics, although people trained as mathematicians played a central role in it's development. The story is complicated, but a simplification faithful to that history is to see statistics as an extension of biology. Statistics emerged in the last couple of decades of the 1800s. Possibly the key motivation was to understand ***genetics*** and Darwinian evolution. Today we know much about DNA sequences, RNA, amino acids, proteins, and so on. But quantitative genetics started in complete ignorance of any physical mechanism for genetics. Instead, mathematical models were the basis for the theory of genetics, beginning with with Gregor Mendel's work on heritable traits published in 1865.^[Amazingly, this work attracted little attention until after 1900, when Mendel's laws were rediscovered by the botanists de Vries, Correns, and von Tschermak.] 
+
+Perhaps coincidentally---or perhaps not---Charles Darwin (1809-1882) was a half-cousin of Francis Galton (1822-1911). Traditional introductory statistics is based, more or less, on the work Galton and his contemporaries, for instance Karl Pearson (1857-1936) and William Sealy Gosset (1876-1937). The terms that you encounter in introductory statistics---correlation coefficient, regression, chi-squared test, t-test---where in place by 1910. Ronald Fisher (1890-1962), also a geneticist, extended this work based in part on the mathematical ideas of projection. Fisher invented ***analysis of variance*** (ANOVA) and ***maximum likelihood estimation*** and is perhaps the "great man" of statistics. (See Section `r Sections$likelihood` for an introduction to likelihood. We'll briefly touch on ANOVA in this chapter.) To his historical discredit, Fisher was a leader in eugenics. He was also a major obstacle, to the statistical acceptance of the dangers of smoking.
+
+Most of the many techniques covered in traditional introductory statistics are, in fact, manifestations of the application of a general technique: the target problem. They are not taught this way, partly out of hide-bound tradition and partly because the target problem has been covered, if at all, in the fourth or fifth semester of a traditional calculus sequence.
+:::
+
+It often happens that a model is needed to help organize complex, multivariate data for purposes such as prediction.  As a case in point, consider the data available in the `Body_fat` data frame, which consists of measurements of characteristics such as height, weight, chest circumference, and body fat on 252 men.
+
+```{r}
+Znotes::and_so_on(Body_fat) %>% kableExtra::kable_minimal()
+```
+
+Body fat, the percentage of total body mass consisting of fat, is thought by some to be a good measure of general fitness. To what extent this theory is merely a reflection of general societal attitudes toward body shape is unknown. 
+
+Whatever its actual utility, body fat is hard to measure directly; it involves submerging a person in water to measure total body volume, then calculating the persons mass density and converting this to a reading of body-mass percentage. For those who would like to see body fat used more broadly as a measure of health and fitness, this elaborate procedure stands in the way. And so they seek easier ways to estimate body fat along the lines of the ***Body Mass Index*** (BMI), which is a simple arithmetic combination of easily measured height and weight. (Note that BMI is also controversial as anything other than a rough description of body shape. In particular, the label "overweight," officially $25 \leq \text{BMI}\leq 30$ has at best little connection to actual health.)
+
+How can we construct a model, based on the available data, of body fat as a function of the easy-to-measure characteristics such as height and weight? You can anticipate that this will be a matter of applying what we know about the target problem 
+$$\text{Given}\ \mathit{A}\  \text{and}\ \vec{b}\text{, solve } \mathit{A} \vec{x} = \vec{b}\ \text{for}\ \vec{x}$$where $\vec{b}$ is the column of body-mass measurements and $\mathit{A}$ is the matrix of all the other columns in the data frame.
+
+In statistics, the target $\vec{b}$ is called the ***response variable*** and $\mathit{A}$ is the set of ***explanatory variables***. You can also think of the response variable as the output of the model we will build and the explanatory variables as the inputs to that model.
+
+Although application of the target problem is an essential part of constructing a statistical model, it is far from the only part. For instance, statisticians find is useful to think about "how much" of the response variable is explained by the explanatory variables. Measuring this requires a definition for "how much." In defining "how much," statisticians focus not on how much ***variation*** there is among the values in the response variable. The standard way to measure this is with the ***variance***, which was introduce in Section \@ref(vector-length) and can be thought of as the average of pair-wise differences among the elements in $\vec{b}$.
+
+In order to support this focus on the variance of $\vec{b}$, statisticians typically augment $\vec{A}$ with a column of ones, which they call the ***intercept***.
+
+To move forward, we're going to extract the response variable from the data and construct $\vec{A}$, adding in the vector of ones. We'll show the vector/matrix commands for doing this, but you don't have to remember them because statisticians have a more user-friendly interface to the calculations.
+
+::: {.rmosaic data-latex=""}
+We're going to be constructing vectors and matrices from the columns of a data frame. You can do this with the R/mosaic function `df2matrix()` (the `df` stands for "data frame"). The final argument to `df2matrix()` is the name of the data frame. Previous arguments are the columns you want to insert in the matrix. We can make both `b` and `A` using `df2matrix()`. Note the `1` that is inserted as a column into `A`.  
+
+```{r}
+b <- df2matrix(bodyfat, data = Body_fat)
+A <- df2matrix(1, wrist, thigh, forearm, data = Body_fat)
+```
+
+You can also include interaction terms (e.g. `wrist*thigh`) or transformations (e.g. `log(forearm)`) as columns in the `A` matrix.
+:::
+
+Once we have `b` and `A`, we find the coefficients on the linear model in the usual way, with `qr.solve()`.
+
+```{r}
+x <- qr.solve(A, b)
+```
+
+Having applied `qr.solve()`, $\vec{x}$ now contains the coefficients on the "best" linear combination of the columns in $\vec{A}$. One of the ways in which the R language is designed to support statistics, is that it keeps track of names of columns, so the elements of $\vec{x}$ are labelled with the name of the column the element applies to.
+
+```{r}
+x
+```
+Based on the above, the model for body fat as a function of the explanatory variables is:
+$$\text{body fat} = -40.5 + 0.253\, \mathtt{wrist} - 0.818\, \mathtt{thigh} - 0.223\, \mathtt{forearm}\ .$$
+::: {.Rmosaic data-latex=""}
+In invoking `qr.solve(A, b)` we have created a vector `x` containing the solution to the target problem. We can use that vector `x` in the usual ways, for example to construct the model vector (`A %*% x`) or the residual vector (`b - A %*% x`).
+
+Sometimes you will want to create a **function** that implements the linear combination described by `x`. For convenience, the R/mosaic `makeFun()` knows how to accept a vector input and create the corresponding function.  For example:
+```{r}
+f <- makeFun(x)
+f
+```
+
+
+:::
+
+## How good a model?
+
+There are so many ways to construct a linear-combination model from a data frame---all the different combinations of columns plus possibly interaction terms and other transformations---that it's natural to ask, "What's the best model?"
+
+As always, "best" depends on the purpose for your model is to be used. This requires thought on the part of the modeler.
+
+But there is a far more limited way to address "best" that doesn't require any substantial thought. Consequently---and perhaps unfortunately---this method is often used in practice. It's called ***R-squared*** and usually written R^2^. There's nothing wrong with the R^2^ method, so long as the correct statistical interpretation is given it. We'll mention it here without going into the statistics, just so that you will have seen the relevant names and the mathematics (but not statistics!) behind them.
+
+The basic question addressed by R^2^ is: How much of the variation in the response variable `b` is accounted for by the columns of the matrix `A`.
+
+The standard way to measure the "amount of variation" in a variable is the ***variance***. In R, you calculate that with
+
+```{r}
+var(b)
+```
+
+
+- *How good is the model?*
+- *Could we make a better model?*
+
+To answer these questions, we'll have to develop a measure of how good the model is. And this depends on the purpose for which we'll be using the model.
+
+We can also look at the variation in the model vector, $\hat{b}$.
+```{r}
+bhat <- A %*% x
+var(bhat)
+```
+
+R^2^ is simply the ratio of these two variances:
+```{r}
+var(bhat) / var(b)
+```
+
+This result, 31.7%, is interpreted as the fraction of the variance in the response variable that is ***accounted for*** by the model. Near synonyms for "accounted for" is ***explained by*** or ***can be attributed to***.
+
+In the same spirit, we can ask how much of the variance in the response variable is ***unexplained by***, or ***unaccounted by*** the explanatory variables. To answer this, look at the size of the residual:
+```{r}
+var(b - bhat) / var(b)
+```
+
+Notice that the amount of variance explained, 68.3%, plus the amount remaining unexplained, 31.7%, add up to 100%. This is no accident. It is the reason why statisticians use the variance as a measure of variability.
+
+
+## Machine learning
+
+If you pay attention to trends, you will know about advances in ***artificial intelligence*** and the many claims---some hype, some not---about how it will change *everything* from animal husbandry to warfare. Services such as Google Translate are based on artificial intelligence, as are many surveillance technologies. (Whether the surveillance is for good or ill is a serious matter.)
+
+Skills in artificial intelligence are currently a ticket to lucrative employment. 
+
+Like so many things, "artificial intelligence" is a branding term. In fact, what all the excitement is about is not mostly artificial intelligence at all. The advances, by and large, have come over 50 years of development in a field called "statistical learning" or "machine learning," depending on whether the perspective is from statistics or computer science.
+
+A major part of the mathematical foundation of statistical (or "machine") learning is linear algebra. Many workers in "artificial intelligence" are struggling to catch up because they never took linear algebra in college or, if they did, they took a proof-oriented course that didn't cover the elements of linear algebra that are directly applicable. We're trying to do better in this course.
+
+So if you're diligent, and continue your studies to take actual statistical/machine learning courses, you'll find yourself at the top of the heap. Even [xkcd](https://xkcd.com/1838/), the beloved techno-comic, gets in on the act, as this cartoon reveals: 
+
+```{r echo=FALSE, out.width="50%", fig.align="center"}
+knitr::include_graphics("www/xkcd_machine_learning.png")
+```
+Look carefully below the paddle and you'll see the Greek letter "lambda", $\lambda$. You'll meet the linear algebra concept signified by $\lambda$---eigenvalues and eigenvectors---in Block 6.
+
+::: {.takenote data-latex=""}
+We've been using the R/mosaic function `df2matrix()` to construct the `A` and `b` matrices used in linear model from data. This is mainly for convenience: we need a way to carry out the calculations that lets you see the `x` vector, and calculate the model vector and the residual in the way described in Chapter \@ref(target-problem).
+
+In practice, statistical modelers use other software. The most famous of these in R is the `lm()` family of functions. This does all the work of creating the `b` vector and the `A` matrix, QR solving, etc.  We call it a "family" of functions because the output of `lm()` is not simply the vector of coefficients `x` but includes many other features that support statistical inference on the models created.
+
+In a statistics course using R, you are very likely to encounter `lm()`. You'll never hear about `df2matrix()` outside of this book.
+:::
+
+
+
+
+## Exercises
+
+`r insert_calcZ_exercise("XX.XX", "97zwR6", "Exercises/girl-have-rug.Rmd")`
+
+Exercises constructing functions with different explanatory variables. Compare R^2^. Plot the functions created? Do the interaction terms, etc. help?
+
+Exercises confirming that `qr.solve()` produces results that are as they should be: residual orthogonal to every vector in A, projected + residual = $\vec{b}$.
+
+Exercises confirming that adding more columns to A produces a smaller residual.
+
+Demonstration that even random vectors can be combined to exactly equal $\vec{b}$, so long as we have enough of them.

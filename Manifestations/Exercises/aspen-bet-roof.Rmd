@@ -1,0 +1,93 @@
+---
+id: "aspen-bet-roof"
+created: "Thu Dec 16 17:46:57 2021"
+global_id: "ixpCg0"
+---
+
+`r under_construction()`
+
+
+One of the goals for self-driving cars is to reduce road accidents, especially fatal accidents. People are understandably skeptical that an automated system can cope with all the varying conditions of traffic, visibility, road damage, etc. without the benefit of human judgment or experience. For this reason, society will need to accumulate substantial evidence for enhanced safety in self-driving cars before accepting any claims to that effect. 
+
+This exercise is about how to accumulate such evidence. 
+
+Based on experience with tens of millions of regular cars driving hundreds of billions of total miles, suppose we decide the accident probability is approximately 10% per 20,000 miles. Note that this is not stating that an accident is certain to occur in the first 200,000 miles of driving. The probability that, for a representative car, an accident occurs at $m$ miles will have an ***exponential shape*** $g(m, k)$ where $$g(m, D) \equiv \frac{1}{D} e^{-m/D}\, .$$ Consequently, an accident might happen in the first few miles or at 300,000 miles or not at all within the lifetime of the car. 
+
+Take note that we have parameterized the exponential with $D$, which will have units of miles. Thus, bigger $D$ means a safer car. You can think about $D$ as indicating the distance traveled by a typical car before it has an accident.
+
+**Part A**. Estimate the $D$ to be consistent with the idea that there is a 10% chance of an accident at or before the first $m=20,000$ miles of driving.
+
+i. Recognize that "at or before" corresponds to a ***cumulative probability function*** which in this case will be $$\int_0^m \frac{1}{D} e^{- x/D}\, dx\ .$$
+
+ii. Construct the cumulative probability density in symbolic form. It will be a function of both $D$ and $m$, let's call it $G(m, D)$. <!-- It will be $1- e^{- m/D}$ --> (Hint: $G(0, D)$ must be zero. $G(m, D)$ will have a roughly sigmoidal increase with $m$. $\lim_{m \rightarrow \infty} G(m, D) = 1$.)
+
+iii. Set $G(m=20000, D_0) = 0.10$, per our assumption for ordinary cars of a 10% risk in $m=20,000$ miles of driving. Solve this to find $D_0$. <!-- It will be $k \approx 190,000$ miles -->
+    
+Show your work.
+    
+To start the calculations, we will need a ***prior*** relative density function for $k$. We're hopeful but skeptical about self-driving cars. The best case scenario, let's say, is that the self-driving cars will be 10 times safer than regular cars. The worst case is that they will be 10 times worse. Using $k$ as our measure of safety, we'll set our prior to have the form $1/D$.
+
+**Part B**: Implement the function $\text{prior}(D) = 1/D$. 
+
+```{r echo=FALSE, results="hide"}
+prior <- makeFun(1/D ~ D)
+```
+
+i. Graph out $\text{prior}(D)$ on the domain 2,000 to 2,000,000, that is, roughly $D_0/10$ to $10 D_0$. 
+ii. Referring to your graph, write down your intuition about whether this prior seems to favor $D < D_0$ or not.
+iii. Now remember that $\text{prior}(D)$ shows relative **density**. So compare the total probability that $D_0/10 \leq D \leq D_0$ to the probability of $D_0 \leq D \leq 10 D_0$
+$$\int_{20,000}^{200,000} \text{prior}(D)\, dD\ \ \ \ \ \text{to}\ \ \ \ \ \int_{200,000}^{2,000,000} \text{prior}(D)\, dD\ .$$ Does this indicate that the $1/D$ prior is biased toward the assumption that self-driving cars will be no safer than ordinary cars? Explain your reasoning.
+
+Now imagine that you work for a safety organization collecting accident information. To figure out the safety of self-driving cars, you are monitoring a fleet of 100 self-driving cars. Each year you get a report giving the odometer reading of the car, or, if the car has been in an accident that year, the odometer reading at the time of the accident. The data might look like the following table. (The table is entirely fictitious and shouldn't be misinterpreted as representing real-world self-driving cars.):
+
+$i$   | Status    | Mileage
+------|-----------|--------:
+1     | on road   | 85,300
+2     | on road   | 65,200
+3     | accident  | 13,495
+4     | on road   | 131,200
+5     | on road   | 96,000
+6     | accident  | 54,682
+7     | accident  | 105,200
+8     | on road   | 53,900
+9     | accident  | 86,000
+10    | on road   | 94,300
+$\vdots$| $\vdots$  | $\vdots$
+100 | on road   | 107,200
+
+Thr first two cars in the fleet have accumulated 85,300 and 65,200 accident-free miles respectively. The third car was in an accident at 13,495 miles and is no longer on the road.
+
+In response to the data, you issue a yearly report in the form of a **posterior** distribution on $D$, our measure of safety. 
+
+To update the original prior into a posterior, you need to construct the likelihood functions. There are two functions, because there are two different kinds of observations on each car:
+
+a. If the car was in an accident, then you want the likelihood of $D$ **given** the mileage at which the accident happened. Since the probability model is $\frac{1}{D}\, e^{-D\, m}$, the likelihood function for a car that had an accident at $m_\text{accident}$ miles will be $\frac{1}{D}\, e^{-D\, m_\text{accident}}$.
+b. If the car has not been in an accident, then you want the likelihood of $D$ **given** the number of miles traveled.  
+
+The likelihood function (b) is based on the probability model that the car has **not** had an accident in $m_\text{driven}$ miles of driving. Recall that the cumulative probability, $G(m, D)$ in part A of this exercise, is the probability that the car **did** have an accident at or before $m$ miles of driving. So the probability that the car did not have an accident in that amount of driving is $1 - G(m, D)$. The likelihood function will therefore be $1 - G(m_\text{driven}, D)$.
+
+**Part C**. Implement the two likelihood functions in R as `Laccident(m, D)` and `Lno(m D)`. 
+
+```{r echo=FALSE}
+Laccident <- makeFun(dexp(m, 1/D) ~ m & D)
+Lno       <- makeFun(1 - pexp(m, 1/D) ~ m & D)
+```
+
+Plot out the two functions and explain why their shape makes sense. Show the code that implements the two functions.
+
+Now you are in a position to update the prior to create the posterior probability density on $D$ given the data at hand. As always with Bayesian inference, the posterior will be: $$\text{posterior}(D) = \frac{1}{A} \prod_\text{cars}\text{likelihood}_i(D | \text{miles}_i) \text{prior}(D)$$ where $\text{likelihood}_i()$ refers to whichever one of the two likelihood functions in Part C is relevant to car $i$ and $\text{miles}_i$ is the observed mileage for that car. The constant $A$ is selected to normalize the posterior probability density.
+
+**Part D**.  To keep things simple, we'll use just the first 10 cars in the fleet report. The unnormalized posterior function will be:
+```{r}
+post <- function(D) {
+  Lno(85300, D) * Lno(65200, D) * 
+  Laccident(13495, D) * Lno(131200, D) *  
+  #similarly for each of the remaining cars ...
+  prior(D)
+}    
+```   
+    
+Based on the data from the first 10 cars, do you think that the self-driving cars are safer than the ordinary cars? Recall that $D_0$, calculated above, represents the safety of ordinary cars.
+
+
+

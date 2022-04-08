@@ -1,0 +1,158 @@
+---
+id: "sailing-over-time"
+title: "Sailing over time"
+author: "Daniel Kaplan"
+date: "Dec 29, 2020 revised"
+type: "shiny"
+---
+
+```{r include=FALSE, context="setup"}
+library(mosaic)
+library(mosaicCalc)
+```
+
+Anti-derivatives are useful when you know how a quantity is changing but don't (yet) know the quantity itself.
+
+Imagine, for instance, that you are sailing on a straight course across a large lake. Your friend, in the bow of the boat, uses a radar gun to record velocity at each instant. Velocity is, of course, the change in position over time. The recording lasts for 12 minutes, that is 0.20 hour, as shown in the Sailing-over-time app.
+
+::: {.todo}
+Add a picture/link to the app.
+:::
+
+
+How far did the boat travel during the 0.2-hour recording? Distance equals velocity times time. If the velocity were constant, say 4 mph, the distance would be 4 mph $\times$ 0.2 hour $= 0.8$ miles. But the velocity is changing over the recording. To do the velocity-times-time calculation we use the standard calculus method of dividing up time into a series of very short time intervals, each of duration $dt$. Over each of these short time intervals, the boat travels a short distance. For instance, for the interval covering time $t = 0.05$ hour, the boat travels distance $\text{vel}(0.05) dt$.
+
+
+Suppose we set $dt = 0.05$ hour. There would be 5 such 0.05-hour-long intervals over the entire 0.2-hour recording, shown as colored segments in the graph. In the first interval, the boat has velocity that we'll approximate as $\text{vel}(0)$ and travels roughly $\text{vel}(0) dt$. During the second 0.05-hour-long interval, the boat's velocity is $\text{vel}(0.05)$ and  travels $\text{vel}(0.05) dt$. During the third interval, the velocity is $\text{vel}(0.15)$ and travels $\text{vel}(0.15) dt$. The total distance travelled is
+$$\text{vel}(0.00)dt + \text{vel}(0.05)dt + \text{vel}(0.10)dt + \ldots + \text{vel}(0.15)dt = $$
+$$\left[\text{vel}(0.00) + \text{vel}(0.05) + \text{vel}(0.10) + \ldots + \text{vel}(0.15)\right] dt = $$
+
+$$14.01\ \text{miles/hour} \times 0.05\   \text{hour}$$
+
+
+
+
+
+Each of the terms like $\text{vel}(0.10) dt$ is a velocity times a duration of time. This multiplies a quantity on the horizontal axis by a quantity on the vertical axis. Graphically, such a multiplication can be shown as an "area." But keep in mind that the units of this "area" are miles. (Vertical axis: miles-per-hour. Horizontal axis: hours. Multiply the two quantities: hours $\times$ miles/hour = miles.)
+
+
+
+If you have changed the length of dt and/or clicked show the multiplication as an area, You can scroll up and see the changes to the graph.
+
+The sum above amounts to adding up all those rectangular "areas," each of which is in the units "miles." 
+
+
+
+```{r boat-dim1, echo=FALSE, results="markup"}
+askMC(
+  "What is the dimension of the quantity $14.01\\ \\text{miles/hour} \\times 0.05  \\text{hour}$?",
+  "LT^2", "+L+"= "Or, if you like $(L/T) T = L$.", "L/T", "T", "T/L"
+)
+```
+
+
+***Making dt small***
+
+Another way to write the formula given in the previous section uses the mathematical "sum" symbol:
+$$\text{vel}(0.00)dt + \text{vel}(0.05)dt + \text{vel}(0.10)dt + \ldots + \text{vel}(0.15)dt = \sum_{i=0}^{4} \text{vel}(t_i) dt$$
+The $t_i$ in $\sum \text{vel}(t_i)$ is a notation for the horizontal location of the $i^{th}$ segment. Since the length of each segment is 0.05 hour in this example, $t_i$ is $i \times 0.05$.
+
+Using the sum notation, we can easily write down the calculation if we set $dt$ to be 0.01 hour rather than 0.05 hour in which case will have 20 segments covering the 0.2 hours of the recording:
+$$\sum_{\text{i}=0}^{19} \text{vel}(t_i) dt$$
+Or, with $dt$ set to one-thousandth of an hour there will be 200 segments:
+$$\sum_{\text{i}=0}^{199} \text{vel}(t_i) dt$$
+Evaluate the following commands in a `r sandbox_link()` to calculate the first two of the sum formulas with $dt = 0.01$ hour and $dt = 0.001$ hour respectivly. (The function $\text{vel}(t)$ is given as `vel()`.)
+
+
+```{r eval=FALSE}
+# Ignore the next two lines. They define the velocity function.
+tmp <- rfun(~ t, seed=638)
+vel <- makeFun(1+(10+tmp(30*(t-0.08)))/4 ~ t)
+
+# You should start here
+# dt = 0.01 hours
+segs <- 0:19 # 20 segments to cover 0.2 hours
+time_points <- 0.01 * segs
+sum(vel(time_points) * 0.01)
+# dt = 0.001 hour
+segs2 <- 0:199 # 200 segments to cover in minutes
+time_points2 <- 0.001 * segs2 # every 0.001 hour
+sum(vel(time_points2) * 0.001)
+```
+
+Then revise the commands in your sandbox to calculate the sum over 2000 segments, corresponding to a segment length of 0.0001 hour.
+
+```{r boat-1000, echo=FALSE, results="markup"}
+askMC(
+  "When $dt =$ 0.0001 hour, there are 2000 segments over the 0.2 hour recording. What is $$\\sum_{i = 0}^{1999} \\text{vel}(t_i = 0.0001 \\times i) dt\\ \\ \\text{?}$$",
+  0.7716, 0.7772, 0.7888, 0.7903,
+  right_one=0.7888,
+  random_answer_order = FALSE
+)
+```
+
+Repeat the calculation, but for 20,000 segments, each of duration 0.00001 hours.
+
+```{r boat-10000, echo=FALSE, results="markup"}
+askMC(
+  "When $dt =$ 0.00001, there are 20,000 segments over the 0.2 hr recording. What is $$\\sum_{i = 0}^{19999} \\text{vel}(t_i = 0.00001 \\times i) dt\\ \\ \\text{?}$$",
+  0.7816, 0.7843, 0.7886,  0.7889,
+  right_one=0.7889,
+  random_answer_order = FALSE
+)
+```
+
+You can see that for $dt \lessapprox 0.01$, the answer doesn't depend much on $dt$. In fact, the radar gun will round off the velocity to the nearest 1/10 mph, so any real accuracy by taking $dt$ very small is illusory.
+
+You can also see that the calculations themselves are a bit finicky. You have to get the number of segments to correspond to the choice of $dt$ and convert the segment id number to time properly. Then you add in something of size $dt/2$ to be in the middle of the segment.
+
+To save all this trouble in accumulating the velocity or any other change function, we simply say, "Integrate the function $\text{vel}(t)$ over the interval $0 \leq t \leq 0.2$." In symbols, we write this $$\int_0^{0.2} \text{vel}(t) dt$$ meaning "sum from time $t=0$ until time $t=0.2$."
+
+The anti-derivative of $\text{vel}(t)$, which we can write $\text{VEL}(t)$, tells the sum of the  $\text{vel}(t)\ dt$ segments.  Plug in a numerical value for that argument and out will come a numerical value for $\text{VEL}()$ at that input. The one argument of  $\text{VEL}(t)$ is the *end time* of the accumulation.
+
+There is no explicit mention of the *start time*. As a way of indicating that $\text{VEL}(t)$ doesn't tell the start time of accumulation, we write the anti-derivative generally as $\text{VEL}(t) + C$. The $C$ is unknown because the start time is unknown.
+
+Once we know a start time, we can figure out $C$. Suppose the start time is $0$. And let's make, for the sake of argument, the end time be $t=0$ as well. Common sense tells us that when the start time and the end time are the same, nothing gets accumulated. Thus, whatever $C$ might be, $\text{VEL}(0) + C = 0$, giving us $C = -\text{VEL}(0)$.
+
+Now suppose we want to know how much is accumulated over the interval $3 \leq t \leq 8$. The start time is 3, so the relevant choice of $C$ is $C = -\text{VEL}(3)$.
+
+Now, evaluate the anti-derivative at the end time, 8. The amount accumulated to time 8 is $\text{VEL}(8) + C$. But we now know $C$ and can re-write the amount accumulated in the interval $3 \leq t \leq 8$ as $\text{VEL}(8) - \text{VEL}(3)$.
+
+In general, if $F(x)$ is the anti-derivative of $f(x)$ then the accumulation of $f(x)$ over the interval $a \leq x \leq b$ will be $$\int_a^b f(x) dx = F(b) - F(a)$$
+
+Note that, because we specified the start at $x=a$, we do not have to include the constant $C$. In a way, $C$ is just a reminder that $F(x)$ tells us the accumulation up to $x$, but without our knowing where the accumulation started.
+
+The anti-derivative lets us split accumulation problems into two pieces:
+
+1. Find the anti-derivative $F(x)$ of $f(x)$, the quantity being accumulated.
+2. When we want to know the amount accumulated over any specified interval $a \leq x \leq b$, simply plug in $a$ and $b$, like this: $F(b) - F(a)$.
+
+We can use any technique we like to find the anti-derivative $F(x)$. When $f(x)$ is one of our basic modeling functions with a linear interior function (e.g. $f(x) = e^{kx}$), we can always write down the formula for the anti-derivative using the rules we have studied (e.g. $F(x) = \frac{1}{k} e^{kx}$). Or, if we have a formula for $f(x)$ that's more difficult, we can look for a solution that someone else has figured out. But, often, there will be no simple formula for $F(x)$. In that case, we can use numerical methods like the sum-of-segments we used to find the distance sailed.
+
+The `antiD()` R operator takes as input a tilde expression defining the function $f()$, e.g. `exp(k*x) ~ x`. As an output, it produces a function $F(x)$. Let's try:
+
+Use the sandbox and the `antiD()` function to accumulate the boat's velocity over the interval from $t=0.0$ to $0.2$.
+
+```{r boat-antiD, exercise=TRUE, exercise.setup = "define-velocity", exercise.lines = 5, exercise.cap="Using `antiD()` for accumulation."}
+VEL <- antiD(vel(t) ~ t)
+# Calculate the definite integral
+
+```
+
+***AntiD as notation for Euler***
+
+At minute 4:26 (that is, hour 0.0710), the boat sailed by a red marker buoy. Then at minute 6:45 (that is, hour 0.1075), the boat passed a blue marker bouy. How far apart are the red and blue bouys?
+
+This is an accumulation problem that we can denote as $$\int_{0.0710}^{0.1075} \text{vel}(t) dt .$$
+Use the anti-derivative $\text{VEL}(t)$ computed in the earlier sandbox to calculate the accumulated velocity times $dt$.
+
+```{r boat-0710, echo=FALSE, results="markup"}
+askMC(
+  prompt = "Which is the correct answer over the interval?",
+  "0.154 hours" = "What is the dimension of the unit you are looking for?",
+  "0.154 meters" = "What units are you operating in?",
+  "0.7889 hours" = "What is the dimension of the unit you are looking for?",
+  "+0.154 miles+",
+  "0.7889 miles" = "Did you appropriately change the bounds as the question directed?"
+)
+```

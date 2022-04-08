@@ -1,0 +1,53 @@
+---
+id: "tent-area"
+author: "Daniel Kaplan"
+---
+
+The next sandbox gives the function $A(x, y)$ for the *differential* $A(x,y)\,dy\,dx$ of the surface area of the tent at point (x,y).
+
+```{r tent3, exercise=TRUE, exercise.cap="Surface area", exercise.nlines=10}
+dg_dx <- D(g(x,y) ~ x)
+dg_dy <- D(g(x,y) ~ y)
+A <- function(x,y) {
+  sqrt((dg_dx(x,y)^2 + 1)*(dg_dy(x,y)^2 + 1))
+}
+slice_surface_area <- function(x) {
+  helper <- function(x) {
+    F <- antiD(A(x,y) ~ y, x=x)
+    F(5) - F(-5)
+  }
+  sapply(x, helper)
+}
+slice_surface_antid <- antiD(slice_surface_area(x) ~ x)
+slice_surface_antid(5) - slice_surface_antid(-5)
+```
+This is more than 4 times the ground area of the domain $-5 < x < 5, \ -5 < y < 5$ over which the tent has been raised. You can get some feel for why this is by looking at the several graphs of slices of the tent. The "ground length" in each of these plots is 10 (since they run from $y=-5$ to $5$.) The length of the tent material itself is given by the length of the black curve in each plot.
+
+Modify the code in the surface-area sandbox to find the surface area of the tent over the domain $3 < x < 5, \ 0 < y < 3$.
+
+```{r fv3, echo=FALSE}
+explain <- "Area is length times width."
+askMC(
+  "What is the area (in square meters) of the smaller domain itself? (As opposed to the surface area of the tent raised over that domain. You don't need the codebox for this question.)",
+  "3"=explain, "+6+" = "The x extent is 2, the y extent is 3, so the area is 6", "9"=explain, "12" = explain,
+  random_answer_order = FALSE
+)
+```
+
+```{r fv4, echo=FALSE}
+askMC(
+  "What is the surface area (in square meters) of the part of the tent raised over the small area?",
+  "0",
+  "+13+",
+  "27",
+  "99",
+  random_answer_order = FALSE,
+  id = knitr::opts_current$get()$label
+)
+```
+
+```{r fv5, echo=FALSE}
+etude2::etudeEssay(
+  "The ratio of tent surface area to ground area in the small region of the tent is only about 2. For for the tent as a whole, the ratio is much bigger: about 4. Look at the contour plot of the tent height and explain why there is such a big difference in ratios."
+)
+```

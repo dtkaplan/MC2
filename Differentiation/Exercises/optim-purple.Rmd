@@ -1,0 +1,105 @@
+---
+id: "optim-purple"
+author: "Daniel Kaplan"
+---
+
+```{r include = FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+```
+
+```{r echo=FALSE}
+plot_lens <- function(x_in, x_out, top, bottom) {
+  Points <- tibble::tribble(
+    ~ x, ~ y, ~ label,
+    -20, -30, "Source",
+    x_in, bottom(x_in), "P_in",
+    x_out, top(x_out), "P_out",
+    -10, 50, "Target",
+  )
+  
+  lens_x <- seq(-40, 40, length = 100)
+  lens_y <- bottom(lens_x)
+  lens_y <- c(lens_y, top(rev(lens_x)))
+  lens_x <- c(lens_x, rev(lens_x))
+  Lens_shape <- tibble(lens_x, lens_y)
+  gf_text(y ~ x,  data=Points, label = ~label, 
+          hjust=0, vjust=1, nudge_x = 3) %>%
+    gf_point() %>%
+    gf_path(color = "orange3") %>%
+    gf_polygon(lens_y ~ lens_x, data = Lens_shape, fill="dodgerblue", alpha = .2,
+               color = NA, inherit=FALSE) %>%
+    gf_refine(coord_fixed())
+}
+
+```
+
+
+
+Figure 1 shows a lens together with a source and target point. Light passing through the lens is refracted. The path followed by the light will be the one with the shortest time of transit from source to target.
+
+
+The light enters the lens at some point $P_{in} = (x_{in}\ , \ -\text{Lens}(x_{in}))$ and leaves at $P_{out} = (x_{out}\ ,\  \text{Lens}(x_{out}))$. We don't know either $x_{in}$ or $x_{out}$. but we can find them by optimization.
+
+To do this, we find the distance from the source to $P_{in}$, and from $P_{out}$ to the target. These two legs of the route are through air, so the time of transit on each leg is proportional to the refractive index 1.03 times the distance.
+
+Of course, light also has to travel through the lens. We'll make the lens out of glass with a high refractive index, so the transit time will be the distance from $P_{in}$ to $P_{out}$ multiplied by the lens's refractive index of 1.8. 
+
+The objective function will be the sum of the three legs' transit times. It's already programmed for you in the sandbox. So is the command to make a contour plot of the output of the objective function over a domain of $x_{in}$ and $x_{out}$. Finally, the last line in the sandbox draws a picture of the lens and the light path, but you will have to insert the argmins $x_{in}$ and $x_{out}$ that you pick from the contour plot of the objective function. (The $x_{in}$ and $x_{out}$ shown in the initial code of the sandbox are not right!)
+
+```{r}
+# Describe the shape of the lens
+Lens_top <- makeFun(-90 + sqrt(100^2 - x^2)  ~ x)
+Lens_bottom <- makeFun(-Lens_top(x) ~ x)
+
+# Define the objective function
+transit_time <- makeFun(
+  1.03 * sqrt((x_in - -20)^2 + (Lens_bottom(x_in)- (-30))^2) +
+  1.80 * sqrt((x_out-x_in)^2 + (Lens_top(x_out) - Lens_bottom(x_in))^2) + 
+  1.03 * sqrt((x_out - -10)^2 + (Lens_top(x_out)-50)^2) ~
+    x_in + x_out)
+# Graph the objective function
+contour_plot(transit_time(x_in, x_out) ~ x_in + x_out, 
+             domain(x_in = c(-40,40), x_out = c(-40,40)), npts=200)
+
+# Insert argmax from contour plot
+plot_lens(10, -5, Lens_top, Lens_bottom)
+```
+
+
+
+```{r daily-digital-38-QA1, echo=FALSE}
+askMC(
+  prompt = "When the index of refraction of the lens is 1.80, what are the optimal values for $x_{in}$ and $x_{out}$? (Choose the best answer.)",
+    "+$x_{in} = -22, \\ x_{out} = -21$+" = "",
+    "$x_{in} = -26, \\ x_{out} = -20$" = "",
+    "$x_{in} = -24, \\ x_{out} = -21$" = "",
+    "$x_{in} = -18, \\ x_{out} = -17$" = "",
+    "$x_{in} = -25, \\ x_{out} = -20$" = "", 
+  inline = FALSE
+)
+```
+
+It's a good practice to test software against situations where you know the right answer. A simple situation is when there is *no lens at all*. One way to do this is to change the middle line of `transit_time()` so that the index of refraction is 1.03, just like the surrounding air.
+
+```{r daily-digital-38-QA2, echo=FALSE}
+askMC(
+  prompt = "When the index of refraction of the lens is 1.03, what are the optimal values for $x_{in}$ and $x_{out}$? (Choose the best answer.)",
+     "+$x_{in} = -17, \\ x_{out} = -15$+" = "",
+    "$x_{in} = -18, \\ x_{out} = -14$" = "",
+    "$x_{in} = -16, \\ x_{out} = -16$" = "",
+    "$x_{in} = -18, \\ x_{out} = -18$" = "",
+    "$x_{in} = -17, \\ x_{out} = -18$" = "", 
+  inline = FALSE
+)
+```
+
+Let's explore an extreme situation. Diamond is the transparent material that has the highest index of refraction, 2.417. Imagine a material with an index of refraction of 10. This means that light will travel very slowly within the lens. 
+
+
+```{r daily-digital-38-Essay1, echo=FALSE}
+etude2::etudeEssay(
+  prompt = "When you examine the contour plot of `transit_time()` for this high index of refraction, there will be two, widely separated local minima. Explain briefly which part of the lens these two minima correspond to. Hint: High index means slow speed of light. Sometimes it's worthwhile to go out of your way to avoid slowdowns."
+)
+```

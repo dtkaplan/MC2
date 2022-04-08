@@ -1,0 +1,78 @@
+---
+id: "geometry"
+topic: "Volumes"
+author: "Daniel Kaplan"
+---
+
+```{r include=FALSE}
+library(mosaicCalc)
+library(etude2)
+```
+
+Some of the prettiest examples of the differential modeling strategy are motivated by geometry.
+
+The famous Great Pyramid of Giza originally was 280 Egyptian Royal Cubits tall and had an edge length at the base of 440 Royal Cubits. What's the volume in "cubic-cubits."
+
+**Modeling set up.** Imagine slicing the pyramid horizontally with the slices stacked from base to 280 cubits high. The area of the slice at the very base is 440^2 = 193,600 square-cubits. The volume differential is 193,600 $dh$, where $dh$ is the thickness of the slices. A function for the edge length is $$\text{edge}(h) \equiv 440 - b\times h$$ We need to choose $b$ so that the edge length at $h=280$ gives 0, so $b=440/280$. The differential volume at height $h$ is 
+$$\text{edge}^2(h) dh = 440^2 (1 - h/280)^2 dh$$
+
+**Solution**
+
+```{r geom1, echo=FALSE}
+askMC(
+"Find the anti-derivative of $440^2 (1-h/280)^2$ and evaluate it at $h=0$ and $h=280$ to find the volume. What is that volume? (Just FYI, 1 Royal Cubit is 52.4 cm.)",
+  "16,984,415 cubic-cubits",
+  "17,542,783 cubic-cubits",
+  "+18,069,333 cubic-cubits+",
+  "18,663,963 cubic-cubits",
+  random_answer_order = FALSE
+)
+```
+
+The top half of a circle of radius $r$ centered at the origin is given by the function $$y(x) = r \sqrt{1-x^2/r^2}\ \ \ \text{for}\ \ -r < x < r$$
+
+**Find the volume of a spherical ball of radius $r$.**
+
+**Modeling set up** Imagine the ball as a set of thin disks (thickness $dx$) stacked side by side. The disk at position $x$ has radius $y(x)$, area $\pi y^2(x)$ and volume $\pi y^2(x) dx$. 
+
+Solution: Add up the volumes of all the disks. $$V(r) = \int_{-r}^r \pi r^2 (1-x^2/r^2) dr = \pi\left[\int_{-r}^{r}r^2 dx- \int_{-r}^{r} x^2 dx\right]$$ Compute the anti-derivative and evaluate it from $x=-r$ to $r$ to get the volume.
+$$\pi r^2 x\left.\right|_{-r}^{r} - \pi x^3/3\left.\right|_{-r}^{r}$$
+
+```{r geom2, echo=FALSE}
+askMC(
+  "Carry out the evaluation in the line above. What is $$\\pi r^2 x\\left.\\right|_{-r}^r \\ \\text{?}$$ Remember what part of the problem you are doing and the integral involved a dx.",
+  "0",
+  "$\\pi r^3$",
+  "$\\frac{4}{3} \\pi r^3$",
+  "+$2 \\pi r^3$+",
+  random_answer_order = TRUE
+)
+```
+
+```{r geom3, echo=FALSE}
+askMC(
+  "Imagine the following came from a similiar integral, what is $$\\pi r^2 x^2\\left.\\right|_{-r}^r \\ \\text{?}$$",
+  "+0+",
+  "$\\pi r^3$",
+  "$\\frac{2}{3} \\pi r^3$",
+  "$\\frac{4}{3} \\pi r^3$",
+  random_answer_order = TRUE
+)
+```
+
+Overall, the volume of a ball of radius $r$ is $$V(r) = \frac{4}{3} \pi r^3$$
+
+Now think of the ball a different way, as a series of concentric spherical shells, each of thickness $dr$. Each shell is a differential. Just as the volume could be found by accumulating the volumes of the shells, so the volume of a spherical shell of radius $r$  and thickness $dr$ can be found from the derivative $\partial_r V(r)$
+
+```{r geom4, echo=FALSE}
+askMC(
+  "What is volume of the spherical shell of radius $r$ and thickness $dr$?",
+  "$\\frac{1}{3} \\pi r^4$" = "That's the integral of V(r), not the derivative.",
+  "$\\frac{4}{3} \\pi r^2 dr$",
+  "$\\frac{4}{3} \\pi r^2$" = "This leaves out the thickness of the shell.",
+  "+$4 \\pi r^2 dr$+"
+)
+```
+
+Compare your answer to the previous question to the formula for the surface area of a sphere of radius $r$. You can look up the formula easily if you don't remember it.
+

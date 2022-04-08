@@ -1,0 +1,137 @@
+---
+id: "seahorse-choose-canoe"
+created: "Tue Jul 20 16:02:40 2021"
+global_id: "rk5PPK"
+---
+
+Consider this function, $f(t)$:
+
+```{r warning=FALSE}
+tmp <- rfun(~ t, seed = 2304)
+f <- makeFun( tmp( (t-5)) - 15 ~ t)
+F <- antiD(f(t) ~ t)
+dt <- 0.1
+Slabs <- tibble::tibble(
+  t = seq(0, 10, by = dt),
+  tend = t + dt,
+  y = f(t),
+  ymid = f(t + dt/2),
+  color = ifelse(y > 0, "orange", "dodgerblue")
+)
+
+  
+  gf_rect(0 + ymid ~ t + tend, data = Slabs, 
+          fill = ~ color, color = NA, alpha = 0.3,
+          inherit=FALSE) %>%
+  gf_path(y ~ t, group=NA, size=1.5) %>%
+  gf_hline(yintercept = 0, color = "orange3") %>%
+    gf_refine(
+      scale_y_continuous(
+        breaks = c(0, -10, 10, 20), 
+        labels=c("0", "neg", "pos", "")),
+      scale_x_continuous(breaks=0:10),
+      scale_fill_identity()
+    ) %>%
+  gf_labs(y="f(t)", title="Black curve shows f(t)") %>%
+    gf_theme(theme(legend.position = "none"))
+```
+
+Assume that the "area" of each small box on the graph is the product of 1 Watt $\times$ 1 second.
+
+```{r alima1}
+askMC(
+  "What is $$\\int_1^2 f(t) dt\\ \\text{?}$$ (Choose the closest answer. The units are in Watt-seconds.)",
+  -3.2, "-1.4"="Count the boxes in the interval", "0"="Count the boxes in the interval", "2.5"="Count the boxes in the interval", "3.3" = "That's a pretty good count of boxes, but still not the right answer.", 6.1, right_one = -3.2,
+  random_answer_order = FALSE
+)
+```
+
+
+
+$$\text{Let}\ \ A = \int_1^3 f(x) dx\ \ \ \text{and}\ \ \ B = \int_2^4 f(x) dx$$
+
+```{r alim1}
+askMC(
+  "Which is bigger, A or B?",
+  "A", "B", "They are the same size", right_one = "B",
+  random_answer_order = FALSE
+)
+```
+
+$$\text{Let}\ \ A = \int_3^1 f(t) dt\ \ \ \text{and}\ \ \ B = \int_4^2 f(t) dt$$
+
+```{r alim2}
+askMC(
+  "Which is bigger, A or B?",
+  "A", "B", "They are the same size", right_one = "A",
+  random_answer_order = FALSE
+)
+```
+
+Consider the function $$g(x) \equiv \int_4^x f(t) dt$$ for the next three questions
+
+```{r alim3}
+askMC(
+  "Which is bigger, $g(8)$ or $g(9)$?",
+  "+$g(8)$+", "$g(9)$"="the interval from 8 to 9 decreases the total size", "They are the same size", 
+  "Trick question! There can be no such function $g(x)$ since $f()$ is a function of $t$" = "Try plugging in $x=8$ on the right side of the definition and see if it makes sense."
+)
+```
+
+```{r alim4}
+askMC(
+  "Is $g(2.5)$ positive or negative?",
+  "positive" = "The function being integrated, $f(t)$, is positive over the interval $2.5 \\leq t \\leq 4$. Since the lower limit $t=4$ is larger than the upper limit $t=2.5$, the $\\int_4^{2.5} f(t)dt$ is negative.", "zero", "+negative+"
+)
+```
+
+```{r alim5}
+askMC(
+  "At what value of $x$ is $g(x) = 0$?",
+  "2"="There is still area under the curve for this interval", "3"="There is still area under the curve for this interval", "4" = "When the two limits of integration are the same, the definite integral is *always* zero.", "5"="There is still area under the curve for this interval", "6"="There is still area under the curve for this interval", "7"="There is still area under the curve for this interval", "8"="There is still area under the curve for this interval", right_one = 4,
+  random_answer_order = FALSE
+)
+```
+
+$$\text{Let}\ \ h(x) \equiv \int_0^x f(t) dt$$
+
+```{r alim6}
+askMC(
+  "At what value of $x$ is $h(x) \\approx 0$?",
+  "1"="consider when positive and negative areas are equal in magnitude.", "2"="consider when positive and negative areas are equal in magnitude.", "3"="consider when positive and negative areas are equal in magnitude.", 4, "5"="consider when positive and negative areas are equal in magnitude.", "6"="consider when positive and negative areas are equal in magnitude.", right_one = 4,
+  random_answer_order = FALSE
+)
+```
+
+$\partial_x h(x)$ is a function. When we write $\partial_x h(3)$ we mean to evaluate that function for an input value of $x=3$.
+
+```{r alim7}
+askMC(
+  "Which is bigger, $\\partial_x h(3)$ or $\\partial_x h(4)$?",
+  "$\\partial_x h(3)$"="remember $f(t) is essentially the derivative of $h(x)$ with respect to x.","+$\\partial_x h(4)$+", "Can't tell."
+)
+```
+
+$$\text{Let}\ \ y(x) \equiv \int_4^x f(t) dt$$
+
+Here are four different graphs. 
+
+```{r fig.height=2}
+slice_plot(F(x) - F(4) ~ x, domain(x=0:10)) %>%
+  gf_labs(title = "(A)")
+slice_plot(F(4) - F(x) ~ x, domain(x=0:10)) %>%
+  gf_labs(title = "(B)")
+slice_plot(F(6) - F(x) ~ x, domain(x=0:10)) %>%
+  gf_labs(title = "(C)")
+slice_plot(abs(F(4) - F(x)) ~ x, domain(x=0:10)) %>%
+  gf_labs(title = "(D)")
+```
+
+```{r alim8}
+askMC(
+  "Which of the graphs shows $y(x)$?",
+  "A", "B"="Should it increase or decrease after the point crosses the x-axis?", "C"="Should it increase or decrease after the point crosses the x-axis?", "D"="When should the graph equal 0?", right_one = "A",
+  random_answer_order = FALSE
+)
+```
+

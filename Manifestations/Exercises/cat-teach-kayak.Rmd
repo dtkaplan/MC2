@@ -1,0 +1,48 @@
+---
+id: "cat-teach-kayak"
+created: "Thu Dec 16 13:21:51 2021"
+global_id: "paP4qf"
+---
+
+The Powerball is a weekly lottery famous for its outsized payoff. For instance, for the week of April 7, 2021, the jackpot payout was officially described as $43,000,000. But they don't really mean this. 
+
+After withholding taxes, the supposed $43,000,000 amounts to $17,161,778 as a one time cash payment, or, alternatively, 30 annual payments of $873,711. (The tax numbers are for Colorado.) We want to find the discount rate that is implicit in the equating of $17M now with 30 payments of $875,000. 
+
+Discounted at a continuously compounded rate of $k$, the net present value of a 30-year payment stream of $875K per year is $$\text{NPV}(k) = \int_0^{30} e^{-kt}\ \$875000\, dt\ .$$ 
+
+1. Solve this definite integral symbolically to find a formula for NPV$(k)$.
+
+<!-- NPV(k) = 875000 (1 - e^{-30k})/k$ -->
+
+2. Using a sandbox, implement the function NPV$(k)$ in R.
+
+```{r echo=FALSE}
+NPV <- makeFun(875000*(1-exp(-30*k))/k ~ k)
+```
+
+3. Solve for $k_0$ that gives NPV$(k_0) = \$17,000,000$. 
+
+```{r echo=FALSE, results="hide"}
+res <- Zeros(NPV(k) - 17e6 ~ k, domain(k=0.03:.04))
+res
+```
+
+4. Translate the continuously compounded interest rate $k$ into the corresponding 1-year compounded interest rate $r$.
+
+```{r echo=FALSE, results="hide"}
+exp(res$k) - 1
+```
+
+There is a joke that makes sense only to the financially savvy: When the Powerball claims a $1 million payout, they mean $1 per year over a million years. We can do this calculation using the symbolic formula for NPV(t) but replacing the $875,000 with $1 and the 30 years upper limit of the integral with 1,000,000 years. 
+
+5. Set the discount rate to the $k_0$ you found in step (3) and calculate the net present value of $1 per year for a million years.
+
+<!-- It's 1/k or $31.83 ->
+
+<!-- Discrete calculation --->
+
+```{r echo=FALSE, results=FALSE}
+sum(exp(-0.031412*seq(0:100)))*(1 + .04322 + 0.0019)
+```
+<!-- That was 31.38. Why the difference from 31.83 found in step (5)? -->
+

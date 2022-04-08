@@ -1,0 +1,43 @@
+---
+id: "goat-come-bed"
+created: "Thu Aug 12 16:28:24 2021"
+global_id: "bHacc6"
+---
+
+The graph of the function $g(x) \equiv \sqrt{\strut R^2 - x^2}$ has the shape of a semi-circle of radius $R$, e.g.
+
+```{r results="hide"}
+g <- makeFun(sqrt(R^2 - x^2) ~ x, R=2)
+slice_plot(g(x) ~ x, domain(x=-2:2), npts=300)
+```
+
+```{r echo=FALSE}
+g <- makeFun(sqrt(R^2 - x^2) ~ x, R=2)
+slice_plot(g(x) ~ x, domain(x=-2:2), npts=300) %>%
+  gf_refine(coord_fixed())
+```
+
+
+Intuition suggests that the radius of an enscribed circle for $g()$ should match the radius of the graph of the function.
+
+In a `r sandbox_link()`, create a function to calculate the curvature of $g()$ at any input $x$. Then plot that curvature function over the domain $-2 < x < 2$. Is the curvature of $g()$ indeed constant? To help you get started, here is a bit of scaffolding for your sandbox.
+
+::: {.scaffolding  data-latex=""}
+```{r eval=FALSE, warning=FALSE}
+g <- makeFun(sqrt(R^2 - x^2) ~ x, R = 2) # define g()
+dg  <- D(g(x) ~ x)         # first derivative of g()
+ddg <- D(g(x) ~ x & x)     # second derivative of g()
+curvature <- makeFun(abs(ddg(x)) / abs(__fill_in_the_formula__)^(3/2) ~ x)
+slice_plot(curvature(x) ~ x, domain(x=-2:2))
+```
+:::
+
+We set the default value of the parameter $R$ to be 2. 
+
+```{r gcb83-1, echo=FALSE, results="markup"}
+askMC(
+  "What is the curvature of $g(x)$?",
+  "0" = "        ", "+0.5+", "1" = "        ", "1.5"="       ", "2",
+  random_answer_order = FALSE
+)
+```

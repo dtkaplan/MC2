@@ -1,0 +1,127 @@
+---
+id: "crow-know-scarf"
+created: "Mon Jul 19 13:07:40 2021"
+global_id: "AvXzzY"
+---
+
+Here is a sketch of the dynamics $\xi_{n+1} = g(\xi_n)$ in a finite-difference model that arises in a technical area of mathematics called "renormalization theory." 
+
+```{r echo=FALSE, warning=FALSE}
+make_g <- function(mu) {
+  f <- makeFun(mu*x*(1-x) ~ x)
+  function(x) f(f(f(x)))
+}
+g <- make_g(mu=3.835)
+Pts <- tibble::tibble(
+  x = seq(0, 1, length=500),
+  y = g(x)
+)
+gf_point(.4945 ~ .4945, color="orange3", alpha=0.3, size=3) %>% 
+  gf_point(0.5340 ~ 0.5340, color="green", alpha=0.3, size=3) %>%
+  gf_line(y ~ x, data = Pts) %>%
+  gf_abline(intercept=0, slope=1, color="dodgerblue", alpha=0.5) %>%
+  gf_refine(coord_fixed(ylim=c(0,1))) %>%
+  gf_labs(y = expression(xi[n+1]), x = expression(xi[n])) 
+```
+
+The symbol in the axes labels is the Greek letter $\xi$, pronounced "ex-eee" and the equivalent of the Roman letter "x". We're using Greek here to point out that it doesn't really matter what you call the variable being used in an expression like $\xi_{n+1} = g(\xi_n)$. The scale of the variable $\xi$ runs from zero to one. But sometimes it's more convenient to create a new variable, related to the original one, that puts zero right in the middle.
+
+Glancing at the graph you can see several places where the function $g(\xi)$ crosses the "line of identity," that is, the diagonal line drawn in blue. Each one of these crossing points is a fixed point of the dynamics.
+
+Our analysis of individual fixed points will be easier if we adopt a convention for the scale of the variable used in the dynamics. Focus your attention, for example, on the pair of fixed points near $\xi=0.5$ and, in particular, on the one marked by a red dot. 
+
+Let's zoom in on the pair, and then further zoom in on the one marked with a red dot.
+
+```{r echo=FALSE, out.width="45%", warning=FALSE}
+Pts <- tibble::tibble(
+  x = seq(.46, .55, length=500),
+  y = g(x)
+)
+gf_point(.4945 ~ .4945, color="orange3", alpha=0.3, size=3) %>% 
+  gf_point(0.5340 ~ 0.5340, color="green", alpha=0.3, size=3) %>%
+  gf_line(y ~ x, data = Pts) %>%
+  gf_abline(intercept=0, slope=1, color="dodgerblue", alpha=0.5) %>%
+  gf_refine(coord_fixed(ylim=c(0.46, 0.55))) %>%
+  gf_labs(y = expression(xi[n+1]), x = expression(xi[n]))
+Pts <- tibble::tibble(
+  x = seq(.4925, .4975, length=500),
+  y = g(x)
+)
+P <- gf_point(.4945 ~ .4945, color="orange3", alpha=0.3, size=3) %>% 
+  gf_line(y ~ x, data = Pts) %>%
+  gf_abline(intercept=0, slope=1, color="dodgerblue", alpha=0.5) %>%
+  gf_refine(coord_fixed(ylim=c(0.4925, 0.4975))) %>%
+  gf_labs(y = expression(xi[n+1]), x = expression(xi[n]))
+P
+```
+
+Near the fixed point, the function $g()$ is pretty well approximated by a straight-line function: $g(\xi) = 0.4945 - 0.3960 \xi$. We can make things a little simpler if we switch to a new variable $x$ on a scale that puts the fixed point at $x=0$. This new scale is shown in the plot below, as a second vertical and a second horizontal axis.
+
+
+
+```{r echo=FALSE, out.width="50%", fig.align="center", warning=FALSE}
+P %>%
+gf_refine(
+  scale_y_continuous(
+    sec.axis = sec_axis( trans=~. - 0.4945, name=expression(x[n+1]))
+  ),
+  scale_x_continuous(
+    sec.axis = sec_axis( trans=~. - 0.4945, name=expression(x[n]))
+  )
+) %>%
+  gf_vline(xintercept=0.4945, color="orange3", alpha=0.2) %>%
+  gf_hline(yintercept=0.4945, color="orange3", alpha=0.2)
+```
+
+In terms of $x$, the dynamics and corresponding solution are approximately $$\underbrace{x_{n+1} = -0.3960\, x_n}_\text{dynamics}\ \ \ \ \implies\ \ \ \ \underbrace{x_n = x_0 (-0.3960)^n}_\text{solution}$$
+
+In studying dynamics near fixed points we will almost always use coordinates that are centered on zero. To get back to the original coordinates, simply add back in the value of the fixed point.
+
+Consider, for example, the dynamical system $$\xi_{n+1} = 3 - \frac{1}{2}\xi_n$$
+
+```{r rec1-1, echo=FALSE, results="markup"}
+askMC(
+  "What is the location of the fixed point? (We'll denote this by $\\xi^\\star$.)",
+  "$\\xi^\\star=\\frac{1}{2}$",
+  "$\\xi^\\star=\\frac{3}{2}$",
+  "$\\xi^\\star=3$",
+  "+$\\xi^\\star=6$+",
+  random_answer_order = FALSE
+)
+```
+
+
+```{r rec1-2, echo=FALSE, results="markup"}
+askMC(
+  "Which of these scales will put the fixed point at zero?",
+  "$x = \\xi - 3$",
+  "+$x = \\xi - 6$+",
+  "$x = \\xi + 3$",
+  "$x = \\xi + 6$" = "When you plug in $\\xi^\\star = 6$ in place of $\\xi$, do you get $x=0$?",
+  random_answer_order = FALSE
+)
+```
+
+
+```{r rec1-3, echo=FALSE, results="markup"}
+askMC(
+  "In the $x$ scale (as defined by the correct answer to the previous question) the dynamics are $x_{n+1} = (\\frac{1}{2}) x_n$. What is the solution starting at initial condition $x_0$?",
+  "$x_n = (\\frac{1}{2})^n$",
+  "+$x_n = x_0 (\\frac{1}{2})^n$+",
+  "$x_{n+1} = \\frac{1}{2} x_n$" = "This is not a solution. This is the dynamics!",
+  "$x_n = x_0 \\exp(\\frac{1}{2} n)$" = "Since $\\exp(\\frac{1}{2}) = 1.649$, this would imply the solution is $x_n = x_0 1.649^n$. Remember that the solution to $x_{n+1} = \\alpha x_n$ is $x_0 \\alpha^n$, not $x_0 \\exp(\\alpha n)$."
+)
+```
+
+
+```{r rec1-4, echo=FALSE, results="markup"}
+askMC(
+  "Now that you know the solution on the $x$ scale, translate it back to the $\\xi$ scale. Which one of these is right?",
+  "$\\xi_n = \\xi_0 (\\frac{1}{2})^n$",
+  "$\\xi_n = (\\xi_0 + 6) (\\frac{1}{2})^n$",
+  "$\\xi_n = (\\xi_0 - 6) (\\frac{1}{2})^n + 6$",
+  "+$\\xi_n = \\xi_0 (\\frac{1}{2})^n + 6$+"
+)
+```
+
+

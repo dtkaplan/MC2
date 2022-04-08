@@ -1,0 +1,41 @@
+---
+id: "octopus-toss-gloves"
+created: "Thu Dec 16 14:30:51 2021"
+global_id: "tm0XB4"
+---
+
+In this exercise, you'll calculate the net present value of the social security payments for a woman retiring at age 70. We'll assume that benefits are paid at a rate of $24,000 per year. 
+
+The following R/mosaic commands will construct a function, `survive(age)` that gives the proportion of people alive at age 70 who will survive to an older age. (This is estimated from the Social Security mortality tables for 2014.)
+
+```{r}
+survive <- M2014F %>%
+  filter(age >= 70) %>%
+  select(age, nliving) %>%
+  mutate(survival = nliving / 82818) %>%
+  spliner(survival ~ age, data = .)
+```
+
+For a person living to age 100, the net present value at age 70 of the $24,000 annual social security benefit is 
+$$\int_{70}^{100} 24000 \exp(-k*(age-70))\, dt$$
+Calculate this amount for a continuously compounded interest rate of $k=0.03$ per year
+
+```{r echo=FALSE, results="hide"}
+Integrate(24000*exp(-0.03*(age-70)) ~ age, domain(age=70:100))
+```
+          
+2. Benefit payments stop when a beneficiary dies. Of course, it's not known ahead of time when a retiree will die, but the `survive(age)` function gives a probability of surviving to any given age.
+
+Modify the integral to incorporate the survival probability into the net present value calculation. That is, calculate the expectation value of the net present value.
+
+```{r echo=FALSE, results="hide"}
+Integrate(survive(age)*24000*exp(-0.03*(age-70)) ~ age, domain(age=70:100))
+```
+
+3. Is `survive(age)` a probability density function? Explain why or why not.
+
+<!-- The output is a probability, not a probability density. -->
+
+
+
+

@@ -1,0 +1,29 @@
+---
+id: "fir-shut-coat"
+created: "Mon Aug 30 15:17:36 2021"
+global_id: "uebqnO"
+---
+
+Least square fits
+
+```{r echo=FALSE}
+Sin_data <- tibble(x = seq(-6, 6, length = 200),
+                    y = sin(x))
+mod1 <- lm(y ~ x, data = Sin_data)
+mod3 <- lm(y ~ poly(x,3), data = Sin_data %>% filter(abs(x) < 3))
+mod5 <- lm(y ~ poly(x,5), data = Sin_data %>% filter(abs(x) < 4))
+fun1 <- makeFun(mod1)
+fun3 <- makeFun(mod3)
+fun5 <- makeFun(mod5)
+
+```
+
+```{r echo=FALSE}
+colors <- hcl.colors(6)
+for_scale <- tibble(x = (1:length(colors))/length(colors), color = colors, label=1:6)
+slice_plot(sin(x) ~ x, domain(x = c(-9,9)), size = 3, alpha = 0.15) %>%
+  slice_plot(fun3(x) ~ x, color=colors[1])  %>%
+  slice_plot(fun5(x) ~ x, color=colors[4]) %>%
+  gf_lims(y = c(-1.5, 1.5))
+
+```

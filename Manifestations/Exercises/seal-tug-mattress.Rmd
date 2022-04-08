@@ -1,0 +1,34 @@
+---
+id: "seal-tug-mattress"
+created: "Thu Dec 16 16:46:58 2021"
+global_id: "F7klxV"
+---
+
+In the Social Security life-table `M2014F`, one column is `nliving`. The `nliving` variable is computed by tracking the age-specific mortality rate as it plays out in a hypothetical population of 100,000 newborns. The age-specific mortality rate at age 0 is applied the the 100,000 to calculate the number of deaths in the first year: 531. Therefore 99,469 survive to age 1. Then the age-specific mortality rate at age 1 is applied to the 99,469 survivors to calculate the number of deaths of one-year olds: 34. This leaves 99,434 surviving two-year olds. (There's round-off error, involved, which is why the number is not 99,435.) The process is continued up through age 120, at which point there are no survivors.
+
+The following R code constructs from `M2014F` a function `died_before(age)` giving the fraction of the cohort of 100,000 who died at or before the given `age`.  
+
+```{r}
+died_before <- M2014F %>%
+  select(age, nliving) %>%
+  mutate(prob = nliving/100000) %>%
+  spliner(1-prob ~ age, data = .)
+```
+
+1. Plot out `died_before(age)` vs `age`. Explain what you see in the graph that tells you that this is a **cumulative** probability function.
+
+2. To calculate life-expectancy, we need to convert `died_before(age)` into `died_at(age)`, the probability **density** of death at any given age. Use R/mosaic to construct `died_at(age)`, which will be a basic calculus transformation of `died_before()`.
+
+```{r echo=FALSE}
+died_at <- D(died_before(age) ~ age)
+```
+
+3. What are the units of the output of the `died_at(age)` function?
+
+<!-- per year -->
+
+4. Find the expectation value of `age` under the probability density `died_at(age)`. This is called the ***life-expectancy at birth***: the average number of years of life of the people in the imaginary cohort of 100,000.
+
+```{r echo=FALSE, results="hide"}
+Integrate(age*died_at(age) ~ age, domain(age=0:120))
+```

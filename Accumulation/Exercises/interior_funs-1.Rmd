@@ -1,0 +1,67 @@
+---
+id: "interior-funs-1.Rmd"
+author: "Daniel Kaplan"
+---
+
+Very often, functions used in modeling have a basic form, e.g. $\exp()$ or $\sin()$ composed with an *interior function*. For example, in $\exp(kx)$ the interior function is $k x$, while in $\sin(\omega x + \phi)$ the interior function is $\omega x + \phi$. Our basic modeling functions often have an interior function of the form $ax + b$, which is to say, a straight-line function. Functions with a straight-line interior function (e.g. $e^{2x+3}$ and $e^{-x}$ are much easier to anti-differentiate than functions with a nonlinear interior function (example: $\sin(x^2)$). 
+
+
+Consider the function <div style="color: blue; font-size=40px;">$$\huge \color{blue}{f(x) \equiv e^{(-2x + 3)}}$$</div>
+
+```{r ch8675b}
+askMC(
+  "Is $f()$ a basic modeling function?  If it is, what family of base functions does $f(x)$ belong to?",
+  "$f()$ is not a base function.",
+  "The power-law family",
+  "+The exponential family+",
+  "The sinusoidal faily",
+  "A constant",
+  "The particular member of the power-law family with exponent 1"
+  )
+```
+
+```{r ch8675i}
+askMC("What is the form of the interior function in $f()$?",
+               "The identify function $x$",
+               "$a x$",
+               "+$a x + b$+" = "In our specific function, $a$ is -2 and $b$ is 3.", 
+               "Not a straight-line function."
+)
+```
+
+For basic modeling functions it's simple to construct the anti-derivative $$F(x) \equiv \int f(a x + b) dx = \frac{1}{a} F(ax + b)$$
+
+```{r ch8675a}
+askMC(
+  "For $f(x)$ that was used in the previous multiple choice questions, what family does $F()$ belong to?",
+  "Power law with stepped-up exponent." = "This is appropriate when the base function is an exponential.",
+  "+$e^x$+" = "This is appropriate for an exponential base function.",
+  "$\\sin()$ or $\\cos()$" = "This is appropriate when the base function is a $\\cos()$ or $\\sin()$, repectively.",
+  "$x$" = "This is appropriate when the base function is a constant.", 
+  "$\\log()$" = "This is appropriate when the base function is a power-law with exponent 1, e.g. $1/x$ or $1/(ax + b)$."
+)
+```
+
+
+```{r ch8675r, eval=FALSE, exercise.cap="R expression for the anti-derivative of f(x)", exercise.nlines=4}
+F <- makeFun( your_tilde_expression_here)
+```
+
+```{r ch8675r-check, echo=FALSE, eval=FALSE}
+library(magrittr)
+gradethis::grade_result(
+  fail_if( ~ !is.function(.result), message = "Your result should be in the form of a function."),
+  fail_if( ~ any(c("B") %in% names(formals(.result))),
+           message = "This function is not scaled by a constant (other than 1). So B is irrelevant."),
+  fail_if( ~ any(c("a") %in% names(formals(.result))),
+           message = "The interior function is identity(), so the constants a and b are irrelevant."),
+  fail_if( ~ !any(c("x") %in% names(formals(.result))),
+           message = "Your function doesn't have x as the input."),
+  #### PUT THE ANSWER FUNCTION AND AN EVALUATION DOMAIN HERE
+  pass_if( ~ all(.result(1:10) ==
+                           - exp(-2*(1:10) + 3)/2)),
+  fail_if( ~ TRUE)
+)  
+```
+
+

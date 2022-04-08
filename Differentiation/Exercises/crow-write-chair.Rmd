@@ -1,0 +1,60 @@
+---
+id: "crow-write-chair"
+created: "Thu Aug 12 11:02:53 2021"
+global_id: "iIXOYZ"
+---
+
+We introduced concavity graphically and used the terms "concave up" and "concave down." Now we can compute the concavity quantitatively using the second derivative.
+
+In a sandbox, create this function and plot it. (Note: `rfun()` generates random functions in the same way you might by moving a pencil smoothly on a piece of paper. The `seed = 8427` effectively chooses which one of infinitely many functions is being generated. Different seeds give different functions. )
+
+```{r}
+f <- rfun( ~ z, seed = 8427)
+slice_plot(f(x) ~ x, domain(x=c(-5,5)))
+```
+You can see that in the region near $x = -1$ the function is concave down. While near $x=2.5$ the function is concave up.
+
+In your sandbox, compute the ***second derivative*** of $f(x)$ and evaluate it at $x=-1$ and $x=2.5$.
+
+```{r results="hide"}
+dxx_f <- D(f(x) ~ x & x)
+dxx_f(-1)
+dxx_f(2.5)
+
+```
+Using these results, and perhaps experimenting a little with different values of $x$, you should be able to answer this question:
+
+```{r cwc3-1, echo=FALSE, results="markup"}
+askMC(
+  "Which of these is a correct statement of \"concave up\" in terms of the value of $\\partial_{xx} f(x)$?",
+  "+A function is concave-up at input $x_0$ when $\\partial_{xx} f(x_0) > 0$+",
+  "A function is concave-up at input $x_0$ when $\\partial_{xx} f(x_0) < 0$",
+  "A function is concave-up at input $x_0$ when $\\partial_{xx} f(x_0) < 0$ **and** $\\partial_x f(x_0) < 0$" = "The first derivative has nothing to do with it.",
+  "A function is concave-up at input $x_0$ when $\\partial_{xx} f(x_0) > 0$ **and** $\\partial_x f(x_0) > 0$" = "The first derivative has nothing to do with it."
+)
+```
+
+Recall that an ***inflection point*** is a value for the input $x$ at which $f(x)$ changes from concave up to concave down, or *vice versa*. Add a statement to your sandbox to graph $\partial_{xx} f(x)$. 
+
+```{r echo=FALSE, eval=FALSE, results="hide"}
+slice_plot(dxx_f(x) ~ x, domain(x=c(-5, 5))) %>%
+  slice_plot(f(x) ~ x, color="red")
+```
+
+```{r cwc3-2, echo=FALSE, results="markup"}
+askMC(
+  "From reading the graph of $\\partial_{xx} f(x)$, say which of these is nearest to an inflection point for $f(x)$.",
+  "$x = 0.0$",
+  "+$x = -4.0$+"="The inflection point nearest $x=-4$ occurs at $x = -4.156$.",
+  "$x = 2.5$",
+  "$x = -3$"
+)
+```
+
+```{r cwc3-3, echo=FALSE, results="markup"}
+askMC(
+  "How many inflection points are there for $f(x)$ in the domain $-5 \\leq x \\leq 5$?",
+  1, 2, "+3+"= "You can see this by graphing $\\partial_{xx} f(x)$ and counting the zero crossings.",
+  4, 5, random_answer_order = FALSE
+)
+```

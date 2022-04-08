@@ -1,0 +1,39 @@
+---
+id: "dog-have-mattress"
+created: "Tue Sep  7 14:28:05 2021"
+global_id: "kEAW8g"
+---
+
+
+
+In the population prediction model at the start of the chapter we want to find a function $P(y)$ that gives the population as a function of year $y$. From the data, we plotted out $\ln\left[P(y)\right]$ and found a fairly smooth curve that was upward sloping and concave down. Next, we made a plot of the derivative with respect to year of that upward-sloping, concave-down curve and found the derivative to be well approximated by a straight-line function with a negative slope $a - b y$. In other words, we found
+$$\partial_y \ln(P(y)) = a - b\,y$$
+We want to figure out $P(y)$ from this relationship.
+
+**Step 1**: Anti-differentiate the functions on both sides of the equation. Anti-differentiation has the effect of cancelling out the $\partial_y$ from the left side of the equation. Anti-differentiating the right side means calculating $\int \left[a - b\, y\right]\ dy$.
+
+Task 1: Confirm that $\int \left[a - b\,y\right]dy = a y - \frac{1}{2} b y^2 + C$.
+
+**Step 2**: From Step 1 we have translated the relationship between population and year into this form:
+
+$$\ln(P(y)) = a y - \frac{1}{2} b y^2 + C$$
+
+Task 2: Exponentiate both sides of the newly framed relationship to get $$P(y) = \exp\left(a y - \frac{1}{2} b y^2 + C\right) = e^{ay -b y^2} e^C = A e^{ay -b y^2}$$ where $A = e^C$.  
+
+**Step 3**: Let's declare that $y=0$ means year 2020.
+
+Task 3: Find the census estimate of the population in 2020 and use that information to estimate the parameter $A$ in $P(y) = A e^{ay-b y^2}$.
+
+**Step 4**: The *per-capita* growth rate is $$G(y) \equiv \frac{\partial_y P(y)}{P(y)} \approx \frac{\partial_y A e^{a y - b y^2}}{A e^{ay - b y^2}} = a - 2 b y$$ The data suggest that the current growth rate is about 1% per year, so  $G(0) = a =  \approx 0.01$. We also know that the growth rate will be around zero in 2070 years time. Year 2070 corresponds to $y=50$. Consequently, $G(50) = 0.01 - 2\cdot 50\cdot b\approx 0$. You can easily solve this for $b$. 
+
+Task 4: You now have numerical estimates for the parameters $A$, $a$, and $b$ in the function $P(y)$. Using these parameters, plot out $P(y)$ for the next 200 years. According to the prediction, what will be the population in year 2220?
+
+```{r eval=FALSE}
+# Fill in your estimates for A, a, and b.
+P <- makeFun(A*exp(a*y - b*(y^2)) ~ y, 
+             a = ____, b = ____, A = ____)
+# y = 200 is year 2220.
+slice_plot(P(y) ~ y, domain(y=c(0,200)))
+
+# At y=200, the estimate is 50 M
+```

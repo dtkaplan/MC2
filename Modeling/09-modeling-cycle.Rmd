@@ -1,6 +1,7 @@
 # Modeling cycle {#modeling-cycle}
 
-<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/modeling/09-modeling-cycle.Rmd)</div>
+```{r child="../starter.Rmd"}
+```
 
 ```{r include=FALSE}
 book_file_name <- "modeling/09-modeling-cycle.html"
@@ -16,7 +17,7 @@ You can see in Figure \@ref(fig:covid-exp2) that the exponential function plotte
 ---------
 
 
-Effective modelers treat models with skepticism. They look for ways in which models fail to capture salient features of the real world. They have an eye out for deviations between what their models show and what they believe they know about the system being modeled. They consider ways in which the models might not serve the purpose for which they were developed.  `r mark(1560)`
+Effective modelers treat models with skepticism. They look for ways in which models fail to capture salient features of the real world. They have an eye out for deviations between what their models show and what they believe they know about the system being modeled. They consider ways in which the models might not serve the purpose for which they were developed.  
 
 When modelers spot a failure or deviation or lack of proper utility, they might discard the model but more often they make a series of small adjustments, tuning up the model until is successfully serves the purposes for which it is intended.
 
@@ -28,7 +29,7 @@ Thus, modeling is a cyclic process of creating a model, assessing the model, and
 Looking back on the exponential fitted to the cooling water data in Section \@ref(fit-exponential), it looks like our original estimate of the half-life is a bit too small; the data doesn't seem to decay at the rate implied by $k = -0.0277$. Perhaps we should try a somewhat slower decay, say $k = -0.2$ and see if that improves things.
 
 ::: {.scaffolding  data-latex=""}
-In the cooling water example, we're using only a subset of the data collected by Prof. Wagon. The next commands re-create that subset so that you can work with it. They also plot the data and an exponential model.  `r mark(1565)`
+In the cooling water example, we're using only a subset of the data collected by Prof. Wagon. The next commands re-create that subset so that you can work with it. They also plot the data and an exponential model.  
 ```{r results="hide"}
 # reconstruct the sample
 set.seed(101)
@@ -64,7 +65,7 @@ The refined parameters give a much better fit to the data than our original roug
 
 We had two rounds of the ***modeling cycle***. First, choice of an exponential model and a rough estimate of the parameters A, B, and $k$. Second, refinement of those parameters using the computer.
 
-Looking at the results of the second round, the experienced modeler can see some disturbing discrepancies. First, the estimated baseline appears to be too high. Related, the initial decay of the model function doesn't seem to be fast enough and the decay of the model function for large $t$ appears to be too slow. Prof. Stan Wagon noticed this. He used additional data to fill in the gaps for small $t$ and refined his model further by changing the basis functions in the linear combination. He hypothesized that there are at least two different cooling processes. First, the newly poured water raises the temperature of the mug itself. Since the water and mug are in direct contact, this is a fast process. Then, the complete water/mug unit comes slowly into equilibrium with the room temperature. `r mark(1567)`
+Looking at the results of the second round, the experienced modeler can see some disturbing discrepancies. First, the estimated baseline appears to be too high. Related, the initial decay of the model function doesn't seem to be fast enough and the decay of the model function for large $t$ appears to be too slow. Prof. Stan Wagon noticed this. He used additional data to fill in the gaps for small $t$ and refined his model further by changing the basis functions in the linear combination. He hypothesized that there are at least two different cooling processes. First, the newly poured water raises the temperature of the mug itself. Since the water and mug are in direct contact, this is a fast process. Then, the complete water/mug unit comes slowly into equilibrium with the room temperature. 
 
 
 The newly refined model was a even better match to the data. But nothing's perfect and Prof. Wagon saw an opportunity for additional refinement based on the idea that there is a third physical mechanism of cooling: evaporation from the surface of the hot water. Prof. Wagon's additional circuits of the modeling cycle were appropriate to his purpose, which was to develop a detailed understanding of the process of cooling. For other purposes, such as demonstrating the appropriateness of an exponential process or interpolating between the data points, earlier cycles might have sufficed.
@@ -72,7 +73,7 @@ The newly refined model was a even better match to the data. But nothing's perfe
 Here's a graph of the model Prof. Wagon constructed to match the data.
 
 ```{r Fun-4-a-2-4, echo=FALSE, out.width="70%", fig.align="center", fig.cap="A model that combines three exponentials provides an excellent fit."}
-knitr::include_graphics(normalizePath("www/Wagon-water-fit.png"))
+knitr::include_graphics("www/Wagon-water-fit.png")
 ```
 
 This is an excellent match to the data. But ... matching the data isn't always the only goal of modeling. Prof. Wagon wanted to make sure the model was physically plausible. And looking at the refined parameters, which include two exponential processes with parameters $k_1$ and $k_2$, he saw something wrong:
@@ -83,7 +84,7 @@ The modeling cycle can go round and round!
 
 ## Example: The tides
 
-In Section \@ref(fit-periodic) we looked at a sinusoid model of tide levels in Rhode Island. We left unresolved how to refine the estimate of the period $P$ and find the time offset $t_0$ in the sinusoidal model $$\text{tide}(t) \equiv A \sin\left(\frac{2\pi}{P} (t-t_0)\right) + B$$ `r mark(1040)`
+In Section \@ref(fit-periodic) we looked at a sinusoid model of tide levels in Rhode Island. We left unresolved how to refine the estimate of the period $P$ and find the time offset $t_0$ in the sinusoidal model $$\text{tide}(t) \equiv A \sin\left(\frac{2\pi}{P} (t-t_0)\right) + B$$ 
 
 $${\color{blue}{\text{tide}(t)} \equiv 1.05 + 0.55 \sin(2\pi (t - t_0)/11)}$$
 
@@ -143,7 +144,7 @@ gf_line(level ~ hour, data = math141Z::RI_tide) %>%
   gf_labs(y="Water level (meters)", x="Time (hours)", title="After polishing by the computer") %>%
   gf_lims(y =c(0, 2))
 ```
-This last model seems capable of making reasonable predictions, so if we collected up-to-date data we might be able to fit a new model to predict the tide level pretty accurately a few days ahead of time. Also, the excellent alignment of the model peaks with the data tell us that the cyclic tide has a period that is constant, at least so far as we can tell.  `r mark(1576)`
+This last model seems capable of making reasonable predictions, so if we collected up-to-date data we might be able to fit a new model to predict the tide level pretty accurately a few days ahead of time. Also, the excellent alignment of the model peaks with the data tell us that the cyclic tide has a period that is constant, at least so far as we can tell.  
 
 With the period estimate $P=12.56$ hours, we can go looking for other phenomena that might account for the tides. The period of the day-night cycle is, of course 24 hours. So the tides in Providence come in and out twice a day. But not exactly. Something else must be going on.
 
@@ -153,7 +154,7 @@ This is the modeling cycle at work: Propose a model form (a sinusoid), adjust pa
 
 Discrepancies between a model and data play two roles: they help us decide if the model is fit for the purpose we have in mind and they can point the way to improved models. That the tidal data deviates from the steady amplitude of our model can be a clue for where to look next. It's not always obvious where this will lead.
 
-Historically, careful analysis of tides led to a highly detailed, highly accurate model: a linear combination of sinusoids with periods near a half-day 12.42 , 12.00, 12.66, and 11.97 hours as well components with periods that are about a day long 23.93, 25.82, 24.07, 26.87, and 24.00 hours. A tide-prediction model is constructed by finding the coefficients of the linear combination; these differ from locale to locale. There is no global model of tides, but rather a framework of linear combinations of sinusoids of different periods. What customizes the framework to the tides in a particular locale is the coefficients used in the linear combination.  `r mark(1577)`
+Historically, careful analysis of tides led to a highly detailed, highly accurate model: a linear combination of sinusoids with periods near a half-day 12.42 , 12.00, 12.66, and 11.97 hours as well components with periods that are about a day long 23.93, 25.82, 24.07, 26.87, and 24.00 hours. A tide-prediction model is constructed by finding the coefficients of the linear combination; these differ from locale to locale. There is no global model of tides, but rather a framework of linear combinations of sinusoids of different periods. What customizes the framework to the tides in a particular locale is the coefficients used in the linear combination.  
 
 ## Modeling project
 

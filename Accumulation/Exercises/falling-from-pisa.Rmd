@@ -1,0 +1,57 @@
+---
+id: "falling-from-pisa"
+author: "Daniel Kaplan"
+date: "Dec 26, 2020"
+---
+
+```{r include=FALSE}
+library(etude2)
+```
+
+
+Famously, the acceleration due to gravity at the Earth's surface is a constant: roughly -9.8 meters / sec$^2$. But let's write it as a function of time: $$\text{accel}(t) \equiv -9.8$$
+Galileo climbs up to the top of the Tower of Pisa, 56.7 meters above the ground. He is holding a small lead ball between thumb and forefinger. He spreads his fingers and the ball starts to fall from a standstill. How fast will the ball be going as it falls.
+
+In this problem, we're given information in the form of acceleration, and want to turn it into a statement about velocity. Remembering that acceleration is the derivative of velocity with respect to time, we see this as an anti-derivative problem: 
+
+$$\text{vel}(t) \equiv \int \text{accel}(t) dt = \int -9.8 dt = -\int 9.8 dt$$
+$$\text{vel}(t) = -9.8 t + C\ .$$
+
+```{r galileo-1, echo=FALSE}
+askMC(
+  "Imagine that the time of release was $t=3$ seconds. Remembering that 9.8 is in meters/sec$^2$, what is the value of $C$ in the velocity function?",
+  "29.4 meters per sec$^2$" = "Sorry, but $C$ has dimension of velocity.",
+  "+29.4 meters per sec+" = "Right. At time $t=3$ the ball was at a standstill, meaning velocity zero. So $-9.8 \\times 3 + C = 0$ ",
+  "29.4 meters",
+  "29.4 dimensionless/unitless")
+```
+
+Where will the ball be in 2 seconds after release (that is, at 5 seconds)? "Where" is a position question, so we need to convert the original information that we had in terms of acceleration into information in terms of position.
+
+We've already used the relationship between acceleration and velocity (acceleration is $\partial_t$ accel(t)) to compute the velocity vel(t) at any time: vel(t) $= -9.8 t + 29.4$ and we know the units of $t$, $-9.8$ and $29.4$.
+
+Since velocity is the derivative of position with respect to time, we can compute position as the anti-derivative of velocity: $$\text{pos}(t) = \int \text{vel}(t) = \int (29.4-9.8 t) dt$$
+$$\text{pos}(t) = 29.4 t - 9.8 \frac{t^2}{2} + C_{pos}$$
+Another $C$! We're writing it as $C_{pos}$ to remind us that this $C$ is different than the $C$ that appeared in the vel(t) function. That $C$ was from the accumulation of acceleration to get velocity. This $C_{pos}$, even though it's the same letter, is something different. Remember that $C_{pos}$ is a reminder that pos(t) is the accumulation of velocity up until time $t$, but we haven't (yet) specified when the accumulation started. To calculate the $C_{pos}$ for the pos(t) function, we need to consider the problem situation (Galileo in Pisa) and figure out some $t_0$ for which we know $pos(t_0)$.
+
+What we know here is that at the release time ($t=3$ seconds) the ball was at the top of the Tower of Pisa. So dist(3) = 56.7 meters.
+
+```{r galileo-2, echo=FALSE}
+askMC(
+  "What's the value of $C_{pos}$ in the distance function given that dist(3) = 56.7 meters?",
+  "+$C = 56.7 - 29.4 \\times 3 + 9.8 \\times 3^2 / 2 = 12.6$ meters+",
+  "$C = -29.4 \\times 3 + 9.8 \\times 3^2 / 2 = 44.1$ meters" = "to solve for C you always need the equation AND a single point",
+  "$C = 56.7$ meters" = "C is not always equal to the intital value, rember the release is at t=3",
+  "$C = 0$ meters",
+  "A quantity not in meters." = "Since pos(t) is in meters, the $C$ must also be in meters. Look at the formula for pos(t)!"
+)
+```
+
+```{r galileo-3, echo=FALSE}
+askMC(
+  "What is the position of the ball two seconds after release? (The units for each of these is \"meters\" above the ground.)",
+  "$29.4 \\times 2 - 9.8 \\times 4/2 + 12.6$" = "Two seconds after release (which occurs at $t=3$) is what value of $t$?",
+  "+$29.4 \\times 5 - 9.8 \\times 5^2/2 + 12.6$+",
+  "$29.4 - 9.8 \\times 5 / 2 + 12.6$" = "Check the formula for pos(t) to make sure where the t appears."
+)
+```

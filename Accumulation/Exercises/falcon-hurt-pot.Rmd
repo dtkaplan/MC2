@@ -1,0 +1,31 @@
+---
+id: "falcon-hurt-pot"
+created: "Tue Jul 20 16:27:50 2021"
+global_id: "rfO0EG"
+---
+
+Methods such as Euler are tedious, ideal for the computer. So let's look at some basic R functions for implementing the Euler Method when we know the function to be anti-differentiated $f(x)$, the step size $h$, and the domain $a \leq x \leq b$. At the heart of the implementation is a function `cumsum()`, the "cumulative sum." This does something very simple. The cumulative sum of the sequence 1, 2, 3, 4 is another sequence: 1, 3, 6, 10.
+
+
+The following code has commands for using `cumsum()` to approximate the anti-derivative of a function $f()$ over the domain $a \leq x \leq b$
+```{r eval=FALSE}
+f <- makeFun(sin(2*pi*x/0.3) ~ x) # the function to be anti-differentiated.
+a <- 1 # the lower bound.
+b <- 2 # the upper bound.
+h <- 0.01 # the step size
+x_discrete <- seq(a, b, by = h) # all of the discrete x values based on a, b, and h
+f_discrete <- f(x_discrete) # all of the values of f(x) when the discrete x values are used as the input
+F_discrete <- cumsum(h * f_discrete) # the discrete values of the anti-derivative, F(x)
+gf_point(F_discrete ~ x_discrete) %>%
+  slice_plot(f(x) ~ x, color = "gray", domain(x=c(a,b)))
+```
+
+
+Here is a function:
+```{r echo=TRUE}
+g <- makeFun(exp(-0.2*(x^2))~x)
+```
+
+Using a `r sandbox_link()`, find and plot the anti-derivative of $g(x)$ over the domain $-6 \leq x \leq 6$.
+
+Your task: Describe the shape of $G(x)$. Your description can be one word from earlier in the book, if you choose it carefully. If your graph looks like a straight line, you did not appropriately change the domain above.

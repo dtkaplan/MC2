@@ -1,0 +1,46 @@
+---
+id: "finch-look-dish"
+created: "Wed Jan 26 13:57:21 2022"
+global_id: "BbcPyk" 
+---
+
+Here are three different first-order differential equations with fixed points at $x^\star = 0$ and $x^\star=1$.
+
+i. $\partial_t x = g_1(x) \equiv x (1-x)$
+ii. $\partial_t x = g_2(x) \equiv 0.25 \sin(2\pi x)$
+iii. $$\partial_t x = g_3(x) \equiv \left\{\begin{array}{ll}
+x & x < 0.18\\
+0.18 & 0.18 \leq x \leq 0.82\\
+1 -x & 0.82 < x
+\end{array}\right.$$
+The $g_i()$ functions are graphed below. 
+
+A. For each of the equations, match the number (i, ii, iii) to the color (magenta, blue, black).  Comment on the differences in shape among them.
+
+```{r echo=FALSE}
+g1 <- function(x) x*(1-x)
+g2 <- function(x) 0.29*sin(pi*x)
+g3 <- function(x) {
+  ifelse(x < 0.18, x, 
+         ifelse(x < 0.82, 0.18,
+                1-x))
+}
+slice_plot(g1(x) ~ x, domain(x=0:1)) %>%
+  slice_plot(g2(x) ~ x, color="blue") %>%
+  slice_plot(g3(x) ~ x, color="magenta") 
+```
+
+B. Integrate each of the differential equations from initial condition $x_0 = 0.01$. Compare the time series plots. Do the dynamics of $g_3()$ product a similar or radically different time series than $g_1()$ and $g_2()$? 
+
+```{r echo=FALSE, results="hide"}
+settings <- list(from = 0, to = 12, dt=0.1)
+S1 <- integrateODE(dx ~ g1(x), x=0.01, tdur=settings)
+S2 <- integrateODE(dx ~ g2(x), x=0.01, tdur=settings)
+S3 <- integrateODE(dx ~ g3(x), x=0.01, tdur=settings)
+slice_plot(S1$x(t) ~ t, domain(t=settings$from:settings$to), color="orange") %>%
+  slice_plot(S2$x(t) ~ t, color = "red") %>%
+  slice_plot(S3$x(t) ~ t, color = "blue")
+```
+
+
+Comment: Usually, many different mathematical functions can be used to model a given phenomenon. The different functions will have similar shapes, but do not need to be identical. 

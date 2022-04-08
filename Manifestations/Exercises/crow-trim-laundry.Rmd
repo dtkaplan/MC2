@@ -1,0 +1,115 @@
+---
+id: "crow-trim-laundry"
+created: "Mon Jul 19 19:03:08 2021"
+global_id: "h05BsT"
+---
+
+
+```{r include=FALSE}
+fA <- spliner( A ~ expend, data=QALY_impact, monotonic=TRUE)
+fB <- spliner( B ~ expend, data=QALY_impact, monotonic=TRUE)
+```
+
+You are a member of a health-care oversight committee that allocates funds for investment in health-care facilities.  The committee has two proposal before it and needs to decide how best to spend the available $50M budget:
+
+* **Proposal A**: Expansion of the pediatric organ transplant unit.
+* **Proposal B**: Creation of a new rehabilitation center for  traumatic injury patients.
+
+Experts have evaluated each proposal in terms of different cost options and the impact that each will have on health outcomes. Following a standard epidemiological method, the impact is estimated in terms of "Quality Adjusted Life-Years" (QALY), a measure that combines the number of people affected, the number of years of prolonged life, and the improvement in quality of life for those treated.
+
+The expert estimates are available in the data frame `QALY_impact`:
+
+**QALY Impact of the Proposals**
+
+```{r echo=FALSE}
+knitr::kable(QALY_impact) %>% 
+  kableExtra::kable_paper("hover", full_width = FALSE)
+```
+
+Such estimates from experts should be taken with a grain of salt, but they are often the best information you have to inform a model.
+
+You can turn the expert's opinions into functions by using splines. In this case, there is good reason to think that output will increase monotonically with expenditure, so a monotonic spline is a good choice.  The functions were created using these commands and are already available in your sandboxes:
+
+```{r}
+fA <- spliner( A ~ expend, data=QALY_impact, monotonic=TRUE)
+fB <- spliner( B ~ expend, data=QALY_impact, monotonic=TRUE)
+```
+ 
+
+The problem is to find the best values for expenditures on Proposal A and B  --- call these expenditures  $x_A$ and $x_B$ -- given constraint that total expenditure is $x_A + x_B = 50$.
+
+A simple approach is to plot out the total benefit as a function of expenditures on each of A and B:
+```{r tbenefit, exercise=TRUE, exercise.cap="Plotting the objective function.", exercise.nlines=10, eval=FALSE, message=FALSE, warning=FALSE}
+overall <- makeFun( fA(xA) + fB(xB) ~ xA + xB)
+g_budget <- makeFun(xA + xB ~ xA + xB)
+contour_plot(overall(xA, xB) ~ xA  + xB, 
+         domain(xA=range(0,50), xB=range(0,50))) %>%
+  contour_plot(g_budget(xA, xB) ~ xA + xB, filled=FALSE,
+               contours_at=NULL, contour_color="orange3", alpha=0.5)
+```
+ 
+ 
+How can you confirm that the red contours in the plot genuinely represent the budget constraint at the indicated level?
+
+```{r QY1-1, echo=FALSE, results="markup"}
+askMC(
+  "What's the largest number of QALYs that can be produced from combining
+the two proposals with a total budget of $50M?",
+120,160,180,"+240+",300,340,350,360, random_answer_order = FALSE)
+```
+
+
+```{r QY1-2, echo=FALSE, results="markup"}
+askMC(
+  "What is the location of the argmax in the previous graph?",
+  "$(A = 0, B = 50)$",
+  "$(A = 6, B = 44)$",
+  "$(A = 12, B = 38)$",
+  "+$(A = 22, B = 28)$+",
+  "$(A = 34, B = 16)$",
+  "$(A = 41, B = 9)$",
+  "$(A = 50, B = 0)$",
+  random_answer_order = FALSE
+)
+```
+
+
+Another way to look at the problem is to find the total QALY outcome as a function of the amount $x_A$, recognizing that once $x_A$ is set, the remaining money will go to option B, so $x_B = 50-x_A$. The following sandbox makes the plot.
+
+```{r QY2-1}
+slice_plot( fA(xA) + fB(50-xA) ~xA, domain(xA = c(0,50)))
+```
+
+
+**Changing the Budget**
+
+A broader social question is whether the budget is being set at an appropriate level.  One way to examine this is to look at how the QALY outcome changes as the budget changes.
+
+For this, we're going to find values of $x_A$ and $x_B$ at which the derivatives $\partial_{x_A} f_A()$ and $\partial_{x_B} f_B()$ are equal. 
+
+The following graphic shows the difference $\partial_{x_A} f_A() - \partial_{x_B} f_B()$ as a function of $x_A$ and $x_B$. The contours are very twisty, but the zero contour(s) indicates the inputs for which the difference in derivatives is zero. Also shown are budget constraints (magenta).
+
+```{r QY2-2, echo=FALSE}
+dfA = D(fA(xA)~xA)
+dfB = D(fB(xB)~xB)
+contour_plot( dfA(xA) - dfB(xB) ~ xA&xB, 
+          domain(xA=range(0,50), xB=range(0,50)),
+          contours_at = c(-2, -4, 0, 4, 2), skip=0) %>%
+  contour_plot(xA + xB ~ xA + xB, contour_color="magenta", skip=0)
+```
+
+**Yet another constraint!**
+
+```{r QY1-3, echo=FALSE, results="markup"}
+askMC(
+  "The American Association of Allergy Activists (AAAA) has lobbied Congress to mandate that, of the 50 units of available funds,  funding for A must be  $x_A \\geq 40$. How much would this constraint reduce the overall output for the two interventions combined? (Remember, if you're spending, say, 45 on A, you can't spend more than the remaining 5 on B.) The challenge for you in answering this question is to pick the appropriate one of the above graphs. Once you have done that, the answer is evident.",
+  "No reduction at all.",
+  "About 10-20 QALYs.",
+  "+About 40-60 QALYs.+",
+  "About 100-120 QALYs.",
+  "It would actually *increase* the output.", 
+  random_answer_order = FALSE 
+)
+```
+
+

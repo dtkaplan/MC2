@@ -1,0 +1,25 @@
+---
+id: "camel-win-bottle"
+created: "Tue Sep  7 17:43:14 2021"
+global_id: "BhGRKU"
+format: "On paper"
+---
+
+The graph shows a function $G(t)$ broken up into segments. Draw $G(t)$ by putting together the segments.
+
+```{r echo=FALSE}
+G <- rfun(~ t, seed=1099)
+dG <- D(G(t) ~ t)
+ddG <- D(G(t) ~ t & t)
+Pts <- segmentize(G(t) ~ t, h=0.5, domain(t=-4:4))
+gf_segment(ymin + ymax ~ xmin + xmax, data = Pts) %>%
+  gf_labs(title = "Segments of G(t)", x="x") %>%
+  gf_segment(ymin + ymax ~ xmin + xmax, data = Pts %>% filter(segnum==8), color="blue")
+```
+The segment in blue is obviously not a straight line. As you can see, the blue segment spans the sub-domain $0 \leq x \leq 0.5$.
+
+How do we draw that segment knowing just $\partial_t G(t)$ and therefore $\partial_{tt} G(t)$. 
+
+The values of those two functions at $x=0$ are $\partial_t G(0) = -1.988$ and $\partial_{tt} G(0) - 5.599$. And, since all the segments have their left end anchored at a vertical value of zero, you know $G(0) = 0$.
+
+Using Taylor series, construct a function centered at $x=0$. Plot it out and see that it reconstructs the blue segment on the domain $0 \leq x \leq 0.5$. 

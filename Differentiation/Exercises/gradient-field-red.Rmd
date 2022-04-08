@@ -1,0 +1,95 @@
+---
+id: "gradient-field-red"
+author: "Daniel Kaplan"
+global-id: "wkd83"
+---
+
+```{r include = FALSE}
+```
+
+
+Here are contour maps and gradient fields of several functions with input $x$ and $y$. But any row of graphs may show two different functions.  Your job is to match the contour plot with the gradient field, which may be in another row.
+
+```{r echo=FALSE, warning=FALSE}
+funs <- list()
+plots <- list()
+dom <- list(x=c(-4,4), y=c(-4,4))
+for (k in 1:6) {
+  funs[[k]] <- rfun(~ x + y, seed = 500 + k, n = 8)
+  plots[[k]] <- contour_plot(funs[[k]](x, y)~ x + y, dom) %>%
+    gf_labs(title=paste("Function", LETTERS[k])) %>%
+    gf_refine(coord_fixed())
+}
+
+```
+
+```{r echo=FALSE, out.width="50%"}
+set.seed(102)
+numbers <- sample(length(funs))
+gplots <- list()
+for (k in 1:length(numbers)) {
+  gplots[[k]] <- gradient_plot(funs[[numbers[[k]]]](x, y) ~ x + y, dom, npts=10, alpha=1) %>%
+    gf_labs(title = paste("Gradient field", k)) %>%
+    gf_refine(coord_fixed()) %>%
+    gf_lims(x=c(-4,4), y=c(-4,4))
+}
+```
+
+```{r echo=FALSE, warning=FALSE}
+gridExtra::grid.arrange(plots[[1]], gplots[[1]], ncol=2)
+gridExtra::grid.arrange(plots[[2]], gplots[[2]], ncol=2)
+gridExtra::grid.arrange(plots[[3]], gplots[[3]], ncol=2)
+gridExtra::grid.arrange(plots[[4]], gplots[[4]], ncol=2)
+gridExtra::grid.arrange(plots[[5]], gplots[[5]], ncol=2)
+gridExtra::grid.arrange(plots[[6]], gplots[[6]], ncol=2)
+```
+
+```{r daily-digital-24-QZ1, echo=FALSE}
+askMC(
+  prompt = "Which contour plot matches gradient field 1?",
+  "A", "B", "C", "D", "E", "+F+",
+  inline=FALSE,
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-24-QZ2, echo=FALSE}
+askMC(
+  prompt = "Which contour plot matches gradient field 2?",
+  "+A+", "B", "C", "D", "E", "F",
+  inline=FALSE,
+  random_answer_order = FALSE
+)
+```
+```{r daily-digital-24-QZ3, echo=FALSE}
+askMC(
+  prompt = "Which contour plot matches gradient field 3?",
+  "A", "B", "C", "+D+", "E", "F",
+  inline=FALSE,
+  random_answer_order = FALSE
+)
+```
+```{r daily-digital-24-QZ4, echo=FALSE}
+askMC(
+  prompt = "Which contour plot matches gradient field 4?",
+  "A", "B", "+C+", "D", "E", "F",
+  inline=FALSE,
+  random_answer_order = FALSE
+)
+```
+```{r daily-digital-24-QZ5, echo=FALSE}
+askMC(
+  prompt = "Which contour plot matches gradient field 5?",
+  "A", "B", "C", "D", "+E+", "F",
+  inline=FALSE,
+  random_answer_order = FALSE
+)
+```
+```{r daily-digital-24-QZ6, echo=FALSE}
+askMC(
+  prompt = "Which contour plot matches gradient field 6?",
+  "A", "+B+", "C", "D", "E", "F",
+  inline=FALSE,
+  random_answer_order = FALSE
+)
+```

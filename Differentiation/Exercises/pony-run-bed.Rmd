@@ -1,0 +1,22 @@
+---
+id: "pony-run-bed"
+created: "Mon Jul 19 19:11:12 2021"
+global_id: "kcblMf"
+---
+
+The key steps in optimization are setting up the objective function(s) and setting constraints as needed to represent the problem at hand. There are many ways to perform the work to extract the argmax once the objective function and constraints are set.
+
+Understandably, calculus textbooks tend to emphasize techniques based on finding an input where the derivative of the objective function is zero. For problems involving multiple inputs, the task is to find an input where the **gradient** vector is zero. 
+
+Contemporary work often involves problems with tens, hundreds, thousands, or even millions of inputs. Even in such large problems, the mechanics of finding the corresponding gradient vector are straightforward. Searching through a high-dimensional space, however, is not generally a task that can be accomplished using calculus tools. Instead, starting in the 1940s, great creativity has been applied to develop algorithms with names like **linear programming**, **quadratic programming**, **dynamic programming**, etc. many of which are based on ideas from linear algebra such as the `qr.solve()` algorithm for solving the target problem, or ideas from statistics and statistical physics that incorporate randomness as an essential component. An entire field, **operations research**, focuses on setting up and solving such problems. Building appropriate algorithms requires deep understanding of several areas of mathematics. But using the methods is mainly a matter of knowing how to set up the problem and communicate the objective function, constraints, etc. to a computer.
+
+Purely as an example, let's examine the operation of an early algorithmic optimization method: [Nelder-Mead](https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method), dating from the mid-1960s. (There are better, faster methods now, but they are harder to understand.)
+
+Nelder-Mead is designed to search for maxima of objective functions with $n$ inputs. The video shows an example with $n=2$ in the domain of a contour plot of the objective function. Of course, you can simply scan the contour plot by eye to find the maxima and minima. The point here is to demonstrate the Nelder-Mead algorithm.
+
+Start by selecting $n+1$ points on the domain that are not colinear. When $n=2$, the $2+1$ points are the vertices of a triangle. The set of points defines a **simplex**, which you can think of as a region of the domain that can be fenced off by connecting the vertices.
+
+Evaluate the objective function at the vertices of the simplex. One of the vertices will have the lowest score for the output of the objective. From that vertex, project a line through the midpoint of the fence segment defined by the other $n$ vertices. In the video, this is drawn using dashes. Then try a handful of points along that line, indicated by the colored dots in the video. One of these will have a higher score for the objective function than the vertex used to define the line. Replace that vertex with the new, higher-scoring point. Now you have another simplex and can repeat the process. The actual algorithm has additional rules to handle special cases, but the gist of the algorithm is simple.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/j2gcuRVbwR0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+

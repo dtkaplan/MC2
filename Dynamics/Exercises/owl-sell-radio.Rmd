@@ -1,0 +1,124 @@
+---
+id: "owl-sell-radio"
+created: "Wed Mar  2 14:30:51 2022"
+global_id: "trcQuC" 
+skill: "X-LG744"
+---
+
+Lewis Fry Richardson (1881-1953) was an English scientist who worked in many areas, including weather prediction. (See Block 1.) This problem concerns a model Richardson built to account for arms races between countries.
+
+In the model, $x$ and $y$ respectively refer to the size of the military of the two countries.  The equations model how the size of the militaries change in time:
+
+$$\left[\begin{eqnarray*}
+\dot{x} & = & a y - m x & + r\\
+\dot{y} & = & b x - n y & + s\\
+\end{eqnarray*}\right]$$
+
+The terms $r$ and $s$ represent the basic grievances between the two countries.
+
+The parameters $a$ and $b$ represent "fear," that is, the extent to which one country feels the need to build up arms in response to the other country's arms.
+
+The parameters $m$ and $n$ are about the internal dynamics of the country: its ability/desire to sustain a large military.
+
+```{r osr06-1, echo=FALSE}
+askMC(
+  "What should the signs of $r$ and $s$ be  if the countries have substantial grievances against each other?",
+  "+positive+", "negative", "zero",
+  random_answer_order = FALSE
+)
+```
+
+```{r osr06-2, echo=FALSE}
+askMC(
+  "What should be the signs of $a$ and $b$, given that they represent 
+  \"fear?\"",
+   "+positive+", "negative", "zero",
+  random_answer_order = FALSE
+)
+```
+
+
+```{r osr06-3, echo=FALSE}
+askMC(
+  "What should be the signs of $m$ and $n$, in a country which, on its own, would not like to build a large military? Note the sign preceeding these terms.",
+  "+positive+", "negative", "zero",
+  random_answer_order = FALSE
+)
+```
+
+```{r echo = FALSE}
+scenario1 = function(x,y) {
+  dx = 2*y - 5*x + 5
+  dy = 2*x - 3*y + 5
+  return( c(dx=dx,dy=dy) )
+  }
+scenario2 = function(x,y) {
+ dx = 2*y - 1*y + 3
+ dy = 2*x - 2*y + 3
+ return( c(dx=dx,dy=dy) )
+ }
+wrong.scenario2 = function(x,y) {
+ dx = -2*y - 1*x + 3
+ dy = 2*x - 2*y + 3
+ return( c(dx=dx,dy=dy) )
+ }
+```
+
+```{r eval=FALSE, echo = FALSE, out.width="70%", fig.show="hold"}
+# NEED TO INTEGRATE STREAMLINES()
+DOM <- domain(x = c(0, 4), y = c(0, 4))
+math141Z::streamlines(
+  list( ~ -2*y - x + 3,
+        ~ 2*x - 2*y + 3),
+  DOM, 
+  stepsize=0.005
+) %>%
+  gf_labs(x = "Freedonia arms",
+          y = "Jockavia arms",
+          title = "Flow field (A)")
+
+math141Z::streamlines(
+  list( ~ 2*y - 1*y + 3,
+        ~ 2*x - 2*y + 3),
+  DOM, 
+  stepsize=0.005
+) %>%
+  gf_labs(x = "Freedonia arms",
+          y = "Jockavia arms",
+          title = "Flow field (B)")
+
+math141Z::streamlines(
+  list( ~ 2*y - 5*x + 5,
+        ~ 2*x - 3*y + 5),
+  DOM, 
+  stepsize=0.002
+) %>%
+  gf_labs(x = "Freedonia arms",
+          y = "Jockavia arms",
+          title = "Flow field (C)")
+```
+
+
+Depending on the values of the parameters $a$, $b$, $m$, $n$, $r$, and $s$, the Richardson dynamics can produce different outcomes.  Two of the previous three plots show Richardson Arms Race dynamics for two mutually fearful countries with  mutual grievances, Freedonia and Jockavia.  The third plot does not; the signs of one of the coefficients has been reversed and so the dynamics don't make sense for modeling an arms race. `r mark(6945)`
+
+a. In each of the three plots, start from initial point $x=2,y=1$,   that is, a situation where Freedonia is more armed than Jackavia, and trace out the trajectory over time.
+b. For each of the three plots, find any equilibrium point and say   whether it is stable or unstable.  If there is no equilibrium, move on.
+c. Identify which of the three plots is NOT the Richardson dynamics.
+d. In the non-Richardson flow, which coefficient has been reversed: it's one of $a$, $b$, $m$, $n$, $r$, or $s$.
+
+```{r osr06-4, echo=FALSE}
+askMC(
+  "Which of the previous plots are Not the Richardson Dynamics?",
+  "+Flow Field A+", "Flow Field B", "Flow Field C",
+  random_answer_order = FALSE
+)
+```
+
+```{r osr06-5, echo=FALSE}
+askMC(
+  "In this plot which if the parameters is reversed?",
+  "+a+", "b", "m", "n", "r", "s",
+  random_answer_order = FALSE
+)
+```
+

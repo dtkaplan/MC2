@@ -1,0 +1,201 @@
+---
+id: "rhinosaurus-toss-gloves"
+created: "Fri Sep  3 17:20:11 2021"
+global_id: "13a7wI"
+---
+
+
+**This was part of last year's unit on l'Hopital's rule.** Maybe not appropriate given our focus this year.
+
+```{r zoz1-2, echo=FALSE, results="markup"}
+askMC(
+  "Using the sandbox above, add more zeros to $x$ to make it even smaller. You can stop when you get tired. Does $\\sin(x)/x$ evaluate to something sensible for such tiny $x$? If so, what value?",
+  "0", 
+  "1/2",
+  "+1+",
+  "answer varies with $x$ as $x$ gets smaller",
+  random_answer_order=FALSE
+)
+```
+
+Saying, "so small that I got tired typing the zeros" is not a convincing
+definition of "small" to a mathematician. For example,
+0.0000000000000001 parsec (a unit of length) seems small but it is
+equivalent to about 10 feet---no so small. Mathematicians want you to
+take "small" to the limit, an arbitrarily large number of zeros, and
+when you're done with that, even more zeros.
+
+Fortunately, R and other computer languages have a scientific notation
+that allows you just to name the number of zeros you want after the
+decimal point. For instance `1e-2` is $0.01$---one zero. Similarly
+`1e-20` is $0.00000000000000000001$, nineteen zeros.
+
+```{r zoz1-3, echo=FALSE, results="markup"}
+askMC(
+  "Use the previous sandbox, but this time use scientific notation so that you can look at $x$ as small as 1e-31 (30 zeros) or even smaller. Starting at `x = 1e-31`, calculate `sin(x)/x`. Then double the number of zeros, keep on doubling the number of zeros. The result will continue to be 1 ... until it eventually becomes `NaN`. How many zeros are there in the `x` that produces `NaN` as the answer to `sin(x)/x`?",
+  127,
+  191,
+  "+323+", 
+  379, 
+  1281,
+  random_answer_order = FALSE
+)
+```
+
+What's happening here has more to do with the nature of computers than
+the nature of numbers. Computers (in the manner they are ordinarily
+programmed) use packets of bits to represent numbers, and the chips have
+been engineered to make those bit packets respond to arithmetic
+operations as if they were the numbers they represent. A typical
+computer number, like 0.001, uses 64 bits in a special, standard format.
+Since there is a finite number of bits, there is a largest possible
+non-`Inf` number and a smallest possible non-zero number. According to
+the IEEE standard for "floating-point" arithmetic the largest non-`Inf`
+number is around `1e300` and the smallest non-zero number is around
+`1e-320`. This failure to behave like genuine mathematical numbers is
+called "overflow" (for large numbers which turn into `Inf`) and
+"underflow" (for small numbers which turn into `0`).
+
+```{r zoz1-4, echo=FALSE, results="markup"}
+askMC(
+  "Play around with numbers in the format `1e300`, `1e301` and so on until you find the smallest `1e???` that prints as `Inf`. Similarly, try numbers in the format `1e-320` and `1e-321` until you find the largest one that prints out as exactly zero. What are those two numbers?",
+  "`1e305` and `1e-322`",
+  "`1e306` and `1e-323`",
+  "+`1e308` and `1e-324`+",
+  "`1e309` and `1e-327`",
+  random_answer_order = FALSE
+)
+```
+
+The polynomial computer doesn't have any problem with overflow or
+underflow. The key to success is to write the Taylor polynomial for
+functions such as $\sin(x)$ or $x$ or $x^2$ near $x_0 = 0$. Such
+polynomials will always look like:
+
+$$f(x) = a_1 x^1 + a_2 x^2 + a_3 x^3 + \cdots$$
+
+What's special here is that the `a_0` term does not need to be included
+in the polynomial, since $f(0) = 0$.
+
+```{r zoz1-5, echo=FALSE, results="markup"}
+askMC(
+  "One of these functions has a Taylor polynomial at $x_0 = 0$ the *does need* a non-zero $a_0$ term. The other's don't. Which function needs the non-zero $a_0$ term?",
+  "`sin()`",
+  "`tan()`",
+  "`atan()`",
+  "+`acos()`+"
+)
+```
+
+These zero divided by zero problems (like $\sin(x) / x$) always involve
+a ratio of two functions ($\sin(x)$ and $x$ here) that don't need the
+$a_0$ term in their Taylor series around $x_0 = 0$. That makes them just
+a little bit simpler.
+
+What's more important than simpler is that, for the expansion of such
+functions to study the limit at $x \rightarrow 0$, we only need the
+**first terms with a non-zero coefficient** $a_k$ to represent the
+function with complete accuracy.
+
+Why? Consider the 2nd-order Taylor polynomial $a_1 x + a_2 x^2$. If we
+are to be able to safely disregard the $a_2$ term it is because that
+term, for small $x$ is much, much smaller than the $a_1 x$ term. And we
+can always choose non-zero $x$ to make this so.
+
+For instance, suppose our polynomial were $x + 100 x^2$. For $x=0.1$,
+the first and second terms are the same size; we need them both for
+accuracy. For $x=0.01$, the second term is 1/100 the size of the first
+term, maybe we don't need the second term so much. You can always make
+$x$ so small that anyone will be satisfied that the second term is
+utterly negligible compared to the first.
+
+Here's the method:
+
+Suppose you have a function $f(x) \equiv u(x)/v(x)$ where
+$$\lim_{x\rightarrow 0} u(x) = 0\ \ \ \text{and}\ \ \ \lim_{x\rightarrow 0} v(x) = 0$$
+Given this, $f(0)$ is not defined. But we can ask whether there is a
+sensible value that can be plugged in in place of $f(0)$ that will cause
+the modified $f()$ to be continuous at $x=0$.
+
+Step 1: Write the Taylor polynomial expansion around $x-0 = 0$ for both
+$u(x)$ and $v(x)$. If both expansions have a non-zero first coefficient,
+you can stop there. Now we have:
+
+$$u(x) \approx a_1 x$$
+$$v(x) \approx b_1 x$$ where $a_1 = \partial_x u(0)$ and
+$b_1 = \partial_x v(0)$.
+
+Step 2: Divide the polynomial (really just linear!) expansion of $u()$
+by the expansion of $v()$ to get
+
+$$\lim_{x\rightarrow 0}\frac{u(x)}{v(x)} = \lim_{x\rightarrow 0} \frac{a_1 x}{b_1 x} = \frac{a_1}{b_1}$$
+
+That's the answer, $a_1/b_1$, at least when $b_1 \neq 0$. We'll come
+back to that case later.
+
+```{r zoz1-6, echo=FALSE, results="markup"}
+askMC(
+  "For $\\lim_{x\\rightarrow 0} \\sin(x) / x$, what are $a_1$ and $b_1$?",
+  "+$a_1 = 1$ and $b_1 = 1$+",
+  "$a_1 = \\pi$ and $b_1 = \\pi$",
+  "$a_1 = -1$ and $b_1 = -1$",
+  "$a_1 = 0$ and $b_1 = -1$"
+)
+```
+
+Sometimes the singularity is at some non-zero $x$. For instance,
+$$h(x) \equiv \frac{x^2 - 16}{x - 4}$$ The divide-by-zero comes into
+play when $x=4$. So is there a sensible value to plug in for $h(4)$ to
+replace the singularity.
+
+Here, write your Taylor polynomials around $x_0 = 4$, the location of
+the singularity. We'll get:
+
+$$x^2 - 16 = a_1 (x-4) + a_2 (x-4)^2 + \cdots$$ 
+$$x - 4 = b_1 (x-4)$$ Using Taylor's formula for coefficients we'll get
+$$a_1 = \partial_x (x^2 - 16)\left.\right|_{x=4} = 2x\left.\right|_{x=4} = 8$$
+$$b_1 = \partial_x (x - 4) = 1$$
+
+Consequently, $\lim_{x\rightarrow 4} \frac{x^2 - 16}{x - 4} = 8$
+
+We've been discussing ratios of functions where the ratio cannot be
+calculated at the singularity using simply the limits of the functions
+approaching that singularity. (For instance
+$\lim_{x\rightarrow 0} \sin(x) = 0$ and $\lim_{x\rightarrow 0} x = 0$,
+but knowing this does not tell us what
+$\lim_{x\rightarrow 0} \frac{\sin(x)}{x}$ will be. These are called
+"indeterminate forms." As you've seen, if we know more about the
+functions than merely their individual limits, we can sometimes resolve
+the indeterminacy. Here we're doing that by writing each function as a
+low-order polynomial.
+
+The indeterminate form $\lim_{x\rightarrow 0} \frac{\sin(x)}{x}$ might
+be said to have the "shape" 0/0. But 0/0 is just a notation about the
+limits of the two individual functions. There are indeterminate forms
+with other shapes:
+$$\frac{0}{0}\ \ \ \ \ \ \frac{\infty}{\infty}\ \ \ \ \ \ 0\cdot {\infty\ \ \ \  \ 0^0\ \ \ \ \ \ \infty^0\ \ \ \ \ \ 1^\infty\ \ \ \ \ \ \infty - \infty}$$
+Keep in mind that something like $0 \infty$ is not a multiplication
+problem but rather shorthand for $u(x) v(x)$ where
+$\lim_{x\rightarrow x_0} u(x) = 0$ and
+$\lim_{x\rightarrow x_0} v(x) \rightarrow \infty$.
+
+There is a variety of algebraic tricks to try to transform these
+different shapes of indeterminate forms into a ratio of functions, each
+of which goes to zero at the relevant $x_0$. Once that's done, you can
+apply the method described above.
+
+Indeterminate forms have been a bonanza for the author of calculus book
+exercises, who can write an large number of examples, many of which have
+never been seen in the wild.
+
+One shortcut that that works in practice is to make a graph of the
+indeterminate form near the singularity. If the limit as $x$ approaches
+the singularity is a finite number, you can read off the result from the
+graph.
+
+In the sandbox below, the function $g(x)\equiv x \ln(x)$ is set up. This
+function has a singularity at $x=0$. Examine the plot and determine
+where the function value is going as you walk along the graph to the
+singularity.
+
+

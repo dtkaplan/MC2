@@ -1,0 +1,44 @@
+---
+id: "goldfish-keep-bed"
+created: "Tue Aug 17 11:33:55 2021"
+global_id: "ed6q4v"
+format: "On paper"
+---
+
+
+
+Recall from Section \@ref(function-composition) the ***Lorenz curve*** used to describe income inequality. The Lorenz curve shows the fraction of total income versus population fraction. 
+
+```{r lorenz-data-redux, echo=FALSE, fig.cap="A Lorenz curve (blue) fitted to income data from the US in 2009. (See Figure \\@ref(fig:lorenz-data).)"}
+Income <- tibble::tribble(
+  ~ income, ~ pop,
+  0,     0,
+  3.4,  20,
+  12.0, 40, 
+  26.6, 60,
+  47.8, 80,
+  100, 100
+) %>%
+  mutate(income=income/100, pop=pop/100)
+Lq <- fitModel(income ~ 1 - (1-pop)^q, data = Income, start=list(q=0.5))
+P <- gf_point(income ~ pop, data = Income) %>%
+  slice_plot(Lq(pop) ~ pop, color="blue", npts=300) %>%
+  gf_labs(x="Population percentile (p)", y="Cumulative income percentile (L)") %>%
+  gf_refine(coord_fixed())
+P
+```
+
+Since the population is arranged from poorest to richest along the horizontal axis, Lorenz curves must be both monotonically increasing and concave up.  That is, any Lorenz function $L(P)$, where $P$ is the population fraction, must satisfy these criteria:
+
+i. $L(0) = 0$ 
+ii. $L(1) = 1$ that is, the aggregate fraction of income earned by the entire population is 100%.
+iii. $\partial_P L(P) \ > \ 0$ that is, monotonically increasing
+iv. $\partial_{PP} L(P) \ > \ 0$ that is, concave up.
+
+
+Consider a function $H(P) \equiv L_1(L_2(P))$ which is the composition of two Lorenz curves. 
+
+- A. Use the composition rule to show that $H(P)$ is monotonically increasing. (Hint, calculate $\partial_P H(P)$ and show that it must be positive.)
+- B. Using both the composition and product rules, calculate $\partial_{PP} H(P)$ and show that $H(P)$ must be concave up.
+
+

@@ -1,0 +1,51 @@
+---
+id: "rhinosaurus-mute-tv"
+created: "Tue Jul 20 16:30:41 2021"
+global_id: "ljCxcH"
+---
+
+The result of applying the Euler method to a function is also another function, but it comes in the form of a vector of numbers all ready to be displayed graphically. So keep in mind the the function produced by Euler will be known only over a specified domain, just as the graph of a function covers only the specified domain. For instance, here is the graph of the natural logarithm function over the domain $1 \leq x \leq 21$.
+
+```{r dots0, exercise=TRUE, exercise.nlines=5, exercise.cap="A graph is made over a specified domain."}
+slice_plot(log(x) ~ x, domain(x=1:21), npts=11) %>%
+  gf_point()
+```
+
+The command in the sandbox is a little different than the usual `slice_plot()`. We've added on two things:
+
+1. An argument `npts=11` which says to use 11 discrete values of the input in plotting the graph.
+
+2. A second graphics layer that shows a dot at each input point where `slice_plot()` evaluated the function. Behind the seemingly smooth curves that `slice_plot()` produces is really a discrete set of points each of which is the output of the function at some numerical input.
+
+In our typical use of `slice_plot()` we leave out the dots and show only the straight line segments that connect the positions where the dots would be plotted. If the positions are spaced closely enough, your eye will not see the joints between successive straight lines and you will perceive the graph as a smooth curve.
+
+```{r slicedots1, echo=FALSE}
+askMC(
+  "For the graph of the log function over the domain $1 \\leq x \\leq 21$ with `npts=11` (that is, the initial command shown in the sandbox), what is the horizontal spacing between the discrete $x$ values?",
+  "0.5", "1", "+2+", "4", "5"
+  )
+```
+
+Now take away the `npts=` argument. This will implicitly set `npts` to a default value, which is what we have been using for most plots in this course.
+
+
+```{r slicedots2, echo=FALSE}
+askMC(
+  "What is the default value of `npts` in `slice_plot()`?",
+  25, 50, 100, 200, 500, 1000, right_one = 100
+  )
+```
+
+We could use a much larger value for `npts`, but there is no reason so long as a smaller value produces a graph faithful to the function being graphed.
+
+Keeping the domain the same, $1 \leq x \leq 21$, plot out a sinusoid with a period of 0.3 using the default `npts`: $g(x) \equiv \sin(2\pi x/0.3)$. The graph, which shows about 67 cycles of the sinusoid, will not look much like a sinusoid. In particular, although the sine function should reach from -1 to 1 over each cycle, the graph does not.
+
+
+
+
+```{r slicedots3, echo=FALSE}
+askMC(
+  "How large should `npts` be in order for each of the 67 cycles in the graph to come close enough to -1 and 1 that you cannot easily see the discrepancy?",
+  125, 150, 200, 400, 800, 1600, 3200, right_one=800
+  )
+```
