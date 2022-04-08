@@ -8,11 +8,8 @@ Before we go much further in exploring the creation and uses of functions, let's
 
 Key steps in making a mathematical representation---a model---of a system involve identifying the system components and describing quantitatively the relationships among them. In brief, mathematical modeling is about describing the ***relationships*** between things.
 
-I'm going to make a reference to @fig-carbon-phases
 
-
-
-::: {.example data-latex=""}
+::: {.practice data-latex=""}
 Let's start with a simple system that is so familiar that you likely do not think of it as a system: a triangle.
 
 A triangle consists of three connected line segments: the sides. It has other properties that are related to the sides and each other, for example, the angles between sides, the perimeter, or the area enclosed by the triangle. 
@@ -32,17 +29,15 @@ knitr::include_graphics("www/CO2-phases.png")
 
 
 
-::: {.callout-note}
-## Solid CO_2
+::: {.example data-latex=""}
+**Solid CO_2**
 
 There's considerable interest in ways to remove CO_2 from the atmosphere and store it permanently underground. It's hard to store gasses in the massive quantities needed to mitigate climate change. But CO_2_ storage is part of a system that includes temperature, pressure, and chemical affinity. 
 
 @fig-carbon-phases shows the relationship between physical form of pure CO_2_ and the temperature and pressure of the gas. 
 :::
 
-::: {.callout-tip}
-## Math in the world: Action potentials
-
+::: {.intheworld data-latex=""}
 Nerve cells communicate via electrical voltages and currents. For long-distance communications (distances longer than about 1 mm) the signaling takes the form of pulses of voltage occuring repetitively at different rates. The formation of these pulses, called "action potentials," was the subject of an extensive research project in the 1950s involving inserting tiny electrodes into relatively large ("giant") nerve cells that mediate the fleeing reaction of squid. A typical experiment involved regulating artificially the voltage across the cell membrane. By these experiments, the scientists--- John Eccles, Alan Hodgkin and Andrew Huxley---were able to describe mathematically the relationship between membrane voltage and the current across the membrane. A calculus model built from the relationships provided a concise description of the biophysics of action potentials. A 1963 Nobel Prize was awarded for this work.
 
 
@@ -70,9 +65,9 @@ gf_point(w ~ I(-v*36*25), data = FHN_points) %>%
 The data points themselves might be described metaphorically as "clouds" spotting the voltage vs current "sky." Real-world clouds often show patterns such as animal or country shapes. We might say that a given cloud resembles a rabbit. Similarly, the data clouds show a pattern between current and voltage. We might, for instance, describe the current-voltage relationship as S-shaped. Or, rather than using the letter "S" we could draw a curve through the dots to summarize and simplify the relationship.
 :::
 
-The smooth curve in Figure \@ref(fig:FHN-curve) describes the relationship between current and voltage quantitatively. For example, if you know that the current is 0, you can use the curve to figure out what the voltage will be around -90 mV or  -50 mV or -10 mV. But when current is 0, the voltage will *not* be, say, -75 or -150.
+The smooth curve in  @fig-fhn-model describes the relationship between current and voltage quantitatively. For example, if you know that the current is 0, you can use the curve to figure out what the voltage will be around -90 mV or  -50 mV or -10 mV. But when current is 0, the voltage will *not* be, say, -75 or -150.
 
-Graphs such as Figures \@ref(fig:CO2-phases) and \@ref(fig:FHN-curve) are good ways of showing relationships. We can even do calculations simply using such graphs. Place your finger on a point of the S-shaped graph and you can read from the axes an allowed pair of voltage and current values. Place your finger on a point on the vertical axis. Moving it to the curve will reveal what current is associated with that voltage.
+Graphs such as  @fig-carbon-phases and @fig-fhn-model are good ways of showing relationships. We can even do calculations simply using such graphs. Place your finger on a point of the S-shaped graph and you can read from the axes an allowed pair of voltage and current values. Place your finger on a point on the vertical axis. Moving it to the curve will reveal what current is associated with that voltage.
 
 Functions are, like graphs, a ways of representing relationships. For all their advantages as a means of communication, graphs have their limits. With a graph it's feasible only to show the relationship between two quantities or among three quantities. Functions, can involve more quantities. For instance, the triangle-area function $$A(a,b,c) \equiv \frac{1}{4}\sqrt{\strut 4a^2b^2-(a^2+b^2-c^2)^2}$$ gives the relationship between four quantities: the area and the lengths of the triangle's three sides.
 
@@ -100,42 +95,60 @@ Tilde expression     |  Domain interval specification
 `log(y) / exp(y) ~ y`|  `interval(y = -5:5)`
 `sin(z) / z ~ z`     |  `interval(y = -3*pi:3*pi)`
 
-To draw a graph, use `slice_plot()` with the tilde expression as the first argument and the domain interval specification as the second argument. For instance,
+### Slice plot
+
+To draw a graph of a function with one input, use `slice_plot()`. The tilde expression is the first argument; the domain interval specification is the second argument. For instance,
 
 ```{r}
 #| label: fig-first-slice-plot
-#| fig.cap: "Graph of the function $f(y) \\equiv y e^y$. The domain of $f()$ is the space of all real numbers. The graph, however, shows only a finite interval $0 \\leq y \\leq 10$ of that domain."
+#| fig.cap: "Graph of the function $f(y) \\equiv y e^y$."
 #| cap-location: margin
-#| out-width: "50%"
 slice_plot(y * exp(y) ~ y, domain(y=0:10))
 ```
+
+[The ***graphics frame*** in @fig-first-slice-plot is a 2-dimensional area for drawing. The ***domain*** of the function being graphed in that frame, $f() \equiv y e^y$, is the number line, that is, the space of all real numbers. The plot, however, shows only a finite interval $0 \leq y \leq 10$ of that domain.]{.aside}
+
+Recall the situation seen in @fig-fhn-model which shows a two-dimensional space of all possible (voltage, current) pairs for nerve cells. The experimental data identified many possible pairs---marked by the dots in Figure @fig-fhn-model ---that are consistent with the relationships of the nerve-cell system.
+
+The same is true of @fig-first-slice-plot, the graph of a function with a single input. The two-dimensional space shown in the @fig-first-slice-plot contains (input, output) pairs, only a small fraction of which are consistent with the relationship described by the function. The points in that small fraction could be marked by individual dots, but instead of dots we draw  the continuous curve connecting the dots. Every point on the curve is consistent with the relationship between input and output represented by the function. 
+
+
+### Contour plot
+
 Functions with **two inputs** can be displayed with `contour_plot()`. Naturally, the tilde expression defining the function will have **two** names on the right-hand side of <span style="font-size:250%'">~</span>. Similarly, the domain specification will have two arguments, one for each of the names in the tilde expression.
 
 ```{r}
 #| label: fig-first-contour
 #| fig-cap: "Contour plot of a function with two inputs $g(y,z) \\equiv e^{-z}\\sin(y)$"
-#| cap-location: margin
+#| fig-cap-location: margin
 contour_plot(exp(-z)*sin(y) ~ y & z, domain(y=-6:6, z=0:2))
 ```
 
 Contour plots will be a preferred format for displaying functions with two inputs. The main reason to prefer contour plots is the ease with which locations of points in the input space can be identified and the ability to read output values without much difficulty. 
 
+### Surface plot
+
 There's another way to think about graphing functions with two inputs. There are in such a situation **three** quantities involved in the relationship. Two of these are the inputs, the third is the output. A three-dimensional space consists of all the possible triples of point; the relationship between the inputs and the output is marked by ruling out almost all of the potential triples and marking those points in the space that are consistent with the function.
 
-This is similar to the situation seen in @fig-fhn-model which shows a two-dimensional space of all possible (voltage, current) pairs for nerve cells. The experimental data identified many possible pairs---marked by the dots in Figure \@ref(fig:FHN-curve)---that we consistent with the relationships of the nerve-cell system.
+the space of all possibilities (y, z, output) is three-dimensional, but very few of those possibilities are consistent with the function to be graphed. You can imagine our putting dots at all of those consistent-with-the-function points, or our drawing lots and lots of continuous curves through those dots, but really the cloud of dots forms a ***surface***; a continuous cloud of points floating over the (y, z) input space.
 
-The same is true of @fig-first-slice-plot, showing a graph of a function with a single input. The two-dimensional space shown in the figure contains (input, output) pairs, only a small fraction of which are consistent with the relationship described by the function. The points in that small fraction could be marked by individual dots, but instead of dots we draw  the continuous curve connecting the dots. Every point on the curve is consistent with the relationship between input and output represented by the function. 
-
-Returning to functions with two inputs, the space of all possibilities (y, z, output) is three-dimensional, but very few of those possibilities are consistent with the function to be graphed. You can imagine our putting dots at all of those consistent-with-the-function points, or our drawing lots and lots of continuous curves through those dots, but really the cloud of dots forms a ***surface***; a continuous cloud of points floating over the (y, z) input space.
-
-@rfig-first-surface displays this surface. Since the image is drawn on a two-dimensional screen, we have to use painters' techniques of perspective and shading. In the interactive version of the plot, you can move the viewpoint for the image which gives many people a more solid understanding of the surface being shown.
+@fig-first-surface displays this surface. Since the image is drawn on a two-dimensional screen, we have to use painters' techniques of perspective and shading. In the interactive version of the plot, you can move the viewpoint for the image which gives many people a more solid understanding of the surface being shown.
 
 
-```{r first-surface, eval=knitr::is_html_output(), fig.cap="Displaying $g(y,z) \\equiv e^{-z}\\sin(y)$ as a surface plot annotated with contour lines."}
+```{r results="hide"}
 surface_plot(exp(-z)*sin(y) ~ y & z, interval(y=-6:6, z=0:2))
+
 ```
-```{r echo=FALSE, eval=!knitr::is_html_output()}
-knitr::include_graphics("www/surface-plot1.png")
+
+
+```{r echo=FALSE}
+#| label: fig-first-surface
+#| fig-cap: "Displaying $g(y,z) \\equiv e^{-z}\\sin(y)$ as a surface plot annotated with contour lines."
+if (!knitr::is_html_output()) {
+  knitr::include_graphics("www/surface-plot1.png")
+} else {
+  surface_plot(exp(-z)*sin(y) ~ y & z, interval(y=-6:6, z=0:2))
+}
 ```
 
 Note that the surface plot is made with the R/mosaic `surface_plot()`, which takes arguments in exactly the same way as `contour_plot()`.
@@ -148,22 +161,41 @@ Note that the surface plot is made with the R/mosaic `surface_plot()`, which tak
 
 It may take some practice to learn to read contour plots fluently but it is a skill that's worthwhile to have. Note that the graphics frame is the Cartesian space of the two inputs. The output is presented as ***contour lines***. Each contour line has a label giving the numerical value of the function output. Each of the input value pairs on a given contour line corresponds to an output at the level labeling that contour line. To find the output for an input pair that is *not* on a contour line, you ***interpolate*** between the contours on either side of that point.
 
-For example, the input pair (0, 0)---which is at the bottom of the frame, midway from left to right---falls between the contours labeled "20" and "22." This means that the output corresponding to input (0, 0) is somewhere between 20 and 22. The point is much closer to the contour labeled "20", so it's reasonable to see the output value as 20.5. This is, of course, an approximation, but that's the nature of reading numbers off of graphs.
+::: {.practice data-latex=""}
+
+What's the value of the function being plotted here at input $(\text{input}_1=0, \text{input}_2=0)$?
+
+```{r echo=FALSE}
+f2 <- rfun( ~ input_1 + input_2, seed=932)
+contour_plot(f2(input_1, input_2) ~ input_1 + input_2,
+                 domain(input_1=c(-5, 5), input_2 = c(0, 4)),
+             skip=0) %>%
+  gf_labs(x = "Input 1", y = "Input 2") %>%
+  gf_point(0 ~ 0, color="red", size=1)
+  
+```
+
+The input pair (0, 0)---which is marked by a small red dot---falls between the contours labeled "20" and "22." This means that the output corresponding to input (0, 0) is somewhere between 20 and 22. The point is much closer to the contour labeled "20", so it's reasonable to see the output value as 20.5. This is, of course, an approximation, but that's the nature of reading numbers off of graphs.
+:::
 
 Often, the specific numerical value at a point is not of primary interest. Instead, we may be interested in how steep the function is at a point, which is indicated by the spacing between contours. When contours are closely spaced, the hillside is steep. Where contours are far apart, the hillside is not steep, perhaps even flat.
 
 Another common task for interpreting contour plots is to locate the input pair that's at a local high point or low point: the top of a hill or the bottom of a hollow. Such points are called ***local argmax*** or ***local argmin*** respectively. The *output* of the function at a local argmax is called the ***local maximum***; similarly for a local argmin, where the output is called a ***local minimum***. (The word "argmax" is a contraction of "argument of the maximum." We will tend to use the word "input" instead of "argument", but it means exactly the same thing to say "the inputs to a function" as to says "the arguments of a function.")
 
-::: {.example data-latex=""}
-Using the contour graph of the function, 
+::: {.practice data-latex=""}
+For this contour graph 
+
+```{r echo=FALSE}
+#| label: dkskes
+#| fig-cap: ""
+g <- rfun(~ x & y, seed=783)
+contour_plot(g(x,y)-2.5 ~ x & y, interval(x=-3:3, y=-3:6), skip=0, label_alpha=.5)
+```
 
 i. Find an input coordinate where the function is steepest.
 ii. Find input coordinates for the high and low points in the function .
 
-```{r echo=FALSE}
-g <- rfun(~ x & y, seed=783)
-contour_plot(g(x,y)-2.5 ~ x & y, interval(x=-3:3, y=-3:6), skip=0, label_alpha=.5)
-```
+
 
 A function is steepest where contour lines are spaced closely together, that is, where the function output changes a lot with a small change in input. This is true near inputs $(x=0, y=1)$. But notice that steepness involves a *direction*. Near $(x=0,y=1)$, changing the $x$ value does not lead to a big change in output, but a small change in the value of $y$ leads to a big change in output.  In other words, the function is steep in the y-direction but not in the x-direction.
 
@@ -180,52 +212,72 @@ Saying "graph" for a display of $f(x)$ versus $x$ is correct and reasonable. But
 
 Almost always, when mathematically modeling a real-world situation or phenomenon, we do not try to capture every nuance of every relationship that might exist in the real world. We leave some things out. Such simplifications make modeling problems easier to deal with and encourage us to identify the most important features of the most important relationships.
 
-In this spirit, it's useful always to assume that our models are leaving something out and that a more complete model involves a function with more inputs than the present candidate. The present candidate model should be considered as a ***slice*** of a more complete model. Our slice leaves out one or more of the variables in a more complete model.
+[As you become practiced reading contour plots, you might prefer to read this one as a hilltop (shaded yellow) side-by-side with a hollow or bowl (shaded purple), with green, almost level flanks at the left and right edges of the frame.]{.aside}
 
-To illustrate this, suppose that we have a "more complete model" in the form of a function of two inputs, as shown in the contour plot below.
 
-```{r Fig-1c1, echo=FALSE}
+```{r  echo=FALSE}
+#| label: fig-contour-pre-slice
+#| fig-cap: "A hypothetical relationship among three quantities."
 f2 <- rfun( ~ input_1 + input_2, seed=96)
 contour_plot(f2(input_1, input_2) ~ input_1 + input_2,
                  domain(input_1=c(-5, 5), input_2 = c(0, 4)),
              skip=0)
 ```
 
-As you become practiced reading contour plots, you might prefer to read this one as a hilltop (shaded yellow) side-by-side with a hollow or bowl (shaded purple), with green, almost level flanks at the left and right edges of the frame.
 
-The most common forms of ***slice*** involve constructing a simpler function that has one input but not the other. For example, our simpler function might ignore input #2. There are different ways of collapsing the function of two inputs into a function of one input. An especially useful way in calculus is to take the two-input function and set one of the inputs to a ***constant value***.
 
-For instance, suppose we set input #2 to the constant value 1.5. This means that we can consider any value of input #1, but input #2 has been replaced by 1.5. In Figure \@ref(fig:Fig-1c2), we've marked in red the points in the contour plot that give the output of the simplified function. `r mark(795)`
 
-```{r Fig-1c2, echo=FALSE, out.width="50%", fig.show="hold", warning=FALSE, fig.cap="Left: A slice through the domain of a contour plot. Right: The value of the function along that slice, presented as a mathematical graph, as generated by `slice_plot()`."}
+
+In this spirit, it's useful always to assume that our models are leaving something out and that a more complete model involves a function with more inputs than the present candidate. The present candidate model should be considered as a ***slice*** of a more complete model. Our slice leaves out one or more of the variables in a more complete model.
+
+To illustrate this, suppose that the actual system involves relationships among three quantitiess, which we represent in the form of a function of two inputs, as shown in @fig-contour-pre-slice. (The third quantity in the relationship is the output of the function.)
+
+
+
+The most common forms of ***slice*** involve constructing a simpler function that has one input but not the other. For example, our simpler function might ignore input 22. There are different ways of collapsing the function of two inputs into a function of one input. An especially useful way in calculus is to take the two-input function and set one of the inputs to a ***constant value***.
+
+For instance, suppose we set input 22 to the constant value 1.5. This means that we can consider any value of input 1, but input 2 has been replaced by 1.5. In Figure @fig-contour-slice, we've marked in red the points in the contour plot that give the output of the simplified function. 
+
+
+
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-contour-slice
+#| fig-cap: "Left: A slice (red) through the domain of a contour plot. Right: The value of the function along the red slice presented as a mathematical graph,  generated by `slice_plot()`."
+#| fig-column: page-right
+#| fig-height: 2.5
 f2 <- rfun( ~ input_1 + input_2, seed=96)
-contour_plot(f2(input_1, input_2) ~ input_1 + input_2,
+PL <- contour_plot(f2(input_1, input_2) ~ input_1 + input_2,
                  domain(input_1=c(-5, 5), input_2 = c(0, 4)),
              skip=0) %>%
   gf_hline(yintercept=1.5, color="orange3", size=2) %>%
-  gf_hline(yintercept=1.5, color="red", size=1) %>%
-  gf_labs(title="Contour plot of function of two inputs")
-slice_plot(f2(input_1, input_2=1.5) ~ input_1, domain(input_1=c(-5, 5))) %>%
-  gf_labs(title="Graph of function output versus input #1")
+  gf_hline(yintercept=1.5, color="red", size=1) 
+
+PR <- slice_plot(f2(input_1, input_2=1.5) ~ input_1, domain(input_1=c(-5, 5))) 
+gridExtra::grid.arrange(PL, PR, ncol=2)
 ```
 
 Each point along the red line corresponds to a specific value of input #1. From the contours, we can read the output corresponding to each of those values of input #1. This relationship, output versus input #1 can be drawn as a mathematical graph (to the right of the contour plot). Study that graph until you can see how the rising and falling parts of the graph correspond to the contours being crossed by the red line.
 
-Slices can be taken in any direction or even along a curved path! The blue line below the slice constructed by letting input #2 vary and holding input #1 at the constant value 0.
+Slices can be taken in any direction or even along a curved path! The blue line in @fig-one-c-three shows the slice constructed by letting input 2 vary and holding input 1 at the constant value 0.
 
-```{r Fig-1c3, echo=FALSE, out.width="50%", fig.show="hold", warning=FALSE}
-contour_plot(f2(input_1, input_2) ~ input_1 + input_2,
+```{r echo=FALSE,  warning=FALSE}
+#| label: fig-one-c-three
+#| fig-cap: "A path (blue) along which to cut a slice. The graph is made with `contour_plot()`. Right: Slice plot along the blue path. The graph is made with `slice_plot()`."
+#| fig-column: page-right
+#| fig-height: 2.5
+Pleft <- contour_plot(f2(input_1, input_2) ~ input_1 + input_2,
                  domain(input_1=c(-5, 5), input_2 = c(0, 4)),
              skip=0) %>%
-  gf_vline(xintercept=0, color="dodgerblue", size=2) %>%
-  gf_labs(title="Contour plot of function of two inputs")
-slice_plot(f2(input_1 = 0 , input_2) ~ input_2, domain(input_2=c(0, 5))) %>%
-  gf_labs(title="Graph of function output versus input 2")
+  gf_vline(xintercept=0, color="dodgerblue", size=2) 
+
+Pright <- slice_plot(f2(input_1 = 0 , input_2) ~ input_2, domain(input_2=c(0, 5))) 
+gridExtra::grid.arrange(Pleft, Pright, ncol=2)
 ```
 :::
 
 ## Exercises
 
+`r if (knitr::is_latex_output()) knitr::knit_exit()`
 
 `r insert_calcZ_exercise("XX.XX", "sR6PVw", "eagle-toss-cotton.Rmd", skill="reading slice plots")`
 
