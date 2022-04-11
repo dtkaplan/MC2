@@ -1,0 +1,93 @@
+---
+id: "tree-loves-fish"
+author: "Daniel Kaplan"
+origin: "141 DD-26"
+---
+
+```{r include=FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+```
+
+Here is a smooth function marked at a few points. Your task is, at each  point, to estimate the value of the derivative, the sign of the second derivative, and the radius of the circle that would nicely match the function in a small region around each point. (Remember, we're asking for the *radius* of the circle, which is half the *diameter*.)
+
+To simplify  things, here is a table giving seven different combinations of the quantities you are to estimate.  Some of them correctly match one of the labeled points, some do not. All you need to do is choose which is the correct set of quantities for each labeled point.
+
+
+
+```{r echo=FALSE}
+f1 <- rfun(~ x,  seed = 1001, n=20)
+f2 <- rfun(~ x,  seed = 1002)
+f3 <- rfun(~ x,  seed = 1003)
+
+
+f <- makeFun((f1(x) + f2(x))/4 ~ x)
+Points <- tibble(
+  x = c(-2.5, -1, 0.2, 2.7, 4 ),
+  y = f(x),
+  label = LETTERS[1:length(x)]
+)
+
+# dx_f <- D(f(x) ~ x)
+# dxx_f <- D(f(x)  ~ x & x)
+# dx_f(Points$x)
+# radius <- makeFun((1 + dx_f(x)^2)^{3./2}/dxx_f(x) ~ x)
+# radius(Points$x)
+
+slice_plot(f(x) ~ x, domain(x=c(-5,  5))) %>%
+  gf_refine(coord_fixed()) %>%
+  gf_point(y  ~ x, data  = Points, color="dodgerblue") %>%
+  gf_text(y ~ x, label = ~ label, data = Points, vjust = "inward", hjust="inward", color="dodgerblue")
+```
+
+row | value of 1st deriv | sign of 2nd deriv | radius                                       
+:---|------:|:---------:|:-------
+i   |-0.3   |  pos      | 0.25 <!--D-->
+ii  | 2.1   |  near 0   | 2000 <!--B-->
+iii |-1.4   | neg       | 12
+iv  | 0.3   | neg       | 0.3 <!--C-->
+v   | 2.1   | pos       | 0.1
+vi  | 1.3   |  neg      | 3 <!--E-->
+vii | 0.5   | pos       | 1  <!--A-->
+
+```{r daily-digital-26-QA5, echo=FALSE}
+askMC(
+  prompt = "Which row from the table best matches the function at point A?",
+  "i", "ii", "iii", "iv", "v", "vi", "+vii+",
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-26-QA6, echo=FALSE}
+askMC(
+  prompt = "Which row from the table best matches the function at point B?",
+  "i", "+ii+", "iii", "iv", "v", "vi", "vii",
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-26-QA7, echo=FALSE}
+askMC(
+  prompt = "Which row from the table best matches the function at point C?",
+  "i", "ii", "iii", "+iv+", "v", "vi", "vii",
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-26-QA8, echo=FALSE}
+askMC(
+  prompt = "Which row from the table best matches the function at point D?",
+  "+i+", "ii", "iii", "iv", "v", "vi", "vii",
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-26-QA9, echo=FALSE}
+askMC(
+  prompt = "Which row from the table best matches the function at point E?",
+  "i", "ii", "iii", "iv", "v", "+vi+", "vii",
+  random_answer_order = FALSE
+)
+```
+

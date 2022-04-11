@@ -1,0 +1,55 @@
+---
+id: "walnut-bet-pants"
+created: "Mon Feb 21 17:36:57 2022"
+global_id: "sNEKcy"
+---
+
+
+Here is a square-wave function:
+
+```{r}
+sq_wave <- makeFun(ifelse(abs(t) <= 0.5, 1, 0) ~ t)
+slice_plot(sq_wave(t) ~ t, domain(t=-1:1))
+```
+Find the projection of the square wave onto each of these functions (using the domain $-1 \leq t \leq 1$):
+
+- $c_0 \equiv 1$
+- $c_1 \equiv \cos(1 \pi t)$
+- $c_2 \equiv \cos(2 \pi t)$ 
+- $c_3 \equiv \cos(3 \pi t)$ 
+- $c_4 \equiv \cos(4 \pi t)$
+- $c_5 \equiv \cos(5 \pi t)$
+- $c_6 \equiv \cos(6 \pi t)$
+- $c_7 \equiv \cos(7 \pi t)$
+
+Hint: To find the scalar multiplier of projecting $g(t)$ onto $f(t)$, use
+$$\int_{-1}^1 g(t)\, f(t)\, dt {\LARGE /} \int_{-1}^1 f(t)\, f(t)\,dt$$ or, in R/mosaic 
+```{r eval=FALSE}
+A <- Integrate(g(t)*f(t) ~ t, domain(t=-1:1)) / 
+  Integrate(f(t)*f(t) ~ t, domain(t=-1:1))
+```
+Then the projection of $g()$ onto $f()$ is $A\, f(t)$.
+
+
+Write down the scalar multiplier on each of the 8 functions above.
+
+<br> 
+If you calculated things correctly, this is the linear combination of the 8 functions that best matches the square wave.
+
+```{r echo=FALSE, results="hide"}
+project_onto_f <- function(g, f) {
+  Integrate(g(t)*f(t) ~ t, domain(t=-1:1)) / 
+    Integrate(f(t)*f(t) ~ t, domain(t=-1:1))
+}
+
+res <- numeric(7)
+funs <- list()
+for (n in 1:7) {
+  funs[[n]] <- makeFun(cos(n*pi*t) ~ t)
+  res[n] <- project_onto_f(sq_wave, funs[[n]])
+}
+slice_plot(1/2 + 0.637*funs[[1]](t) -0.2122*funs[[3]](t) + 0.1273*funs[[5]](t) - 0.09095*funs[[7]](t) ~ t,
+           domain(t=-1:1), color="blue") %>%
+  slice_plot(sq_wave(t) ~ t, domain(t=-1:1)) 
+```
+

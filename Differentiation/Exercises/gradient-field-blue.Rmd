@@ -1,0 +1,101 @@
+---
+id: "gradient-field-blue"
+author: "Daniel Kaplan"
+global-id: "lkwciw"
+---
+
+```{r include = FALSE}
+library(Zcalc)
+```
+
+Here is a contour plot of a function $g(x,y)$. You will be presented with several gradient fields. Your task is to determine whether the gradient field corresponds to the contour plot and, if not, say why not.
+
+```{r echo=FALSE, warning=FALSE}
+dom <- list(x=c(0, 3), y=c(0,3))
+funs <- list()
+funs[[1]] <- makeFun((x + y)^2 ~ x + y)
+funs[[2]] <- makeFun(-(x + y)^2 ~ x + y)
+funs[[3]] <- makeFun((x+y) ~ x + y)
+funs[[4]] <- makeFun((x + 2*y ~ x + y))
+contour_plot(funs[[1]](x, y) ~ x + y, dom, filled=FALSE, skip=0) %>%
+  gf_refine(coord_fixed())
+```
+
+
+```{r echo=FALSE, warning=FALSE}
+set.seed(102)
+numbers <- sample(length(funs))
+gp <- list()
+for (k in 1:length(numbers)) {
+  gp[[k]] <- gradient_plot(funs[[numbers[[k]]]](x, y) ~ x + y, dom, npts=10, alpha=1) %>%
+    gf_labs(title = paste("Gradient field", k)) %>%
+    gf_refine(coord_fixed()) %>%
+    gf_lims(x=c(0,3), y=c(0,3))
+}
+```
+
+```{r echo=FALSE, out.width="50%", fig.align="center"}
+gp[[1]]
+```
+
+
+```{r daily-digital-24-QW7, echo=FALSE}
+askMC(
+  prompt = "What's wrong with gradient field 1?",
+    "arrows point down the hill instead of up it",
+    "+magnitude of arrows are wrong, but direction is right+",
+    "arrows don't point in the right direction",
+    "nothing is wrong",
+  inline = FALSE,
+  random_answer_order = FALSE)
+
+```
+
+```{r echo=FALSE, out.width="50%", fig.align="center"}
+gp[[2]]
+```
+
+```{r daily-digital-24-QW8, echo=FALSE}
+askMC(
+  prompt = "What's wrong with gradient field 2?",
+    "+arrows point down the hill instead of up it+",
+    "magnitude of arrows are wrong, but direction is right",
+    "arrows don't point in the right direction",
+    "nothing is wrong",
+  inline = FALSE,
+  random_answer_order = FALSE)
+
+```
+
+```{r echo=FALSE, out.width="50%", fig.align="center"}
+gp[[3]]
+```
+
+```{r daily-digital-24-QW9, echo=FALSE}
+askMC(
+  prompt = "What's wrong with gradient field 3?",
+    "arrows point down the hill instead of up it",
+    "magnitude of arrows are wrong, but direction is right",
+    "arrows don't point in the right direction",
+    "+nothing is wrong+",
+  inline = FALSE,
+  random_answer_order = FALSE)
+
+```
+
+```{r echo=FALSE, out.width="50%", fig.align="center"}
+gp[[4]]
+```
+
+```{r daily-digital-24-QW10, echo=FALSE}
+askMC(
+  prompt = "What's wrong with gradient field 4?",
+    "arrows point down the hill instead of up it",
+    "magnitude of arrows are wrong, but direction is right",
+    "+arrows don't point in the right direction+",
+    "nothing is wrong",
+  inline = FALSE,
+  random_answer_order = FALSE)
+
+```
+

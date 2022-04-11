@@ -1,0 +1,48 @@
+---
+id: "two-gaussians"
+author: "Daniel Kaplan"
+global-id: "FISHU"
+---
+
+According to data from the US National Health and Nutrition Evaluation Survey, the average height of adult females is 157 cm vs 167 for adult males. The standard deviations are 17 cm and 22 cm respectively. A good model for the person-to-person variation for females is `dnorm(height, mean = 157, sd = 17)` and similarly for males.
+
+To see the overall distribution of adult height, regardless of sex, make a linear combination of the distribution for females and for males, giving each a scalar of one-half (since the population is roughly 50-50 female/male).
+
+Open a `r sandbox_link()` and construct the linear combination function for the overall distribution. Use the scaffolding to plot out the distributions for the individual sexes and the overall distribution.
+
+```{r eval=FALSE}
+female <- makeFun(dnorm(height, mean = 157, sd=17) ~ height)
+male   <- makeFun(dnorm(height, mean = 167, sd=22) ~ height)
+
+# fill in the blanks in the next line
+overall <- makeFun( _your_scalar_f_ * female(height) + _your_scalar_m_ * male(height) ~ height)
+
+slice_plot(female(height) ~ height, domain(height=c(100,220)), color="orange3",
+           label_x=.5, label_text="F") %>%
+  slice_plot(male(height) ~ height, color="dodgerblue", label_text="M", label_x=.8) %>%
+  slice_plot(overall(height) ~ height, color="black", size=2)
+
+```
+
+<!--
+overall <- makeFun(female(height)/2 + male(height)/2 ~ height)
+-->
+
+
+Some people erroneously think that since the mean height of men is larger than women by 10cm, you can readily distinguish between the sexes based on height. However, notice that the overall distribution (plotted in black) does not show a dip between the sexes: there is no clear separation based on height. 
+
+As a thought experiment, let's increase the separation in mean height from the actual value of $167-157=10$ cm to something larger. You can increase the separation by 5 cm, for example, by making the men's mean height `167+5`.
+
+```{r tg4, echo=FALSE, results="markup"}
+askMC(
+  "What's the *smallest* increase in separation (in cm) that produces a barely visible dip between the sexes in the overall height distribution?",
+  5, 10, 15, 20, 25, "+30+", random_answer_order = FALSE 
+)
+```
+
+```{r eval=FALSE, echo=FALSE}
+gf_density(~ Height, data = NHANES::NHANES %>% filter(Age > 18)) %>%
+  gf_labs(title="Distribution of height, US Adults", x="Height (cm)")
+df_stats(Height ~ Gender, data = NHANES::NHANES, mean, sd)
+```
+

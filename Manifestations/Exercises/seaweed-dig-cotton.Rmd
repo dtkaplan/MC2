@@ -1,0 +1,49 @@
+---
+id: "seaweed-dig-cotton"
+created: "Thu Dec 16 15:03:34 2021"
+global_id: "uZLhZ0"
+---
+
+The R code below will construct a function, `prob_death60(age)` that gives the probability that a person reaching her 60th birthday will die at any given age. (The function is constructed from US Social Security administration data for females in 2014.)
+
+```{r}
+prob_death60 <- M2014F %>%
+  filter(age >= 60) %>%
+  select(age, died) %>%
+  mutate(prob = died/91420) %>%
+  spliner(prob ~ age, data = .)
+```
+
+1. The "life expectancy at age 60" is the expectation value for the number of years of additional life for person who reaches age 60. (The number of years of additional life is `age - 60`.) Compute the life-expectancy at age 60 based on the `prob_death(age)` function.
+
+```{r echo=FALSE, results="hide"}
+Integrate((age-60)*prob_death60(age) ~ age, domain(age=60:120))
+```
+
+2. A more technically descriptive name for life-expectancy would be "expectation value of additional life-duration." Calculate the standard deviation of "additional life-duration."
+
+```{r echo=FALSE, results="hide"}
+Integrate((age-60-24.055)^2*prob_death60(age) ~ age, domain(age=60:120)) %>% sqrt()
+```
+
+3. Construct the cumulative probability function for age at death for those reaching age 60. (Hint: Since the value of the cumulative at age 60 should be 0, set the argument `lower.bound=60` in `antiD()` so that the value will be zero at age 60.) From the cumulative, find the ***median*** age of death for those reaching age 60. (Hint: `Zeros()`.)
+
+```{r echo=FALSE, results="hide"}
+cumulative <- antiD(prob_death60(age) ~ age, lower.bound = 60)
+Zeros(cumulative(age) - 0.5 ~ age, domain(age=60:120))
+```
+
+4. In a previous exercise, we found from these same data that the life expectancy at birth is about 81 years. Many people mis-understand "life expectancy at birth" to mean that people will die mainly around 81 years of age. That's not quite so. People who are approaching 81 should keep in mind that they likely have additional years of life. A good way to quantify this is with the life-expectancy at age 81. We can calculate life-expectancy at 81 based on the `prob_death60()`. You can do this by scaling `prob_death60()` by $A$ such that $$\frac{1}{A}  = \int_{81}^{120} \text{prob_death60}(\text{age})\, d\text{age}\ .$$ 
+
+a. Calculate $A$ for age 81. 
+
+```{r echo=FALSE, results="hide"}
+1 / Integrate(prob_death60(age) ~ age, domain(age=81:110))
+```
+
+b. Using the $A$ you just calculated, find the life-expectancy at age 81, that is, the expectation value of additional years of life at age 81. Also calculate the standard deviation.
+
+```{r echo=FALSE, results="hide"}
+Integrate((age-81)*1.53*prob_death60(age) ~ age, domain(age=85:120))
+Integrate((age-81-8.415)^2*prob_death60(age) ~ age, domain(age=75:110)) %>% sqrt()
+```

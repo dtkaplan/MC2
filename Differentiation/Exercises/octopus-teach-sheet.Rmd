@@ -1,0 +1,30 @@
+---
+id: "octopus-teach-sheet"
+created: "Thu Sep 30 13:19:15 2021"
+global_id: "Ao6v5n"
+---
+
+In Exercise `r dereference_hash("E9e7c6")` you constructed models $D(t)$ of the availability of a drug in the bloodstream for three different pill-taking regimens: every six hours, every eight hours, and a double dose to start followed by a single dose every eight hours. The model for from a single, isolated pill is a zero before the pill is taken, then exponential decay from the level of the pill dose after the pill is taken. Like this:
+
+```{r}
+pill <- makeFun(ifelse(t < 0, 0, exp(-k * t)) ~ t, k = log(2)/3)
+```
+
+The parameter $k$ has been set to represent a drug with a half-life of three hours. 
+
+
+The model for the entire regiment is a linear combination of time-shifted single pills, e.g.:
+```{r}
+regimen8 <- makeFun(A*pill(t) + A*pill(t-8) + A*pill(t-16) + A*pill(t-24) + A*pill(t-32) ~ t, A=1)
+```
+
+From graphs of the functions themselves it is easy to check whether the availability ever falls below the therapeutic threshold (which we stipulated is 0.25). For instance, the eight-hour regiment with a dose of `A=1` does fall below the threshold during the first day. So a larger dose is needed than `A=1`.
+
+The derivative $\partial_t \text{regimen8}(t)$ tells the instantaneous rate at which the drug is being administered to and eliminated from the patient's body. 
+
+> For each of the three regimens, construct $\partial_t \text{regimen}(t)$. Ignoring the glitches due to discontinuity at the times the pills are consumed, which of the three regimens has the lowest average rate of drug elimination?
+
+```{r echo=FALSE, results="hide"}
+elimination <- D(regimen8(t) ~ t)
+slice_plot(elimination(t) ~ t, domain(t=-1:30))
+```

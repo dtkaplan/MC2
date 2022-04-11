@@ -1,0 +1,341 @@
+# Local approximations {#local-approximations}
+
+<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Block-2/25-approximation.Rmd)</div>
+
+NOTE NOTE NOTE
+
+The material in this first section has been moved to the new Block 1 chapter 6. CHANGE THIS CHAPTER TO FOCUS ON THE ANALYSIS OF LOW-ORDER POLYNOMIALS BY differentiation.
+
+We have focused in this book on a small set of basic modeling functions and three operations for assembling new functions out of old ones: ***linear combination***, ***multiplication***, and ***composition***. All of these have a domain that is the whole number line, or the positive half of the number line, or perhaps the whole number line leaving out zero or some other isolated point. Consider such domains to be ***global***. `r mark(2750)`
+
+We also discussed the components of ***piecewise functions***. Each component is a function defined on a limited domain, an interval $a \leq x \leq b$. In contrast to the global domains, we'll call the limited domains ***local***.  `r mark(2755)`
+
+In this chapter, we'll explore a simple and surprisingly powerful method to approximate any function ***locally***, that is, over a small domain.  
+
+::: {.why  data-latex=""}
+Why would you want to approximate a function? Why not just use the function itself? 
+
+It's often the case that we know about or hypothesize about relationships only from data. We believe there is a definite functional form for the relationship, but it's unknown and unknowable to us. Still, we can approximate even an unknown function, matching the approximation to the data that is the visible manifestation of the unknown function. Local approximations provide a general-purpose method for creating functions that can represent a wide range of relationship patterns, even ones that are not otherwise known to us.
+
+In fields such as physics or engineering, there are often theories that dictate a particular form of function. For example, Newton's universal law of gravitation posits an inverse square law for the force of gravity as a function of distance. Mechanical engineers use power laws to describe the shape of a beam under load, and communications engineers (and others) make extensive use of sinusoids. Textbooks in those fields rightfully emphasize those particular function forms. 
+
+The utility of the local approximation method is that you can move forward even in the absence of a detailed theory. You need only apply your insight to posit which quantities are related to each other and then apply the approximation methods to produce a functional form. This approach is ubiquitous in all fields. 
+
+Sometimes, the local approximation *becomes* the theory. This is seen, for instance, in [Newton's law of cooling](https://en.wikipedia.org/wiki/Newton%27s_law_of_cooling), in [Hooke's law](https://en.wikipedia.org/wiki/Hooke%27s_law) relating force and extension, or the chemist's [law of mass action](https://en.wikipedia.org/wiki/Law_of_mass_action). `r mark(2760)`
+
+:::
+
+The information that you have about the relationship often takes the form of a data table. Each row records one trial in which the values of the inputs have been measured and the corresponding output value recorded. We'll discuss the methods of constructing functions to match such data in Block 5 of this course. `r mark(2765)`
+
+Another common form for the information about the relationship is about derivatives. That is, you know something about the derivative of a relationship even though you don't (yet) have a form for the function describing the relationship. As an example, think about building a model of the sustainable speed of a bicycle as a function of the gear selected and the grade of the road---up or down. `r mark(2770)`
+
+Consider these three questions that any experienced bicyclist can likely answer:
+
+1. On a given grade of road, is there an optimal gear for the highest sustained speed? (Have in mind a particular rider, perhaps yourself.)
+2. Imagine that the grade of the road is described by a positive number for uphill and a negative number for downhill: that is, the slope of the road. For a positive (uphill) grade and at a fixed gear, will the bike's sustained speed be higher or lower as a function of the grade?^[It's much the same for downhill biking, but you have to keep in mind that a shallow downhill has a higher numerical slope than a steep downhill. That is, the derivative of the hill is near zero for a very shallow grade and far from zero (that is, more negative) for a steep downhill grade.]
+3. Assuming you answered "yes" to question (1): Does the optimal gear choice depend on the grade of the road? (In concrete terms, would you choose different gears for an uphill climb than for a level road or a downhill stretch?) `r mark(2775)`
+
+Using the methods in this chapter, the answers to those three questions let you choose an appropriate form for the speed(gear, grade) function. Then, using methods in Block 5 of this text, you can make a few measurements for any given rider and construct a model customized to that rider. `r mark(2780)`
+
+Note that the three questions all have to do with derivatives. An "optimal gear" is a gear at which $\partial_\text{gear} \text{speed}(\text{gear}, \text{grade}) = 0$. That you ride slower the higher the numerical value of the slope means that  $\partial_\text{grade} \text{speed}(\text{gear}, \text{grade}) < 0$. And we know that $\partial_\text{gear} \text{speed}(\text{gear}, \text{grade})$ depends on the grade; that's why there's a different optimal gear at each grade. `r mark(2785)`
+
+## Eight simple shapes
+
+In many modeling situations with a single input, you can get very close to a good modeling function $f(x)$ by selecting one of ***eight simple shapes***, shown in Figure \@ref(fig:eight-simple-shapes). `r mark(2790)`
+
+```{r eight-simple-shapes, echo=FALSE, out.width="40%", fig.show="keep", fig.cap="The ***eight simple shapes***, locally, of functions with one input. (See Chapter \\@ref(local-approximations).)"}
+g <- makeFun(a + b*x + c*x^2 ~ x, a=-1, b=2, c=1)
+slice_plot(-g(x, c=0) ~ x, domain(x=c(-3,1)), size=2  ) %>%
+  gf_labs(y="Output", x="Input", title="(A) downward sloping line")
+slice_plot(g(x, c=0) ~ x, domain(x=c(-3,1)), size=2  ) %>%
+  gf_labs(y="Output", x="Input", title="(B) upward sloping line")
+slice_plot(g(x) ~ x, domain(x=c(-3,-1)), size=2) %>%
+  gf_labs(y="Output", x="Input", title="(C) downward sloping, concave up; steep then shallow")
+slice_plot(g(x) ~ x, domain(x=c(-1,1)), size=2) %>% 
+  gf_labs(y="Output", x="Input", title="(D) upward sloping, concave up; shallow then steep")
+slice_plot(-g(x) ~ x, domain(x=c(-3,-1)), size=2) %>% 
+  gf_labs(y="Output", x="Input", title="(E) upward sloping, concave down; steep then shallow")
+slice_plot(-g(x) ~ x, domain(x=c(-1,1)), size=2) %>%
+  gf_labs(y="Output", x="Input", title="(F) downward sloping, concave down; shallow then steep")
+slice_plot(g(x) ~ x, domain(x=c(-3,1)), size=2) %>%
+  gf_labs(y="Output", x="Input", title="(G) local minimum")
+slice_plot(-g(x) ~ x, domain(x=c(-3,1)), size=2) %>% 
+  gf_labs(y="Output", x="Input", title="(H) local maximum")
+```
+
+
+
+To choose among these shapes, consider your modeling context: `r mark(2795)`
+
+- is the relationship positive (slopes up) or negative (slopes down)
+- is the relationship monotonic or not
+- is the relationship concave up, concave down, or neither
+
+Some examples, scenarios where the modeler knows about the derivative and concavity of the relationship being modeled. It's often the case that your knowledge of the system comes in this form. `r mark(2800)`
+
+* The incidence of an out-of-control epidemic versus time is concave up, but shallow-then-steep. As the epidemic is brought under control, the decline is steep-then-shallow and concave up. Over the whole course of an epidemic, there is a maximum incidence. Experience shows that epidemics can have a phase where incidence reaches a local minimum: a decline as people practice social distancing followed by an increase as people become complacent. `r mark(2805)`
+
+* How many minutes can you run as a function of speed? Concave down and shallow-then-steep; you wear out faster if you run at high speed. How far can you walk as a function of time? Steep-then-shallow and concave down; your pace slows as you get tired.
+
+* How does the stew taste as a function of saltiness. The taste improves as the amount of salt increases ... up to a point. Too much salt and the stew is unpalatable.
+
+* The temperature of cooling water or the emission of radioactivity as functions of time are concave up and steep-then-shallow. `r mark(2810)`
+
+*  How much fuel is consumed by an aircraft as a function of distance? For long flights the function is concave up and shallow-then-steep; fuel use increases with distance, but the amount of fuel you have to carry also increases with distance and heavy aircraft use more fuel per mile.
+
+* In micro-economic theory there are ***production functions*** that describe how much of a good is produced at any given price, and ***demand functions*** that describe how much of the good will be purchased as a function of price.  `r mark(2815)`
+    - As a rule, production increases with price and demand decreases with price. In the short term, production functions tend to be concave down, since it's hard to squeeze increased production out of existing facilities.  
+    - For demand in the short term, functions will be concave up when there is some group of consumers who have no other choice than to buy the product. An example is the consumption of gasoline versus price: it's hard in the short term to find another way to get to work. In the long term, consumption functions can be concave down as consumers find alternatives to the high-priced good. For example, high prices for gasoline may, in the long term, prompt a switch to more efficient cars, hybrids, or electric vehicles. This will push demand down steeply.  `r mark(2820)`
+
+ `r mark(2825)`
+
+## Low-order polynomials
+
+
+There is a simple, familiar functional form that, by selecting parameters appropriately, can take on each of the eight simple shapes: the ***second-order polynomial***.
+$$g(x) \equiv a + b x + c x^2$$
+As you know, the graph of $g(x)$ is a parabola. 
+
+- The parabola opens upward if $0 < c$. That's the shape of a ***local minimum***.
+- The parabola opens downward if $c < 0$. That's the shape of a ***local maximum***
+
+Consider what happens if $c = 0$. The function becomes simply $a + bx$, the straight-line function. 
+
+- When $0 < b$ the line slopes upward.
+- When $b < 0$ the line slopes downward.
+
+With the appropriate choice of parameters, the form $a + bx + cx^2$ is  capable of representing four of the ***eight simple shapes***. What about the remaining four? This is where the idea of ***local*** becomes important. Those remaining four shapes are the sides of parabolas, as in Figure \@ref(fig:four-shapes). `r mark(2830)`
+
+```{r four-shapes, echo=FALSE, fig.cap="Four of the ***eight simple shapes*** correspond to the sides of the parabola. The labels refer to the graphs in Figure \\@ref(fig:eight-simple-shapes).", warning=FALSE}
+f1 <- makeFun(a + b*x + c*x^2 ~ x, a=-2, b=1, c=1)
+f2 <- makeFun(a + b*x + c*x^2 ~ x, a=-2, b=1, c=-1)
+P1 <- graph_with_boxes(f1, domain = c(-1.1,0.1), my_letters = c("C", "D"), 
+                 intervals = tibble(x = c(-1, -.45), xend=c(-.55, 0)))
+P2 <- graph_with_boxes(f2, domain = c(-.3,1.4), my_letters = c("E", "F"),
+                 intervals = tibble(x = c(-.2, .55), xend=c(.45, 1.25)))
+gridExtra::grid.arrange(P1, P2, nrow=2)
+```
+
+
+## The low-order polynomial with two inputs {#low-order-two}
+
+For functions with two inputs, the low-order polynomial approximation looks like this:
+
+$$g(x, y) \equiv a_0 + a_x x + a_y y + a_{xy} x y + a_{yy} y^2 + a_{xx} x^2$$
+In reading this form, note the system being used to name the polynomial's coefficients. First, we've used $a$ as the root name of all the coefficients. Sometimes we might want to compare two or more low-order polynomials, so it's convenient to be able to use $a$ for one, $b$ for another, and so on. `r mark(2835)`
+
+The subscripts on the coefficients describes exactly which term in the polynomial involves each coefficient. For instance, the $a_{yy}$ coefficient applies to the $y^2$ term, while $a_x$ applies to the $x$ term.  `r mark(2840)`
+
+Each of $a_0, a_x,$ $a_y,$ $a_{xy}, a_{yy}$, and $a_{xx}$ will, in the final model, be a constant quantity. Don't be confused by the use of $x$ or $y$ in the name of the coefficients. Each coefficient is a constant and not a function of the inputs. Often, your prior knowledge of the system being modeled will tell you something about one or more of the coefficients, for example, whether it is positive or negative. Finding a precise value is often based on quantitative data about the system.  `r mark(2845)`
+
+It helps to have different names for the various terms. It's not too bad to say something like, "the $a_{xy}$ term." (Pronounciation: "a sub x y" or  "a x y") But the proper names are: ***linear terms***, ***quadratic terms***, and ***interaction term***. And a shout out to $a_0$, the ***constant term***. `r mark(2850)`
+
+$$g(x, y) \equiv a_0 + \underbrace{a_x x + a_y y}_\text{linear terms} \ \ \ + 
+\underbrace{a_{xy} x y}_\text{interaction term} +\ \ \  \underbrace{a_{yy} y^2 + a_{xx} x^2}_\text{quadratic terms}$$
+
+```{r echo=FALSE, warning=FALSE}
+make_gxy <- function(seed=1) {
+  set.seed(seed)
+  f <- makeFun(a0 + ax*x + ay*y + axy*x*y + axx*x^2 + ayy*y^2 ~ x + y,
+               a0 = runif(1, -1, 1), 
+               ax = runif(1, -1, 1), ay = runif(1, -1, 1), 
+               axy = runif(1, -1, 1), 
+               ayy = runif(1, -1, 1), axx = runif(1, -1, 1)
+  )
+}
+show_poly2 <- function(seed=1, domain=list(x=c(-2, 2), y=c(-2, 2))) {
+  f <- make_gxy(seed)
+  list(P1 = contour_plot(f(x, y) ~ x + y, domain=domain),
+  P2 = interactive_plot(f(x, y) ~ x + y, domain=domain))
+}
+
+
+Four <- show_poly2(104)
+
+Four$P1
+```
+
+```{r saddle2, echo=FALSE, fig.cap="A saddle" }
+if (knitr::is_html_output()) {
+  Four$P2
+} else {
+  knitr::include_graphics(normalizePath("www/show_poly2_104.png"))
+}
+```
+
+::: {.intheworld data-latex=""}
+If you're like many people, you find it harder to walk uphill than down, and find it takes more out of you to walk longer distances than shorter. Let's build a model of this, using nothing more than your intuition and the method of low-order polynomial approximations.
+
+Let's call the map distance walked $d$. ("Map distance" is the horizontal change in position, disregarding vertical changes.) The steepness of the hill will be the "grade" $g$, which is measured as the horizontal distance covered divided by the vertical climb. If you're going downhill, the grade is negative. 
+
+The key ingredient in the model: We'll measure the "difficulty" or "exertion" to walking as the ***energy consumed*** during the walk: $E(d, g)$.
+
+Some assumptions about walking and energy consumed:
+
+1. If you don't walk, you consume zero energy walking.
+2. The energy consumed should be proportional to the length of the walk. This is an assumption, and is probably valid, only for walks of short to medium distances, as opposed to forced marches over tens of miles. 
+
+
+We'll start with the full 2nd-order polynomial in two variables, and then seek to eliminate terms that aren't needed.
+
+$$E_{big}(d, g) \equiv a_0 + a_d\, d + a_g\, g + a_{dg}\, d\, g + a_{dd}\,d^2 + a_{gg}\,g^2$$
+According to assumption (1), when $E(d=0, g) = 0$. Of course, if you are walking zero distance, it doesn't matter what the grade is; the energy consumed is still zero.
+
+Consequently, we know that all terms that don't include a $d$ should go away. This leaves us with
+
+$$E_{medium}(d, g) \equiv  a_d\, d + a_{dg}\, d\, g + a_{dd}\,d^2 = d \left[\strut a_d + a_{dg}\, g + a_{dd}\,d\right]$$
+Assumption (2) says that energy consumed is proportional to $d$. The multiplier on $d$ in $E_{medium}()$ is $\left[\strut a_d + a_{dg}\, g + a_{dd}\,d\right]$ which is itself a function of $d$. A proportional relationship implies a multiplier that doesn't depend on the quantity itself. This means that $a_{dd} = 0$.
+
+This leaves us with a very simple model: $$E(d, g) \equiv \left[\strut a_1 + a_2\, g\right]\, d$$ where we have simplified the labeling on the coefficients since there are only two in the model.
+
+Perhaps assumption (2) is mis-placed and that the energy consumed per unit distance in a walk increases with the length of the walk. If so, we would need to return to the question of $a_{dd}$. This is typical of the modeling cycle. Trying to be economical with model terms highlights the question of which terms are so small they can be ignored.
+:::
+
+
+::: {.example   data-latex=""}
+In selecting cadets for pilot training, two criteria are the cadet's demonstrated flying aptitude and the leadership potential of the cadet. Let's assume that the overall merit $M$ of a candidate is a function of flying aptitude $F$ and leadership potential $L$. 
+
+Currently, the merit score is a simple function of the $F$ and $L$ scores: $$M_{current}(F, L) \equiv F + L$$
+
+The general in charge of the training program is not satisfied with the current merit function. "I'm getting too many cadets who are great leaders but poor pilots, and too many pilot hot-shots who are not good leaders.  I would rather have an good pilot who is a good leader than have a great pilot who is a poor leader or a poor pilot who is a great leader." (You might reasonably agree or disagree with this point of view, but the general is in charge.)
+
+The general has tasked you to revise the formula to better match her views about the balance betwen flying ability and leadership potential. 
+
+How should you go about constructing $M_{improved}(F, L)$?
+
+You recognize that $F + L$ is a low-order polynomial: just the linear terms are present without a constant or interaction term or quadratic terms. Low-order polynomials are a good way to approximate any formula locally, so you have decided to follow that route.
+
+Quadratic terms are appropriate when a model needs to feature a locally ***optimal*** level of the of the inputs. But it will never be the case that a lower flying score will be more favored than a higher score, and the same thing for the leadership score. So your model doesn't need quadratic terms. 
+
+That leaves the interaction term as the way forward. The low-order polynomial model will be 
+$$M_{improved}(F, L) \equiv d_0 + F + L + d_{FL} FL$$
+Should $d_{FL}$ be positive or negative? 
+
+Imagine a cadet Drew with acceptable and equal F and L scores. Another cadet, Blake, has scores that are $F+\epsilon$ and $L-\epsilon$, where $\epsilon$ might be positive or negative. Under the original formula for merit, Drew and Blake have equal merit. Under the new criteria, Drew should have a higher merit than Blake. In other words:
+$$M_{improved}(F, L) - M_{improved}(F+\epsilon, L-\epsilon) > 0$$
+
+Replace $M_{improved}(F, L)$ with the low-order polynomial approximation given earlier. 
+$$\underbrace{d_0 + F + L + d_{FL} FL}_{M_{improved}(F, L)} - \underbrace{\left[{\large\strut} d_0 + \left[ F + \epsilon\right] + \left[ L - \epsilon\right] + d_{FL} (FL -\epsilon L + \epsilon F -  \epsilon^2)\right]}_{M_{improved}(F+\epsilon, L-\epsilon)} > 0$$
+Collecting and cancelling terms in the above gives 
+$$- d_{FL}(\epsilon(F-L) + \epsilon^2) > 0$$
+Since $F$ and $L$ were assumed equal, this results in 
+$$M_{improved}(F, L) - M_{improved}(F+\epsilon, L-\epsilon) = d_{FL}\, \epsilon^2 > 0$$
+Thus, $d_{FL}$ will have to be positive.
+:::
+
+
+<!-- about shapes of contour lines when zooming in. needs work `rrr insert_calcZ_exercise("XX.XX", "bmdrd", "Exercises/approx-tan.Rmd")`
+
+Original formulation of flying/leadership/merit
+`rrr insert_calcZ_exercise("XX.XX", "slks", "Exercises/rooster-red.Rmd")`
+-->
+
+## Thinking partially {#partial-thought}
+
+The expression for a general low-order polynomial in two inputs can be daunting to think about all at once:
+$$g(x, y) \equiv a_0 + a_x x + a_y y + a_{xy} x y + a_{xx} x^2 + a_{yy} y^2$$
+As with many complicated settings, a good approach can be to split things up into simpler pieces. With a low-order polynomial, one such splitting up involves partial derivatives. There are six potentially non-zero partial derivatives for a low-order polynomial, of which two are exactly the same; so only five quantities to consider.
+
+1. $\partial_x g(x,y) = a_x + a_{xy}y + 2 a_{xx} x$ 
+2. $\partial_y g(x,y) = a_y + a_{xy}x + 2 a_{yy} y$
+3. $\partial_{xy} g(x,y) = \partial_{yx} g(x,y) = a_{xy}$. These are the so-called ***mixed partial derivatives***. It doesn't matter whether you differentiate by $x$ first or by $y$ first. The result will always be the same for any smooth function.
+4. $\partial_{xx} g(x,y) = 2 a_{xx}$
+5. $\partial_{yy} g(x,y) = 2 a_{yy}$
+
+The above list states neutral mathematical facts that apply generally to any low-order polynomial whatsoever.^[Note that any other derivative you construct, for instance $\partial_{xxy} g(x,y)$ must always be zero.] Those facts, however, shape a way of asking questions of yourself that can help you shape the model of a given phenomenon based on what you already know about how things work.
+
+To illustrate, consider the situation of modeling the effect of study $S$ and of tutoring $T$ (a.k.a. office hours, extended instruction) on performance $P(S,T)$ on an exam. In the spirit of partial derivatives, we'll assume that all other factors (student aptitude, workload, etc.) are held constant.
+
+To start, pick fiducial values for $S$ and $T$ to define the local domain for the model. Since $S=0$ and $T=0$ are easy to envision, we'll use those for the fiducial values. 
+
+Next, ask five questions, in this order, about the system being modeled.
+
+1. Does performance increase with study time? Don't over-think this. Remember that the approximation is around a fiducial point. Here, a reasonable answer is, "yes." We'll take$\partial_S P(S, T) > 0$ to imply that $a_S > 0$. This is appropriate because close to the fiducial point, the other contributors to  $\partial_S P(S, T)$, namely $a_{ST}T + 2 a_{SS} S$ will be vanishingly small.
+2. Does performance increase with time spent being tutored? Again, don't over-think this. Don't worry (yet) that your social life is collapsing because of the time spent studying and being tutored, and the consequent emotional depression will cause you to fail the exam. We're building a model here and the heuristic being used is to consider factors in isolation. Since (as we expect you'll agree) $\partial_T P(S, T) > 0$, we have that $a_T > 0$.
+
+Now the questions get a little bit harder and will exercise your calculus-intuition since you'll have to think about *changes* in the rates of change.
+
+3. This question has to do with the mixed partial derivative, which we've written variously as $\partial_{ST} P(S,T)$ or $\partial_{TS} P(S,T)$ and which it might be better to think about as $\partial_S \left[\partial_T P(S,T) \right]$ or $\partial_T \left[\partial S P(S,T)\right]$. Although these are mathematically equal, often your intuition will favor one form or the other. Recall that we're working on the premise that $\partial_S P(S,T) > 0$, or, in other words, study will help you do better on the exam. Now for $\partial_T \left[\partial S P(S,T)\right]$. This is a the matter of whether some tutoring will make your study more effective. Let's say yes here, since tutoring can help you overcome a misconception that's a roadblock to effective study. So $\partial_{TS} P(S,T) > 0$ which implies $a_{ST} > 0$.
+
+The other way round, $\partial_S \left[\partial_T P(S,T) \right]$ is a matter of whether increasing study will enhance the positive effect of tutoring. We'll say yes here again, because a better knowledge of the material from studying will help you follow what the tutor is saying and doing. From pure mathematics, we already know that the two forms of mixed partials are equivalent, but to the human mind they sometimes (and incorrectly) appear to be different in some subtle, ineffable way.
+
+In some modeling contexts, there might be no clear answer to the question of $\partial_{xy}\, g(x,y)$. That's also a useful result, since it tells us that the $a_{xy}$ term may not be important to understanding that system.
+
+4. On to the question of $\partial_{SS} P(S,T)$, that is, whether  $a_{SS}$ is positive, negative, or negligible. We know that $a_{SS} S^2$ will be small whenever $S$ is small, so this is our opportunity to think about bigger $S$. So does the impact of a unit of additional study increase or decrease the more you study? One point of view is that there is some moment when "it all comes together" and you understand the topic well. But after that epiphany, more study might not accomplish as much as before the epiphany. Another bit of experience is that "cramming" is not an effective study strategy. And then there's your social life ... So let's say, provisionally, that there is an argmax to study, beyond which point you're not helping yourself. This means that $a_{SS} < 0$.
+
+5. Finally, consider $\partial_{TT} P(S, T)$. Reasonable people might disagree here, which is itself a reason to suspect that $a_{TT}$ is negligible. 
+
+Answering these questions doesn't provide a numerical value for the coefficients on the low-order polynomial, and says nothing at all about $a_0$, since all the questions are about change. 
+
+Another step forward in extracting what you know about the system you are modeling is to construct the polynomial informed by questions 1 through 5. Since you don't know the numerical values for the coefficients, this might seem impossible. But there is a another modeler's trick that might help. 
+
+Let's imagine that the domain of both $S$ and $T$ or the interval zero to one. This is not to say that we think one hour of study is the most possible but simply to defer the question of what are appropriate units for $S$ and $T$. Very much in this spirit, for the coefficients we'll use $+0.5$ when are previous answers indicated that the coefficient should be greater than zero, $-0.5$ when the answers pointed to a negative coefficient, and zero if we don't know. Using this technique, here's the model, which mainly serves as a basis for checking whether our previous answers are in line with our broader intuition before we move on quantitatively.
+
+```{r zero-one, fig.cap="The result of our intuitive investigation of the effects of study and tutoring on exam performance. The units are not yet assigned."}
+P <- makeFun(0.5*S + 0.5*T + 0.5*S*T - 0.5*S^2 ~ S & T)
+contour_plot(P(S, T) ~ S & T, domain(S=0:1, T=0:1))
+```
+ 
+Notice that for small values of $T$, the horizontal spacing between adjacent contours is large. That is, it takes a lot of study to improve performance a little. At large values of $T$ the horizontal spacing between contours is smaller.
+
+
+
+## Finding coefficients from data
+
+Low-order polynomials are often used for constructing functions from data. In this section, I'll demonstrate briefly how this can be done. The full theory will be introduced in Block 5 of this text. 
+
+The data I'll use for the demonstration is a set of physical measurements of height, weight, abdominal circumference, etc. on 252 human subjects. These are contained in the `Body_fat` data frame, shown below. 
+```{r echo=FALSE}
+if (knitr::is_html_output()) {
+  Zcalc::Body_fat %>% DT::datatable()
+} else {
+  knitr::kable(math141Z::Body_fat %>% head(10))
+}
+```
+
+One of the variables records the body-fat percentage, that is, the fraction of the body's mass that is fat. This is thought to be an indicator of fitness and health, but it is extremely hard to measure and involves weighing the person when they are fully submerged in water. This difficulty motivates the development of a method to approximation body-fat percentage from other, easier to make measurements such as height, weight, and so on.
+
+For the purpose of this demonstration, we'll build a local polynomial model of body-fat percentage as a function of height (in inches) and weight (in pounds). 
+
+The polynomial we choose will omit the quadratic terms. It will contain the constant, linear, and interaction terms only. That is
+$$\text{body.fat}(h, w) \equiv c_0 + c_h h + c_w w + c_{hw} h w$$
+The process of finding the best coefficients in the polynomial is called ***linear regression***. Without going into the details, we'll use linear regression to build the body-fat model and then display the model function as a contour plot.
+
+```{r bodyfat-mod, fig.cap="A low order polynomial model of body fat percentage as a function of height (inches) and weight (lbs)."}
+mod <- lm(bodyfat ~ height + weight + height*weight,
+          data = math141Z::Body_fat)
+body_fat_fun <- makeFun(mod)
+contour_plot(body_fat_fun(height, weight) ~ height + weight,
+             domain(weight=c(100, 250), height = c(60, 80))) %>%
+  gf_labs(title = "Body fat percentage")
+```
+
+That we can build such a model doesn't mean that it's useful for anything. In Block 5 of the text we'll return to the question of how well a model constructed from data represents the real-world relationships that the model attempts to describe.
+
+
+<!--
+::: {.todo}
+Interpreting the model in terms of partial derivatives and gradients. To increase the body-fat percentage, a person can either lose height or gain weight. The former is impractical. Compare a tall person (say, 75 inches) to a short person (say, 63 inches). Who has to gain more weight to increase the body-fat percentage from 10% to 20%?
+:::
+
+
+::: {.todo}
+Example about modeling walking
+
+There's an exercise in DailyDigitals/ 141 DD-35 with some narrative
+
+and the project is in DD-37
+:::
+
+-->
+
+
+## Exercises
+
+`r insert_calcZ_exercise("25.02", "ckslw", "Exercises/rooster-pink.Rmd")`
+
+`r insert_calcZ_exercise("25.04", "ikdlx", "Exercises/rooster-violet.Rmd")`
+
+
+
+

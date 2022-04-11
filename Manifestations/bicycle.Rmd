@@ -1,0 +1,131 @@
+
+
+
+## Partial derivatives algebraically
+
+The model we developed for the speed of a bicycle $V$ as a function of steepness $s$ of the road and bike gear $g$ is a second-order polynomial in $s$ and $g$ with five terms:
+
+$$V(s, g) = a_0 + a_s s + a_g g + a_{sg} s g + a_{gg}g^2$$
+
+
+```{r daily-digital-33-QA1, echo=FALSE}
+askMC(
+  prompt = "The complete second-order polynomial in two variables has six terms. Which one is missing in $V(s, g)$",
+    "+$a_{ss} s^2$+" = "",
+    "$a_{gg} g^3$" = "That's a third-order term.",
+    "$a_{gg} g^{-2}$" = "The low-order polynomial framework doesn't include negative powers.",
+    "$a_{g} g$" = "That's in the model!",
+    "$a_{sg} g/s$" = "The low-order polynomial framework doesn't include negative powers.",
+  inline = FALSE
+)
+```
+
+```{r daily-digital-33-QA2, echo=FALSE}
+askMC(
+  prompt = "Which of these is $\\partial_g V(s, g)$?",
+    "+$a_{g} + a_{sg} s + 2 a_{gg} g$+" = "",
+    "$a_0 + a_{g} + a_{sg} s + 2 a_{gg} g$" = "",
+    "$a_{g} g + a_{sg} g + 2 a_{gg} g$" = "",
+    "$a_{s} s + a_{sg} gs + a_{gg} g^2$" = "",
+    "$a_{g} + a_{sg} s + 2 a_{gg}$" = "",
+  inline = FALSE
+)
+```
+
+```{r daily-digital-33-QA3, echo=FALSE}
+askMC(
+  prompt = "Which of these is $\\partial_s V(s, g)$?",
+    "+$a_{s} + a_{sg} g$+" = "",
+    "$a_{g} g + a_{sg} s + 2 a_{ss} s$" = "The function $V(s,g)$ doesn't have any $a_{ss} g^2$ term.",
+    "$a_{g} g + a_{sg} s + 2 a_{gg} g$" = "There is a $a_{gg} g^2$ term in the model. But that doesn't contribute anything to $\\partial_s V()$ because that term has no dependence on $s$.",
+    "$a_s s + a_{sg} sg$" = "You forgot to differentiate these terms with repect to $s$.",
+  inline = FALSE
+)
+```
+
+```{r daily-digital-33-QA4, echo=FALSE}
+askMC()
+  prompt = "Which of these is $\\partial_{sg} V(s, g)$?",
+    "+$a_{sg}$+" = "",
+    "$a_{sg} s$" = "",
+    "$a_{sg} g$" = "",
+    "$a_{sg} sg$" = "",
+  inline = FALSE
+)
+```
+
+```{r daily-digital-33-QA5, echo=FALSE}
+askMC(
+  prompt = "Which of these is $\\partial_{ss} V(s, g)$?",
+    "+$0$+" = "",
+    "$2a_{ss} s$" = "",
+    "$a_{ss} s$" = "",
+    "$2 a_{ss} g$" = "",
+    "$a_{sg}$" = "",
+  inline = FALSE
+)
+```
+
+
+## Bicycling with missing terms
+
+The following code chunk will fit the low-order polynomial model of the bicycle to the data used in class. The results are shown in 4 different ways:
+
+1. The coefficients on the model
+2. A contour plot of the model
+3. A surface plot of the model
+4. A slice plot showing speed as a function of gear for three different slopes of road.
+
+You might find some of these displays more useful than others. Feel free to comment out (with a `#`) the ones that you don't find useful.
+
+Notice that the "model formula" in the `lm()` function is
+
+`V ~ s + g + I(s*g) + I(g^2)`
+
+This expression contains just the *variables* in the model. The `lm()` function does the work of finding the best coefficients for a linear combination of those terms. In the following questions, you're going to remove terms (such as `+ I(s*g)` from the model formula) to see what happens to the model. In one of the questions, you'll extend the formula with a `- 1` (which suppresses the intercept term that is ordinarily included in models).
+
+<span title='daily-digital-33-sandbox1'>...</span>
+```{r daily-digital-33-sandbox1, exercise=TRUE, exercise.cap="Adding and excluding model terms", exercise.eval=FALSE, exercise.lines=30, exercise.completion=FALSE, exercise.startover=TRUE, exercise.diagnostics=TRUE, warning=FALSE}
+Bicycle_speed <- tibble::tribble(
+    ~ s, ~ g, ~ V,
+    8, 1, 2,
+    8, 5, 1,
+    8, 10,0,
+    0, 1, 9,
+    0, 5, 12,
+    0, 10, 6,
+   -8, 1, 12,
+   -8, 5, 16,
+   -8, 10, 20
+)
+# fit the model to the data
+mod <- lm(V ~ s + g + I(s*g) + I(g^2) , data = Bicycle_speed)
+knitr::kable(coef(mod))
+mod_fun <- makeFun(mod) # turn the statistical model into a function
+dom <- domain(s = c(-8, 8), g = c(1, 10))
+contour_plot(mod_fun(s, g) ~ s + g, dom)
+interactive_plot(mod_fun(s, g) ~ s + g, dom)
+slice_plot(mod_fun(s=0, g) ~ g, domain(g=c(1,10)),
+           color = "red", label_text = "flat") %>%
+  slice_plot(mod_fun(s = -5, g) ~ g, color = "black",
+             label_text = "downhill") %>%
+  slice_plot(mod_fun(s = 5, g) ~ g, color = "blue",
+             label_text = "uphill")%>%
+  gf_labs(y = "Bike velocity (mph)", x = "Gear #")
+```
+
+
+> **Essay**: The `lm()` function automatically adds an \"intercept\" term to the model. You can suppress this by ending the model formula with `-1`. Explain briefly what happens when you suppress the intercept and to what extent that model makes sense for the bicycle situation.
+
+
+Restore the sandbox to its original before you answer this question.
+
+> **Essay**: The interaction term in the model is included by the `+ I(s*g)` component of the model formula. (Don't get confused: \"Interaction\" and \"intercept\" are completely different things.) Take out the interaction term, refit and re-display the model. Explain briefly what happens when you suppress the interaction term and to what extent that model makes sense for the bicycle situation.
+
+Restore the sandbox to its original before you answer this question.
+
+> **Essay**: Suppose you add in a quadratic term in `s` to the model. Explain briefly whether this changes the model a lot or not. Also, look at the coefficients found by `lm()` for this extended model. What about those coefficients accounts for whether the model changed by a little or a lot.
+
+Restore the sandbox to its original before you answer this question.
+ 
+> **Essay**: Add a new plot to the code box. It should be just like the slice-plot that was originally there, but instead of each slice holding road slope constant and showing velocity as a function of gear, change things so that gear is held constant and the plot shows velocity as a function of road slope. Explain in everyday terms what this new plot displays about the model and say whether you think it makes sense.

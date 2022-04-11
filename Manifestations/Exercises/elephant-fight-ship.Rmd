@@ -1,0 +1,94 @@
+---
+id: "elephant-fight-ship"
+created: "Mon Jul 19 18:28:53 2021"
+global_id: "BtFXyD"
+---
+
+The dots in the graph below show Johannes Kepler's calculated distance of Mars from the Sun using Tycho Brahe's observational data.
+
+Three interpolating functions are drawn through the data points:
+
+1. A cubic spline
+2. A global polynomial
+3. A simple sinusoid with a period of 687 days.
+
+```{r echo=FALSE}
+set.seed(101)
+Kepler <- Kepler %>% 
+  select(time, kepler.radius) %>% 
+  mutate(phase = time %% 687)
+orbit <- makeFun(1.52 + 0.145*sin(2*pi*(t-540)/687) ~ t)
+mod <- fitModel(kepler.radius ~ A + B*sin(2*pi*time/687) + C*cos(2*pi*time/687), data = Kepler)
+cubic <- spliner(kepler.radius ~ time, data = Kepler)
+global <- makeFun(lm(kepler.radius ~ poly(time, 19), data = Kepler))
+gf_point(kepler.radius ~ time, data = Kepler) %>%
+  gf_labs(x = "Time (days after 9 March 1582)", y = "Distance from Sun (AU)") %>%
+  slice_plot(mod(time) ~ time, npts=500, color="green") %>%
+  slice_plot(cubic(time) ~ time, npts=500, color="dodgerblue") %>%
+  slice_plot(global(time) ~ time, npts=500, color="black") %>%
+  gf_lims(y=c(1,2))
+```
+
+```{r cs1-1, echo=FALSE, results="markup"}
+askMC(
+  "Which of the curves is the sinusoid?", 
+  "black",
+  "dodgerblue", 
+  "+green+",
+  random_answer_order = FALSE
+)
+```
+
+```{r cs1-2, echo=FALSE, results="markup"}
+askMC(
+  "Which of the curves is the global polynomial?", 
+  "+black+",
+  "dodgerblue", 
+  "green",
+  random_answer_order = FALSE
+)
+```
+
+
+```{r cs1-3, echo=FALSE, results="markup"}
+askMC(
+  "How smooth is the global polynomial? (There 28 data points.)", 
+  "$C^2$",
+  "$C^3$", 
+  "$C^{27}$",
+  "+$C^\\infty$+" = "Polynomials are always $C^\\infty$! The amount of data has nothing to do with it.",
+  random_answer_order = FALSE
+)
+```
+
+```{r cs1-4, echo=FALSE, results="markup"}
+askMC(
+  "How smooth is the cubic spline? (There 28 data knots.)", 
+  "+$C^2$+" = "Cubic splines are always $C^2$, once again the number of data points is unrelated smoothness. (If there are 4 or fewer knots, the cubic spline degenerates to a global polynomial.",
+  "$C^3$", 
+  "$C^{27}$",
+  "$C^\\infty$",
+  random_answer_order = FALSE
+)
+```
+
+**Just for interest**: 
+The observations are in small clusters of points separated by large gaps. This is because in order to make an observation, Mars had to be visible from Earth on at least two occasions separated by the orbital period of Mars: 687 days. There were no observations when Mars wasn't visible from Tycho Brahe's observatory in Denmark, as happens whenever the line segment between Earth and Mars passes near the Sun.
+
+The sinusoidal oscillation in the orbital radius of Mars reflects the eccentricy of the orbit; it is an ellipse rather than a circle. 
+Neither the cubic spline nor the global polynomial do a creditable job tracking the actual orbit of Mars. That's because neither method has a way to "discover" that the data are periodic, which is a huge hint about the sorts of functions that are appropriate.
+
+Now, a trick. We're going to compute for each time a phase of that time in the 687 day orbit. This will collapse all the data down to the interval $0 \leq t < 687$. Here's a plot of the data and the interpolating functions.
+
+```{r echo=FALSE}
+mod <- fitModel(kepler.radius ~ A + B*sin(2*pi*phase/687) + C*cos(2*pi*phase/687), data = Kepler)
+cubic <- spliner(kepler.radius ~ phase, data = Kepler)
+global <- makeFun(lm(kepler.radius ~ poly(phase, 19), data = Kepler))
+gf_point(kepler.radius ~ phase, data = Kepler) %>%
+  slice_plot(mod(phase) ~ phase, color="green") %>%
+  slice_plot(cubic(phase) ~ phase, color="dodgerblue", size=2, alpha=0.2) %>%
+  slice_plot(global(phase) ~ phase)
+```
+
+With the data spaced more evenly over the orbital cycle, both the cubic spline and the polynomial provide a smooth match to the data, while the sinusoid shows systematic deviations.
+

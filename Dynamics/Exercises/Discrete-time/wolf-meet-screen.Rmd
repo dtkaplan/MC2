@@ -1,0 +1,96 @@
+---
+id: "wolf-meet-screen"
+created: "Mon Jul 19 15:00:24 2021"
+global_id: "pbnVGt"
+---
+
+The app pictured below allows you to trace trajectories of the system 
+
+${\mathbf X}_{n+1} = {\mathbf A}\, {\mathbf X}_n$
+<a href="https://maa-statprep.shinyapps.io/142Z-Matrix-iteration/" target="_blank"><img src="www/app-snapshot.png" width="40%"></a>
+
+With that app, you could construct a picture of the movement induced by ${\mathbf A}$ by comparing several trajectories from different initial conditions.
+
+Now we're going to look at the movement due to ${\mathbf A}$ by looking at things in a different, but closely related way. The difference is that the graphs will *automatically start many trajectories* at a grid of points in state space.
+
+But showing lots and lots of trajectories creates a very busy and hard-to-interpret picture. So in addition to automatically starting at a grid of initial conditions, we're going to simplify each trajectory. I should say, "drastically simplifying" each trajectory. Instead of following the trajectory for many steps, we're going to plot only the very first step from each initial condition. And only a small part of that first step. Rather than connecting ${\mathbf X}_0$ and ${\mathbf X}_{1}$ with a line segment, we're going to draw only a small *fraction* of that segment starting at ${\mathbf X}_0$ and pointing in the direction of ${\mathbf X}_1$. This is called a "flow field plot" (or, sometimes, a "phase plot") and it will be an essential tool for moving from discrete-time dynamics onward to **continuous-time dynamics**. 
+
+
+Run the code in the sandbox and refer to the resulting graph to understand the following points.
+
+1. Each short segment consists of a starting point and an ending point. The segment points in the direction that they dynamics take the starting point as induced by ${\mathbf A}$.
+2. There is a dot at the ending point just to make it clear which way the segment points.
+4. Because the dynamics are $${\mathbf X}_{n+1} = {\mathbf A}\cdot {\mathbf X}_n$$ there is a fixed point at (0,0). You can see this fixed point as a dot associated with a *zero-length* segment.
+5. Because the dynamics are *linear* the segments get longer the further the starting point is from the fixed point.
+6. Another sign of linearity has to do with the parallel nature of the segments. If you consider all the segments on a straight-line path passing through the fixed point, you'll see that they are all parallel to each other (On the opposite side of the fixed point, the segments point in exactly opposite directions.) Looking at a second such straight-line path through the origin, you'll see that those segments are also parallel, although pointing in a different direction than on the first path.
+
+```{r mp1-1, exercise=TRUE, exercise.cap="Seeing matrix flows", exercise.nlines = 6, eval=FALSE}
+A <- matrix(c(1, 1, 1, 0), nrow=2, byrow=TRUE) #the first argument is the matrix, the second argument is the number of rows, and the third argument specifies the order of the numbers (for instance, the second number of the matrix as the end of row 1 instead of the beginning of row 2)
+A
+show_matrix_dynamics(A)
+```
+
+
+```{r mp1-2, echo=FALSE, results="markup"}
+askMC(
+  "Which of these everyday terms is the best description of the movement pattern due to the rabbit dynamics?",
+  "whirlwind",
+  "drain",
+  "two-way street",
+  "+highway entrance ramps+", 
+  random_answer_order = FALSE
+)
+```
+
+Use the sandbox to examine the motion induced by each of these matrices:
+
+$${\mathbf B} = \left[ \begin{array}{rc}1.1 & -1\\1 & -1\end{array} \right] \ \ \ \ \ {\mathbf C} = \left[ \begin{array}{rr}-.95 & 0.00\\.30 & -0.95\end{array} \right] \ \ \ \ \ {\mathbf D} = \left[ \begin{array}{rr}0.8 & 0.9\\0 & 0.3\end{array} \right]  $$
+
+```{r mp1-3, echo=FALSE, results="markup"}
+askMC(
+  "Which of these everyday terms is the best description of the movement pattern due to ${\\mathbf B}$?",
+  "whirlwind",
+  "drain",
+  "+two-way street+",
+  "highway interchange", 
+  random_answer_order = FALSE
+)
+```
+
+```{r eval=FALSE, echo=FALSE}
+B <- matrix(c(1.1, -1, 1, -1), nrow=2, byrow=TRUE)
+show_matrix_dynamics(B)
+```
+
+```{r mp1-4, echo=FALSE, results="markup"}
+askMC(
+  "Which of these everyday terms is the best description of the movement pattern due to ${\\mathbf C}$?",
+  "whirlwind",
+  "+drain+",
+  "two-way street",
+  "highway interchange", 
+  random_answer_order = FALSE
+)
+```
+
+```{r eval=FALSE, echo=FALSE}
+C <- matrix(c(-.95, 0.0, .3, -0.95), nrow=2, byrow=TRUE)
+show_matrix_dynamics(C)
+```
+
+```{r eval=FALSE, echo=FALSE}
+D <- matrix(c(.8, .9, 0, .3), nrow=2, byrow=TRUE)
+show_matrix_dynamics(D)
+```
+
+```{r mp1-5, echo=FALSE, results="markup"}
+askMC(
+  "Which of these everyday terms is the best description of the movement pattern due to ${\\mathbf D}$?",
+  "+whirlwind+",
+  "drain",
+  "two-way street",
+  "highway interchange", 
+  random_answer_order = FALSE
+)
+```
+

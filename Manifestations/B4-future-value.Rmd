@@ -1,0 +1,206 @@
+# Present and future value {#future-value}
+
+<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Block-4/B4-future-value.Rmd)</div>
+
+Comparison is an important element of human decision making. Often, comparison amounts to translating each of the options at hand into a scalar score. (Recall that a ***scalar*** is just an ordinary quantity, e.g. 73 inches. As we get more deeply involved with ***vectors*** it will become more important to be perfectly clear when we are talking about a vector and when about a scalar. So we'll be using "scalar" a lot.) Scalars are easy to compare; the skill is taught in elementary school. Scalar comparison is completely objective. Putting aside the possibility of error, everyone will agree on which of two numbers is bigger. Importantly, comparison of scalars is ***transitive***, that is if $a > b$ and $b > c$ then it is impossible that $a \leq c$.
+
+The comparison of scalars can be extended to situations where the options available form a continuum and the score for each option $x$ is represented by a function, $f(x)$. As we saw in Chapters `r Chaps$optimization` and \@ref(optimization-and-constraint) selecting the highest scoring option is a matter of finding the argmax.
+
+Many decisions involve options that have two or more attributes that are not directly comparable. Expenditure decisions have this flavor: Is it worth the money to buy a more reliable or prettier or more capable version of a product? The techniques of ***constrained optimization*** (Chapter \@ref(optimization-and-constraint)) provide one useful approach for informing decisions when there are multiple objectives.
+
+Elections are a form of collective decision making. The options---called, of course, "candidates"---have many attributes. Three such attitudes are attitudes toward social policy, toward fiscal policy, and toward foreign policy. Perceived honesty and trustworthiness as well as the ability to influence other decision makers and perceived ability to win the election are other attributes that are considered and balanced against one another. Ultimately the decision is made by condensing the diverse attributes into a single choice for each voter. The election is decided by how many **votes** the candidate garners. With this number attached to each of the candidates, it's easy to make the decision, 
+$$\text{winner} \equiv\mathop{\text{argmax}}_{i} \text{votes}(\text{candidate}_i)\ .$$
+There are many voting systems. For instance, sometimes the winner is required to have a majority of votes and, if this is not accomplished, the two highest vote-getting candidates have a run-off. Some jurisdictions have introduced "rank-choice" voting, where each voter can specify a first choice, a second choice, and so on. US federal elections involve a primary system where candidates compete in sub-groups before the groups complete against one another. It's tempting to think that there is a best voting system if only we were clever enough to find one and convince authorities to adopt it. But two mathematical theorems, [Arrow's impossibility theorem](https://en.wikipedia.org/wiki/Arrow%27s_impossibility_theorem) and the [Gibbard-Satterthwaite theorem](https://en.wikipedia.org/wiki/Gibbard%E2%80%93Satterthwaite_theorem) demonstrate that this is not the case for any system that involves three or more candidates. All such voting systems potentially create situations where a voter's sincere interests are best served by an insincere, tactical vote choice. A corollary is that voters can be tricked into making a sincere choice that violates their interests.
+
+This chapter is about a very common situation where there are multiple attributes that need to be condensed into a single score. The setting is simple: money. The question is how to condense a future income/expense ***stream***---a function of time---into an equivalent value of money in hand at the present. This is called the ***present value*** problem. There is a solution to the problem that is widely accepted as valid, just as voting is a hallowed process of social optimization. But like voting, with its multiplicity of possible forms, there is a subtlety that renders the result somewhat arbitrary. This is not a situation where there is a single, mathematically correct answer but rather a mathematical framework for coming to sensible conclusions.
+
+::: {.intheworld data-latex=""}
+Consider the situation faced by an entrepreneur who is considering constructing an 8-rental-unit apartment building. The planning and construction process takes time and money. Let's assume that $3,000,000 will 
+be spent over three years to locate a suitable property, get the needed licenses and approvals, and build. For simplicity, we'll model that by a piecewise function $\text{construction}(t)$:
+$$\text{construction}(t) \equiv \left\{\begin{array}{c} 1,000,000\  \text{per year} & \text{for}\ 0 \leq t \leq 3\\0& \text{thereafter.} \end{array} \right.$$
+Suppose the planned rent will be $3000 per month per apartment. 
+That suggests $36,000 in rental income per apartment each year, 
+but typically there are vacancies or renters who fail to pay, so let's assume $32,000 per unit per year. For the 8-apartments, that's a total 
+rental income of $250,000 per year:
+$$\text{rental}(t) \equiv \left\{\begin{array}{c} 0  & \text{for}\ 0 \leq t \leq 3\\250,000\ \text{per year}& \text{thereafter.} \end{array} \right.$$
+Maintenance is an additional expense. We'll put that as a increasing function of $t$, starting at $50,000 per year
+when the building is complete (at the end of year 3) and rising linearly to $200,000 per year at the end of the 30-year project:
+$$\text{maintenance}(t) \equiv \left\{\begin{array}{c} 0  & \text{for}\ 0 \leq t \leq 3\\33333 + 5556 t\ \ \text{per year}& \text{thereafter.} \end{array} \right.$$
+
+Finally, assume that the business plan is to sell the building in year 30, at which point it is assumed to be worth $1,000,000:
+
+$$\text{sale}(t) \equiv \left\{\begin{array}{c} 1,000,000\ \text{per year}  & \text{for}\ 29 < t  < 30\\0 & \text{otherwise}\end{array}\right.$$
+The income stream stops for $30 < t$.
+
+Altogether, the income stream is $$\text{income}(t) = \text{sale}(t) + \text{rental}(t) - \text{construction}(t) - \text{maintenance}(t)\ .$$ Notice that construction and maintenance are considered as *negative income*. Figure \@ref(fig:rental-graph1) shows a graph of $\text{income}(t)$. 
+
+```{r rental-graph1, echo=FALSE, fig.cap="The income stream for an apartment-building project. Following convention, positive income is \"in the green\", and negative income is \"in the red\".", warning=FALSE}
+construction <- makeFun(ifelse(t < 3 & t > 0, 1e6, 0) ~ t)
+rental <- makeFun(ifelse(3 <= t & t < 30, 2.5e5, 0) ~ t)
+maintenance <- makeFun(ifelse(3 <= t & t < 30, 5e4 + 1.5e5*(t-3)/(30-3), 0) ~ t)
+sales <- makeFun(ifelse(29 <= t & t < 30, 1000000, 0) ~ t)
+total <- makeFun(rental(t) + sales(t) - construction(t) - maintenance(t) ~ t)
+
+Rental1 <-
+  gf_rect(0 + 1.1e6 ~ -.2 + 31, fill="green", color=NA, alpha=0.2) %>%
+gf_rect(0 + -1.1e6 ~ -.2 + 31, fill="red", color=NA, alpha=0.2) %>%
+  slice_plot(total(t) ~ t, domain(t=-.2:31), npts=500) %>%
+  gf_labs(x="t (years)", y="Income ($ per year)")
+
+Rental1 %>% 
+  gf_labs(subtitle="Income stream projection for apartment project")
+```
+:::
+
+
+## Present value 
+
+People and institutions often have to make decisions about undertakings where the costs and benefits are spread out over time. For instance, a person acquiring an automobile or home is confronted with a large initial outlay. The outlay can be financed by agreeing to pay amounts in the future, often over a span of many years.
+
+Another example: Students today are acutely aware of climate change and the importance of taking preventive or mitigating actions such as discouraging fossil fuel production, investing in renewable sources of energy and the infrastructure for using them effectively, and exploring active measures such as carbon sequestration. The costs and benefits of such actions are spread out over decades, with the costs coming sooner than the benefits. Policy makers are often and perhaps correctly criticized for overvaluing present-day costs and undervaluing benefits that accrue mainly to successive generations. There are many analogous situations on a smaller scale, such as setting Social Security taxes and benefits or the problem of underfunded pension systems and the liability for pension payments deferred to future taxpayers.
+
+The conventional mechanism for condensing an extended time stream of benefits and costs is called ***discounting***. Discounting is based on the logic of financing expenditures via borrowing at interest. For example, credit cards are a familiar mechanism for financing purchases by delaying the payment of money until the future. An expense that is too large to bear is "carried" on a credit card so that it can be paid off as funds become available in the future. This incurs costs due to ***interest*** on the credit-card balance. Typical credit-card ***interest rates*** are 18-30% per year.
+
+As notation, consider a time stream of income ${\cal M}(t)$, as with the apartment building example. We'll call ${\cal M}(t)$ the ***nominal income stream*** with the idea that the money in ${\cal M}(t)$ is to be counted at face value. "Face value" is the literal amount of the money. In the case of cash, a $20 bill has a face 
+value of $20 regardless of whether it becomes available today or in 50 years. The word "nominal" refers to the "name" on the bill, 
+for instance $20. 
+
+The big conceptual leap is to understand that the ***present value*** of income in a future time is less than the same amount of income at the present time. In other words, we ***discount*** future money compared to present money. For example, if we decide that an amount of money that becomes available 10 years into the future is worth only half as much as that same amount of money if it were available today, we would be implying a discounting to 50%. In comparison, if that money were available 20 years in the future, it would make sense to discount it by more strongly to, say, 25%.
+
+To represent the discounting to present value as it might vary with the future time horizon, we multiply the nominal income stream ${\cal M}(t)$ by a ***discounting function*** ${\cal D} (t)$. The function ${\cal D}(t)\, {\cal M}(t)$ gives the income stream as a **present value** rather than a nominal value. 
+It's sensible to insist that ${\cal D} (t=0) \equiv 1$ which is merely to say that the present value of money available today is exactly the same as the nominal value. 
+
+The ***net present value*** (NPV) of a nominal income stream ${\cal M}(t)$ is simply the sum of the stream discounted to the present value. Since we're imagining that the income stream is a function of continuous time, the sum amounts to an integral: $$\text{NPV} \int_\text{now}^\text{forever} {\cal M}(t)\ {\cal D}(t)\, dt\ .$$
+
+## Discounting functions {#discount-functions}
+
+What should be the shape of the discounting function? 
+
+Recall that the purpose of the discounting function is to help us make comparisons between different income streams, that is, between the various options available to an entrepreneur. Each individual can in principle have his or her own, personal discounting function, much as each voter is entirely free to weight the different attributes of the candidates when deciding whom to vote for. As a silly example, a person might decide that money that comes in on a Tuesday is lucky and therefore worth more than Thursday money. We won't consider such personalized forms further and instead emphasize discounting functions that reflect more standard principles of finance and economics.
+
+As a thought experiment, consider the net present value of an income stream, that is
+$$\text{NPV}_\text{original} = \int_0^\infty {\cal M}(t)\ {\cal D}(t)\, dt\ .$$
+Imagine now that it has been proposed to delay the income stream by $T=10$ years. This new, delayed income stream is ${\cal M}(t-T)$ and also has a net present value:
+$$\text{NPV}_\text{delayed} = \int_0^\infty {\cal M}(t - T)\ {\cal D}(t)\, dt\ .$$
+There are at least two other ways to compute $\text{NPV}_\text{delayed}$ that many people would find intuitively reasonable:
+
+1. Simply discount the original NPV to account for it becoming available $T$ years in the future, that is, $$\text{NPV}_\text{delayed} = {\cal D}(T)\ \text{NPV}_\text{original} = \int_0^\infty {\cal M}(t)\ {\cal D}(T)\ {\cal D}(t)\, dt\ $$
+2. Apply to ${\cal M}(t)$ a discount that takes into account the $T$-year delay. That is:  
+$$\text{NPV}_\text{delayed} = \int_0^\infty {\cal M}(t)\ {\cal D}(t + T)\, dt\ .$$
+For (1) and (2) to be the same, we need to restrict the form of ${\cal D}_r(t)$ so that
+$${\cal D}(T)\ {\cal D}(t) = {\cal D} (t+T)\ .$$
+The form of function that satisfies this restriction is the exponential, that is ${\cal D}(t) \equiv e^{kt}$. 
+
+## Compound interest
+
+A more down-to-earth derivation of the form of ${\cal D}(t)$ is to look at how financial transactions take place in the everyday world: borrowing at interest. Suppose that a bank proposes to lend you money at an ***interest rate*** of $r$ per year. To receive from the bank one dollar now entails that you pay the bank $1+r$ dollars at the end of the year.
+
+For this proposition to be attractive to you, the present value of $1+r$ dollars to be paid in one year must be less than or equal to the present value of one dollar today. In other words,
+$${\cal D}_\text{you}(1)\ (1+r) \leq 1\ .$$
+From the bank's perspective, the present value of your payment of $(1+r)$ dollars in a year's time must be greater than one dollar today. That is 
+
+$$1 \leq {\cal D}_\text{bank}(1)\ (1+r) \ .$$
+It's perfectly reasonable for you and the bank to have different discounting functions, just as it's perfectly legitimate for you and another voter to have different opinions about the candidates. It's convenient, though to imagine that the two discounting functions are the same, which will be the case if $${\cal D}(1) = \frac{1}{1+r}\ .$$
+
+If you were to borrow money for two years, the bank would presumably want to charge more for the loan. A typical practice is to charge ***compound interest***. Compound interest corresponds to treating the loan as having two phases: first, borrow one dollar for a year and owe $1+r$ dollars at the end of that year. At that point, you will borrow $(1+r)$ dollars at the interest rate $r$. At the end of year two you will owe $(1+r) (1+r) = (1+r)^2$ dollars. In general, if you were to borrow one dollar for $t$ years you would owe $(1+r)^t$ dollars. In order for the loan to be attractive to both you and the bank, the discounted value of $(1+r)^t$ should be one dollar:
+$${\cal D}(t) = \frac{1}{(1+r)^t} = (1 + r)^{-t}\ .$$
+
+::: {.intheworld data-latex=""}
+Let's return to the entrepreneur considering the apartment-building project.
+
+The entrepreneur goes to the bank with her business plan and financial forecasts. The bank proposes to lend money for the project at an interest rate of 7% per year.
+
+```{r rental-graph2, echo=FALSE, fig.cap="Blue curve: The apartment project income stream discounted at 7% per year. Black curve: The undiscounted income stream."}
+Rental1 %>%
+  slice_plot(total(t)/(1.07^t) ~ t, color="blue", 
+             size=2, domain(t=0:30), npts=500)
+```
+
+Figure \@ref(fig:rental-graph2) shows the income stream discounted at 7% per year. The net present value of the income stream for the apartment project is the accumulation of the discounted income stream:
+$$\text{NPV}(7\%) = \int_0^{30} (1 + 0.07)^{-t} {\cal M}(t) \ dt \ .$$ This works out to be negative $1,095,000. As things stand, the apartment building will be a money pit.
+
+The entrepreneur responds to the bank's offer with some business jargon. "I'll have to go back to the drawing board, put the team's heads together, and see how to get the numbers to work. I'll circle back with you tomorrow." This might involve reconsidering her model of the income stream. Perhaps she should have taken into account yearly rent increases. Maybe she can re-negotiate with the city about zoning height restrictions and build a 12-unit building, which will cost $4 million, lowering the cost per apartment? 
+
+
+
+
+
+```{r echo=FALSE, results="hide"}
+Integrate(total(t)/(1.07^t) ~ t, domain(t=0:30))
+Integrate(total(t)/(1.025^t) ~ t, domain(t=0:30))
+```
+:::
+
+## Mortgages
+
+A ***mortgage*** is a form of loan where you pay back the borrowed amount at a steady rate, month by month. At the end of a specified period, called the ***term*** of the mortgage, your have completely discharged the debt.
+
+Suppose you decide to buy a product that costs $\$\cal P$, say $\cal P=$ $10,000 for a used car. Let's say you need the car for your new job, but you don't have the money. So you borrow it. 
+
+Your plan is to pay an amount $A$ each month for 30 months---the next  $2\,\small\frac{1}{2}$ years. What should that rate be? 
+
+You can put the purchase on your credit card at an interest rate of $r=2\%$ per month. This corresponds to $k = \ln(1+r) = 0.0198$ per month. The net present value of your payments over 30 months at a rate of $A$ per month will be
+
+$$\int_0^{30} A {\cal D}_r(t)\, dt = \int_0^{30} e^{-kt} A = -\frac{A}{k} e^{-kt}\left.{\Large\strut}\right|_{t=0}^{30}\\ =- A \left(\strut \frac{e^{-30k}}{k} - \frac{e^{-0k}}{k} \right)\\ = - A\left(\strut27.88 - 50.50\right) = 22.62 A$$
+
+The loan will be in balance if the net present value of the payments is exactly the same as the amount ${\cal P}$ you borrowed. For this 30-month loan, this amounts to 
+$$22.62 A = {\cal P}\ ,$$ from which you can calculate  your monthly payment ${\cal A}$.  For the $10,000 car loan, 
+your monthly payment will be $10,000/22.62 or 
+$442.09.
+
+
+## Exercises
+
+`r insert_calcZ_exercise("36.02", "YMoHRB", "Exercises/sheep-toss-roof.Rmd")`
+
+`r insert_calcZ_exercise("36.04", "Dg7Qxv", "Exercises/pig-hurt-closet.Rmd")`
+
+
+
+`r insert_calcZ_exercise("36.06", "paP4qf", "Exercises/cat-teach-kayak.Rmd")` <!--Powerball-->
+
+`r insert_calcZ_exercise("36.08", "tm0XB4", "Exercises/octopus-toss-gloves.Rmd")` <!-- NPV of social security benefits -->
+
+
+`r insert_calcZ_exercise("36.10", "qgt0RV", "Exercises/kangaroo-find-magnet.Rmd")`
+
+
+
+<!--
+## Age adjusting
+
+Here are [data from the World Bank](https://data.worldbank.org/indicator/SP.DYN.LE00.IN) giving the number of deaths (per 1000 people) in some selected countries in 2019:
+
+Country            | deaths per 1000 | life expectancy (yrs)
+:------------------|:----------------|:---------
+Afghanistan        | 6               |  65
+Bolivia            | 7               |  72
+Burkina Faso       | 8               |  62
+Costa Rica         | 5               |  80
+Cuba               | 9               |  79
+Guatemala          | 5               |  74
+Finland            | 10              |  82
+Germany            | 11              |  81
+Israel             | 5               |  83
+Italy              | 11              |  83
+Japan              | 11              |  84
+Jordan             | 4               |  75
+Latvia             | 15              |  75
+Lebanon            | 4               |  79
+Norway             | 8               |  83
+Sudan              | 7               |  65
+Sweden             | 9               |  83
+Syria              | 5               |  73
+United Kingdom     | 9               |  81
+United States      | 9               |  79
+Venezuela          | 7               |  72
+West Bank and Gaza | 3               |  74
+Yemen              | 6               |  66
+
+Scan the list carefully. You may be surprised to see some poor countries with active civil strife---Sudan, Syria, Venezuela, Palestinian territories---with low death rates compared to rich countries such as Germany, Italy, and Japan. The reason for this pattern is that wealth and strife are not the major determinants of the risk of death. The major one, the mother of all risk factors, is age. Older people are far more likely to die than younger people.
+
+-->
+
+
+
+

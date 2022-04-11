@@ -1,0 +1,80 @@
+---
+id: "optim-red"
+author: "Daniel Kaplan"
+---
+
+```{r include = FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+```
+
+::: {.todo}
+Turn this into a problem about algebra.
+
+Later in accumulation, figure out the mile-markers on the road.
+:::
+
+
+There is a tradition in mathematics education of using *geometrical*, distance-related problems to illustrate optimization. As it happens, some such problems can provide some valuable insight into physical situations.
+
+```{r echo=FALSE}
+make_dist_fun <- function(..., method=c("euclidean", "sphere", "minkowski")) {
+  method <- match.arg(method)
+  origin <- unlist(list(...))
+  if (method == "euclidean") {
+    function(...) {
+      target <- list(...)
+      if (length(target) != length(origin))
+        stop("Origin point and target must have the same number of coordinates.")
+      accumulator <- 0
+      for (k in 1:length(target)) {
+        accumulator <- accumulator + (target[[k]] - origin[k])^2
+      }
+      sqrt(accumulator)
+    }
+  } else if (method == "sphere") {
+    if (length(origin) != 2)
+      stop("Supply two arguments in degrees, lat and long, for spherical distances")
+    origin <- pi*origin/180
+    origin_lat <- origin[1]
+    origin_long <- origin[2]
+    function(lat, long, radius = 1) {
+      lat <- pi*lat/180
+      long <- pi*long/180
+      del_lambda <- long - origin_long
+      del_phi <- lat - origin_lat
+      # Haversign formula
+      radius* 2 * asin(sqrt(sin(del_phi/2)^2 +
+                      cos(origin_lat)*cos(lat)*sin(del_lambda/2)^2))
+    }
+  }
+}
+```
+
+Suppose you have a function $f(x)$ whose graph represents the path of a road through the jungle. There is a lion at coordinates $(3, 2)$ in the jungle. At what point as you travel along the road will you be closest to the lion.
+
+The trick here is to see that your position on the road at any value of $x$ is $(x, f(x))$. The distance to the lion as a function of $x$ is $$ \text{lion.dist}(x) \equiv \sqrt{(x - 3)^2 + (f(x)-2)^2} .$$
+
+The road and the lion are graphed in the sandbox for the road $f(x) \equiv x^2 e^{-x}$. You can see that the road comes closest to the lion at roughly $x=3$. When you implement the lion.dist$(x)$ function, you'll be able to find the *argmin*, that is, the value of the input $x$ for which the output lion_dist$(x)$ is minimal. The value of the function lion_dist$(x)$ at the argmin is the *min* of the function.
+
+```{r}
+slice_plot(x^2 * exp(-x) ~ x, domain(x=0:5)) %>%
+  gf_label(2 ~ 3, label="lion") %>%
+  gf_refine(coord_fixed())
+
+```
+
+To find the argmin of the distance to the lion more precisely, implement the $\text{lion.dist}(x)$ function in the sandbox. Plot this out and look for the minimum. Alternatively, find $\partial_x \text{lion.dist}(x)$ and find the $x$ of the zero crossing.
+
+
+
+```{r daily-digital-36-QA38, echo=FALSE}
+askMC(
+  prompt = "Using the sandbox above, find the argmin for which the graph of the function $g(x) \\equiv x^2 \\exp(-x)$ comes closest to the point $(3, 2)$? (Choose the best answer.) ",
+  2.03, 2.07, 2.21, 2.27, 2.28, 2.33, 2.37, 2.39, 2.43, 2.48, 2.58, 2.71, "+2.80+", 2.94,
+  random_answer_order = FALSE
+)
+```
+
+

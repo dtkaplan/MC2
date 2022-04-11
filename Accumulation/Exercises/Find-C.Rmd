@@ -1,0 +1,204 @@
+---
+id: "Find-C"
+date: "MMM DD YYYY"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r include=FALSE}
+etude2::load_learnr_safely()
+library(gradethis)
+library(etude2)
+library(shiny)
+knitr::opts_chunk$set(echo = FALSE)
+learnr::tutorial_options(exercise.timelimit = 60,
+                 exercise.checker = gradethis::grade_learnr)
+```
+
+```{r context="setup", include=FALSE}
+library(mosaic)
+library(mosaicCalc)
+```
+
+
+The top graph shows a function $f(t)$. 
+
+The bottom graph shows an anti-derivative $$F(t) \equiv \int f(t) dt$$
+
+You can make measurements by *click/dragging* the mouse on the bottom graph.
+
+```{r}
+plotOutput("littlef", height="250px")
+plotOutput("Fplot", brush=brushOpts("Fbrush", direction="x", fill=NA, stroke="orange", opacity = 1), height="250px")
+h5("Stats on F() for orange lines")
+htmlOutput("boxstats")
+```
+
+```{r context="server"}
+f_seed <- reactiveVal(101)
+f_function <- reactive({
+  mosaic::rfun( ~ t, seed = f_seed())
+})
+
+output$boxstats <- renderText({
+  if (is.null(input$Fbrush)) return("Drag mouse on graph to measure")
+  width  <- input$Fbrush$xmax - input$Fbrush$xmin
+  f <- f_function()
+  F <- antiD(f(t) ~ t)
+  yvals <- F(c(input$Fbrush$xmin, input$Fbrush$xmax))
+  deltaF <- diff(yvals)
+  glue::glue(
+    "<p>Left: {signif(input$Fbrush$xmin,3)}      Right: {signif(input$Fbrush$xmax, 3)}      Width: {signif(width,3)}</p>
+    <p>F(left): {signif(yvals[1], 3)}       F(right): {signif(yvals[2], 3)}       ∆F: {signif(deltaF,3)}</p>
+    <p>Slope: {signif(deltaF/width, 3)} </p>"
+  ) %>% HTML()
+})
+
+output[["littlef"]] <- renderPlot({
+  f <- f_function()
+  
+  suppressWarnings({
+    P <- slice_plot(f(t) ~ t, domain(t=c(-5, 5))) %>%
+      gf_hline(yintercept = 0, color="dodgerblue") %>%
+      gf_labs(y = paste("f(t) for seed", input$seed),
+              title = "f(t), the derivative of F(t)") %>%
+      gf_refine(scale_x_continuous(breaks = (-5):5))
+  })
+  if (! is.null(input$Fbrush)) {
+    Area <- tibble(
+      t = seq(input$Fbrush$xmin, input$Fbrush$xmax, length=100),
+      y = f(t)
+    )
+    Neg_area <- Area %>% filter(y < 0)
+    P <- P %>% gf_ribbon(0 + y ~ t, data = Area, inherit=FALSE,
+                         fill = "dodgerblue", color=NA, alpha = 0.3) 
+    if (nrow(Neg_area) > 0)
+      P <- P %>%
+      gf_ribbon(0 + y ~ t, data=Neg_area %>% filter(y < 0), inherit = FALSE,
+                fill = "orange3", color = NA, alpha = 0.3)
+  }
+  P
+})
+output$Fplot <- renderPlot({
+  f <- f_function()
+  F <- antiD(f(t) ~ t)
+  suppressWarnings({
+    slice_plot(F(t) ~ t, domain(t=c(-5, 5)), npts=200) %>%
+      gf_hline(yintercept = 0, color="dodgerblue") %>%
+      gf_refine(scale_x_continuous(breaks = (-5):5)) %>%
+      gf_labs(y = "F(t)", title="F(t): the anti-derivative of f(t)")
+  })
+})
+```
+
+----
+
+```{r context = "server"}
+f_seed <- reactiveVal(864)
+```
+
+Sometimes it's easier to think through matters when they are presented in a concrete, everyday context. Imagine that you managing a small-town water tank. Water flows in from the supply system and flows out to consumer demand. At any instant of time, there's a net amount flowing to the tank, which could be measured in cubic-meters-per-second. (If the amount is negative, consumers are momentarily consuming more than is being newly supplied.) 
+
+The amount of water in the tank, measured in cubic meters, also fluctuates over time. We're going to call the water in the tank your "stock" of water. As a water manager, you want to make sure that your stock never goes to zero. (Otherwise, the town's citizens will be without water!)
+
+In terms of functions, the "flow" is $f(t)$. The definite integral of the flow $$\int_a^b f(t) dt$$ gives you some information about the stock: how much the amount of stock has changed from time $a$ to time $b$. This is not, however, exactly the same as the stock. Presumably, there was already some water in the tank at time $a$, so the stock at time $b$ will be that amount plus the amount of the definite integral of $f(t)$.
+
+
+
+```{r C1}
+etude2::etudeQ(
+  "A. From the graph, roughly estimate $$\\int_0^3 f(t)dt$$ Choose the closest numerical value from the following. You could use either graph for this caclulation, but $F(t)$ will be simpler algebra.",
+  -46, -26, "0"="F(t) has a net change over the interval", "3"="there is more stock at F(3) than F(0)", "19"="there is more stock at F(3) than F(0)", "26"="F(t) at the right end of the interval is lower than at the left end", right_one = -26,
+  random_answer_order = FALSE
+)
+```
+
+```{r C2}
+etude2::etudeQ(
+  "B. In order to construct the anti-derivative whose value at time $t=-3$ will be zero, what constant of integration $C$ should you **add** to the $F(t)$ shown.",
+  "-120"= "Would adding this to F(-3) be equal to 0?", "-80"= "Would adding this to F(-3) be equal to 0?", "-50"= "Would adding this to F(-3) be equal to 0?", "0"= "Would adding this to F(-3) be equal to 0?", "50" = "Would adding this to F(-3) be equal to 0?", 
+  "80" = "Are you sure you have the sign right?",
+  "120" = "Would adding this to F(-3) be equal to 0?",
+  right_one = -80,
+  random_answer_order = FALSE
+)
+```
+
+```{r C3}
+etude2::etudeQ(
+  "C. Examining the stock at time $t=0$, you observe that there are 40 units. Roughly how much stock will there be at $t=5$?",
+  "-25" = "Did you shift the curve in the right direction?", "-15" = "That would be the answer if there had been 0 units of stock at time $t=0$.","0"="Imagine F(t) being shifted by the difference of 40 and F(0)", "15"="Imagine F(t) being shifted by the difference of 40 and F(0)",  25, right_one=25,
+  random_answer_order = FALSE
+)
+```
+
+```{r C4}
+etude2::etudeQ(
+  "D. You start with a stock of 100 units at time $t = -2$. At roughly what time $t$ will the stock be half of this?",
+  "-1.2"="$F(t)$-$F(a)$=50, what is the value of a?", -0.3, "0.5"="$F(t)$-$F(a)$=50, what is the value of a?", "1.2"="$F(t)$-$F(a)$=50, what is the value of a?", "1.8"="$F(t)$-$F(a)$=50, what is the value of a?",
+  "The stock will never fall so low.",
+  right_one = -0.3,
+  random_answer_order = FALSE
+)
+```
+
+```{r C5}
+etude2::etudeQ(
+  "E. Your stock finally runs out at time $t=2.5$. When did you have 120 units in stock?",
+  "+$t=-4$+", "$t=-3$"="This uses a similiar approach to the last question.", "$t=0$"="This uses a similiar approach to the last question.", 
+  "There was never such a time."
+)
+
+```
+
+```{r C6}
+etude2::etudeQ(
+  "F. After decreasing for a long time, the stock finally starts to increase from about $t=2.5$ onward. What about $f(t=2.5)$ tells you that $F(t=2.5)$ is increasing?",
+  "The derivative is at a minimum."="Does this mean $F(t)$ must be increasing?",
+  "The derivative is negative"="Does this mean $F(t)$ must be increasing?",
+  "The derivative is near zero." = "Kind of. For the stock $F(t)$ to increase, what has to be true of the derivative at that instant.",
+  "+The derivative becomes positive and stays positive.+",
+  "The derivative is at a maximum."="Does this mean $F(t)$ must be increasing?",
+  random_answer_order = FALSE
+)
+```
+
+```{r C7}
+etude2::etudeQ(
+  "G. Find the argmin $t^\\star$ of $f(t)$ and note the sign of $f(t^\\star).$  What does this tell you about $F(t^\\star)$.",
+  "$t^\\star$ is also the argmin of $F()$."="look at the corresponding point on $F(t)$.",
+  "+$F(t^\\star)$ is decreasing at its steepest rate.+",
+  "$F(t^\\star)$ is increasing at it's slowest rate."="look at the corresponding point on $F(t)$.",
+  "$F(t^\\star)$ is increasing at its steepest rate."="look at the corresponding point on $F(t)$.",
+  "$t^\\star$ is the argmax of $F()$"="look at the corresponding point on $F(t)$."
+)
+```
+
+```{r C8}
+etude2::etudeQ(
+  "H. What is the average flow into stock over the period $-5 \\leq t \\leq 1$. (If the flow is *outward from stock*, that's the same as a negative inward flow.)",
+  -30, -20, "0" = "But you can see that the stock is diminishing steadily during $-5 \\leq t \\leq 1$, so how could the average flow be zero.", "10", right_one = -20,
+  random_answer_order = FALSE
+)
+```
+
+```{r C9}
+etude2::etudeQ(
+  "I. Which of the following is an interval when the average flow is approximately zero?",
+  "$-1.3 \\leq t \\leq 1.1$"="The area appears to be negative.",
+  "+$0.8 \\leq t \\leq 5$+",
+  "$-5 \\leq t \\leq 0$"="The area appears to be negative.",
+  "None of the above",
+  random_answer_order = FALSE
+)
+```
+
+```{r C10}
+etude2::etudeQ(
+  "J. From the graph, estimate $$\\int_2^{-4} f(t)dt$$ Choose the closest numerical value from the following.",
+  "-120" = "Pay attention to the order of the limits of integration.", -60, 60, 120, 
+  "None of these answers are close to being right.", 
+  right_one = 120,
+  random_answer_order = FALSE
+)
+```

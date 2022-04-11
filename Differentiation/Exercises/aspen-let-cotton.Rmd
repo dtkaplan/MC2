@@ -1,0 +1,95 @@
+---
+id: "aspen-let-cotton"
+created: "Mon Jul 19 19:08:15 2021"
+global_id: "uifJjv"
+---
+
+The big contribution of calculus to the process of optimization is the **gradient vector**. The gradient vector, as you know, points in the steepest direction uphill. Since functions can have complicated shapes, the gradient does not generally point directly to the maximum. However, if you start at a point and take a small step in the direction of the gradient, the value of the objective function will increase. Then repeat the process and keep repeating until the gradient has zero length (or close to zero).
+
+The sandbox has instructions in R for 
+
+i. generating a function $f(x, y)$ 
+ii. finding the $x$- and $y$-components of the gradient vector
+iii. setting up differential equations whose dynamics are "velocity is the gradient." (Remember, velocity is a vector, as is the gradient.) This system just walks uphill.
+iv. setting up differential equations whose dynamics are "velocity is negative the gradient."
+v. plotting the $f(x,y)$, the gradient field, and the two solutions to the differential equations.
+
+
+```{r fg2-1, exercise=TRUE, exercise.cap="A differential equation to optimize", exercise.nlines = 25}
+f <<- rfun( ~ x + y, seed=103)
+dx_f <<- D(f(x, y) ~ x)
+dy_f <<- D(f(x, y) ~ y)
+soln1 <- integrateODE(dx ~ dx_f(x=x, y=y), 
+                     dy ~ dy_f(x=x, y=y), 
+                     x = 1, y = -3,
+                     tdur = list(from=0, to=10, dt=0.1))
+soln2 <- integrateODE(dx ~ -dx_f(x=x, y=y), 
+                     dy ~ -dy_f(x=x, y=y), 
+                     x = -2, y = 0.75,
+                     tdur = list(from=0, to=10, dt=0.1))
+
+
+contour_plot(f(x, y) ~ x + y, domain(x=c(-5, 5), y=c(-5, 5))) %>%
+  gradient_plot(f(x, y) ~ x + y) %>%
+  traj_plot(y(t) ~ x(t), soln1, color="dodgerblue") %>%
+  traj_plot(y(t) ~ x(t), soln2, color="orange3")
+
+```
+
+```{r fg1-1, echo=FALSE, results="markup"}
+askMC(
+  "The two trajectories are shown in blue and red respectively. Each starts at the point labelled \"0\" and ends at the point labelled \"10\". How does movement along each trajectory correspond to the gradient field?",
+  "red uphill, blue downhill",
+  "+red downhill, blue uphill+",
+  "both downhill",
+  "both uphill",
+  random_answer_order = FALSE
+)
+```
+
+```{r fg1-2, echo=FALSE, results="markup"}
+askMC(
+  "Did the trajectories reach a local maximum or minimum?",
+  "red reached max, blue reached min",
+  "+red reached min, blue reached max+",
+  "both reached max",
+  "both reached min"
+)
+```
+
+```{r fg1-3, echo=FALSE, results="markup"}
+askMC(
+  "There's a local minimum shown on the graph at about $(x=0, y=-1)$. Neither of the trajectories reached this minimum. Imagine starting a new trajectory at a point $(x=2, y=0)$. Will it reach the local minimum near $(x=0, y=-1)$?",
+  "+Yes, so long as you walk **against** the gradient.+",
+  "Yes, so long as you walk **along** the gradient.",
+  "No",
+  random_answer_order = FALSE
+)
+```
+
+In the code originally in the sandbox, the trajectory was constructed with 100 Euler steps; the time interval runs from $t=0$ to $t=10$ and $dt = 0.1$. Practical optimization algorithms are designed to take steps that are as large as feasible. But if the steps are too large, the trajectory can overshoot the target. Dealing with this problem is a major feature of optimization algorithms and is non-trivial.
+
+Purely to illustrate, we can investigate stepsize by changing `dt` in the two `integrateODE()` expressions. 
+
+```{r fg1-4, echo=FALSE, results="markup"}
+askMC(
+  "What happens when you set `dt=1.0`?",
+  "Both trajectories smoothly curve around and reach the maximum or minimum.",
+  "+The trajectories reach the maximum or minimum, but in a clunky, jerkwise fashion.+",
+  "The trajectories oscillate around the maximum or minimum without settling down.",
+  "Everything falls apart and the trajectories leave the domain of interest.",
+  random_answer_order = FALSE
+)
+```
+
+```{r fg1-5, echo=FALSE, results="markup"}
+askMC(
+  "What happens when you set `dt=10.0`?",
+  "Both trajectories smoothly curve around and reach the maximum or minimum.",
+  "The trajectories reach the maximum or minimum, but in a clunky, jerkwise fashion.",
+  "The trajectories oscillate around the maximum or minimum without settling down.",
+  "+Everything falls apart and the trajectories leave the domain of interest.+",
+  random_answer_order = FALSE
+)
+```
+

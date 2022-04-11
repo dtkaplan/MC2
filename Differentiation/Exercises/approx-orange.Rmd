@@ -1,0 +1,236 @@
+---
+id: "approx-orange"
+author: "Daniel Kaplan"
+origin: "141 DD-28"
+---
+
+```{r include=FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+```
+
+```{r echo=FALSE}
+make_poly_0 <- function(f, x0) {
+  a <- f(x0)
+  function(x) rep(a, length(x))
+}
+make_poly_1 <- function(f, x0) {
+  a <- f(x0)
+  b <- (D(f(x) ~ x)) (x0)
+  function(x) {
+    a + b*(x - x0)
+  }
+}
+
+make_poly_2 <- function(f, x0) {
+  c_0 <- f(x0)
+  c_1 <- (D(f(x) ~ x))  (x0)
+  c_2 <- (D(f(x) ~ x + x))  (x0)  / 2
+  function(x) {
+    c_0 + c_1 * (x - x0) + c_2 * (x - x0)^2
+  }
+}
+
+linear_approx <- function(f, x0, y0){
+  a <- f(x0, y0)
+  b <- (D(f(x, y) ~ x))(x = x0, y = y0)
+  c <- (D(f(x, y) ~ y))(x = x0, y = y0)
+  function(x, y) a + b*(x-x0) + c*(y-y0)
+}
+bilinear_approx <- function(f, x_0,  y_0) {
+  a_0 <- f(x_0, y_0)
+  dx_f <- D(f(x, y) ~ x)
+  dxy_f <- D(dx_f(x,y) ~ y)
+  a_x <- (D(f(x, y) ~ x))(x = x_0, y = y_0)
+  a_y <- (D(f(x, y) ~ y))(x = x_0, y = y_0)
+  #a_xy <- (D(f(x, y) ~ x + y))(x = x_0, y = y_0)
+  a_xy <- dxy_f(x = x_0, y = y_0)
+  function(x, y)
+    a_0 + a_x*(x-x_0) + a_y*(y-y_0) + a_xy*(x-x_0)*(y-y_0)
+}
+quad_approx <- function(f, x0,  y0) {
+  a_0 <- f(x0, y0)
+  dx_f <- D(f(x, y) ~ x)
+  dxy_f <- D(dx_f(x,y) ~ y)
+  a_x <- (D(f(x, y) ~ x))(x = x0, y = y0)
+  a_y <- (D(f(x, y) ~ y))(x = x0, y = y0)
+  a_xy <- dxy_f(x = x0, y = y0)
+  a_xx <- (D(f(x, y) ~ x + x))(x = x0, y = y0) / 2
+  a_yy <- (D(f(x, y) ~ y + y))(x = x0, y = y0) / 2
+  function(x, y)
+    a_0 + a_x*(x-x0) + a_y*(y-y0) + a_xy*(x-x0)*(y-y0) + a_xx*(x-x0)^2 + a_yy*(y-y0)^2
+}
+```
+
+The following graph shows a function $f(x)$. Five values of $x$ are labelled A, B, .... These are the possible values of $x_0$ in the questions.
+
+```{r echo=FALSE}
+f <- rfun( ~ x, seed=800, n=10)
+Points <- tibble(
+  x0 = c(-4, -3, 0, 2, 4),
+  y = 0,
+  label = LETTERS[1:length(x0)]
+)
+slice_plot(f(x) ~ x, domain(x=-5:5)) %>%
+  gf_label(y ~ x0, data = Points, label=~label) %>%
+  gf_lims(y = c(-19, 0))
+```
+
+
+Each of the graphs that follow show an approximation to $f(x)$ at one of the points A, B, .... in the above graph. The approximations are either constant ("order 0" approximation), linear ("order 1" approximation), quadratic ("order 2" approximation), or something else. For each graph, say what order approximation is being used.
+
+
+```{r echo=FALSE}
+f1 <- make_poly_0(f, -3)
+slice_plot(f1(x) ~ x, domain(x=-5:5)) %>%
+   gf_label(y ~ x0, data = Points, label=~label)  %>%
+   gf_lims(y = c(-19, 0)) %>%
+  gf_labs(title = "Graph I")
+```
+
+```{r daily-digital-28-QA8, echo=FALSE}
+askMC(
+  prompt = "What order approximation in graph (I)?",
+    "+constant+" = "",
+    "linear" = "A linear approximation would have exactly the same slope as $f()$ at the reference point $x_0$.",
+    "quadratic" = "",
+    "none of these" = "",
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-28-QA8b, echo=FALSE}
+askMC(
+  prompt = "What is the reference position $x_0$ for approximation in graph (I)?",
+  "A"="Not a bad choice, but notice that the constant approximation has a value a little lower than f(A).", 
+  "+B+"  = "You're right. This has the correct value for f(B).",
+  "C"="", "D"="", "E"="", "None of them"="",
+  random_answer_order = FALSE
+)
+```
+
+<!-- Second graph -->
+
+```{r echo=FALSE, warning = FALSE}
+## Second graph
+f2 <- make_poly_2(f, 0)
+slice_plot(f2(x) ~ x, domain(x=-5:5)) %>%
+   gf_label(y ~ x0, data = Points, label=~label)  %>%
+   gf_lims(y = c(-19, 0)) %>%
+  gf_labs(title = "Graph II")
+```
+
+```{r daily-digital-28-QA9, echo=FALSE}
+askMC(
+  prompt = "What order approximation in graph (II)?",
+    "constant" = "",
+    "linear" = "",
+    "+quadratic+" = "",
+    "none of these" = "",
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-28-QA9b, echo=FALSE}
+askMC(
+  prompt = "What is the reference position $x_0$ for approximation in graph (II)?",
+  "A" = "", "B" = "", "+C+" = "", 
+  "D" = "At the reference position, the value of the approximation should always be $f(x_0)$. That's not the case here.",
+  "E" = "", "None of them",
+  random_answer_order = FALSE
+)
+```
+
+<!-- Third graph -->
+
+```{r echo=FALSE, warning = FALSE}
+## A 3rd order smoother
+Samples <- tibble(x = seq(-5, 2, by=0.5), y = f(x))
+f3 <- makeFun(lm(y ~ splines::ns(x, 3), data = Samples))
+slice_plot(f3(x) ~ x, domain(x=-5:5)) %>%
+   gf_label(y ~ x0, data = Points, label=~label)  %>%
+   gf_lims(y = c(-19, 0)) %>%
+  gf_labs(title = "Graph III")
+```
+
+```{r daily-digital-28-QA10, echo=FALSE}
+askMC(
+  prompt = "What order approximation in graph (III)?",
+    "constant" = "",
+    "linear" = "",
+    "quadratic" = "",
+    "+none of these+" = "You can't have two bends in a linear or quadratic function.",
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-28-QA10b, echo=FALSE}
+askMC(
+  prompt = "What is the reference position $x_0$ for approximation in graph (III)?",
+  "A" = "", "B" = "", "C" = "", 
+                 "D" = "At the reference position, the value of the approximation should always be $f(x_0)$. That's not the case here.", "E" = "", "+None of them+" = "It's not a polynomial approximation at any of  those points.",
+  random_answer_order = FALSE
+)
+```
+
+<!-- Fourth graph -->
+
+```{r echo=FALSE, warning = FALSE}
+f4 <- make_poly_1(f, -4)
+slice_plot(f4(x) ~ x, domain(x=-5:5)) %>%
+   gf_label(y ~ x0, data = Points, label=~label)  %>%
+   gf_lims(y = c(-19, 0)) %>%
+  gf_labs(title = "Graph IV")
+```
+
+```{r daily-digital-28-QA11, echo=FALSE}
+askMC(
+  prompt = "What order approximation in graph (IV)?",
+    "constant" = "",
+    "+linear+" = "",
+    "quadratic" = "",
+    "none of these" = "",
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-28-QA11b, echo=FALSE}
+askMC(
+  prompt = "What is the reference position $x_0$ for approximation in graph (IV)?",
+  "+A+" = "", "B" = "", "C" = "", 
+                 "D" = "", "E" = "", "None of them",
+  random_answer_order = FALSE
+)
+```
+
+<!-- Fifth graph -->
+
+```{r echo=FALSE, warning = FALSE}
+f5 <- make_poly_2(f, -2)
+slice_plot(f5(x) ~ x, domain(x=-5:5)) %>%
+   gf_label(y ~ x0, data = Points, label=~label)  %>%
+   gf_lims(y = c(-19, 0)) %>%
+  gf_labs(title = "Graph V")
+```
+
+```{r daily-digital-28-QA12, echo=FALSE}
+askMC(
+  prompt = "What order approximation in graph (V)?",
+    "constant" = "",
+    "linear" = "",
+    "+quadratic+" = "",
+    "none of these" = "",
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-28-QA12b, echo=FALSE}
+askMC(
+  prompt = "What is the reference position $x_0$ for approximation in graph (V)?",
+  "A" = "", "B" = "", "C" = "", 
+                 "D" = "", "E" = "", "+None of them+" = "",
+  random_answer_order = FALSE
+)
+```
+

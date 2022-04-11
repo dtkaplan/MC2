@@ -1,0 +1,50 @@
+---
+id: "engine-magnitude-new"
+title: "Magnitudes and engines"
+author: "Daniel Kaplan"
+global-id: "EWLCI"
+---
+
+```{r include=FALSE}
+library(Zcalc)
+```
+
+
+Here is a plot of the power output (BHP) versus displacement (in cc) of 39 internal combustion engines.
+
+::: {.scaffolding  data-latex=""}
+```{r}
+gf_point(BHP ~ displacement, data = Engines) %>%
+  gf_lims(y  = c(0, 30000))
+```
+:::
+
+```{r EM1-1, echo=FALSE}
+askMC(
+  prompt = "Your study partner claims that the smallest engine in the data has a displacement of 2000 cc (that is, 2.0 liters) and 100 horsepower. Based only on the graph, is this claim plausible?",
+    "+Yes, because 2000  cc and 100 hp would look like (0, 0) on  the scale of this graph.+" = "",
+    "Yes, because that size engine is typical for a small car." = "That may be, but certainly you've encountered lawn  mower engines that are much smaller.",
+    "No, the smallest engine is close to 0 cc." = "Would you  be able to distinguish visually an engine of 1 cc from an engine of 1000cc on this graph? Both these values would lie on the same horizontal pixel in the graph.",
+    "No, my study partner is always wrong." = "Be that as it may, we're looking for a principled answer, not an *ad hominem* one."
+)
+```
+
+**Semi-log scales**
+
+The next command will make a graph of the same engine data as before, but with a log scale on the horizontal axis. The vertical axis is still linear. 
+
+```{r}
+gf_point(BHP ~ displacement, data = Engines) %>%
+  gf_refine(scale_x_log10())
+```
+
+```{r EM1-2, echo=FALSE}
+askMC(
+  prompt = "Using just the graph, answer this question: The engines range over how many decades of displacement? (Remember, a decade is a factor of 10.)",
+    "+7 decades+" = "",
+    "Can't tell" = "Yes, you can. Figure out what one decade corresponds to in terms of distance on  the log axes.",
+    "$10^7$ decades" = "The estimated volume of the entire universe is about $4 \\times 10^{86}$ cc. The volume of a neutron is about $6 \\times 10^{-81}$ cc. The range between a neutron and the universe is therefore about $86  - -81 = 167$ decades. Do you think it likely that there is an internal combustion engine smaller than a neutron or larger than the universe?",
+    "About 3.5 decades" = "Perhaps you're treating the distance between axis labels as one decade. Look carefully and you see that it's actually a factor of 100, that is, two decades."
+)
+```
+

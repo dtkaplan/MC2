@@ -1,0 +1,72 @@
+---
+id: "eagle-choose-mattress"
+created: "Sun Mar 20 08:43:23 2022"
+global_id: "owE1WY"
+skill: "X-HGCV2"
+---
+
+
+
+```{r echo=FALSE}
+flow_contour <- function(f, g, f2=f, g2=g, 
+                         dom=domain(u=-3:3, v=-3:3)) {
+    contour_plot(f2(u,v) ~ u & v, 
+               domain=dom, contours_at = 0,
+               contour_color="blue", 
+               labels=FALSE) %>%
+    contour_plot(g2(u,v) ~ u & v, 
+                 domain=dom,
+                 contours_at = 0, contour_color="red",
+                 labels=FALSE, inherit=FALSE) %>%
+    vectorfield_plot(f(u,v) ~ u & v, g(u,v) ~ u & v, 
+                     dom, 
+                     transform=function(x) x^0.25) 
+}
+```
+
+In each of the following graphs, a flow field is annotated with a red contour and a blue contour. Your task is to determine whether a contour corresponds to a zero of the horizontal component of flow, a zero of the vertical component of flow, or neither. (Remember, if the contour is at a zero of the horizontal flow, the flow on the contour will be entirely vertical. And *vice versa*.)
+
+```{r echo=FALSE}
+f <- rfun( ~ u & v, seed=577)
+g <- rfun( ~ u & v, seed=186)
+f2 <- rfun( ~ u & v, seed=111)
+flow_contour(f, g, f2, dom=domain(u=-3:3, v=-3:3)) %>%
+  gf_labs(subtitle="Flow A") %>%
+  gf_refine(coord_fixed()) %>%
+  gf_lims(y=c(-3,3), x=c(-3,3))
+
+```
+1. Plot A $\color{blue}{\text{blue contour}}$:
+
+    i. Zero of horizontal flow
+    ii. Zero of vertical flow
+    iii. Neither <!-- Correct -->
+
+2. Plot A $\color{red}{\text{red contour}}$:
+
+    i. Zero of horizontal flow
+    ii. Zero of vertical flow <!-- Correct -->
+    iii. Neither
+
+```{r echo=FALSE}
+f <- rfun( ~ u & v, seed=578)
+g <- rfun( ~ u & v, seed=187)
+f2 <- rfun( ~ u & v, seed=1112)
+g2 <- rfun( ~ u & v, seed=2322)
+flow_contour(f, g, dom=domain(u=-3:3, v=-4:2)) %>%
+  gf_labs(subtitle="Flow B") %>%
+  gf_refine(coord_fixed()) %>%
+  gf_lims(y=c(-4,2), x = c(-3,3))
+```
+
+3. Plot B $\color{blue}{\text{blue contour}}$:
+
+    i. Zero of horizontal flow
+    ii. Zero of vertical flow
+    iii. Neither <!-- Correct -->
+
+4. Plot B $\color{red}{\text{red contour}}$:
+
+    i. Zero of horizontal flow
+    ii. Zero of vertical flow <!-- Correct -->
+    iii. Neither

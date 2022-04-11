@@ -1,0 +1,32 @@
+---
+id: "water-sink-ship"
+created: "Thu Dec  2 15:15:13 2021"
+global_id: "ZRYTU3"
+---
+
+As an example of situation where Newton's method fails, consider $x_0$ accidentally picked close to an argmax, that is $f'(x_0) \approx 0$.  (The situation is illustrated in Figure \@ref(fig:newton-too-big).) The length of the Newton step is proportional to $1/f'(x_0)$, which is large when $f'(x_0) \approx 0$. Such a Newton step can produce $x^\star$ further from the actual solution rather than closer to it. 
+
+```{r newton-too-big, echo=FALSE, fig.cap="An unlucky choice (magenta) of $x_0$ near a local maximum has resulted in a Newton step that is too long. The Newton step creates $x_1 \\approx -3$, far to the left of the actual zero crossing which is near $x\\approx 0$."}
+raw <- rfun(~ x, seed=835)
+f <- makeFun(raw(x) + x ~ x)
+
+df <- D(f(x) ~ x)
+x0 <- 1.7
+a <- f(x0)
+b <- df(x0)
+approxfun <- makeFun(a + b*(x-x0) ~ x)
+slice_plot(f(x) ~ x, domain(x=-4:4)) %>%
+  slice_plot(approxfun(x) ~ x,  color="magenta", linetype="dotted") %>%
+  gf_hline(yintercept = ~ 0, color="brown") %>%
+  gf_text(0 ~ x0, label="x0", color="blue", vjust=-1, hjust=1) %>%
+  gf_vline(xintercept = ~ x0, color="blue", linetype="dashed")
+
+```
+
+A) Take a second Newton step, that is, a step starting at $x_1$ and ending at $x_2$. You can eyeball the linear function that approximates $f(x)$ near $x_1$. What is the approximate value of $x_2$.
+
+B) Try a simple modification to Newton's method that can help deal with such situations. In the figure above, the full Newton step puts $x_1$ where the dotted line crosses the brown line. This full step has length $\| x_1 - x_0 \|$, in this case roughly 4.5. 
+
+In your modification, instead of taking the full Newton step, take a step from $x_0$ that is only **half** as long. That half step will bring you to a new $x_1$. From there, take another half Newton step to find $x_2$. Will this process converge toward the actual zero crossing of $f(x)$?
+
+

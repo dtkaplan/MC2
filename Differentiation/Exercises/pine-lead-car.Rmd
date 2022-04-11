@@ -1,0 +1,177 @@
+---
+chapter: "derivatives"
+author: "Daniel Kaplan"
+date: 2020-10-12 
+tags: [derivatives, monotonicity]
+id: pine-lead-car
+global-id: "eodlt"
+---
+
+```{r pine-lead-car-setup, include = FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+```
+
+Recall from Section \@ref(monotonicity) that a function is ***monotonically increasing*** on a given domain when the function's slope is positive everywhere in that domain. A ***monotonically decreasing*** function, similarly, has a negative slope everywhere in the domain. When the slope is zero, or positive in some places and negative in others, the function is neither monotonically increasing or decreasing.
+
+Each of the following graphs shows the derivative of some function $f(x)$. (Note: the graph doesn't show $f(x)$ but rather the function $\partial_x f(x)$) For each graph, say whether the function $f()$ is monotonically increasing, monotonically decreasing, or neither. (Note that the horizontal scale is the same in every graph, but the vertical scale can be different from one scale to another.)
+
+```{r echo=FALSE}
+r1 <- rfun(~ x, seed = 101)
+r2 <- rfun(~ x, seed = 102)
+r3 <- rfun(~ x, seed = 103)
+r4 <- rfun(~ x, seed = 104)
+
+df1 <- makeFun(r1(x) + 1.5  ~ x)
+df2 <- makeFun(-r2(x)  ~ x)
+df3 <- makeFun(r3(x)  ~ x)
+df4 <- makeFun(r4(x)/2 + 7.5  ~ x)
+df5 <- makeFun(r1(x)  ~ x)
+df6 <- makeFun(abs(r2(x)) ~ x)
+df7 <- r1
+df8 <- r2
+df9 <- r3
+df10 <- r4
+
+ddf1 <- D(df1(x) ~ x)
+ddf2 <- D(df2(x) ~ x)
+ddf3 <- D(df3(x) ~ x)
+ddf4 <- D(df4(x) ~ x)
+ddf5 <- D(df5(x) ~ x)
+ddf6 <- D(df6(x) ~ x)
+ddf7 <- D(df7(x) ~ x)
+ddf8 <- D(df8(x) ~ x)
+ddf9 <- D(df9(x) ~ x)
+ddf10 <- D(df10(x) ~ x)
+
+
+f1 <- antiD(df1(x) ~ x)
+f2 <- antiD(df2(x) ~ x)
+f3 <- antiD(df3(x) ~ x)
+f4 <- antiD(df4(x) ~ x)
+f5 <- antiD(df5(x) ~ x)
+f6 <- antiD(df6(x) ~ x)
+f7 <- antiD(df7(x) ~ x)
+f8 <- antiD(df8(x) ~ x)
+f9 <- antiD(df9(x) ~ x)
+f10 <- antiD(df10(x) ~ x)
+
+F1 <- antiD(f1(x) ~ x)
+F2 <- antiD(f2(x) ~ x)
+F3 <- antiD(f3(x) ~ x)
+F4 <- antiD(f4(x) ~ x)
+F5 <- antiD(f5(x) ~ x)
+F6 <- antiD(f6(x) ~ x)
+F7 <- antiD(f7(x) ~ x)
+F8 <- antiD(f8(x) ~ x)
+F9 <- antiD(f9(x) ~ x)
+F10 <- antiD(f10(x) ~ x)
+```
+
+
+```{r echo=FALSE}
+P1 <- slice_plot(df1(x) ~ x, domain(x = c(-5,5))) %>% gf_labs(title="Derivative of function A", y="df(x)")
+P2 <- slice_plot(df2(x) ~ x, domain(x = c(-5,5))) %>% gf_labs(title="Derivative of function B", y="df(x)")
+P3 <- slice_plot(df3(x) ~ x, domain(x = c(-5,5))) %>% gf_labs(title="Derivative of function C", y="df(x)")
+P4 <- slice_plot(df4(x) ~ x, domain(x = c(-5,5))) %>% gf_labs(title="Derivative of function D", y="df(x)")
+P5 <- slice_plot(df5(x) ~ x, domain(x = c(-5,5))) %>% gf_labs(title="Derivative of function E", y="df(x)") %>%
+  gf_theme(axis.text.y=element_blank())
+P6 <- slice_plot(df6(x) ~ x, domain(x = c(-5,5))) %>% gf_labs(title="Derivative of function F", y="df(x)")
+```
+
+```{r echo=FALSE, out.width="50%", fig.align="center"}
+P1
+```
+
+```{r pine-lead-car-QA1, echo=FALSE}
+askMC(
+  prompt = "Function A is ...",
+    "+monotonically increasing+" = "A monotonically increasing function has a function that is everywhere $> 0$",
+    "monotonically decreasing" = "A monotonically increasing function has a function that is everywhere $> 0$",
+    "constant" = "A constant function has a derivative that is everywhere 0.",
+    "non-monotonic" = "A non-monotonic function goes up and down, hence the derivative is positive in some places and negative in others.",
+    "Can't tell from the info provided" = "This is the case if you cannot tell if the derivative is positive or negative.", 
+  random_answer_order = FALSE
+)
+```
+
+```{r echo=FALSE, out.width="50%", fig.align="center"}
+P2
+```
+
+```{r pine-lead-car-QA2, echo=FALSE}
+askMC(
+  prompt = "Function B is ...",
+    "monotonically increasing" = "A monotonically increasing function has a function that is everywhere $> 0$",
+    "+monotonically decreasing+" = "A monotonically increasing function has a function that is everywhere $> 0$",
+    "constant" = "A constant function has a derivative that is everywhere 0.",
+    "non-monotonic" = "A non-monotonic function goes up and down, hence the derivative is positive in some places and negative in others.",
+    "Can't tell from the info provided" = "This is the case if you cannot tell if the derivative is positive or negative.",
+  random_answer_order = FALSE
+)
+```
+
+```{r echo=FALSE, out.width="50%", fig.align="center"}
+P3
+```
+
+```{r pine-lead-car-QA3, echo=FALSE}
+askMC(
+  prompt = "Function C is ...",
+    "monotonically increasing" = "A monotonically increasing function has a function that is everywhere $> 0$",
+    "monotonically decreasing" = "A monotonically increasing function has a function that is everywhere $> 0$",
+    "constant" = "A constant function has a derivative that is everywhere 0.",
+    "+non-monotonic+" = "A non-monotonic function goes up and down, hence the derivative is positive in some places and negative in others.",
+    "Can't tell from the info provided" = "This is the case if you cannot tell if the derivative is positive or negative.", 
+  random_answer_order = FALSE
+)
+```
+
+```{r echo=FALSE, out.width="50%", fig.align="center"}
+P4
+```
+
+```{r pine-lead-car-QA4, echo=FALSE}
+askMC(
+  prompt = "Function D is ...",
+    "+monotonically increasing+" = "A monotonically increasing function has a function that is everywhere $> 0$",
+    "monotonically decreasing" = "A monotonically increasing function has a function that is everywhere $> 0$",
+    "constant" = "A constant function has a derivative that is everywhere 0.",
+    "non-monotonic" = "A non-monotonic function goes up and down, hence the derivative is positive in some places and negative in others.",
+    "Can't tell from the info provided" = "This is the case if you cannot tell if the derivative is positive or negative.", 
+  random_answer_order = FALSE
+)
+```
+
+```{r echo=FALSE, out.width="50%", fig.align="center"}
+P5
+```
+
+```{r pine-lead-car-QA5, echo=FALSE}
+askMC(
+  prompt = "Function E is ...",
+    "monotonically increasing" = "A monotonically increasing function has a function that is everywhere $> 0$",
+    "monotonically decreasing" = "A monotonically increasing function has a function that is everywhere $> 0$",
+    "constant" = "A constant function has a derivative that is everywhere 0.",
+    "non-monotonic" = "A non-monotonic function goes up and down, hence the derivative is positive in some places and negative in others.",
+    "+Can't tell from the info provided+" = "This is the case if you cannot tell if the derivative is positive or negative.", 
+  random_answer_order = FALSE
+)
+```
+
+```{r echo=FALSE, out.width="50%", fig.align="center"}
+P6
+```
+
+```{r pine-lead-car-QA6, echo=FALSE}
+askMC(
+  prompt = "Function F is ...",
+    "+monotonically increasing+" = "A monotonically increasing function has a function that is everywhere $> 0$",
+    "monotonically decreasing" = "A monotonically increasing function has a function that is everywhere $> 0$",
+    "constant" = "A constant function has a derivative that is everywhere 0.",
+    "non-monotonic" = "A non-monotonic function goes up and down, hence the derivative is positive in some places and negative in others.",
+    "Can't tell from the info provided" = "This is the case if you cannot tell if the derivative is positive or negative.", 
+  random_answer_order = FALSE
+)
+```

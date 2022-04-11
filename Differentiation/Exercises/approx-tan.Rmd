@@ -1,0 +1,146 @@
+---
+id: "approx-tan"
+origin: "141 DD29"
+author: "Daniel Kaplan"
+---
+
+```{r include = FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+```
+
+```{r echo = FALSE}
+g <- rfun( ~ x + y, seed = 802, n = 15)
+Points <- tibble::tribble(
+  ~ x0, ~ y0,  ~ label,
+  -0.400, 2.500, "B",
+  1.265,  -2.725, "D",
+  -1.605, 1.932, "C",
+  -2.100,  3.000, "A"
+)
+```
+
+In this exercise, you're going to be looking at the shape of contour lines very close to a reference point. The graph shows which function we'll  be examining. The contours are unlabeled, to avoid distracting you with  numbers; we're interested in *shapes*. Four different reference points are marked, with these coordinates
+
+```{r echo=FALSE}
+Points %>%
+  dplyr::arrange(label) %>%
+  dplyr::relocate(label, .before = x0) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+
+
+```{r echo = FALSE}
+contour_plot(g(x, y) ~ x + y,
+           domain(x = c(-5, 5), y=c(-5, 5)),
+           skip = 30)  %>%
+  gf_text(y0 ~ x0, data = Points, label = ~ label, color  = "orange3")
+
+```
+
+For each of the reference points A to D, your job is to zoom in on the region around that point. The graphing expression in the sandbox has been written in a way  that allows you to specify exactly the coordinates of the reference point, and the  size of the region around that reference point being plotted. The initial example in the sandbox is for reference point A and a region size of 0.5. The reference point will always be **exactly in the center of the plot**.
+
+You  are to consider the sequence  of region sizes
+
+$$\text{size}: 0.5,\ 0.1,\  0.05,\  0.01,\  0.005,\ 0.001,\ 0.0005,\  0.0001$$
+
+Start at the largest size and try successively smaller sizes until you find a size where the shape  of  the contour lines  is simple and very  similar to the shape from the previous size. (Ignore the contour labels: just look at the shape.)
+
+
+```{r daily-digital-29-sandbox2, exercise=TRUE, exercise.cap="Sandbox  for zooming",  exercise.eval=FALSE, exercise.lines=10, exercise.completion=FALSE, exercise.startover=TRUE, exercise.diagnostics=TRUE}
+x0 <- -2.100
+y0 <-  3.000
+size <- 1.0
+contour_plot(g(x, y) ~ x + y,
+             domain(x = x0 + size*c(-1, 1),
+                    y = y0 + size*c(-1, 1)))
+```
+
+
+```{r daily-digital-29-QA1, echo=FALSE}
+askMC(
+  prompt = "1a) For reference point A how small should `size` be so that the *shape* of the contours does not differ substantially from the shape at the previous size.",
+  0.1,  "+0.01+", 0.001, 0.0001,
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-29-QA2, echo=FALSE}
+askMC(
+  prompt = "1b) For reference point A which phrase best describes the shape of the contours at  the size you found in question (1a).",
+  "+contours are straight and almost exactly parallel and evenly spaced+",
+  "contours are straight, almost exactly parallel, but unevenly spaced.",
+  "contours  are straight,  but fan out a bit",
+  "contours are curved but concentric and evenly spaced",
+  "contours are curved and concentric,  but unevenly spaced.",
+  random_answer_order = FALSE,
+  inline = FALSE
+)
+```
+
+```{r daily-digital-29-QA3, echo=FALSE}
+askMC(
+  prompt = "2a) For reference point B how small should `size` be so that the *shape* of the contours does not differ substantially from the shape at the previous size.",
+  0.1,  "+0.01+", 0.001, 0.0001,
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-29-QA4, echo=FALSE}
+askMC(
+  prompt = "2b) For reference point B which phrase best describes the shape of the contours at  the size you found in question (2a).",
+  "+contours are straight and almost exactly parallel and evenly spaced+",
+  "contours are straight, almost exactly parallel, but unevenly spaced.",
+  "contours  are straight,  but fan out a bit",
+  "contours are curved but concentric and evenly spaced",
+  "contours are curved and concentric,  but unevenly spaced.",
+  
+  random_answer_order = FALSE,
+  inline = FALSE
+)
+```
+
+```{r daily-digital-29-QA5, echo=FALSE}
+askMC(
+  prompt = "3a) For reference point C how small should `size` be so that the *shape* of the contours does not differ substantially from the shape at the previous size.",
+  0.1,  "0.01", "+0.001+", 0.0001,
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-29-QA6, echo=FALSE}
+askMC(
+  prompt = "3b) For reference point C which phrase best describes the shape of the contours at  the size you found in question (3a).",
+  "+contours are straight and almost exactly parallel and evenly spaced+",
+  "contours are straight, almost exactly parallel, but unevenly spaced.",
+  "contours  are straight,  but fan out a bit",
+  "contours are curved but concentric and evenly spaced",
+  "contours are curved and concentric,  but unevenly spaced.",
+  random_answer_order = FALSE,
+  inline = FALSE
+)
+```
+
+```{r daily-digital-29-QA7, echo=FALSE}
+askMC(
+  prompt = "4a) For reference point D how small should `size` be so that the *shape* of the contours does not differ substantially from the shape at the previous size.",
+  0.1,  "0.01", "0.001", "+0.0001+",
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-29-QA8, echo=FALSE}
+askMC(
+  prompt = "4b) For reference point D which phrase best describes the shape of the contours at  the size you found in question (4a).",
+  "+contours are straight and almost exactly parallel and evenly spaced+" = "Almost always, if you zoom in enough, the contours will be straight, almost parallel, and evenly spaced. The exceptions are if the reference point is exactly at a local maximum or minimum (point C is very close, but not exactly on  the maximum) or exactly at a saddle point (point D is very close, but not exactly on  the saddle point).",
+  "contours are straight, almost exactly parallel, but unevenly spaced." = "",
+  "contours  are straight,  but fan out a bit" = "",
+  "contours are curved but concentric and evenly spaced" = "",
+  "contours are curved and concentric,  but unevenly spaced." = "",
+  random_answer_order = FALSE,
+  inline = FALSE
+)
+```

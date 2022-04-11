@@ -1,0 +1,92 @@
+---
+id: "spider-dive-sheet"
+created: "Mon Jul 19 13:09:19 2021"
+global_id: "eMT6Zn"
+---
+
+Here is a discrete-time dynamical system that plays an outside role in the history of "chaos theory." $$x_{i+1} = \cos(x_i)$$
+Students who grew up in the 1960s and early 1970s typically had no access to computers and routinely performed calculations on a slide rule. You might enjoy this scene from "Apollo 13," a movie about the [aborted 1970 mission to the moon.](https://airandspace.si.edu/explore-and-learn/topics/apollo/apollo-program/landing-missions/apollo13.cfm#:~:text=Apollo%2013%20was%20to%20be,to%20the%20Earth%20without%20landing.) (The calculating action is at about 1:00 in the video.)
+
+<iframe src="https://player.vimeo.com/video/34664087" width="640" height="424" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+
+So when Hewlett Packard released its HP-33 scientific calculator in 1972 (costing $395, which adjusted for inflation is about $2500 in 2020 money), there was considerable excitement. (Most students had to wait until the TI-30 in 1976 which was a more affordable $27.)
+
+```{r echo=FALSE, fig.align="center", out.width="25%"}
+knitr::include_graphics("www/HP-35.jpg")
+```
+Many a student discovered that starting up the calculator with 0 in the display, and then repeatedly pressing  **cos**, produced a surprising (but correct!) result. After each press, the display showed the cosine of what had previously been on the display, that is $x_\text{next press} = \cos(x_\text{previous})$
+
+The sandbox provides a way to replicate the calculation in R. In the initial example, the **cos** button is being pressed three times, from an initial condition of $x_0 = 0$.
+
+```{r cd1, exercise=TRUE, exercise.cap="Iterating via pipe", exercise.nlines = 3}
+0 %>% cos() %>% cos() %>% cos() %>% cos() %>% cos()
+```
+
+```{r cd2, echo=FALSE}
+askMC(
+  "What's the value after iterating cosine 5 times starting from $x_0 = 0$?",
+  "0",
+  "0.6543" = "That's after 4 iterations.",
+  "+0.7934+",
+  "0.8576" = "That's after 3 iterations.",
+  random_answer_order = FALSE
+)
+```
+
+A more convenient way to iterate is provided by the (aptly named) `Iterate()` function. To use it, you provide a function, an initial condition, and a number of iterations. It returns a data frame showing each of the iterations. In the sandbox, we use `Iterate()`, print out the data frame, and graph $x_i$ versus $i$
+
+```{r cd3, exercise=TRUE, exercise.cap="Using Iterate()", exercise.nlines=4}
+iters <- Iterate(cos, x0 = 0, n = 10)
+iters
+gf_point(x ~ n, data = iters)
+```
+
+
+```{r cd4, echo=FALSE}
+askMC(
+  "Imagine your grandmother in 1972 with her new HP-35. While watching \"Gilligan's Island\", she presses the cosine button over and over and over. What will she end up with? (By the way, your grandmother is by no means alone in doing this.)",
+  "0.7393039",
+  "0.7504178" = "That's after 10 presses. But she has a whole episode to spend pressing the **cos** button.",
+  "+0.7390851+",
+  "0.7390893" = "That's after 30 presses. Keep going.",
+  random_answer_order = FALSE
+)
+```
+
+Once the display reaches the that certain value (the correct answer from the previous question), it will stay there despite continued pressing of the **cos** button. This is called a "fixed point." Fixed points will be very important in our exploration of dynamics.
+
+```{r cd5, echo=FALSE}
+askMC(
+  "The trajectory of the system *converges* on the fixed point. For the **cos** dynamical system, which of the following best describes the functional form of the convergence?",
+  "An exponentially decreasing function of $i$, e.g. $e^{-k i}$.",
+  "An exponentially increasing function of $i$, e.g. $e^{k i}$.",
+  "An oscillatory function, like $\\cos(\\pi i)$.",
+  "+An exponential times an oscillatory function, like $e^{-k i} \\cos(\\pi i)$+"
+)
+```
+
+```{r cd6, echo=FALSE}
+askMC(
+  "Your grandmother's curiosity piqued, she decides to explore values for the initial condition $x_0$ other than $x_0=0$. What did she find?",
+  "+The fixed point is the same regardless of $x_0$.+",
+  "For large $x_0$, there is another value for the fixed point.",
+  "The fixed point gives way to a permanently oscillating function.",
+  "$x_i$ tends to $-\\infty$ as $i \\rightarrow \\infty$."
+)
+```
+
+One of the people playing with calculators in the 1970s was a physicist at Los Alamos, Mitchell T. Feigenbaum. He was one of those legendary geniuses who turn play into fundamental discoveries. ([Read his 2019 obituary here.](https://www.nytimes.com/2019/07/18/science/mitchell-feigenbaum-dead.html))
+
+The question Feigenbaum asked himself is whether the behavior seen in the **cos** iteration is true of other functions as well. You can follow is investigations by replace **cos** in the iteration by 
+
+```{r}
+feigenbaum <- makeFun(mu * cos(x) ~ x, mu=1)
+```
+
+The parameter `mu` (written $\mu$ in Greek) can be set to other values. Surprisingly rich patterns are created for $3 \leq \mu \leq 4$ as you can see by iterating with $\mu = 4$, like this:
+
+```{r}
+Traj <- Iterate(feigenbaum, x0=0, n=200, list(mu=4))
+gf_point(x ~ n, data = Traj)
+```
+Feigenbaum's investigations led to his discovery of a fundamental and universal constant $\delta = 4.669201609102990671853203820466…$ that describes a general pattern in dynamics. You're familiar of course with fundamental constants like $\pi = 3.14159265358979 ...$ and $e \approx 2.718281828459 ... ...$. Although there is an infinity of numbers, there are only a handful of fundamental constants that have been given names.

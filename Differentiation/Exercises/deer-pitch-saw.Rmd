@@ -1,0 +1,138 @@
+---
+chapter: "none yet"
+author: "Danny Kaplan"
+difficulty: "XX"
+date: 2021-06-09 
+version: 0.1
+tags: [first, second, third]
+id: deer-pitch-saw
+global-id: "helxs"
+---
+
+```{r deer-pitch-saw-default, include = FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+```
+
+The left column of graphs shows functions A(), B(), C(), and D(). The right column shows functions dd1(), dd2(), and so on. Find which function (if any) in the right column corresponds to the 2nd derivative of a function in the left column.
+
+Remember the concepts of "concave up" (a smile!) and "concave down" (a frown). At those values of $x$ for which the 2nd derivative of a given function is positive, the given function will be concave up. When the 2nd derivative is negative, the given function will be concave down.
+
+```{r echo=FALSE}
+r1 <- rfun(~ x, seed = 101)
+r2 <- rfun(~ x, seed = 102)
+r3 <- rfun(~ x, seed = 103)
+r4 <- rfun(~ x, seed = 104)
+
+df1 <- makeFun(r1(x) + 1.5  ~ x)
+df2 <- makeFun(-r2(x)  ~ x)
+df3 <- makeFun(r3(x)  ~ x)
+df4 <- makeFun(r4(x)/2 + 7.5  ~ x)
+df5 <- makeFun(r1(x)  ~ x)
+df6 <- makeFun(abs(r2(x)) ~ x)
+df7 <- r1
+df8 <- r2
+df9 <- r3
+df10 <- r4
+
+ddf1 <- D(df1(x) ~ x)
+ddf2 <- D(df2(x) ~ x)
+ddf3 <- D(df3(x) ~ x)
+ddf4 <- D(df4(x) ~ x)
+ddf5 <- D(df5(x) ~ x)
+ddf6 <- D(df6(x) ~ x)
+ddf7 <- D(df7(x) ~ x)
+ddf8 <- D(df8(x) ~ x)
+ddf9 <- D(df9(x) ~ x)
+ddf10 <- D(df10(x) ~ x)
+
+
+f1 <- antiD(df1(x) ~ x)
+f2 <- antiD(df2(x) ~ x)
+f3 <- antiD(df3(x) ~ x)
+f4 <- antiD(df4(x) ~ x)
+f5 <- antiD(df5(x) ~ x)
+f6 <- antiD(df6(x) ~ x)
+f7 <- antiD(df7(x) ~ x)
+f8 <- antiD(df8(x) ~ x)
+f9 <- antiD(df9(x) ~ x)
+f10 <- antiD(df10(x) ~ x)
+
+F1 <- antiD(f1(x) ~ x)
+F2 <- antiD(f2(x) ~ x)
+F3 <- antiD(f3(x) ~ x)
+F4 <- antiD(f4(x) ~ x)
+F5 <- antiD(f5(x) ~ x)
+F6 <- antiD(f6(x) ~ x)
+F7 <- antiD(f7(x) ~ x)
+F8 <- antiD(f8(x) ~ x)
+F9 <- antiD(f9(x) ~ x)
+F10 <- antiD(f10(x) ~ x)
+```
+
+
+```{r echo=FALSE, out.width = "100%",  fig.show="hold"}
+dom <- domain(x = c(-5, 5))
+ggpubr::ggarrange(
+  slice_plot(f5(x) ~ x, dom) %>% gf_labs(title = "Function A()"),
+  slice_plot(ddf8(x) ~ x, dom) %>% gf_labs(title = "Function dd1()") , ncol=2)
+ggpubr::ggarrange(
+  slice_plot(f2(x) ~ x, dom) %>% gf_labs(title = "Function B()"),
+  slice_plot(ddf3(x) ~ x, dom) %>% gf_labs(title = "Function dd2()"), ncol=2)
+ggpubr::ggarrange(
+  slice_plot(f3(x) ~ x, dom) %>% gf_labs(title = "Function C()"),
+  slice_plot(ddf2(x) ~ x, dom) %>% gf_labs(title = "Function dd3()"), ncol=2)
+ggpubr::ggarrange(
+  slice_plot(f8(x) ~ x, dom) %>% gf_labs(title = "Function D()"),
+  slice_plot(ddf5(x) ~ x, dom) %>% gf_labs(title = "Function dd4()"),
+  ncol=2)
+```
+
+```{r deer-pitch-saw-QA1, echo=FALSE}
+askMC(
+  prompt = "The second derivative of Function A() is which of the following:",
+    "dd1()" = "",
+    "dd2()" = "",
+    "dd3()" = "",
+    "+dd4()+" = "",
+    random_answer_order = FALSE
+)
+```
+
+
+```{r deer-pitch-saw-QA2, echo=FALSE}
+askMC(
+  prompt = "The second derivative of Function B() is which of the following:",
+    "dd1()" = "",
+    "dd2()" = "",
+    "+dd3()+" = "",
+    "dd4()" = "",
+    random_answer_order = FALSE
+)
+```
+
+```{r deer-pitch-saw-QA3, echo=FALSE}
+askMC(
+  prompt = "The second derivative of Function C() is which of the following:",
+    "dd1()" = "",
+    "+dd2()+" = "",
+    "dd3()" = "",
+    "dd4()" = "",
+    random_answer_order = FALSE
+)
+```
+
+```{r deer-pitch-saw-QA4, echo=FALSE}
+askMC(
+  prompt = "The second derivative of Function D() is which of the following:",
+    "+dd1()+" = "",
+    "dd2()" = "",
+    "dd3()" = "",
+    "dd4()" = "",
+    random_answer_order = FALSE
+)
+```
+
+
+

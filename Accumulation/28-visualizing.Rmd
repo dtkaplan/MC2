@@ -1,0 +1,178 @@
+# Totaling the little bits {#totaling-bits}
+
+<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Block-3/28-visualizing.Rmd)</div>
+
+
+
+Many students wonder how it is possible to reconstruct a function $F(x)$ from its derivative $f(x)$. The point of this short chapter is to help you develop some intuition about anti-differentiation.
+
+You already know the notation meaning "$F(x)$ is the anti-derivative of $f(x)$": $$\large \int f(x)\, dx\ .$$
+In drawing a graph of $F(x)$, we will of course want to use coordinate axes where the quantity $x$ is represented on the horizontal axis and the quantity of the output $F(x)$ is on the vertical axis:
+
+```{r F-blank-axes, echo=FALSE, fig.cap="The graphics frame in which we want to draw the graph of $F(x)$. A small region of the domain is labeled $dx$. Within that domain, $F(x)$, whatever it is, will be a sloping segment. The gray segment shows what this might look like."}
+slice_plot(cos(2*pi*x/10) ~ x, domain(x=-5:5), alpha=0) %>%
+  gf_lims(x=-5:5, y=-1:1) %>%
+  slice_plot(0.1 + cos(2*pi*x/6) ~ x, domain(x=-2.5:-2.0), color="gray", size=2) %>%
+  gf_errorbarh(0 ~ -2.5 + -2.0, color="blue", width=2) %>%
+  gf_text(0 ~ -2.25, label="dx", color="blue", vjust=-1) %>%
+  gf_labs(y="Output of F(x)")
+```
+It's premature to have drawn a segment of $F(x)$ because we haven't yet undertaken to compute $F(x) = \int f(x)\, dx$. At this point in the process, all we know is $f(x)$, not $F(x)$. Still, since we know $f(x)$, we actually do know the slope of the little segment of $F(x)$. We just don't know where that segment should be located vertically in each of the $dx$ regions that make up the whole domain. 
+
+We can't draw $f(x)$ in the ordinary way as a curve wending its way across the domain of the graph. Why not? Because the vertical axis of the graphics frame is in terms of $F(x)$ and has a different dimension than the output of $f(x)$.
+
+But we can draw $f(x)$ in terms of the slope of a segment of horizontal extent $dx$, so long as we accept that the vertical position of that segment means nothing: $f(x)$ gives information only about the **slope** of the segment. The best we can do at this point is to graph $f(x)$ in terms of sloping segments, as in Figure \@ref(fig:F-blank-axes2).
+
+
+
+```{r F-blank-axes2, echo=FALSE, fig.cap="Graphing $f(x)$ as a series of sloped segments. The slope is the value of $f(x)$. But the vertical position of the segment is not information provided by $f(x)$, so we've drawn all of them at the same vertical level."}
+Pts <- Znotes::segmentize(cos(2*pi*x/10) ~ x, h=0.5, domain(x=-5:5), npts=100)
+
+
+slice_plot(cos(2*pi*x/10) ~ x, domain(x=-5:5), alpha=0) %>%
+  gf_segment(ymin + ymax ~ xmin + xmax, data = Pts, color="gray", size=2) %>%
+  gf_lims(x=-5:5, y=c(-1,1)) %>%
+  gf_errorbarh(0 ~ -2.5 + -2.0, color="blue", width=2) %>%
+  gf_text(0 ~ -2.25, label="dx", color="blue", vjust=-1) %>%
+  gf_labs(y="Output of F(x)")
+```
+
+Each of the segments in Figure \@ref(fig:F-blank-axes2) has the same horizontal extent, namely $dx$. When we draw a sloping segment over the tiny bit $dx$ of the domain, the vertical extent of the segment will be the product of the width $dx$ and the slope $f(x)$. That is, the vertical extent will be the product $f(x) dx$.
+
+Whenever we know a function $f(x)$ and have chosen a size for $dx$ we can draw a graph of $f(x)$ in the form shown in Figure \@ref(fig:F-blank-axes2). We're drawing it in this unusual way because we want the graphics frame to be all ready for drawing the graph of $F(x)$ in the normal fashion after we have figured out what $F(x)$ results from accumulating/summing-up all the little $f(x) dx$ segments. When we write $\large\int$ in the notation $$\large \int f(x)\, dx$$ we mean, "sum up all the $f(x) dx$ segments."
+
+Let's now consider how to "sum up all the segments." We'll start in Figure \@ref(fig:F-232) with an example where we already know $F(x)$. That way, we can see of our sum of the $f(x) dx$ segments really does reconstruct $F(x)$. 
+
+```{r F-232, echo=FALSE, fig.cap="Top: A function $F(x)$ for demonstration purposes. Bottom: Slicing $F(x)$ into piecewise domains of width $dx=2$ and anchoring the left-most point of each slice vertically at 0." }
+F <- rfun(~ x, seed = 232)
+P1 <- slice_plot(F(x) ~ x, domain(x=-5:5)) %>%
+  gf_labs(title = "F(x)") %>%
+  gf_refine(scale_x_continuous(breaks=-5:5))
+Pts <- Znotes::segmentize(F(x) ~ x, h=2, domain(x=-5:5), npts=100)
+P2 <- gf_segment(ymin + ymax ~ xmin + xmax, data = Pts) %>%
+  gf_point(7.072 ~ -2.995, color="blue", size=2) %>%
+  gf_hline(yintercept = ~ 7.072, color="blue", alpha=0.25) %>%
+  gf_labs(x = "x", y = "output", title="Sliced F(x)") %>%
+  gf_refine(scale_x_continuous(breaks=-5:5)) %>%
+  gf_errorbarh(-8 ~ -3 + -1, color="orange") %>%
+  gf_text(-8 ~ -2, label="dx=2", color="orange", vjust=1.5)
+gridExtra::grid.arrange(P1, P2, nrow=2)
+```
+
+Now imagine that we sliced up $F(x)$ over small sub-domains of $x$, as in Figure \@ref(fig:F-232) (bottom). That is, we approximated $F()$ piecewise locally. But we've broken the continuity of $F(x)$ by moving each slice up or down so that the left-most point has value 0.
+
+
+Can you reconstruct $F(x)$ from the local segments? 
+
+
+
+Start by reading off the function value from the last point in the left-most segment. That's been marked in Figure \@ref(fig:F-232) with a blue dot. The function value at that dot is 7.072. 
+
+Now take the second segment. The idea is to move that segment upward until it joins the first segment at the blue dot. You can do that by adding 7.072 to the second segment. The result is shown in Figure \@ref(fig:F-seg-2)(top).
+```{r F-seg-2, echo=FALSE, fig.cap="Reconstructing the original function $F(x)$ by moving each segment upward to meet its left neighbor. Top: The first two segments are connected. Bottom: The third segment is connected to the first two."}
+One <- Pts %>% mutate(add = 7.072*(segnum==1), 
+                      ymin=ymin + add,
+                      ymax=ymax + add)
+P1 <- gf_segment(ymin + ymax ~ xmin + xmax, data = One) %>%
+  gf_point(7.072 ~ -2.995, color="blue", size=2) %>%
+  gf_point(4.198 ~ -.9919, color="blue", size=2) %>%
+  gf_hline(yintercept = ~ 4.198, color="blue", alpha=0.25) %>%
+  gf_labs(x = "x", y="output") %>%
+  gf_errorbarh(-8 ~ -3 + -1, color="orange") %>%
+  gf_text(-8 ~ -2, label="dx=2", color="orange", vjust=1.5)
+Two <- One %>% mutate(add = 4.198*(segnum==2), 
+                      ymin=ymin + add,
+                      ymax=ymax + add)
+P2 <- gf_segment(ymin + ymax ~ xmin + xmax, data = Two) %>%
+  gf_point(7.072 ~ -2.995, color="blue", size=2) %>%
+  gf_point(4.198 ~ -.9919, color="blue", size=2) %>%
+  gf_point(4.802 ~ 1.012, color="blue", size=2) %>%
+  gf_hline(yintercept = ~ 4.802, color="blue", alpha=0.25) %>%
+  gf_labs(x = "x", y="output")%>%
+  gf_errorbarh(-8 ~ -3 + -1, color="orange") %>%
+  gf_text(-8 ~ -2, label="dx=2", color="orange", vjust=1.5)
+gridExtra::grid.arrange(P1, P2, nrow=2)
+```
+Now read off the new value at the end of the second segment, it's 4.198. Add this amount to the third segment as in Figure \@ref(fig:F-seg-2)(bottom).
+
+Continue this process until you have reconstructed $F(x)$ from the local segments.
+
+You may object: "Of course you can reconstruct $F(x)$ from the local segments, but this isn't the same as reconstructing $F(x)$ from its derivative $\partial_x F(x)$." My answer: "That depends on how many segments you use."
+
+When we make the segment width $h$ smaller and smaller, the individual segments become more and more like straight lines. Figure \@ref(fig:F-slice-many) shows the segments for smaller and smaller $h$.
+
+```{r F-slice-many, echo=FALSE, fig.cap="Using small segments gives each segment a simple shape. In Figure \\@ref(fig:F-seg-2) the segments had width $dx=2.0$ and were discernable curvy. Top of this figure: At width $dx=0.25$ a few of the segments look curved. Middle: This graph zooms in on the subdomain $-1 \\leq x \\leq 1$ in the top panel, where there is a notably curved segment in the top graph. Setting $dx=0.1$ breaks up such curved segment into components better approximated by a straight line. Bottom: Using $dx=0.01$ further improves the approximation of each segment to a straight line."}
+Pts <- Znotes::segmentize(F(x) ~ x, h=0.25, domain(x=-5:5), npts=20)
+P1 <- 
+  gf_rect(1.1 + -2.2 ~ -1 + 1, fill="orange", color=NA, alpha=0.2) %>%
+  gf_segment(ymin + ymax ~ xmin + xmax, data = Pts) %>%
+  gf_labs(x="x", y="output") %>%
+  gf_errorbarh( -0.8 ~ -2.5 + -2.25, color="blue") %>%
+  gf_text(-0.8 ~ -2., label="dx=0.25", color="blue", hjust=0)
+Pts <- Znotes::segmentize(F(x) ~ x, h=0.1, domain(x=c(-1,1)), npts=20)
+P2 <- 
+  gf_rect(0.4 + -0.6 ~ -1 + 1, fill="orange", color=NA, alpha=0.1) %>%
+  gf_rect(0.4 + -0.6 ~ 0.25 + 0.50, fill="red", color=NA, alpha=0.1) %>%
+  gf_segment(ymin + ymax ~ xmin + xmax, data = Pts) %>%
+  gf_labs(x="x", y="output") %>%
+  gf_errorbarh( -0.1 ~ -0.5 + -0.4, color="blue", height=0.05) %>%
+  gf_text(-0.1 ~ -0.35, label="dx=0.1", color="blue", hjust=0) 
+  
+Pts <- Znotes::segmentize(F(x) ~ x, h=0.01, domain(x=c(0.25,0.5)), npts=20)
+P3 <- 
+  gf_rect(0.01 + -0.013 ~ 0.25 + 0.50, fill="red", color=NA, alpha=0.1) %>%
+  gf_segment(ymin + ymax ~ xmin + xmax, data = Pts) %>%
+  gf_labs(x="x", y="output") %>%
+  gf_errorbarh(-0.005 ~ .32 + .33, color="blue", width=0.01) %>%
+  gf_text(-0.005 ~ .34, label="dx=0.01", color="blue", hjust=0)
+gridExtra::grid.arrange(P1, P2, P3, nrow=3)
+
+```
+
+
+Notice that many of the segments are straight lines. That's understandable, since any function looks like a straight line over a small enough domain. 
+
+Each of those straight-line segments is drawn over a domain $x_i < x < x_i+dx$ that has width $dx$. For $dx$ small enough, the segment is well approximated by a straight line with slope  $\partial_x F(x_i)$. Multiplying slope by width $dx$ gives the segment height: $\left[{\large\strut}\partial_x F(x_i)\right]\ dx$. Of course, remember that $\partial_x F(x) = f(x)$ helps us see that each of the little segments is $f(x_i)\ dx$.
+
+Lets review. The standard notation for anti-differentiation can be interpreted in terms of putting together segments, or, in the words of Prof. Thompson in *Calculus Made Easy*, "totaling up all the little bits." (See Section \@ref(preliminary-terrors).)
+
+
+1. We start with the function that we already know: $\large f(x)$. Remember that $f(x)$, at each value of $x$ will be the *slope* of $F(x)$. Why? Because $F(x)$ is the anti-derivative of $f(x)$, so $f(x)$ is the derivative of $F(x)$.
+
+2. Now divide the domain $x$ into many little bits. Each of these sub-domains is $\large dx$, a little chunk of $x$.
+
+3. On each of the little chunks, draw in $f(x)$. Since $f(x)$ is the *slope* of $F(x)$, we will draw $f(x)$ for any given chunk as a short line segment of that slope over the chunk, as in Figure \@ref(fig:F-blank-axes2). We'll write these little bits, each of which is very nearly a straight-line, as $\large\color{blue}{f(x) dx}$. 
+
+4. Assemble together all the $f(x)dx$ segments from (3) to get $F(x)$. This instruction to assemble is denoted 
+$$\Large \color{blue}\int$$
+
+Altogether, we have:
+
+$$\large \underbrace{\underbrace{\Large\color{magenta}{\int}}_{\color{magenta}{\text{assemble}}} \underbrace{\Large \overbrace{f(x)}^{\small\text{slope of F(x)}}\ \  \overbrace{\strut dx}^{\small \text{bits of}\ x}}_{\color{blue}{\text{the slope segments}}}}_{\text{giving}\ {\Large F(x)+C}\ \text{altogether.}}$$
+
+::: {.example data-latex=""}
+Returning to the example with which we started the chapter, here are the little segments of the slope function shown in Figure \@ref(fig:F-blank-axes2) assembled together to produce the anti-derivative function.
+
+```{r show-bits2, echo=FALSE, fig.cap="$\\color{blue}{\\int} f(x)dx$ means to assemble the straight-line pieces $f(x) dx$ in the manner described in the previous section."}
+Pts <- Znotes::segmentize(cos(2*pi*x/10) ~ x, h=0.5, domain(x=-5:5), npts=1) %>%
+  mutate(top = cumsum(ymax - ymin), bottom=top - (ymax-ymin))
+
+
+slice_plot(cos(2*pi*x/10) ~ x, domain(x=-5:5), alpha=0) %>%
+  gf_segment(ymin + ymax ~ xmin + xmax, data = Pts, color="gray", size=1.5) %>%
+  gf_segment(bottom + top ~ xmin + xmax, data = Pts) %>%
+  #gf_lims(x=-5:5, y=c(-1,1)) %>%
+  gf_errorbarh(0 ~ -2.5 + -2.0, color="blue", width=2) %>%
+  gf_text(0 ~ -2.25, label="dx", color="blue", vjust=-1) %>%
+  gf_labs(y="Output of F(x)")
+```
+:::
+
+
+
+<!--
+## Exercises
+
+insert_calcZ_exercise("28.02", "BhGRKU", "Exercises/camel-win-bottle.Rmd")
+
+-->

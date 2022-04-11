@@ -1,0 +1,45 @@
+---
+id: "seahorse-build-pot"
+created: "Tue Apr  5 18:00:03 2022"
+global_id: "FCXT1L"
+skill: "function composition"
+---
+
+
+::: {.undercontruction}
+Turn this into a programming activity, where they need to introduce the function `deg2rad()`.
+:::
+
+::: {.rmosaic data-latex=""}
+Composing functions is very common in computer programming. Consider these two functions
+:::
+
+A computer implementation must look different, since $L$ and $\delta$ are typically provided in degrees while the `tan()` and other trigonometric functions in most computer languages expect units of radians. The conversion is easy: $\text{deg2rad}(d) \equiv \frac{\pi}{180} d$. The conversion the other way is $\text{rad2deg}(r) \equiv \frac{180}{\pi} r$.
+
+In order to get the day-length formula to work in a computer, we can compose the $\tan()$ function with `deg2rad()`. The output of `acos()` is in radians, so we have to convert it back to degrees. Like this:
+
+```{r}
+day_length <- makeFun(
+  (2/15)*rad2deg(
+    acos(
+      -tan(deg2rad(L))*tan(deg2rad(d))
+    )
+  ) ~ L & d)
+```
+
+
+Now to make a plot of day length as a function of day of the year. Of course, `day_length(L, d)` does not take day of the year into account. What's missing is to know the declination of the sun as a function of calendar day.
+
+The input is a number $n$ that runs from 0 at the start of January 1st to 365 at the end of December 31. In terms of this input, the declination of the sun is known to be approximately
+```{r}
+delta_sun <- makeFun(-23.44*cos((2*pi/365)*(n+10) ) ~ n)
+```
+
+Composing `day_length()` with `delta_sun()` (on the `d` argument only), and setting the latitude to be, say, $39^\circ$N,  we get a function of day of year `n`:
+```{r}
+slice_plot(
+  day_length(39, delta_sun(n)) ~ n, 
+  domain(n=c(0,365))
+  )
+```
+

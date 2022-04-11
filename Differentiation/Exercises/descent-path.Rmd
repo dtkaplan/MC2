@@ -1,0 +1,80 @@
+---
+id: "descent-path"
+author: "Daniel Kaplan"
+global-id: "HCILW"
+---
+
+Pilots of commercial passenger aircraft consider the comfort of their passengers into account when flying. In transitioning from level flight onto the descent path for landing, for example, pilots take care that the vertical component of acceleration isn't so great that passengers feel the plane "falling out from under them."
+
+A simple model of the descent path is a sigmoid function. Suppose that the descent starts from an altitude of $A = 20,000$ feet at a distance of 30,000 feet from the end of the runway. A reasonable model for the vertical component of the flight path is $$\text{altitude}(x) \equiv A\,\pnorm(x,\ \  mn=30000/2,\ \  sd=30000/6)$$  Notice that the parameter "mean" is set to be half the distance to the runway, and the parameter "sd" is set to be a third of that. This ensures that the start and end of the descent will involve flight that is close to level.
+
+```{r echo=FALSE}
+slice_plot(20000*pnorm(x, mean=30000/2, sd=30000/6) ~ x, domain(x=0:30000))) %>%
+  gf_labs(x = "Distance to end of runway") %>%
+  gf_text(19900 ~ 28000, label="<" ) %>%
+  gf_text(100 ~ 2000, label = "<")
+```
+
+The vertical acceleration is the second derivative of alt() with respect to time: $\partial_{tt} \text{altitude}(t)$. But notice that alt() is a function of distance from the runway, not time. 
+
+In order to treat alt() as a function of time, we need to write "distance from the runway" as a function of time. Let's set $t=0$ to be the time when the plane begins its descent, when it's 30,000 feet from the end of the runway. Distance from the runway will be $$x(t) = 30000 - v\, t$$ where $v$ is the plane's velocity.
+Composing altitude() onto $x(t)$ gives a new function 
+$$\text{alt}(t) \equiv \text{altitude}(x(t)) = \text{altitude}(30000-v\, t)$$
+
+Suppose that the aircraft is flying at $v = 200$ miles-per-hour, which is $$200  \frac{\bcancel{\text{miles}}}{\cancel{\text{hour}}} \frac{\cancel{1\, \text{hour}}}{3600\, \text{s}} \frac{5280 \text{ft}}{\bcancel{1\, \text{mile}}} = 293.3 \frac{\text{ft}}{\text{s}}$$. 
+At that speed, it will take a little more than 100 seconds for the aircraft to reach the runway.
+
+Using a sandbox, plot out the function alt($t$) function, choosing a domain for $t$ that lets you see the whole descent path. 
+```{r eval=FALSE}
+alt <- makeFun(20000 * pnorm(30000 - v * t, 30000/2, 30000/6) ~ t, v = 293.3)
+slice_plot(alt(t) ~ t, domain(t=0:110))
+```
+
+
+
+Compute the second derivative $\partial_{tt} \text{alt}(t)$ to find the vertical component of acceleration of the aircraft. (Important note: Due to a bug in R, use `numD()` rather than `D()` to compute the second derivative.)
+
+Graph the second derivative over the appropriate domain and look for the most extreme values of acceleration.
+
+```{r eval=FALSE}
+dd_alt <- numD(alt(t) ~ t + t)
+slice_plot(dd_alt(t) ~ t, domain(t=0:110))
+```
+From the graph, read off the maximum vertical acceleration during the descent.
+
+```{r dp3-1, echo=FALSE, results="markup"}
+askMC(
+  "What are the **units** of vertical acceleration shown in the graph?",
+  "feet-per-second" = "That's a unit of velocity, not acceleration.",
+  "+feet-per-second-squared+",
+  "miles-per-hour-squared" = "This is a unit of acceleration, but since we used feet and seconds in defining the alt() function, the second derivative will also be in feet and seconds."
+)
+```
+
+
+```{r echo=FALSE, results="hide"}
+dist <- 60000
+alt <- makeFun(20000*pnorm(dist-v* t, dist/2, dist/6) ~ t, v = 293.33)
+slice_plot(alt(t) ~ t, domain(t=-0:200))
+dd_alt <- numD(alt(t) ~ t & t)
+slice_plot(dd_alt(t) ~ t, domain(t=-0:200))
+```
+
+A rule of thumb is that a vertical acceleration up to $5\, \text{ft}\, \text{s}^{-2}$ is acceptable in terms of passenger comfort. Regrettably, the descent path we described doesn't meet the standard! So we have to re-design the descent path. Since both the altitude and velocity are set, the only parameter you can change is the distance from the foot of the runway where descent commences. Of course, for the parameters "mean" and "sd" need to be set accordingly.
+
+```{r dp3-2, echo=FALSE, results="markup"}
+askMC(
+  "How far from the foot of the runway should descent begin in order to stay within the $5\\, \\text{ft}\\, \\text{s}^{-2}$ acceleration constraint? Pick the shortest distance that satisfies the constraint.",
+  "40,000 ft",
+  "50,000 ft",
+  "+60,000 ft+",
+  "70,000 ft",
+  "80,000 ft",
+  random_answer_order = FALSE
+)
+```
+
+**For reflection**: A new hire at the airline's operations center proposes to model the descent as a straight-line function rather than a sigmoid. He points out that the second derivative of a straight-line function is always 0, so the passengers would feel no acceleration at all! Explain to this newbie what's wrong with his idea.
+
+
+

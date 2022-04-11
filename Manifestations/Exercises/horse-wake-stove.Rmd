@@ -1,0 +1,25 @@
+---
+id: "horse-wake-stove"
+created: "Thu Nov 18 11:00:05 2021"
+global_id: "QQ4ulz"
+format: "on paper"
+---
+
+The two graphs below show the same set of knot points. The interpolating function in one graph is a cubic spline; in the other it is a quadratic spline.
+
+```{r echo=FALSE}
+set.seed(1013)
+Pts <- tibble(x=1:6, y = rnorm(length(x)))
+fquad <- qspliner(y ~ x, data = Pts)
+fcubic <- spliner(y ~ x, data = Pts)
+P1 <- slice_plot(fquad(x) ~ x, domain(x=1:6)) %>%
+  gf_point(y ~ x, data = Pts, color="orange", size=3, alpha=0.5) %>%
+  gf_labs(title="Function A")
+P2 <- slice_plot(fcubic(x) ~ x, domain(x=1:6)) %>%
+  gf_point(y ~ x, data = Pts, color="orange", size=3, alpha=0.5) %>%
+  gf_labs(title="Function B")
+gridExtra::grid.arrange(P1, P2, ncol=2)
+```
+
+1. Which plot shows the cubic spline?
+2. What is it about the shapes of the two interpolating functions that motivated your answer to (1)?

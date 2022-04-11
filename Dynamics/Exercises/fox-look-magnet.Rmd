@@ -1,0 +1,54 @@
+---
+id: "fox-look-magnet"
+created: "Sun Mar 20 12:23:27 2022"
+global_id: "tNLucT"
+skill: "U-5PMG7 V-4KF8Q K-LH9CX N-9IU5J"
+---
+
+
+This system of differential equations, called the ***Lorenz equations*** is famous as the first widely recognized example of a type of motion called ***chaos***.
+
+\begin{eqnalign}
+\partial_t x & = \sigma (y - x), \\
+\partial_t y & = x (\rho - z) - y, \\
+\partial_t z & = x y - \beta z
+\end{eqnalign}
+
+1. What are the state variables and what are the parameters?
+
+2. What is the dimension of the state space?
+
+3. For initial conditions $x_0 = -5.276, y_0 = -7.152, z_0=19.452$ and $\rho=28$, $\sigma=10$, and $\beta=8/3$, use `integrateODE()` to integrate the equations over $tdur=100$ time units with a stepsize of $dt=0.01$. (This means you should set the `tdur=` argument to `tdur=list(from=0, to=50, dt=0.01)`) Call your trajectory `T1`.
+
+```{r echo=FALSE, results="hide"}
+T1 <- integrateODE(dx ~ sigma*(y-x), dy ~(x*(rho-z) - y), 
+                  dz ~ (x*y - beta*z),
+                  x=-5.276, y=-7.152, z=19.452, 
+                  rho=28, sigma=10, beta = 8/3, 
+                  tdur=list(from=0, to=50, dt=0.01))
+T2 <- integrateODE(dx ~ sigma*(y-x), dy ~(x*(rho-z) - y), 
+                  dz ~ (x*y - beta*z),
+                  x=-5.277, y=-7.153, z=19.453, 
+                  rho=28, sigma=10, beta = 8/3, 
+                  tdur=list(from=0, to=50, dt=0.01))
+traj_plot(x(t) ~ t, T1)
+traj_plot(y(t) ~ x(t), T1, npts=10000)
+traj_plot(x(t) ~ t, T1, color="blue") %>% traj_plot(x(t) ~ t, T2, color="red")
+```
+
+4. Based on your results in (3), what are the values of $x$, $y$, and $z$ at time $t=50$.
+
+5. Make a time series plot of $x(t)$. Note that $x(t)$ jumps between a  oscillation with negative $x$ and the same kind of oscillation with positive $x$.
+
+6. Plot out the $y$ component of the trajectory versus the $x$ component of the trajectory. To get a smooth plot, you will have to use the `npts=10000` argument to `traj_plot()`. The trajectory will appear to cross itself, but this is because you are only plotting two of the state variables.
+
+7. Create another trajectory `T2` in the same way you made `T1`. But change each of the initial conditions in the third decimal point. Then plot out the $x(t)$ time series for `T1` (with `color="blue"`) and the $x(t)$ time series for `T2` (with color="red"`) on the same axes. The two time series will track one another very closely, but then come out of sync with one another. 
+
+8. The characteristic feature of chaos is that a small change in initial conditions can lead to a very large change in the time series. How long does it take for the two time series in (7) to become utterly out of sync with one another?
+
+9. The function `traj_plot_3D()` provides a simple way to look at the trajectory in 3 dimensions. Such a plot shows that the trajectory does not in fact cross itself. Use this command:
+```{r}
+traj_plot_3D(x, y, z, T1, npts=5000)
+```
+
+

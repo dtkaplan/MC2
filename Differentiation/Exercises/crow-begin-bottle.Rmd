@@ -1,0 +1,103 @@
+---
+id: "crow-begin-bottle"
+created: "Tue Oct  5 16:12:25 2021"
+author: "Daniel Kaplan"
+global_id: "JnAuol"
+---
+
+When discussing functions with a single input, it was easy to distinguish between the function itself and the output of the function for a specific input. We use the following conventions, some of which may be obvious and others not so much.
+
+a. $f()$ --- Function itself. Since there is only one input it doesn't matter what the name is.
+b. $f(x)$ --- Function itself. $x$ is the name of an input, not the specific value an input.
+c. $f(2)$ --- The value of the output when $f()$ is applied to the input value 2.
+d. $f(x)\left.{\Large\strut}\right|_{x=2}$. This distinct vertical bar notation means, take the function $f(x)$ and evaluate it at input value 2.
+e. $f(x=2)$ --- Same thing as (d). 
+
+These conventions don't tell us how to read expressions involving $\partial_x$ or $\partial_t$, etc. 
+
+To avoid ambiguity we need to stipulate the meaning of different notation forms. We'll frame this as a question of "operator precedence" of the same sort used in interpreting an expression like $3 x^2$ as meaning $3 \left(x^2\right)$.
+
+1. When the prime notation is used, as in $f'(2)$, the prime has precedence over everything else except parentheses. Thus, the product rule is
+$$(fg)' = f'g + fg'$$ where the right-side of the equation means "the function $f'$ multiplied by the function $g$ plus the function $g'$ multiplied by the function $f$."
+2. When using the $\partial_x$ notation, $\partial_x$ has precedence over evaluation whenever there is a matching $x$ in the expression being evaluated. For instance:
+    i. $\partial_x f(x=2)$ means, "apply the function $\partial_x f(x)$ to the specific input 2."
+    ii. $\partial_x f(x) \left.{\Large\strut}\right|_{x=2}$ means the same thing as (i).
+    iii. $\partial_x f(2)$ means something different: "Evaluate $f()$ on the specific input 2. The result will be a specific output value. The derivative of a specific output value will always be zero."
+
+That leaves the question of $\partial_x f()$. There is no mention of $x$ being the input to $f()$. So we'll deem $\partial_x f()$ to be ***sloppy and ambiguous***. We will try to avoid this usage. Draw any such cases to the authors' attention so it can be corrected. 
+
+Suppose we define two functions: $f(x) \equiv x^2/2$ and $g(x) \equiv x/2$. With these definitions, evaluate the expressions given below.
+
+```{r cbbk-1, echo=FALSE, results="markup"}
+askMC(
+  "$\\partial_t g(t=2)$",
+  "0",
+  "+1/2+" = "Differentiate first, which gives the constant 1/2.",
+  "1",
+  "2",
+  "Sloppy",
+  random_answer_order = FALSE
+)
+```
+
+```{r cbbk-2, echo=FALSE, results="markup"}
+askMC(
+  "$\\partial_x g(t=2)$",
+  "+0+" = "The name in the subscript of $\\partial_x$ is not matched by anything in the rest of the expression. So evaluate $g()$ at the specific input $2$, then differentiate with respect to $x$ the result. Since the result is $g(t=2)=1$, the derivative is zero.",
+  "1/2",
+  "1",
+  "2",
+  "Sloppy",
+  random_answer_order = FALSE
+)
+```
+
+```{r cbbk-3, echo=FALSE, results="markup"}
+askMC(
+  "$\\partial_t f(x=2) g(t=2)$",
+  "0",
+  "1/2",
+  "+1+" = "The subscript in $\\partial_t$ has a match in the expression. So differentiate the expression, giving $f(x=2) g'(2)$ = 2 \\times 1/2 = 1$.",
+  "2",
+  "Sloppy",
+  random_answer_order = FALSE
+)
+
+```
+
+```{r cbbk-4, echo=FALSE, results="markup"}
+askMC(
+  "$\\partial_x f(2)\\, g(t=2)$",
+  "+0+" = "There nothing to match the subscript of $\\partial_x$ in the rest of the expression. So that part of the expression must be constant with respect to $x$.",
+  "1/2",
+  "1",
+  "2",
+  "Sloppy",
+  random_answer_order = FALSE
+)
+```
+
+```{r cbbk-5, echo=FALSE, results="markup"}
+askMC(
+  "$\\partial_x f(x=1)$",
+  "0",
+  "1/2",
+  "+1+"  = "Differentiate $f()$ with respect to it's argument, giving $f'(x) = x$. Then evaluate f' at input value 1, giving 1 as the output.",
+  "2",
+  "Sloppy",
+  random_answer_order = FALSE
+)
+```
+
+```{r cbbk-6, echo=FALSE, results="markup"}
+askMC(
+  "$\\partial_x f() g()$",
+  "0",
+  "1/2",
+  "1",
+  "2",
+  "+Sloppy+",
+  random_answer_order = FALSE
+)
+```
+

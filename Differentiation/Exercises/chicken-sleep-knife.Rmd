@@ -1,0 +1,70 @@
+---
+id: "chicken-sleep-knife"
+created: "Thu Aug 12 14:11:28 2021"
+global_id: "jyXhPM"
+---
+
+Here is a graph of $\sin(x)$ with points marked at $x=-\pi/2$, $x=0.923$, and $x = \pi/2$. At each of those points, an inscribed circle has been drawn, tangent to the function at that point. 
+
+```{r echo=FALSE}
+f <- makeFun(sin(x) ~ x)
+slice_plot(f(x) ~ x, domain(x=-3:3))) %>%
+  gf_path(y ~ x, data = inscribed_circle(f(x) ~ x, -pi/2), color="tan", size=2, alpha=0.4) %>%
+  gf_path(y ~ x, data = inscribed_circle(f(x) ~ x, .5), color="blue", size=2, alpha=0.5) %>%
+  gf_path(y ~ x, data = inscribed_circle(f(x) ~ x, +pi/2), color="green", size=2, alpha=0.5) %>%
+  gf_point(1 ~ pi/2) %>%
+  gf_point( sin(0.5) ~ 0.5) %>%
+  gf_point(-1 ~ -pi/2) %>%
+  gf_refine(coord_fixed(xlim=c(-3,3), ylim=c(-2, 2)))
+```
+
+You're task is to calculate the curvature $\cal K$ at each of those three input points. This is a matter of calculating the first and second derivatives of the sine function, evaluating those derivatives at the input values, and plugging them in to the formula in Section \@ref(curvature-definition).
+
+```{r csk7-1, echo=FALSE, results="markup"}
+askMC(
+  "What is the curvature $\\cal K$ of $\\sin(x=-\\pi/2)$?",
+  "-1" = "$\\cal K$ can be negative!", 
+  "0" = "             ",
+  "0.5" = "               ",
+  "+1+" = "     ",
+  "2",
+  random_answer_order = FALSE
+)
+```
+
+```{r csk7-2, echo=FALSE, results="markup"}
+askMC(
+  "What is the curvature $\\cal K$ of $\\sin(x=-0.923)$?",
+  "-1" = "$\\cal K$ can be negative!", 
+  "0" = "             ",
+  "+0.5+" = "    ",
+  "1" = "     ",
+  "2",
+  random_answer_order = FALSE
+)
+```
+
+```{r csk7-3, echo=FALSE, results="markup"}
+askMC(
+  "What is the curvature $\\cal K$ of $\\sin(x=\\pi/2)$?",
+  "-1" = "$\\cal K$ can be negative!", 
+  "0" = "             ",
+  "0.5" = "    ",
+  "+1+" = "     ",
+  "2",
+  random_answer_order = FALSE
+)
+```
+
+
+```{r csk7-4, echo=FALSE, results="markup"}
+askMC(
+  "What is the curvature $\\cal K$ of $\\sin(x=0)$? (Hint: You can tell straight from the graph, even though no enscribed circle has been drawn.",
+  "+0+" = "The graph is straight at $x=0$, so no curvature",
+  "0.5" = "                   ",
+  "1" = "                              ",
+  "2",
+  random_answer_order = FALSE,
+  inline=FALSE
+)
+```

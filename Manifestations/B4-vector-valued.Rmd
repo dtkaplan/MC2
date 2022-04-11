@@ -1,0 +1,90 @@
+# Vector-valued functions
+
+<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Block-4/B4-vector-valued.Rmd)</div>
+
+The functions we have worked with up to now have **outputs** that are single quantities: e.g., height or speed or fuel consumed. In Section \@ref(cubic-spline), in order to present the programmed position versus time of a robot arm, we needed to construct two functions, one giving the x-coordinate of the arm, the other giving the y-coordinate. Using differentiation with respect to time, we can calculate from the x- and y-position functions the x- and y-velocity functions and the x- and y-acceleration functions. All six functions are shown in Figure \@ref(fig:robot-functions).
+
+```{r results="hide"}
+pos_x <- spliner(x ~ t, data = Zcalc::Robot.stations)
+pos_y <- spliner(y ~ t, data = Zcalc::Robot.stations)
+vel_x <- D(xfun(t) ~ t)
+vel_y <- D(yfun(t) ~ t)
+accel_x <- D(xfun(t) ~ t & t)
+accel_y <- D(yfun(t) ~ t & t)
+```
+
+```{r robot-functions, echo=FALSE, fig.cap="The position, velocity, and acceleration of the robot arm as a function of time. The x-coordinate is the left column, the y-coordinate the right column."}
+P1 <- slice_plot(pos_x(t) ~ t, domain(t=1:15)) %>%
+  gf_labs(y = "x position")
+P2 <- slice_plot(pos_y(t) ~ t, domain(t=1:15)) %>%
+  gf_labs(y = "y position")
+P3 <- slice_plot(vel_x(t) ~ t, domain(t=1:15), color="blue") %>%
+  gf_labs(y = "x velocity")
+P4 <- slice_plot(vel_y(t) ~ t, domain(t=1:15), color="blue") %>%
+  gf_labs(y = "y velocity")
+P5 <- slice_plot(accel_x(t) ~ t, domain(t=1:15), color="magenta") %>%
+  gf_labs(y = "x acceleration")
+P6 <- slice_plot(accel_y(t) ~ t, domain(t=1:15), color="magenta") %>%
+  gf_labs(y = "y acceleration")
+                   
+gridExtra::grid.arrange(P1, P2, P3, P4, P5, P6, ncol=2 )
+```
+
+Relating the various functions in Figure \@ref(fig:robot-functions) is, at best, difficult. So difficult, in fact, that you may have trouble perceiving any relationships between the x- and y-functions or between, say, velocity and position.
+
+To streamline thinking about position and other things that involve coordinates, it's useful to introduce a new concept: ***vectors***. We do this briefly in this chapter, but return to the formulation and use of the concept in Blocks 5 and 6.
+
+For now, we'll define a vector as a simple set of coordinates such as position on a plane $(x, y)$ or position in the three-dimensional world $(x, y, z)$. Allowing the output of a function to be ***vector valued*** is very much a book-keeping convention. Rather than using separate $x(t)$ and $y(t)$ functions to represent position, we can use just a single function, say $\text{pos}(t)$, that translates the input $t$ into an output with $(x, y)$ components. One small advantage of this is that functions names can be more meaningful and relationships more concise, for instance $\text{vel}(t) \equiv \partial_t \text{pos}(t)$ or $\text{accel}(t) \equiv \partial_{tt} \text{pos}(t)$. There's now magic in applying operations like $\partial_t$ or $\partial_{tt}$ to vector-valued functions; just apply the operations separately to each component of the vector output.
+
+Vectors will be particularly useful for visualization. Our graphical convention for presenting vectors is a simple arrow whose direction and length are immediately visible. This contrasts the the usual presentation of a coordinate as a point in space. The coordinate-point and vector-arrow conventions are both useful, but for different purposes.
+
+
+
+In Figure \@ref(fig:two-presentations) the vectors are being drawn without marked coordinate axes; they are free-floating entities that have only length and direction. In the coordinate presentation, the axes are needed because the dots have meaning only relative to the coordinate frame. We can think of the dots as rooted to the origin. But to keep the coordinate presentation uncrowded we show the dots without connecting them to their roots.
+
+In drawing a vector, it is as if we pulled the coordinate dot out by the roots and show the metaphorical plant, root, stem, and all, but being careful to maintain the correct orientation.
+
+The advantage of having pulled out the plant by the roots is that we can place it anywhere. This frees us to use the placement itself to show important additional information. When plotting vector-valued functions we use the placement to represent the **input to the function** while the arrow itself shows the function **output**.
+
+To illustrate, consider the movement of the robot arm. In particular, we'll look at both velocity $\partial_t\, pos(t)$ and acceleration $\partial_{tt}\, pos(t)$.  Figure \@ref(fig:robot-functions) shows this as four distinct graphs, but Figure \@ref(fig:robot-vectors) does it in just a single graph.
+
+```{r robot-vectors, echo=FALSE, fig.cap="A vector presentation of the velocity (blue) and acceleration (magenta) of the robot arm as functions of time."}
+set.seed(102)
+Vecs <- tibble(
+  t = seq(1, 15, by=1),
+  #y0 = c(0,1,1.2,1,.5, .3, .5, -.3, .8, .5, .4, .7, .3, .3, .7),
+  vx = vel_x(t)/600,
+  vy = vel_y(t)/600,
+  y0 = 0.05 * ifelse(vy > 0, 1/(pmin(3,vy)), 1/(pmax(-3, vy))),
+    #abs(vx/vy)^(1/4),
+  #y0 = 2*cos(2*pi*t/7),
+  ax = accel_x(t)/750 + t,
+  ay = accel_y(t)/750 + y0
+) %>%
+  mutate(y0 = cumsum(y0 - mean(y0)), 
+         vy = vy + y0,
+         vx = vx + t)
+y0_fun <- spliner(y0 ~ t, data = Vecs)
+Vecs2 <- tibble(
+  t = seq(1, 15, by=0.1),
+  y0 = y0_fun(t),
+  vx = vel_x(t)/600 + t,
+  vy = vel_y(t)/600 + y0,
+  ax = accel_x(t)/750 + t,
+  ay = accel_y(t)/750 + y0
+)
+
+gf_segment(y0 + vy ~ t + vx, data = Vecs, color="blue",
+           arrow=arrow(type = "closed", length=unit(.1, "cm")), size=1) %>%
+  gf_segment(y0 + vy ~ t + vx, data = Vecs2, color="blue", alpha=0.1,
+           arrow=arrow(type = "closed", length=unit(.1, "cm")), size=1) %>%
+  #gf_segment(y0 + ay ~ t + ax, data = Vecs, color="magenta",
+  #         arrow=arrow(type = "closed", length=unit(.2, "cm"))) %>%
+  #gf_segment(y0 + ay ~ t + ax, data = Vecs2, color="magenta", alpha=0.4,
+  #        arrow=arrow(type = "closed", length=unit(.2, "cm"))) %>%
+  gf_refine(coord_fixed()) %>%
+  gf_theme(
+           scale_x_continuous(limits=c(.5,15.4), breaks = 1:15)) %>%
+  gf_labs(y="")
+```
+```

@@ -1,0 +1,93 @@
+---
+id: "spider-tear-plant"
+created: "Wed Jul 21 11:58:16 2021"
+global_id: "dB1r5F"
+---
+
+
+Auckland, New Zealand is in a field of dormant volcanos. The highest, at 193 meters above sea level, is [Maungawhau](https://en.wikipedia.org/wiki/Maungawhau_/_Mount_Eden). Formerly, tourists could drive to the peak and look down into the crater, as seen in the picture.
+
+```{r Maungawhau, echo=FALSE, fig.cap="The crater of Maungawhau, near Auckland, New Zealand. [Source](https://commons.wikimedia.org/wiki/File:Mt._Eden_Panorama_December_2012.jpg)"}
+knitr::include_graphics(normalizePath("www/800px-Mt_Eden_Panorama_December_2012.jpg"))
+```
+
+The initial creator of R, Ross Ihaka, teaches at the University of Auckland. His digitization of a topographic map is easily plotted, as here:
+
+```{r Maungawhau-plot, echo=FALSE, fig.cap="A combination surface and contour plot of the topography of Maungawhau.", warning=FALSE, message=FALSE}
+if (knitr::is_latex_output()) {
+  knitr::include_graphics(normalizePath("www/volcano-multi-view.png"))
+} else {
+library(plotly)
+# volcano is a numeric matrix that ships with R
+fig <- plot_ly(z = ~volcano) %>% add_surface(
+  contours = list(
+    z = list(
+      show=TRUE,
+      usecolormap=TRUE,
+      highlightcolor="#ff0000",
+      project=list(z=TRUE)
+      )
+    )
+  )
+fig <- fig %>% layout(
+    scene = list(
+      camera=list(
+        eye = list(x=1.87, y=0.88, z=-0.64)
+        )
+      )
+  )
+
+fig
+}
+```
+
+The z-axis is height and is in meters. The x- and y-axes are latitude and longitude, measured in 10-meter units from a reference point. (So, $x=10$ is 100 meters from $x=20$.)
+
+Get used to the presentation of the surface plot and how to rotate it and zoom in. To see the crater clearly, you can rotate the surface plot to look straight downwards, effectively presenting you with a color-coded contour plot. Moving the cursor over the surface will display the $x$ and $y$ coordinates, as well as the $z$-value at that coordinate point.
+
+```{r crater-location, echo=FALSE, results="markup"}
+askMC(
+  "What is the $(x, y)$ location of the low-point of the crater? (Choose the closest answer.)", 
+  "+$(x=34, y=29)$+",
+  "$(x=31, y=25)$",
+  "$(x=25, y=34)$",
+  "$(x=29, y=34)$"
+)
+```
+
+```{r crater-color, echo=FALSE, results="markup"}
+askMC(
+  "What color is used to designate the **lowest** elevations?",
+  "+dark blue+",
+  "green",
+  "yellow"
+)
+```
+
+If you were to climb up Maungawhau, at some point you would be at the same elevation as the low-point of the crater, even though you are *outside* the crater. Think of the contour that corresponds to that elevation. Let's call it the "half-way" contour since it's roughly half-way up the volcano.
+
+```{r crater-contour, echo=FALSE, results="markup"}
+askMC(
+  "What is the shape of the \"half-way\" contour?",
+  "a line segment",
+  "a crescent",
+  "+a closed curve+",
+  "a cross"
+)
+```
+
+Imagine that you are filling up the crater with water. At some point, the water rises to a level where it will spill over the lip of the crater.
+
+```{r crater-lip, echo=FALSE, results="markup"}
+askMC(
+  "What is the elevation at which the water will start to spill over the crater lip? (Pick the closest answer.)", 
+  "+169 meters+",
+  "172 meters",
+  "175 meters",
+  "178 meters",
+  random_answer_order=FALSE
+)
+```
+
+**Question E** Explain in terms of the shapes of contours how you can identify the elevation at which the water would spill over the rim.
+

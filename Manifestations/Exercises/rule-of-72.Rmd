@@ -1,0 +1,113 @@
+---
+id: "approx-red"
+---
+
+```{r include=FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+```
+
+**The "Rule of 72"**
+
+For the quantitatively literate, systems showing exponential growth and decay are encountered almost every day and are usually presented as "percent per year" rates. Some examples:
+
+- Money. Credit card interest rates, bank interest rates, student loans. Your credit card might charge you 18% per year, your bank might pay you 0.3% on a savings account, "subsidized" student loans are often around 7%.
+- Population. Statistics are often given as "growth rates" in percent. For instance, in 2016-17, Colorado's population grew by an estimated 1.39% and Idaho by 2.2%. Illinois's population shrank by 0.26%, and Wyoming's by 0.47%.
+- Prices. Inflation rates are usually presented as percent.
+- Home prices and medical costs. These are some of the largest expenses encountered by families and they typically grow. You might hear a statistic like, "Regional median home prices increased by 10% over the last year," or "Health insurance rates are increasing by 7% this year."
+
+In understanding the long-term consequences of such growth or decay, it can be helpful to frame the rate of growth not as a percentage, but as a *doubling time* (or halving time for decay).
+
+Happily, there is a formula to calculating doubling (or halving) time directly from the *percentage* growth (or decay) rate. It is $$n = \frac{\ln(2)}{\ln(1 + r/100)}$$ where $r$ is the percent per year growth rate and $n$ is the number of years for doubling (or halving).
+
+Could you do this calculation in your head? Perhaps you could carry around a card with a graph for looking up the answer:
+
+```{r}
+doubling_time <- makeFun(log(2) / log(1 + r/100) ~ r)
+slice_plot(doubling_time(r) ~ r, domain(r = c(1,30))) 
+```
+It's hard to be very precise in reading off values from such a graph. Instead, maybe we can simplify the formula. 
+
+Clearly, a straight-line calculation is not going to match the doubling-time curve well. How about a quadratic approximation? Let's make one centered on $r = 5$. The formula, as for all quadratic approximations will be $$n(r) \approx a + b (r - r_0) + c (r-r_0)^2/2$$
+
+When centering on $r_0=5$ the value of $a$ will be `doubling_time(5)`, the value of $b$ will be `dr_doubling_time(5)`, and the value of $c$ will be `drr_doubling_time(5)`.
+
+```{r daily-digital-28-QA1, echo=FALSE}
+askMC(
+  prompt = "1) What's the numerical value of $a$?",
+  10.2, 11.0, 11.9, 12.9, "+14.2+", 15.7, 17.7,
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-28-QA2, echo=FALSE}
+askMC(
+  prompt = "2) Just by looking at the graph of `doubling_time(r)` figure out what will be the signs of $b$ and $c$. What are they?",
+  "$b$ positive and $c$ positive",
+              "+$b$ negative and $c$ positive+",
+              "$b$ negative and $c$ negative",
+              "$b$ positive and $c$ negative",
+  random_answer_order = FALSE,
+  inline = FALSE
+)
+```
+
+
+```{r daily-digital-28-QA3, echo=FALSE}
+askMC(
+  prompt = "3) What's the numerical value of $b$? (Hint: Use the `D()` operator to calculate the derivative of `doubling_time()` with respect to `r`. Then evaluate that function at $r=5$.)",
+  -3.4, "+-2.8+", -2.3, 2.3, 2.8, 3.4,
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-28-QA4, echo=FALSE}
+askMC(
+  prompt = "4) What's the numerical value of $c$? (Hint: Again, use `D()` to find the 2nd derivative with respect to `r`. Then evaluate that function at $r=5$.",
+  -1.11, -0.83, -0.64, 0.64, 0.83, "+1.11+",
+  random_answer_order = FALSE
+)
+```
+
+Using the numerical values for $a$, $b$ and $c$ that you just calculated, construct the quadratic approximation function and plot it in red on top of the $n(r)$ function. (Hint: Connect the two `slice_plot()` commands with a pipe `%>%`. You can give `slice_plot()` a `color = "orange3"` argument.)
+
+```{r daily-digital-28-QA5, echo=FALSE}
+askMC(
+  prompt = "5) Comparing the actual $n(r)$ and your quadratic approximation, over what domain of $r$ do the functions match pretty well? Choose the best of these answers.",
+  "+$r \\in [3,7]$+",
+              "$r \\in [1,6]$",
+              "$r \\in [2, 10]$",
+              "$r \\in [4, 10]$",
+  random_answer_order = FALSE,
+  inline = FALSE
+)
+```
+
+What we've got with this quadratic approximation constructed from derivatives of $n(r)$ is hardly very usable. You couldn't do the calculations in your head and even if you could, the result would have a limited domain of relevance.
+
+Occasionally, there are other simple functions that give a good approximation. The one for interest rates is called the "Rule of 72". The function is $$n(r) \approx 72 / r$$. Plot the Rule of 72 function on top of the actual $n(r)$.
+
+```{r daily-digital-28-QA6, echo=FALSE}
+askMC(
+  prompt = "6) Comparing the actual $n(r)$ and the Rule of 72 function, over what domain of $r$ do the functions match pretty well? Choose the best of these answers.",
+  "+$r \\in [1,25]$+",
+              "$r \\in [3,9]$",
+              "$r \\in [4, 15]$",
+              "$r \\in [8, 30]$",
+  random_answer_order = FALSE,
+  inline = FALSE
+)
+```
+
+```{r daily-digital-28-QA7, echo=FALSE}
+askMC(
+  prompt = "6) Compare numerically the actual $n(r)$ and the Rule of 72 function for an interest rate of $r = 10$ (per year). How many years different are the two answers.",
+    "0.007 years",
+    "+0.07 years+",
+    "0.7 years",
+    "7 years",
+  random_answer_order = FALSE
+)
+```
+

@@ -1,0 +1,55 @@
+---
+id: "cat-wake-oven"
+created: "Mon Sep 13 13:25:16 2021"
+global_id: "RFAv2v"
+---
+
+`r insert_calcZ_exercise("XX.XX", "RFAv2v", "cat-wake-oven.Rmd")`
+
+Calculating $\int_0^t \dnorm(x)\,dx$.
+
+```{r}
+f0 <- dnorm(0)
+df <- D(dnorm(x) ~ x)
+f1 <- df(0)
+ddf <- D(dnorm(x) ~ x & x)
+f2 <- ddf(0)
+dddf <- D(dnorm(x) ~ x & x & x)
+f3 <- dddf(0)
+d4f <- D(dnorm(x) ~ x & x & x & x)
+f4 <- d4f(0)
+d5f <- D(d4f(x) ~ x)
+f5 <- d5f(0)
+# Only need even terms
+d6f <- D(d4f(x) ~ x & x)
+f6 <- d6f(0)
+d7f <- D(d6f(x) ~ x)
+f7 <- d7f(0)
+d8f <- D(d6f(x) ~ x & x)
+f8 <- d8f(0)
+```
+
+```{r}
+Taylor_dnorm <- function(x) {
+  f0 + f2*x^2/factorial(2) + f4*x^4/factorial(4) +
+    f6*x^6/factorial(6) + f8*x^8/factorial(8)
+}
+slice_plot(Taylor_dnorm(x) ~ x, domain(x=0:2)) %>%
+  slice_plot(dnorm(x) ~ x, color="magenta")
+```
+
+```{r}
+x0 <- 2
+g0 <- dnorm(x0)
+g1 <- df(x0); g2 <- ddf(x0); g3 <- dddf(x0); g4 <- d4f(x0)
+g5 <- d5f(x0); g6 <- d6f(x0); g7 <- d7f(x0); g8 <- d8f(x0)
+Taylor_dnorm1 <- function(x) {
+  g0 + g1*(x-x0) + g2*(x-x0)^2/factorial(2) + g3*(x-x0)^3/factorial(3) +
+    g4*(x-x0)^4/factorial(4) + g5*(x-x0)^5/factorial(5) + 
+    f6*(x-x0)^6/factorial(6) +
+    g7*(x-x0)^7/factorial(7) + g8*(x-x0)^8/factorial(8)
+}
+slice_plot(Taylor_dnorm(x) ~ x, domain(x=0:2)) %>%
+  slice_plot(Taylor_dnorm1(x) ~ x, domain(x=0:3), color="green") %>%
+  slice_plot(dnorm(x) ~ x, domain(x=0:3), color="magenta")
+```

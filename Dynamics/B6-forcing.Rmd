@@ -1,0 +1,42 @@
+# Forcing and resonance {#forcing}
+
+```{r include=FALSE}
+book_file_name <- "block-6/forcing.html"
+```
+
+<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Block-6/B6-harmonic-oscillator.Rmd)</div>
+
+::: {.underconstruction}
+This chapter is planned for academic year 2022-2023.
+:::
+
+maybe return to the cruise control stability problem, putting in disturbances from the car in front.
+
+## Car following dynamics
+
+```{r}
+# random forcing of unit variance
+Pts <- tibble::tibble(
+  t = seq(0,1000, by=0.5),
+  y = rnorm(length(t))
+)
+random_forcing <- spliner(y ~ t, data = Pts)
+slice_plot(random_forcing(t/5) ~ t, domain(t=0:100))
+```
+
+
+```{r}
+traj <- integrateODE(
+  dx ~ -r*(x-x0) -(v - (vf+3*random_forcing(t/8))), 
+  dv ~ b*(x-x0),
+  dtime ~ 1,
+  vf = 100, # feet/second
+  x0 = 150, # feet
+  b = .25,  # per second,
+  r = .5,    # damping
+  x = 125,
+  v = 110,
+  time = 0,
+  tdur = list(to=300, dt=0.01))
+traj_plot(v(t) ~ t, traj, domain=domain(t=0:300)) 
+```

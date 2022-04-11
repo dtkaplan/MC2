@@ -1,0 +1,37 @@
+---
+id: "dolphin-go-cotton"
+created: "Tue Mar 22 10:41:32 2022"
+global_id: "I2JVMB"
+skill: "U-5PMG7 P-3LIKO"
+---
+
+
+
+In the rabbit/fox system, the quantity
+$$Q(R, F) = \delta R - \gamma \ln(R) + \beta F - \alpha \ln(F)$$ is conserved.
+
+This means that each of the level curves (contours) in the contour plot of $Q(R, F)$ is follows the path of a trajectory. 
+
+1. Make a contour plot of $Q(R, F)$ over the domain $0.1 \leq R \leq 3$, $0 \leq F \leq 2$ for $\alpha=.66, \beta = 1.33, \gamma=1, \delta = 1$.
+
+2. From the graph you made in (1), choose an appropriate initial condition that falls on one of the contours.
+
+3. Using `integrateODE()`, find the trajectory from from the initial condition in (1) for `tdur=10`. Add a layer to the graphic in (1) showing the trajectory to confirm that the conserved quantities are indeed conserved.
+
+4. Symbolically, calculate $\partial_t Q(R, V)$. You will need to use the chain rule, which will leave you with terms $\partial_t R$ and $\partial_t F$. Plug in the values for these from the differential equations and show that $\partial_t Q(R, V) = 0$. 
+
+<!-- Solution to 1-3 -->
+```{r eval=FALSE, echo=FALSE}
+T <- integrateODE(
+  dR ~ 0.66*R - 1.33*R*F, 
+  dF ~ -1*F + 1*R*F,
+  R = 3, F=0.5, tdur=10)
+V <- makeFun(1*R - 1*log(R) + 1.33*F - 0.66*log(F) ~ R & F)
+contour_plot(V(R, F) ~ R & F, domain(R = .1:3, F=0:2), skip=0,
+             contours_at = c(1.6, 1.7, 1.9, 2, 2.15, 2.2, 2.3, 2.5, 2.8, 3, 4)) %>%
+  streamlines(
+              dR ~ 0.66*R - 1.33*R*F, 
+              dF ~ -1*F + 1*R*F, 
+              domain=domain(R = .1:3, F=0:2), npts=15) %>%
+  traj_plot(F(t) ~ R(t), T)
+```

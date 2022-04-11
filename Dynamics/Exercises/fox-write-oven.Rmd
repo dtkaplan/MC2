@@ -1,0 +1,149 @@
+---
+id: "fox-write-oven"
+created: "Mon Jul 19 17:24:52 2021"
+global_id: "KktWcD" 
+---
+
+We've imagined a situation where there is a pipe filled with air and we have introduced, at time $t=0$, a bunch of  small particles at the mid-point of the pipe. As time goes by, the particles diffuse throughout the pipe. Eventually, the particles will fill the pipe uniformly, but in the early stages of the process the distribution will be uneven. 
+
+We can look at the concentration or density of the particles in two different ways. Most intuitively, we can draw a map of where the particles are, putting a dot for each particle. More abstractly, we can count the number of particles in the small interval $x$ to $x+h$, and calculate the *concentration* or *density* of particles at position $x$ as the counted number divided by $h$, the length of the interval.
+
+The graphics show both of those kinds of displays of density as a function of $x$. The first is soon after the particles have been released, the others come at the indicated times thereafter. In each graph, we've drawn one particle, selected at random, in red just so that we have a particular particle to refer to. We've also added the red reference line that enables you to calculate the width (that is, "standard deviation") of the density function.
+
+```{r echo=FALSE, fig.height=2, fig.show="hold", warning=FALSE}
+draw_pipe <- function(time=1, sigma = 1.7, 
+                      dom=domain(x = c(-25, 25)), 
+                      n = 1000) {
+  ypos <- dnorm(0, 0, sigma)
+  Pts <- tibble::tibble(
+    x = rnorm(n, 0, sd=sigma),
+    y = runif(n, 1.05*ypos, 1.15*ypos)
+  ) 
+  f <- makeFun(dnorm(x, 0, sigma) ~ x, sigma=sigma)
+  slice_plot(f(x) ~ x, dom, npts=500) %>%
+    gf_point(y ~ x, data = Pts, alpha=0.1) %>%
+    gf_point(y ~ x, data = Pts[1,], color="orange3") %>%
+    gf_refine(scale_color_identity()) %>%
+    gf_hline(yintercept=c(1.03*ypos, 1.17*ypos, ypos*exp(-.5)),
+             color = c("dodgerblue", "dodgerblue", "orange3")) %>%
+    gf_text(1.1*ypos ~ -20, label="pipe", color="dodgerblue") %>%
+    gf_labs(x = "Position x along pipe (cm)", y = "Concentration", title = glue::glue("Concentration at time t={time}"))
+}
+set.seed(101)
+draw_pipe(time=1, sigma = 1.7, dom=domain(x=c(-25, 25)), n=1000)
+set.seed(102)
+draw_pipe(time=10, sigma = 4.5, dom=domain(x=c(-25, 25)), n=1000)
+set.seed(103)
+draw_pipe(time=20, sigma = 6.4, dom=domain(x=c(-25, 25)), n=1000)
+set.seed(104)
+draw_pipe(time=40, sigma = 9.0, dom=domain(x=c(-25, 25)), n=1000)
+```
+
+**Question 1**: How far have the particles spread at time $t$?
+
+To give a sensible answer, you have to define what "spread" means. We use the standard definition and measure spread as the standard deviation $\sigma$ of the density function. For each time, you can read this off the graph using the red-line annotation. Amazingly, there is a simple formula for $\sigma$ as a function of time:
+
+$$\sigma(t)^2 = D\, t$$
+Where $D$ is a constant that depends on the size of the particles and the temperature, but **not on $t$**. $D$ is called the diffusion coefficient.
+
+**Question 2**: How far does an **individual particle** travel from the release point as a function of time?
+
+I don't want to seem glib, but the answer is, "It depends on which particle you choose." For the red particle, you can read its distance at time $t$ from the graph. But if we had selected some other particle, the answer would be different.
+
+There is no specific formula for the distance that an individual particle travels from the release point in time $t$.
+
+This would be true **even if there were only one particle** to follow. It might sound strange to talk about the diffusion of a single particle, but each and every particle moves independently of the others. 
+
+The question of "how far" needs to be answered statistically. And the standard answer to to average over all particles the *square distance* of each particle from the release point. This sort of average is called a **mean square**, that is, the **mean** of the **square** distance. And there is a formula for the mean square as a function of time. It is 
+$$\text{mean square distance} = D\, t$$
+Suppose we measure distance from the release point in centimeters. Then the mean square distance will have units of square-centimeters. That's going to be confusing. For this reason, most people prefer to work with the square root of the mean square distance, that is, the **root mean square** distance. For diffusive motion, there's a formula for that as well:
+
+$$\text{root mean square distance} = \sqrt{\strut D\, t}$$
+This will have units of $\sqrt{\strut\text{cm}^2}$, that is, cm.
+
+Since we know the distance as a function of time, we can calculate the velocity as root mean square distance divided by time, that is:
+
+$$\text{`velocity'} = \sqrt{\frac{\strut D}{t}}$$
+We've got a particle diffusing in a pipe. The velocity is getting smaller with time.
+
+Imagine some time goes by so that the velocity has decreased by 99%.  Along comes another person who observes the same particle and sets out to measure how the velocity changes in time. That person will claim that the velocity is 100 times greater than the velocity you observed at the end. Same particle. Nothing is changing in the dynamics. How can the new observer see a new velocity? A paradox. 
+
+When working with diffusive motion, it's best to answer "how far" in terms of **mean square** distance. 
+
+**Example: Finance** If you follow the stock market, you know that it goes up and down on a daily basis. Actually, it goes up and down on a second-by-second basis and all those small increments add up to the daily change. Journals regularly report such changes, for instance, "Today the Standard and Poors 500 stock index was down by 1.1%." Often such news comes with the journalist's explanation, e.g. "prices were down in anticipation of tomorrow's monthly release of the unemployment rate," or "stocks were broadly down as investers took profits from Friday's gains."
+
+In fact, sophisticated investors treat stock prices as a diffusive motion. The root mean square change in stock indices is roughly 1% per day. Movements up and down by that amount or even twice that amount should be reported as, "Nothing happened on Wall Street today."
+
+That 1% typical daily motion, if nothing were going on, would accumulate to about a 15% yearly motion, up or down. A 15% annual return (or loss!) is nothing to be surprised about. (Twice that shouldn't be a shock either.) If someone tries to sell you a mutual fund with a claim, "We went up 20% last year," your thought should not be "It will be worth double in less than five years." Instead you should ask the salesman what the average yearly return over the last five years has been. That number will typically be much lower, more or less $$\frac{20\%}{\sqrt{5}}$$. If so, the return last year gives no reason to think the mutual fund is a winner.
+
+That **root mean square** daily proportional change in price of an asset is called the **volatility** of the asset. Knowing the volatility helps you to understand the **risk** associated with the asset. That risk will be different depending on how long you plan to own the asset. A typical stock market index has a volatility of something like 15% per year. That level of risk in unacceptable to many people. But if you plan to hold on to the asset for 10 years, the volatility becomes only $$\frac{15\%}{\sqrt{10}}$$ per year or about 5%. 
+
+```{r ms1-2, echo=FALSE, results="markup"}
+askMC(
+  "A stock shows a volatility of 1% per day. What is the volatility over a year? (Assume 250 trading days per year.)",
+  "1%",
+  "+15%+",
+  "50%",
+  "250%",
+  random_answer_order = FALSE
+)
+```  
+```{r ms1-3, echo=FALSE, results="markup"}
+askMC(
+"Your uncle has just bought a stock that went up 30% in the last month. He describes his investment strategy, \"I look for companies where there is a lot of churn in stock prices. Then I buy low and sell high.\"
+               
+You doubt your uncle's investment savvy. Make a rough estimate of the daily volatility of the stock if the 30% gain were just a random result of daily ups and downs. (Assume 25 trading days per month.)",
+  "1%",
+  "+5%+",
+  "15%",
+  "25%",
+  random_answer_order = FALSE
+)
+```
+
+<!-- EXERCISE: Diffusion is an effective form of transport only over very small distances. For instance, chemical synapses connecting nerve cells work by the diffusive movement of neurotransmitters across a cell-to-cell gap called the synaptic cleft. No active transport mechanism is necessary because the synaptic cleft is very thin, about 30 nm ($3 \times 10^{-8}$ meters). Over this distance (and given the size of neurotransmitter molecules) the transmission takes about 0.05 ms. The cell body of a neuron is roughly $10 \mu$m in diameter ($10^{-5}$). Suppose that synaptic transmission needed to diffuse over such a distance, say $3 \times 10^{-6}$m. How much time would it take for two neurons to communicate?  [Ans: 10,000 times as long, about half a second]
+-->
+
+```{r ms-1-4, echo=FALSE, results="markup"}
+askMC(
+  "The diffusion coefficient for sodium ions in water is about $2 \\times 10^{-5} cm^2/s$ whereas for a molecule like glucose the coefficient is about $6 \\times 10^{-6} cm^2/s$. If diffusion were the sole mechanism of spread, how long would it take a sugar molecule to travel 1cm, about half the distance from a sugar cube to the side of a teacup?",
+  "About 20 seconds",
+  "About 200 seconds",
+  "About 2000 seconds",
+  "+About 200,000 seconds+", 
+  random_answer_order = FALSE
+)
+```
+
+<!-- Laminar boundary layer. Slow air flow over a small wing is laminar: the air right at the wing surface hardly moves at all. The laminar boundary layer is the portion of air *near* the wing surface that is slowed down by viscosity. Viscosity can be seen as the diffusion of momentum from the wing surface up into the flow. The thickness of the boundary layer grows as $\sqrt{\strut y}$ where $y$ is distance measured from the leading edge. 
+-->
+
+[This web site](https://www.vedantu.com/question-answer/10-examples-of-diffusion-in-everyday-life-5b84e153e4b01edd684dfa7f) says it lists some everyday examples of diffusion. The examples are mostly wrong. For example: "You can smell perfume because it diffuses into the air and makes its way to your nose." "Cigarette smoke diffuses into the air." "Leave a soda bottle open and the carbon dioxide bubble will diffuse and leave it flat." Let's explore why this is wrong. First of all, you can see carbon dioxide bubbles rise more or less in a straight line at about 10cm/s, the motion being driven by the balance between viscosity and bouyancy. That's not diffusion in any way. For diffusion, if it took 1/10 of a second to go 1cm, it would take 10 seconds to go 10cm.
+
+**Exercise**: Particles that are the produce of combustion have a range of sizes, from 0.01 to 10 $\mu m$. The diffusion coefficient of a $10 \mu m$ particle is estimated at around $1 {\mu m}^2 /s$.
+
+```{r ms1-5, echo=FALSE, results="markup"}
+askMC(
+  "What is the root mean square displacement of a diffusing smoke particle over 1 second?",
+  "100 $\\mu m$",
+  "+1 mm+",
+  "1 cm", 
+  "1 meter",
+  random_answer_order = FALSE
+)
+```
+
+```{r ms1-6, echo=FALSE, results="markup"}
+askMC(
+  "How long will it take to diffuse 1 meter?",
+  "1 minute",
+  "1 hour",
+  "1 day", 
+  "+10 days+" = "That is, about 1 million seconds"
+)
+```
+
+If someone lights a match in a room, you can smell it in a few seconds. To get an idea of the bulk velocity of **convecting** air in a room, put your hand up and move it very slowly forward. Speed up the movement until you can clearly discern air movement. The convection currents in a room are somewhere between these two speeds. At that velocity, how long does it take to move 1 meter? 2 meters? 10 meters? 
+
+
+

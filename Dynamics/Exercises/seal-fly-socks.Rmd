@@ -1,0 +1,49 @@
+---
+id: "seal-fly-socks"
+created: "Mon Jul 19 15:13:09 2021"
+global_id: "VCWRBs" 
+skill: "J-YOLEG"
+---
+
+You and your older cousin are on a road trip. She rented a car that has not only "cruise control" (a technology from the 1970s that holds a constant speed without driver intervention) but also "car following," that keeps the car a set distance $D$ behind the car in front. Your cousin, knowing that you are a *MOSAIC Calculus* reader, asks you how the "car following" system works.
+
+First, define some terms. You tell your cousin to denote the current, instantaneous distance from the car ahead as $\xi$. You point out that when $\xi - D > 0$, you're a greater distance than $D$ from the car ahead and therefore the velocity should be increased so you catch up. On the other hand, when you're too close ($\xi < D$) you should decrease your velocity. The car-following system automates this, the relationship being  $\partial_t \xi = b (\xi - D)$.
+
+Your cousin has never encountered a name like $\xi$ so you decide to simplify. "Let $x = \xi - D$, so $x$ is positive if you are too far behind, zero when you're at the right distance, and negative if you are too far ahead." Conveniently $\partial_t x = \partial_t \xi$, so you can write down the automatic relationship in terms of $x$:
+$\partial_t x = b x$ with $b$ a positive number, such as 1.
+
+```{r following1-1, echo=FALSE, results="markup"}
+askMC(
+  "Where is the fixed point of the dynamics $\\partial_t\\, x = b x$?",
+  "$x=D$" = "No, it should be $\\xi=D$, which means that $x=0$.",
+  "+$x=0$+",
+  "$\\xi = 0$" = "This corresponds to zero distance between you and the car in front of you. Not what we want!",
+  "There's no fixed point.",
+  random_answer_order = FALSE
+)
+```
+
+```{r following1-2, echo=FALSE, results="markup"}
+askMC(
+  "Is the fixed point of $\\partial_t\\, x = b x$ (with $b > 0$) stable?",
+  "Yes, that's why we can leave it to the automatic system." = "True, we would want the automatic system to show stable fixed point behavior, but that's not what's happening here.",
+  "+No, the solution grows exponentially as $e^{bt}$.+",
+  "Yes, the solution decays exponentially as $e^{bt}$" = "But since $b > 0$, this wouldn't be exponential decay but growth.",
+  random_answer_order = FALSE
+)
+```
+
+Something's wrong with the system you've sketched out. You want a stable following distance, doing the right thing if the car ahead speeds up or slows down, but your system is unstable. 
+
+```{r following1-3, echo=FALSE, results="markup"}
+askMC(
+  "Which of the following rules will have a stable fixed point at $x=0$?",
+  "+$\\partial_t\\, x = -b x$ (with $b > 0$)+",
+  "$\\partial_t\\, x = b^2 x$" = "The coefficient on $x$ is still positive, so this system is unstable.",
+  "$\\partial_t\\, x = b x^2$" = "This system is stable for disturbances that make $x < 0$, but **unstable** for disturbances that make $x > 0$.",
+  "$\\partial_t\\, x = 0 x$" = "In this system, $x$ doesn't change."
+)
+```
+
+The word "feedback" is used to describe systems where the change in the state is a function of the state. "Negative feedback" is when the change is negative when the state is positive, as in $\partial_t\, x = -b\, x$. Negative feedback is desirable when you want to keep things stable. "Positive feedback" is when the change is the same sign as the state, as in $\partial_t\, x = b\, x$ and makes things unstable.
+

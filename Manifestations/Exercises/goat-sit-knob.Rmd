@@ -1,0 +1,46 @@
+---
+id: "goat-sit-knob"
+created: "Thu Dec 16 17:44:11 2021"
+global_id: "1dG7W8"
+---
+
+`r under_construction()`
+
+Describe constructing the cumulative and using it to calculate quantiles.
+
+
+The **cumulative** distribution translates the probability density into an actual probability (a number between zero and one). Formally, the cumulative distribution is $$P(t) \equiv \int_{-\infty}^t p(t) dt$$ 
+
+Evaluating $P(t)$ at given value of $t$ gives a probability. For instance, $P(10) \approx 0.095$, roughly 10%. In terms of storms, this means that according to the standard model of these things, the time between consequtive 100-year storms has a 10% chance of being 10 years or less! 
+
+A graph of the **cumulative** distribution shows what you might have anticipated: the gaussian function $p(t)$ has an integral that is a sigmoid function.
+
+```{r echo=FALSE}
+P <- makeFun(pexp(x, .005) ~ x)
+slice_plot(P(t) ~ t, domain(t=c(0,400)), npts=300) %>%
+  gf_labs(title="Cumulative distribution", x="t (years)", y = "Probability that outcome < t")
+```
+
+```{r exp1, echo=FALSE}
+explain <- "What's the value of $P(t=50)$"
+askMC(
+  "Imagine that a 100-year storm has just happened at your location. What is the probability that the next 100-year storm will happen within 50 years?",
+  "11%" = explain,
+  "27%" = explain,
+  "+39%+",
+  "51%" = explain,
+  random_answer_order = FALSE 
+)
+```
+
+```{r exp2, echo=FALSE}
+askMC(
+  "The *median* time between 100-year storms is the value where there is a 50% probability that consecutive storms will happen closer in time than this value and 50% that consecutive storms will happen further apart than this value. What is the *median* time between 100-year storms, according to the standard model? (Hint: You can read this off the graph.)",
+  "about 30 years",
+  "50 years",
+  "+about 70 years+",
+  "100 years",
+  "about 130 years",
+  random_answer_order = TRUE
+)
+```

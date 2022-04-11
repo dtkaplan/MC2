@@ -1,0 +1,22 @@
+---
+id: "wolf-come-saucer"
+created: "Wed Mar  2 15:40:32 2022"
+global_id: "iCYry2" 
+---
+
+In the description of the  SIR model, we pointed out how a model of recovery $\partial_t I = -\alpha I$ differs from the usual "recover after 7 days" style of description. (See Figure \@ref(fig:recovery-pattern).)
+
+Find a value of $\alpha$ such that the ***expectation value*** of the time to recovery is 7 days. To do this:
+
+1. Find a formula for the function $I(t)$ from the differential equation.
+2. Guess an appropriate value for $\alpha$.
+3. Construct the appropriate integral using $I(t)$ to find the expectation value of $t$. (See Chapter `r Chaps$expectation_value`.)
+4. Modify your guess for $\alpha$ until the expectation value comes out to 7.
+
+```{r echo=FALSE, results="hide"}
+expected_value <- function(alpha) {
+  f <- makeFun(exp(-alpha*t) ~ t)
+  Integrate(t*f(t) ~ t, domain(t=0:1000)) # Note the t multiplying the function
+}
+Zeros(expected_value(t) - 7 ~ t, domain(t=.2:1))
+```

@@ -1,0 +1,115 @@
+---
+id: "birch-dig-radio"
+created: "Mon Sep 13 14:31:01 2021"
+global_id: "jAOmME"
+---
+
+
+
+We would like to write a Taylor-series polynomial for $\dnorm(x)$. To do this, we will need the numbers
+$$\dnorm(x_0),\ \ \partial_x \dnorm(x_0),\ \ \partial_{xx} \dnorm(x_0),\ \ \partial_{xxx} \dnorm(x_0), ...$$
+Here are the functions for the derivatives
+
+Order | formula for derivative
+------|---------
+0th   | $\dnorm(x)$
+1st   | $\left[{\large\strut}-x\right]\dnorm(x)$
+2nd   | $\left[{\large\strut}x^2 - 1\right]\dnorm(x)$
+3rd   | $\left[{\large\strut}3x - x^3\right]\dnorm(x)$
+4th   | $\left[{\large\strut}3\,x^2-x^4     \right]\dnorm(x)$
+5th   | $\left[{\large\strut}3-6\,x^3 + x^5     \right]\dnorm(x)$
+6th   | $\left[{\large\strut}-15\,x^2 + 10\,x^4-x^6     \right]\dnorm(x)$
+7th   | $\left[{\large\strut}-15 + 45\,x^3-15\,x^5 + x^7     \right]\dnorm(x)$
+8th   | $\left[{\large\strut}105\,x^2-105\,x^4 + 21\,x^6-x^8     \right]\dnorm(x)$
+
+1. Write a Taylor polynomial function for $\dnorm(x)$ around $x_0=0$). To do this, you will have to evaluate each of the 9 formulas above at $x=0$, producing a number. For example, the first five formulas will give 0.3989, 0, -0.3989, 0, 1.1968. This would expand into the following Taylor function:
+```{r}
+T_at_0 = makeFun(0.3989 + 
+                   0*(x-x0) +
+                   - 0.3989*(x-x0)^2/factorial(2) + 
+                   0*(x-x0)^3/factorial(3) +
+                   1.1968*(x-x0)^4/factorial(4) ~ x, 
+                 x0=0)
+```
+You'll need to add in the 6th, 7th, and 8th terms.
+
+2. Plot `T_at_0(x) ~ x` over the domain $0 \leq x \leq 2$, and pipe the result to a slice-plot of `dnorm(x) ~ x` so that you can compare the two plots.
+
+3. Define another function `T_at_1()` which will be much like `T_at_zero()` but with `x0=1` and the coefficients changed to be the formulas evaluated at $x=1$.
+
+4. Add a layer showing `T_at_1()` to your previous plot. 
+
+Say over what domain `T_at_0()` is a good approximation to `dnorm()` and over what domain `T_at_1()` is a good approximation to `dnorm()`. Do the two domains overlap?
+
+5. Write a piecewise function of this form:
+```{r eval=FALSE}
+T <- makeFun(ifelse(abs(x) < 0.5, T_at_0(abs(x)), T_at_1(abs(x))) ~ x)
+```
+Plot this out on top of `dnorm()` to show whether `T()` is a good approximation to `dnorm()`.
+
+You could continue on to define `T_at_2()` and incorporate that into the piecewise `T()`, and so on, to construct an approximation to `dnorm()` that is accurate over a larger domain.
+
+<!--
+
+RECURSIVE CONSTRUCTION OF THE POLYNOMIALS that multiply dnorm(x) for the successive derivatives.
+
+```{r eval=FALSE, echo=FALSE}
+funp <- function(coefs, ...) {
+  coefs <- unlist(c(coefs, list(...)))
+  powers <- 0:(length(coefs)-1)
+  res <- function(x) {
+    sum(coefs * x^powers)
+  }
+  attributes(res) <- list(coefs = coefs)
+  class(res) <- c(class(res), "polynomial")
+  res
+}
+get_coefs <- function(f) {
+  if (inherits(f, "polynomial")) attributes(f)$coefs
+  else f
+}
+derivp <- function(f) {
+  coefs <- get_coefs(f)
+  if (length(coefs) == 1) coefs <- 0
+  else coefs <- coefs[-1]
+  funp(coefs * 1:length(coefs))
+}
+intp <- function(f, C=0) {
+  coefs <- get_coefs(f)
+  funp(c(C, coefs / 1:length(coefs)))
+}
+xp <- function(f) {
+  coefs <- get_coefs(f)
+  funp(c(0, coefs))
+}
+padp <- function(f, n) {
+  coefs <- get_coefs(f)
+  # pad the coefficients with trailing zeros
+
+  if (n > length(coefs)) c(coefs, rep(0, n-length(coefs)))
+  else coefs
+}
+addp <- function(f1, f2) {
+  coefs1 <- get_coefs(f1)
+  coefs2 <- get_coefs(f2)
+  n <- max(length(coefs1), length(coefs2))
+  padp(coefs1, n) + padp(coefs2, n)
+}
+nextp <- function(f) {
+  coefs <- get_coefs(f)
+  funp(addp(xp(-coefs), derivp(coefs)))
+}
+as_latex <- function(f) {
+  coefs <- get_coefs(f)
+  res = ifelse(coefs[1]==0, character(0), as.character(coefs[1]))
+  for (k in 2:length(coefs)) {
+    if (coefs[k] == 0) next
+    else if (coefs[k] < 0) res = paste0(res, coefs[k], "\\,x^", k)
+    else res <- paste0(res, " + ", coefs[k], "\\,x^", k)
+  }
+  gsub("^NA ?\\+ ?", "", res) %>%
+    gsub("1\\\\,", "", .)
+}
+```
+
+-->

@@ -1,0 +1,96 @@
+---
+id: "boy-iron-dish"
+created: "Mon Sep 20 13:41:34 2021"
+global_id: "tPsfoR"
+---
+
+```{r include=FALSE}
+library(Zcalc)
+```
+
+Using the gradient field depicted below, figure out the sign of the partial derivatives at the labeled points. We'll use "neg" to refer to negative partial derivatives, "pos" to refer to positive partial derivatives, and "zero" to refer to partials that are so small that you can't visually distinguish them from zero.
+
+```{r echo=FALSE}
+set.seed(1114)
+Points <- tibble(
+  x = 2*round(runif(15, -2, 2)),
+  y = 2*round(runif(15, -2, 2))
+) %>% 
+  group_by(x, y) %>%
+  filter(row_number() == 1) %>% 
+  head(6) 
+
+Points$label = LETTERS[1:6]
+g <- rfun(~ x + y, seed = 9823252)
+gradient_plot(g(x, y) ~ x + y, domain(x=c(-4.5, 4.5), y=c(-4.5, 4.5)), n=20) %>%
+  gf_text(y ~ x, label=~label, data = Points, color="magenta", inherit=FALSE)
+```
+
+
+```{r bid3-1, echo=FALSE}
+askMC(
+  prompt = "Which is $\\partial_y f$ at point A?",
+  "+neg+", "zero", "pos",
+  inline=FALSE,
+  random_answer_order = FALSE
+)
+```
+
+
+```{r bid3-2, echo=FALSE}
+askMC(
+  prompt = "Which is $\\partial_x f$ at point A?",
+  "neg", "zero", "+pos+",
+  inline=FALSE,
+  random_answer_order = FALSE
+)
+```
+
+```{r bid3-3, echo=FALSE}
+askMC(
+  prompt = "Which is $\\partial_x f$ at point B?",
+  "neg", "zero", "+pos+",
+  inline=FALSE,
+  random_answer_order = FALSE
+)
+```
+
+```{r bid3-4, echo=FALSE}
+askMC(
+  prompt = "Which is $\\partial_x f$ at point C?",
+  "neg", "+zero+", "pos",
+  inline=FALSE,
+  random_answer_order = FALSE
+)
+```
+
+```{r bid3-5, echo=FALSE}
+askMC(
+  prompt = "Which is $\\partial_y f$ at point E?",
+  "neg", "zero", "+pos+",
+  inline=FALSE,
+  random_answer_order = FALSE
+)
+```
+
+```{r bid3-6, echo=FALSE}
+askMC(
+  prompt = "Which is $\\partial_x f$ at point E?",
+  "+neg+", "zero", "pos",
+  inline=FALSE,
+  random_answer_order = FALSE
+)
+```
+
+```{r bid3-7, echo=FALSE}
+askMC(
+  prompt = "At which letter are both the partial with respect to $x$ and the partial with respect to $y$ negative.?",
+  "A", "B", "C", "D", "E", "F", "+none of them+",
+  inline=FALSE,
+  random_answer_order = FALSE
+)
+```
+
+
+
+

@@ -1,0 +1,56 @@
+To construct an anti-derivative with the Euler Method, you need:
+
+1. Obviously ... The function to be anti-differentiated, which we'll call $f(t)$ in the example.
+2. Specific numerical values for all parameters of the function, e.g. the $k$ in $e^{kt}$ or the $P$ in $\sin(2\pi t/P)$.
+3. The domain over which you want to know the anti-derivative.
+4. A numerical value for a "step size" $h$. This should be "small," but "small" depends on the problem being tackled, just as you saw with the graphics in the previous problem.
+
+To see where the Euler Method comes from, recall that anti-differentiation is "undoing" differentiation and remember the discrete time version of differentiation:
+$$\partial_x f(x) \approx \frac{f(x+h) - f(x)}{h}$$
+To make it clear where the anti-derivative comes in to this, let's rewrite the finite-difference formula using a different notation: $f(x)$ will be the function to be anti-differentiated and $F(x)$ will be the result of the anti-differentiation of $f(x)$. Using this notation:
+$$f(x) \approx \frac{F(x+h) - F(x)}{h}$$
+You can see that $f(x)$ is the derivative of $F(x)$, but here we know $f(x)$ but do not (yet) know $F(x)$. To find $F(x)$ at a series of discrete values of $x$ spaced by $h$, re-arrange the equation:
+$$F(x + h) \approx F(x) + h f(x)\ \ \  \ \ \text{Euler method formula}$$
+
+As an example of using this formula, let's anti-differentiate $\sin(2\pi x/0.3)$ over the domain $1 \leq x \leq 21$ with a step size of $h=0.01$
+
+We start at $x=1$ and
+
+i. Since we don't yet know $F(x)$, let's make our life simple and assume that $F(x=1) \equiv 0$. (You will see why this choice works later on. In fact, you could use any value you like for $F(x=1)$.)
+ii. We do know $f(x)$. Calculate $f(x=1)$. This comes out to be `sin(2*pi*1 / 0.3)` or 0.866.
+iii. Plug in the value of $f(x=1)$ from step (ii) to the Euler method formula in order to calculate $F(1 + 0.01)$. The formula, and our assumed value $F(1) = 0$,  gives $$F(1 + 0.01) = 0 + 0.01 \times 0.866 = 0.00866$$
+iv. Now move on to the next time step. We know $f(1.01) = 0.743$ and $F(1.01) = 0.00866$. We use the Euler method formula to find
+$$F(1.02) = F(1.01) + 0.01\times 0.743 =  0.00866 + 0.00743 = 0.01609$$
+
+```{r eulersandbox, exercise = TRUE, exercise.cap="Sandbox for Euler calculations", exercise.nlines=5}
+
+```
+
+```{r euler1}
+askMC(
+  "What is the value of $F(1.03)$?",
+  "+`0.01609 + 0.01*0.588`+",
+  "`0.01609 + 0.01*0.743`" = "You should be using $f(1.02)$, not $f(1.01)$.",
+  "`0.00866 + 0.01*0.743`"="You should be using $F(1.02)$, not $F(1.01)$.",
+  "`0.00866 + 0.01*0.588`" = "You should be using $F(1.02)$ and  $f(1.02)$, not $F(1.01)$ and $f(1.01)$."
+)
+```
+
+```{r euler2}
+askMC(
+  "How many steps will it take from $x=1.03$ to reach $x=1.05$?",
+  1, 2, 3, 4, 5, right_one = 2,
+  random_answer_order = FALSE
+)
+```
+
+```{r euler3}
+askMC(
+  "What is $F(1.05)$?",
+  "0.028" = "That's $F(1.04)$.",
+  "+0.030+",
+  "0.032",
+  "0.033",
+  random_answer_order = FALSE
+)
+```

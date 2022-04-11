@@ -1,0 +1,52 @@
+---
+id: "Computing and anti-D"
+author: "Daniel Kaplan"
+---
+
+```{r include=FALSE}
+library(mosaicCalc)
+```
+
+
+We introduced anti-differentiation through the algebra of our basic modeling functions. With those functions, it's pretty easy to see that the derivative of the anti-derivative is the original function, as in $$\partial_x \int \sin(x) dx = \partial_x [-\cos(x)] = \sin(x)$$
+
+Later in the course, you'll see somewhat more complicated functions where the anti-derivative can be found using some technique or another. (Student's often pronounce "a technique" as "a trick," at least until they become familiar it.) For many students, learning the algebra of anti-differentiating complicated functions is the hardest part of the course and drains away their confidence in their calculus abilities. That's a shame, because there are other ways than algebra to compute anti-derivatives and also functions for which no algebraic anti-derivative is possible. 
+
+An important idea in computing is "abstraction." Abstraction means, in computer science, that you don't need to know the internal details of an operation in order to use it. For instance, in computing `sin(x)`, all you need to know is that `x` should be numeric. The particular algorithm used to do the calculation is, ideally, irrelevant to the user.
+
+We have abstracted anti-differentiation into a single R function, called `antiD()`. As you know mathematically, anti-differentiation is an operation performed on a function with respect to one of the arguments to the function. It's the same with `antiD()`: you need to specify the function and the "with respect to" variable. You do that in exactly the same way as you do with the `D()` operator used for differentiation, with a *tilde expression*. (`makeFun()` also uses tilde expressions.)
+
+For example:
+```{r echo=TRUE}
+f1 <- antiD(sin(x) ~ x)
+f2 <- antiD(exp(-k*x)*sin(2*pi*x/P) ~ x, k=2, P=4)
+f3 <- antiD(ifelse(t > 0, t^2, -t^2) ~ t)
+```
+
+As you expect, `f1`, `f2`, and `f3` are all functions. You evaluate them in the usual way, reducing the calculation of a definite integral to a difference of two evaluations of the functions, for instance:
+```{r echo=TRUE}
+f1(pi/2) - f1(0)
+f2(12, k=2, P=4 ) - f2(5, k=2, P=4)
+f3(5) - f3(-4)
+```
+`antiD()` is an example of computing abstraction because you do not need to know what is going on internally. All you need to know is how to hand a function and a with-respect-to variable as arguments, and that the returned result will be a function of the with-respect-to variable (as well as any other variables in the original function).
+
+For some very simple functions, like `sin(x)`, the function returned by `antiD()` will be familiar:
+```{r echo=TRUE}
+f1
+```
+
+For functions with symbolic parameters, such as in `f2()`, the anti-derivative function will have the with-respect-to variable as the first argument and any remaining variables as named arguments in no particular order. 
+```{r echo=TRUE}
+f2
+```
+For such functions with parameters, to evaluate the anti-derivative for at a numerical input `x` requires that all the parameters also be given numerical values. In `f2()`, defaults for these numerical parameters were assigned at the time of creation, but you can use other values for them whenever you evaluate the anti-derivative.
+
+The function returned by `antiD()` often will appear mysterious, as in `f2()`. Following the principle of abstraction, you don't have to know or understand the internal details of the function's algorithm. You only need to know how to use the function. One way to use it is to evaluate it at specific numerical inputs. Another way to use it is to construct other functions, as in this entirely made up and probably useless example:
+```{r echo=TRUE}
+g <- D( cos(f2(x)^2 + f2(x)) ~ x)
+slice_plot(g(x) ~ x, domain(x=-1:1), npts=500)
+```
+
+The abstraction built in to `antiD()` function is not perfect. `antiD()` knows about certain pathologies of functions, such as $g(x) = 1/x$, which isn't defined at $x=0$, but doesn't necessarily handle them in the way a skilled, thinking person would. Still, when you need an anti-derivative and don't see any way to get an algebraic expression for it, `antiD()` often lets you get on with your work.
+

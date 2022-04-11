@@ -1,0 +1,105 @@
+---
+id: "maple-think-ring"
+created: "Mon Jul 19 15:05:12 2021"
+global_id: "3D9C7d"
+---
+
+There is another format, called an **auto-regressive equation** for writing two dimensional finite-difference system. The auto-regressive format is widely used fields such as econometrics. Here is a system in [abcd]-matrix format and it's equivalent in auto-regressive format.
+
+$$\underbrace{\left( \begin{array}{c}x_{n+1}\\y_{n+1}\end{array} \right) = 
+\left( \begin{array}{cc}a & b \\1 &  0 \end{array} \right) \left( \begin{array}{c}x_{n}\\y_{n}\end{array} \right)}_\text{state-space format}\ \ \ \ \ \ \ \ 
+\underbrace{x_{n+1} = a x_{n} + b y_{n}\strut}_{\text{auto-regressive format}\strut}$$
+
+To see the equivalence, look to the equation for $y_{n+1}$ in the state-space format: $y_{n+1} = x_{n}$. In English, this translates to something like, "Tomorrow's y-component of the  state will be the same as today's x-component." But, unlike the usual situation in everyday life where a rule that applies this week might not apply the next week, the rules of finite difference equations apply for all $n$ without changing from one "week" to another or one "month" or "year" to another. Thus, the English statement is equivalent to, "Today's y-component will be the same as yesterday's x-component." Or, going back to mathematical notation, $y_n = x_{n-1}$. Substitute this relationship into the equation for $x_{n+1}$ in the state-space format to get the "auto-regressive" format:
+
+$$x_{n+1} = \underbrace{a x_n + b y_n}_\text{state-space format} = \underbrace{a x_n + b x_{n-1}}_\text{auto-regressive format}$$
+You can work with whatever format you prefer; they are exactly the same dynamics. As you will see, we'll mostly use the state-space format because that's easier to display graphically and makes explicit the connection to the math of linear combinations. For some algebraic operations, the auto-regressive format can be more straightforward and is the more common format in fields such as economics. Some kinds of engineers use mainly one format, other kinds the other.
+
+We're going to use the auto-regressive format to examine an *ansatz* to the AB10 discrete-time system. Recall the one-dimensional linear system with a fixed point at $x_n=0$. This had a simple solution: 
+$$\underbrace{x_{n+1} = \alpha x_n}_\text{dynamics}\ \ \ \ \implies\ \ \ \ \underbrace{x_n = \alpha^n x_0}_\text{solution}$$ 
+
+Let's try an *ansatz* of this form in the two-dimensional equation. But instead of $\alpha$ we'll use another Greek letter, lambda: $\lambda$. The ansatz will be: $$x_n = x_0 \lambda^n \ \ \mbox(ansatz)$$
+
+Following the usual procedure we plug the ansatz into the dynamics to see if things work out.
+$$x_0 \lambda^{n+1} = a x_0 \lambda^{n} + b x_0 \lambda^{n-1}$$
+Dividing both sides of the equation by $x_0 \lambda^{n-1}$ gives
+$$\lambda^2 = a \lambda + b$$
+
+Since $a$ and $b$ will be what they will (depending on the system being modeled), not just any value of $\lambda$ will satisfy the relationship. But you can translate the relationship into one familiar from high-school, $\lambda^2 - a \lambda - b = 0$ and recall the formula for values of $\lambda$ that satisfy the relationship. There are two:
+
+$$\lambda_1 = \frac{a + \sqrt{a^2 + 4b\strut}}{2}\\
+\lambda_2 = \frac{a - \sqrt{a^2 + 4b\strut}}{2}$$
+For good reasons that we haven't explained yet, $\lambda_1$ and $\lambda_2$ are called "characteristic values" of the AB10 system.
+
+**Problem 1**: Consider the simple system $x_{t+1} = x_t + x_{t-1}$. This system is famous as the generator of the Fibonacci numbers. 
+
+```{r tl1-1, echo=FALSE, results="markup"}
+askMC(
+  "Starting at $x_0=1$ and $x_1 = 0$, compute the first 10 elements of the Fibonacci numbers. Which one of these is it?",
+  "+0, 1, 1, 2, 3, 5, 8, 13, 21, 34+",
+  "0, 1, 1, 3, 5, 13, 21, 34, 55, 89", 
+  "0, 0, 1, 1, 2, 3, 5, 8, 13, 21",
+  "0, 1, 2, 3, 5, 8, 13, 34, 89"
+)
+```
+
+```{r tl1-2, echo=FALSE, results="markup"}
+askMC(
+  "Using the correct answer from the previous question, calculate the ratio $x_{10}/x_9$. What is it?",
+  "1.461", "1.528",
+  "+1.612+", "1.841",
+  random_answer_order = FALSE
+)
+```
+
+```{r tl1-3, echo=FALSE, results="markup"}
+askMC(
+  "Recall the *ansatz* $x_n = x_0 \\lambda^n$. Under this ansatz, what is the ratio $x_{10}/ x_9$?", 
+  "+$\\lambda$+",
+  "$x_0 \\lambda$" = "The $x_0$ is on both the top and bottom of the ratio, cancelling it out.",
+  "$\\lambda^2$",
+  "$1-\\lambda$"
+)
+```
+
+```{r tl1-4, echo=FALSE, results="markup"}
+askMC(
+  "Using the formulas for $\\lambda_1$ and $\\lambda_2$ and $a=b=1$ (the values used in the Fibonacci system), calculate numerical values for $\\lambda$. What are they?",
+  "+(1.619, -0.619)+",
+  "(1.619, 0.619)", 
+  "(1.916, 0.916)",
+  "(1.916, -0.916)",
+  random_answer_order = FALSE
+)
+```
+
+Notice that the $\lambda$ for the Fibonacci dynamics is the same as the ratio of successive elements (for large enough $n$) in the numerical Fibonacci sequence.
+
+Using the sandbox, iterate the Fibonacci system (in state-space format) starting at $x_0 = 52.57$ and $y_0 = -85.07$.
+
+```{r lt1-5, exercise=TRUE, exercise.cap="Fibonacci dynamics", exercise.nlines=4, eval=FALSE}
+fib_dyn <- makeFun(c(x + y, x) ~ x + y)
+Iterate(fib_dyn, x0=c(52.57, -85.07), n=10)
+```
+Perhaps strangely, the x-value gets smaller and smaller (and oscillates positive and negative), in contrast to the famous Fibonacci numbers which get bigger and bigger. But the underlying dynamics are the same.
+
+```{r lt1-6, echo=FALSE, results="markup"}
+askMC(
+  "Consider the trajectory for the Fibonacci dynamics starting at $x_0 = 52.57$ and $y_0 = -85.07$. What is the ratio $x_{3} / x_2$?", 
+  "$\\lambda_1$",
+  "+$\\lambda_2$+",
+  "$1/\\lambda_1$" = "Calculate $x_{3}/x_{2}$, not $x_2 / x_3$.",
+  "$1/\\lambda_2$" = "Calculate $x_{3}/x_{2}$, not $x_2 / x_3$."
+)
+```
+
+```{r lt1-7, echo=FALSE, results="markup"}
+askMC(
+  "Consider the trajectory for the Fibonacci dynamics starting at $x_0 = 52.57$ and $y_0 = -85.07$. What is the ratio $x_{10}} / x_9$?", 
+  "+$\\lambda_1$+",
+  "$\\lambda_2$",
+  "$1/\\lambda_1$" = "Calculate $x_{3}/x_{2}$, not $x_2 / x_3$.",
+  "$1/\\lambda_2$" = "Calculate $x_{3}/x_{2}$, not $x_2 / x_3$."
+)
+```
+

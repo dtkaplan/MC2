@@ -1,0 +1,120 @@
+---
+id: "wind-power"
+title: "Accumulating Wind Power"
+author: "Daniel Kaplan"
+---
+
+
+
+```{r include=FALSE}
+library("mosaic")
+library("mosaicCalc")
+tmp <- rfun(~ t, seed=982)
+tmp2 <- rfun(~ t, seed = 2932)
+tmp3 <- rfun(~ t, seed = 43)
+windspeed <- function(t) {
+  abs(tmp((t - 5)*3) + tmp2((t - 10)*2) + tmp3((t - 15)*4))
+}
+speed2power <- function(s) {
+  pmin(ifelse(s < 5, 0, (s-2)^3), 5000)
+}
+slice_plot(speed2power(s) ~ s, domain(s=c(5,5.5)))
+```
+
+The function `windspeed(t)` records wind speed at the site of a wind-turbine farm over one day, that is, $0 \leq t \leq 24$ hours. The function `speed2power(s)` is the production function for the model of wind turbine used at the farm: the input is speed in miles per hour, the output is in kilowatts. (Both these functions were created for this exercise. They are not about a real turbine at a real wind farm, but are somewhat realistic.) Hint: you can nest a function inside of another function. For instance, if I had a function ('solarpanelpower') that calculates the amount of power a solar panel generates and another function ('sunlight') that tells me the amount of sunlight at time of the day ('TOD'). I could evaluate this in one step like the following: 'solarpanelpower(sunlight(TOD))'. This would give me the amount of power from the solar panel based upon the time of the day.
+
+Your task, find the *total energy* generated over the 24-hour period by the turbine. Reminder: energy $E$ is electric power multiplied by time. Or, more usefully for this problem, the increment energy $dE$ generated at time $t$ is the product of power at time $t$ multiplied by the increment of time $dt$, that is, $dE = p(t) dt$. Consequently, $$E = \int_\text{morning}^\text{night} p(t) dt$$ where "morning" should really be 00:00 h and night 24:00 h on the day in question. 
+
+We don't have an algebraic formula for `windspeed(t)` even though it is a function. You can use `antiD()` to find the anti-derivative of the electric power function. 
+
+The answer you compute should be saved to the name `result`. The units will be in kWh -- kilowatt hours.
+
+```{r wind2, exercise = TRUE, exercise.nlines=6, exercise.cap="Find the energy produced"}
+# ignore these definitions. They are setting up the 
+# functions for you to use
+tmp <- rfun(~ t, seed=982)
+tmp2 <- rfun(~ t, seed = 2932)
+tmp3 <- rfun(~ t, seed = 43)
+windspeed <- function(t) {
+  abs(tmp((t - 5)*3) + tmp2((t - 10)*2) + tmp3((t - 15)*4))
+}
+speed2power <- function(s) {
+  pmin(ifelse(s < 5, 0, (s-2)^3), 5000)
+}
+
+#Your work starts here
+
+slice_plot(windspeed(t) ~ t, domain(t=c(0, 24)))
+
+# # Uncomment the next lines as you figure out how to fill in the "...blanks..."
+# antid_of_power <- antiD( ....power_function_here(t)... ~ t)
+# result <- antid_of_power(...night...) - antid_of_power(...morning...) 
+# result # this prints out the result
+```
+
+
+
+```{r wind3, echo=FALSE}
+askMC(
+  "Wind turbines of this type have a maximum power rating of 5000 kilowatts. Was this rating exceeded at any point during the day?",
+  "The maximum instantaneous power was about 3500 kilowatts",
+  "The maximum instantaneous power was about 1100 kilowatts",
+  "+That threshold was reached about 9 AM+",
+  "That threshold was exceeded about 8 AM",
+  "The maximum instantaneous power cannot be determined from the information given.",
+  random_answer_order = FALSE
+)
+```
+
+```{r wind4, echo=FALSE}
+askMC(
+  "At the maximum power rating of 5000 kilowatts, what's the theoretical maximum amount of energy produced by the turbine over a 24-hour day?",
+  "+5000 * 24 kilowatt-hours+",
+  "5000 / 24 kilowatt-hours" = "The units, kilowatt hours, should remind you that power is multiplied by time.",
+  "5000 kilowatts" = "That's the **power** rating. We want to know the amount of **energy**.",
+  "Can't be determined from the information given."
+)
+```
+
+```{r wind5, echo=FALSE}
+askMC(
+  "About what fraction of the theoretical maximum energy did the wind turbine generate over the 24-hour period?",
+  "About 2.5%",
+  "+About 10%+", 
+  "About 25%",
+  "About 50%",
+  "Can't be determined from the information given.",
+  random_answer_order = FALSE
+)
+```
+
+```{r wind6, echo=FALSE}
+askMC(
+  "A peak time for residential energy consumption is from 7 am to 9 am. The price at which you can sell electrical energy to the grid operator is $0.09 per kilowatt-hour. At that price, how much would the energy produced from 7-9 am be worth?",
+  "About 20 cents." = "That would be the answer if the turbine generated only 1 kilowatt of power during that period.",
+  "About $150", 
+  "+About $350+",
+  "About $650",
+  random_answer_order = FALSE
+)
+```
+
+```{r wind7, echo=FALSE}
+askMC(
+  "What's the average wind speed over the 24-hour period?",
+  "+About 5 mph+",
+  "About 7 mph",
+  "About 9 mph"
+)
+```
+
+```{r wind8, echo=FALSE}
+askMC(
+  "Wind speed fluctuates a lot, but imagine that the wind blew steadily at the average wind speed from the previous problem. How much energy would be generated over the 24-hour period?",
+  "+0 kilowatt hours+" = "That wind wouldn't be strong enough to turn the turbine.",
+  "500 kilowatt hours",
+  "1000 kilowatt hours",
+  "10,000 kilowatt hours",
+  random_answer_order = FALSE
+)
+```

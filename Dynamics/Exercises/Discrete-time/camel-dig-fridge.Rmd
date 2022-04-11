@@ -1,0 +1,158 @@
+---
+id: "camel-dig-fridge"
+created: "Mon Jul 19 14:49:16 2021"
+global_id: "JcqzZA"
+---
+
+In the two-dimensional finite-difference system, the state ${\mathbf X}_n$ has two components: $(x_n, y_n)$. For instance, $x_n$ might be the population of adult rabbits at generation $n$ and $y_n$ the population of baby rabbits at generation $n$.  The system will have two dynamical functions. We're going to start with one of the functions being extremely simple.
+$$\left( \begin{array}{c}x_{n+1}\\y_{n+1}\end{array}\right) = \underbrace{\left(\begin{array}{rcc}a x_n & + & b y_n\\ x_n& + & 0\end{array}\right)}_\text{explicit form} = \underbrace{\left(\begin{array}{cc}a & b\\1 & 0\end{array}\right) 
+\left(\begin{array}{c}x_n \\ y_n\end{array}\right)}_\text{matrix/vector form}$$
+The two forms are entirely equivalent. 
+
+**Problem 1** In the above system, set $a=1$ and $b=1$. Start an initial condition $(x_0=1, y_0 = 0)^T$. Iterate the system by hand, since this is such simple arithmetic, writing down your trajectory in this format:
+
+n | $x$ | $y$
+--|-----|-----
+0 | $x_0 = 1$ | $y_0 = 0$
+1 | $x_1 = \_\_\_$ | $y_1 = \_\_\_$
+2 | $x_2 = \_\_\_$ | $y_2 = \_\_\_$
+3 | $x_3 = \_\_\_$ | $y_3 = \_\_\_$
+4 | $x_4 = \_\_\_$ | $y_4 = \_\_\_$
+5 | $x_5 = \_\_\_$ | $y_5 = \_\_\_$
+
+```{r abcd1-1, echo=FALSE, results="markup"}
+askMC(
+  "What is $(x_1, y_1)$?",
+  "(0, 0)",
+  "(1, 0)",
+  "(0, 1)",
+  "+(1, 1)+",
+  random_answer_order = FALSE
+)
+```
+
+```{r abcd1-2, echo=FALSE, results="markup"}
+askMC(
+  "What is $(x_2, y_2)$?",
+  "(1, 0)",
+  "(2, 0)",
+  "+(2, 1)+",
+  "(2, 2)",
+  random_answer_order = FALSE
+)
+```
+
+```{r abcd1-3, echo=FALSE, results="markup"}
+askMC(
+  "What is $(x_5, y_5)$?",
+  "(6, 4)",
+  "(8, 4)",
+  "+(8, 5)+",
+  "(9, 6)",
+  random_answer_order = FALSE
+)
+```
+
+**Problem 2** It will be convenient to be able to perform such iterations on the computer. Among other things, this makes it easy to graph the results. You can use the `Iterate()` operator to do this. 
+
+The dynamical function used in `Iterate()` has to take two inputs. We're familiar with such functions in R, for example, 
+
+`makeFun(a*x + b*y ~ x + y)`
+
+But we also need the dynamic function to return *two* outputs. In R, multiple outputs need to be packaged up into a vector. The R `c()` function accomplishes this. Here's an implementation of the system you just iterated by hand.
+
+```{r abcd1-4, eval=FALSE}
+G <- makeFun(c(a*x + b*y, x) ~ x + y, a=1, b=1)
+Traj <- Iterate(G, x0=c(1,0), n=5)
+Traj
+
+```
+
+
+**Technique** Plot the trajectory.
+
+The output of `Iterate()` has in this case three columns, one column for $n$ and one column for each of the state variables. There are three conventional ways to plot the trajectory.
+
+i. Plot `x ~ n`. This shows how `x` changes step-by-step. This graph is called the "time series of $x$."
+ii. Plot `y ~ n`. Similar to (i), but for $y$. This graph is called the "time series of $y$."
+iii. Plot `y ~ x`.  This graph is called a "trajectory plot" or a "state-space plot" because it shows the full $(x,y)$ state at each $n$. 
+
+You can make any of these plots in the sandbox. The basic structure of the plotting command will be the same in each case, just the tilde_expression will vary between (i), (ii), and (iii).
+
+```r
+gf_point( tilde_expression, data = Traj) %>%
+  gf_path(alpha = 0.2)
+```
+
+For a trajectory plot, it can be nice to add a little label to each dot to remind you what was the value of $n$. You would do this in the following way:
+
+```{r  eval=FALSE}
+gf_point(y ~ x, data = Traj) %>%
+  gf_path(alpha = 0.2) %>%
+  gf_text(label = ~ n, hjust=1, vjust=2)
+```
+
+Make all three kinds of plot---the two different time series and the state-space plot---and make sure you understand the differences. Both styles of plot are useful.
+
+**Problem 3** Here is a plot of a trajectory of a system with $a=0.64$ and $b=0.38$. The initial condition for this trajectory is $(x_0 = 0.3, y_0 = 0.9)$. 
+
+```{r ab10-5,  eval=FALSE}
+G <- makeFun(c(a*x + b*y, x) ~ x + y, a=0.64, b=0.38)
+Traj <- Iterate(G, x0=c(0.3, 0.9), 10)
+gf_point(x ~ n, data = Traj) %>% gf_path(alpha=0.2) %>%
+  gf_text(label = ~ n, hjust=2, vjust=1)
+```
+
+```{r ab10-6, echo=FALSE, results="markup"}
+askMC(
+  "Which type of plot is this?",
+  "A state-space plot",
+  "The time series of $y$",
+  "+The time series of $x$+" = "Yes, $x$ is on the vertical axis and $n$ on the horizontal axis.",
+  "None of the above.",
+  random_answer_order = FALSE
+)
+```
+
+```{r ab10-7, echo=FALSE, results="markup"}
+askMC(
+  "What type of behavior does the trajectory show?",
+  "Steady exponential convergence to the fixed point at (0,0)",
+  "Oscillatory exponential convergence to the fixed point",
+  "Oscillatory exponential divergence from the fixed point",
+  "Steady exponential divergence from the fixed point",
+  "+None of the above+" = "The oscillations shrink, but the movement is **away** from the fixed point.",
+  random_answer_order = FALSE
+)
+```
+
+```{r ab10-8, echo=FALSE, results="markup"}
+askMC(
+  "Using the sandbox, change the parameters of the system to $a=0.4$ and $b=-0.28$. What kind of behavior does the time series of $x$ show?",
+  "Steady exponential convergence to the fixed point at (0,0)",
+  "+Oscillatory exponential convergence to the fixed point+" = "But here the oscillation has a longer period than we have seen before.",
+  "Oscillatory exponential divergence from the fixed point",
+  "Steady exponential divergence from the fixed point",
+  "None of the above.",
+  random_answer_order = FALSE
+)
+```
+
+```{r ab10-9, echo=FALSE, results="markup"}
+askMC(
+  "Using the sandbox, and keeping the parameters of the system at $a=0.4$ and $b=-0.28$, make a state-space plot of the trajectory. What's the pattern seen in the state-space plot?",
+  "A straight in path to the fixed point",
+  "+A spiral in toward the fixed point+",
+  "A random walk toward the fixed point",
+  "Circling the fixed point at a constant distance from it",
+  random_answer_order = FALSE
+)
+```
+
+The `Iterate()` function comes with a shortcut for when the dynamics are linear near a fixed point: ${\mathbf X}_{n+1} = {\mathbf A}\, {\mathbf X}_n$ You just need to specify the matrix ${\mathbf A}$, not give a function that explicitly does the arithmetic. For instance:
+
+```{r ab10-10, eval=FALSE}
+A <- matrix(c(1, 1, 1, 0), nrow=2, byrow=TRUE)
+Iterate(A=A, x0=c(1,0), n=5)
+```
+

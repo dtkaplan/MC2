@@ -1,0 +1,46 @@
+---
+id: "fly-speak-canoe"
+created: "Wed Aug 11 13:45:37 2021"
+global_id: "K05LrF"
+---
+
+As you know, given a function $g(x)$ it's easy to construct a new function ${\cal D}_x g(x)$ that will be an approximation to the derivative $\partial_x g(x)$. The approximation function, which we call the slope function, can be $${\cal D}_x g(x) \equiv \frac{g(x + 0.1) - g(x)}{0.1}$$
+
+Open a `r sandbox_link()` and use `makeFun()` to create a function $g(x) \equiv \sin(x)$ and another that will be the slope function, called it `slope_of_g()`.
+
+```r
+g <- makeFun(sin(x) ~ x)
+slope_of_g <- makeFun( _your_tilde_expression_here )
+```
+
+
+```{r fsc1-1, echo=FALSE, results="markup"}
+g <- makeFun(sin(x) ~ x)
+slope_of_g <- makeFun( (g(x+0.1) - g(x))/0.1 ~ x )
+askMC(
+  "What's the value of `slope_of_g(1)`?",
+  "0.3749",
+  "+0.4973+",
+  "1.3749",
+  "1.4973",
+  random_answer_order = FALSE
+)
+```
+
+Using your sandbox, plot both `g()` and `slope_of_g()` (in blue) on a domain $-5 \leq x \leq 5$. This can be done with `slicePlot()` in the following way:
+
+```{r results="hide"}
+slice_plot(g(x) ~ x, domain(x=-5:5)) %>%
+  slice_plot(slope_of_g(x) ~ x, color="blue")
+```
+```{r fsc1-2, echo=FALSE, results="markup"}
+askMC(
+  "Which of these statements best describes the graph of $g()$ compared to `slope_of_g()`?",
+  "+`slope_of_g()` is shifted left by about $\\pi/2$ compared to `g(x)`.+",
+  "`slope_of_g()` is shifted left by about $\\pi$ compared to `g(x)`.",
+  "`slope_of_g()` has a larger amplitude than `g()`", 
+  "The output of `slope_of_g()` is always positive",
+  "`slope_of_g()` is practically the same function as `g()`. That is, for any input the output of the two functions is practically the same."
+)
+```
+

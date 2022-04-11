@@ -1,0 +1,67 @@
+---
+id: "maple-beat-plate"
+created: "Mon Mar 21 10:00:55 2022"
+global_id: "Ku1rfp"
+skill: "U-5PMG7"
+---
+
+
+
+We're going to explore some common pitfalls for using the `integrateODE()` and `traj_plot()` functions.
+
+```{r mbp204-1, echo=FALSE, results="markup"}
+askMC(
+  "What is the purpose of the `integrateODE()` function?",
+  "+To translate a dynamical system into a set of numerical solutions, one for each state variable.+",
+  "To draw a flow field of the dynamical system.",
+  "To anti-differentiate a differential equation, giving a symbolic solution.",
+  "To plot the trajectory of a dynamical system."
+)
+```
+
+```{r mbp204-2, echo=FALSE, results="markup"}
+resp1 <- "In R, arguments are always separated by **commas**."
+askMC(
+  "What is the proper format to use in specifying the dynamical system to `integrateODE()`?",
+  "+A set of tilde expressions, each one an individual argument.+",
+  "A set of named arguments, with the formula on the right-hand side." = "You mean something like `dx = x*(1-x)`? Close, but not right. Replace the `=` by `~`. A **tilde expression** is the appropriate form.",
+  "A set of equations separated by semi-colons." = resp1,
+  "A set of tilde expressions separated by semi-colons." = resp1)
+```
+  
+```{r mbp204-3, echo=FALSE, results="markup"}
+askMC(
+  "What should the left-hand side of the tilde expression look like for a state variable `z`?",
+  "+`dz`+",
+  "`z`",
+  "`zdot`",
+  "`dt_z`" = "This makes sense, and mimics the mathematical notation $\\partial_t z$, but the authors of the software decided to use a shorter form."
+)
+```
+
+```{r mbp204-4, echo=FALSE, results="markup"}
+askMC("For the dynamical system $$\\partial_t x = y\\\\\\partial_t y = -x\ ,$$ what should the `integrateODE()` command look like? (Note: we're using `...` as a placeholder for other inputs that will be needed by `integrateODE()`.)",
+      "+`integrateODE(dx ~ y, dy ~ -x, ...)`+",
+      "`integrateODE(dx = y, dy = -x, ...)`" = "That's using named arguments, not the tilde expression form.",
+      "`integrateODE(dx ~ y, dy = -x, ...)`" = "You've got a tilde expression (correctly) for the first argument, but the second is a named argument rather than a tilde expression. It's easy to make such a mistake.")
+```
+
+```{r mbp204-5, echo=FALSE, results="markup"}
+askMC(
+  "Aside from the tilde-expressions encoding the dynamical system, what other information is **absolutely essential** to specify when constructing a numerical solution?",
+  "+The initial condition for each and every state variable.+" = "There needs to be a starting point for the trajectory. That choice is up to you.+",
+  "The trajectory." = "This is what `integrateODE()` will calculate so long as you use it properly.",
+  "The time series." = "This is what `integrateODE()` will calculate so long as you use it properly.",
+  "The initial condition for at least one of the state variables." = "You need to give an initial condition for each and every state variable."
+)
+```
+
+```{r mbp204-6, echo=FALSE, results="markup"}
+askMC(
+  "How should you specify how long you want `integrateODE()` to carry forward the solution in time, say for 10 time units?",
+  "+`tdur=10`+",
+  "`duration=10`",
+  "`t=10`",
+  "`for=10`"
+  )
+```

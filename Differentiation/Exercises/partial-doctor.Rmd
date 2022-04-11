@@ -1,0 +1,62 @@
+---
+id: "partial-doctor"
+origin: "141 DD29"
+author: "Daniel Kaplan"
+global-id: "uekses"
+---
+
+```{r include = FALSE}
+```
+
+At numerous occasions in your professional life, you will be in one or both of these positions:
+
+1. You are a decision-maker being presented with the results of analysis conducted by a team of unknown reliability, and you need to figure out whether what they are telling  you is credible.
+2. You are a member of the analysis team needing to demonstrate to the decision-maker that your work should be believed.
+
+As an example, consider one of the functions presented in a comedy book, *Geek Logic: 50 Foolproof Equations for Everyday Life* (2006), by Garth Sundem. The particular function we'll consider here is `Dr()`, intended to help answer the question, "Should you go to the doctor?"
+
+
+$$\text{Dr}(d, c, p,  e,  n, s) = \frac{\frac{s^2}{2} + e(n-e)}{100 -  3(d + \frac{p^3}{70} - c)}$$  where
+
+- $d$ = How many days in the  past month have you been incapacitated? $d_0 \equiv 3$
+- $c$ = Does the issue seem to  be getting better or worse. (-10 to  10 with -10 being "circling the drain" and 10 being "dramatic improvement") $c_0 \equiv -2$
+- $p$ = How much pain or discomfort are you currently experiencing? (1-10 with  10 being "currently holding detached toe in  Ziploc bag") $p_0 = 3$
+- $e$ = How embarrassing is this issue? (1-10 with 10 being "slipped on  ice and fell on  1972 Mercedes-Benz  hood ornament, which is now part of my body") $e_0 = 4$
+- $n$ = How noticeable is the issue? (1-10 with 10 being "fell asleep on  waffle iron") $n_0 = 5$
+- $s$ = How serious does the issue seem? (1-10 with  10 being "may well have nail embedded in frontal lobe [of brain]") $s_0 = 3$
+
+Although the function is offered tongue-in-cheek, let's examine it to see if it even roughly matches common sense. The tool we will use relates to low-order polynomial approximation around a reference point and examining appropriate partial derivatives. To save time, we stipulate a reference point for you, noted in the description of variables above. 
+
+::: {.scaffolding  data-latex=""}
+The code creates an R implementation of the function that is set up so that the default values of the variables are those at the given reference point. You can use this in a sandbox to try different changes in each of the input quantities.
+
+
+
+
+```{r results="hide"}
+
+Dr <- makeFun(
+  ((s^2)/2 + e*(n-e)) /
+    (100 - 3*(d + (p^3/70) - c)) ~
+    d+p+e+c+n+s, s=3, n=5, e=4, p=3, d=3, c=-2)
+Dr()
+```
+:::
+
+
+According to the instructions in the book, if `Dr()`$> 1$, you should go to the doctor.
+
+**Essay 1**: The value of `Dr()` at the reference point is 0.10, indicating that you shouldn't go to the doctor. But we don't yet know whether 0.10 is very close to the decision threshold of 1 or very far away. Describe a reasonable way to figure this out. Report your description and the results here.
+
+**Essay 2**: There are six inputs to the function. Go through the list of all six and (without thinking too hard about it) write down for all of them your intuitive sense of whether an increase of one point in that input should raise or lower the output of Dr() at the reference point. Also write down whether you think the input should be a large or small determinant of whether to go to the doctor. (You don't need to refer to the Dr() function  itself, just to your own intuitive sense of what should be the effect of each of the inputs.)
+
+The operator `D()` can calculate partial derivatives. You can calculate the value of a partial derivative very easily at the reference point, using an expression like this, which gives the value of the partial of Dr() with respect to input $s$ at the reference point:
+
+```{r results="hide"}
+D(Dr(s = s) ~ s)(s=3)
+```
+
+We're now going to use these partial derivatives to compare your intuition about going to the doctor to what the function has to say. Of course, we don't know yet  whether the function  is reasonable, so don't be disappointed if your intuition conflicts with the function.
+
+**Essay 3**: Calculate the numerical value of each of the partial derivatives  at the reference point. List them here and say, for each one, whether it accords with your intuition.
+

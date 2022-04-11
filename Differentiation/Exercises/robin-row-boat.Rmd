@@ -1,0 +1,138 @@
+---
+author: "Daniel Kaplan"
+date: 2020-10-12 
+tags: [first, second, third]
+id: robin-row-boat
+global-id: iclcws
+---
+
+```{r finch-trim-kayak-setup, include = FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+```
+
+Here are graphs of various functions. The right column shows functions named $f_1()$, $f_2()$, and so on. The left column shows functions $A()$, $B()$, $C()$, and so on. Most of the functions on the right are the derivative of some function on the left, and most of the functions on the left have their corresponding derivative on the right. Your task: Match the function on the left to it's derivative on the right.
+
+
+```{r echo=FALSE}
+r1 <- rfun(~ x, seed = 101)
+r2 <- rfun(~ x, seed = 102)
+r3 <- rfun(~ x, seed = 103)
+r4 <- rfun(~ x, seed = 104)
+
+df1 <- makeFun(r1(x) + 1.5  ~ x)
+df2 <- makeFun(-r2(x)  ~ x)
+df3 <- makeFun(r3(x)  ~ x)
+df4 <- makeFun(r4(x)/2 + 7.5  ~ x)
+df5 <- makeFun(r1(x)  ~ x)
+df6 <- makeFun(abs(r2(x)) ~ x)
+df7 <- r1
+df8 <- r2
+df9 <- r3
+df10 <- r4
+
+ddf1 <- D(df1(x) ~ x)
+ddf2 <- D(df2(x) ~ x)
+ddf3 <- D(df3(x) ~ x)
+ddf4 <- D(df4(x) ~ x)
+ddf5 <- D(df5(x) ~ x)
+ddf6 <- D(df6(x) ~ x)
+ddf7 <- D(df7(x) ~ x)
+ddf8 <- D(df8(x) ~ x)
+ddf9 <- D(df9(x) ~ x)
+ddf10 <- D(df10(x) ~ x)
+
+
+f1 <- antiD(df1(x) ~ x)
+f2 <- antiD(df2(x) ~ x)
+f3 <- antiD(df3(x) ~ x)
+f4 <- antiD(df4(x) ~ x)
+f5 <- antiD(df5(x) ~ x)
+f6 <- antiD(df6(x) ~ x)
+f7 <- antiD(df7(x) ~ x)
+f8 <- antiD(df8(x) ~ x)
+f9 <- antiD(df9(x) ~ x)
+f10 <- antiD(df10(x) ~ x)
+
+F1 <- antiD(f1(x) ~ x)
+F2 <- antiD(f2(x) ~ x)
+F3 <- antiD(f3(x) ~ x)
+F4 <- antiD(f4(x) ~ x)
+F5 <- antiD(f5(x) ~ x)
+F6 <- antiD(f6(x) ~ x)
+F7 <- antiD(f7(x) ~ x)
+F8 <- antiD(f8(x) ~ x)
+F9 <- antiD(f9(x) ~ x)
+F10 <- antiD(f10(x) ~ x)
+```
+
+
+```{r echo=FALSE}
+dom <- domain(x = c(-5, 5))
+P1A <- slice_plot(f7(x) ~ x, dom) %>% gf_labs(title = "Function A()")
+P1B <- slice_plot(df4(x) ~ x, dom) %>% gf_labs(title = "Function f1()")
+P2A <- slice_plot(f4(x) ~ x, dom) %>% gf_labs(title = "Function B()")
+P2B<- slice_plot(df7(x) ~ x, dom) %>% gf_labs(title = "Function f2()")
+gridExtra::grid.arrange(P1A, P1B, P2A, P2B, ncol=2)
+```
+```{r echo=FALSE}
+P3A <- slice_plot(f10(x) ~ x, dom) %>% gf_labs(title = "Function C()")
+P3B <- slice_plot(df3(x) ~ x, dom) %>% gf_labs(title = "Function f3()")
+P4A <- slice_plot(f9(x) ~ x, dom) %>% gf_labs(title = "Function D()")
+P4B <- slice_plot(df10(x) ~ x, dom) %>% gf_labs(title = "Function f4()")
+gridExtra::grid.arrange(P3A, P3B, P4A, P4B, ncol=2)
+```
+
+```{r finch-trim-kayak-QA1, echo=FALSE}
+askMC(
+  prompt = "The derivative of Function A() is which of the following:",
+    "f1()" = "           ",
+    "+f2()+" = "",
+    "f3()" = "         ",
+    "f4()" = "         ",
+    "not shown" = "",
+  random_answer_order = FALSE
+)
+```
+
+
+```{r finch-trim-kayak-QA2, echo=FALSE}
+askMC(
+  prompt = "The derivative of Function B() is which of the following:",
+    "+f1()+" = "",
+    "f2()" = "        ",
+    "f3()" = "        ",
+    "f4()" = "        ",
+    "not shown" = "",
+  random_answer_order = FALSE
+)
+```
+
+```{r finch-trim-kayak-QA3, echo=FALSE}
+askMC(
+  prompt = "The derivative of Function C() is which of the following:",
+    "f1()" = "        ",
+    "f2()" = "        ",
+    "f3()" = "        ",
+    "+f4()+" = "",
+    "not shown" = "",
+  random_answer_order = FALSE
+)
+```
+
+```{r finch-trim-kayak-QA4, echo=FALSE}
+askMC(
+  prompt = "The derivative of Function D() is which of the following:",
+    "f1()" = "         ",
+    "f2()" = "          ",
+    "f3()" = "         ",
+    "f4()" = "         ",
+    "+not shown+" = "",
+  random_answer_order = FALSE
+)
+```
+
+
+
+

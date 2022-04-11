@@ -1,0 +1,54 @@
+---
+id: "cheetah-go-jacket"
+created: "Sun Feb  6 11:16:48 2022"
+global_id: "EFgeD4"
+---
+
+`r insert_calcZ_exercise("XX.XX", "EFgeD4", "Exercises/cheetah-go-jacket.Rmd")`
+
+::: {.underconstruction}
+:::
+
+Suppose we're interested in a domain $0 \leq t \leq 10$ and a set of sinusoid functions:
+
+$$s_1(t) \equiv \sin(2 \pi t/10)\\
+s_2(t) \equiv \sin(4 \pi t/10)\\
+s_3(t) \equiv \sin(6 \pi t/10)\\
+c_1(t) \equiv \cos(2 \pi t/10)\\
+c_2(t) \equiv \cos(4 \pi t/10)\\
+c_3(t) \equiv \cos(6 \pi t/10)
+$$
+
+Each of these functions goes through an integer number of cycles over $0 \leq t  \leq 10$, as you can confirm by graphing them, e.g.
+```{r results="hide"}
+s1 <- makeFun(sin(2*pi*t/10) ~ t)
+s2 <- makeFun(sin(4*pi*t/10) ~ t)
+# and so on
+c2 <- makeFun(cos(4*pi*t/10) ~ t)
+c3 <- makeFun(cos(6*pi*t/10) ~ t)
+slice_plot(s1(t) ~ t, domain(t=0:10)) %>%
+  slice_plot(c2(t) ~ t, color="blue")
+```
+Using the definition of the dot product between two functions as
+$$f(t) \bullet g(t) \equiv \int_0^{10} f(t)\, g(t) dt\ ,$$
+
+
+a. Calculate the "length" of each of the functions $s_1(t), \ldots, c_3(t)$.
+b. Calculate the angle between each pair of functions.
+
+To simplify your calculations, you might want to make use of these "helper" functions:
+
+```{r}
+fdot <- function(tilde1, tilde2, domain) {
+  f <- makeFun(tilde1)
+  g <- makeFun(tilde2)
+  Integrate(f(t)*g(t) ~ t, domain)
+}
+fangle <- function(tilde1, tilde2, domain) {
+  fdot(tilde1, tilde2, domain) /
+    sqrt(fdot(tilde1, tilde1, domain) * 
+         fdot(tilde2, tilde2, domain))
+}
+```
+
+c. To judge from the set of angles you calculated, what about the functions $s_1(t), \ldots, c_3(t)$ would make it easy to project a function $h(t)$ onto the subspace spanned by the functions? 

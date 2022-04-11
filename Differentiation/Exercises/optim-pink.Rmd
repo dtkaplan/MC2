@@ -1,0 +1,72 @@
+---
+id: "optim-pink"
+global-id: "whfrt"
+author: "Daniel Kaplan"
+---
+
+```{r include = FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+```
+
+
+If you're skeptical that a dog might do a calculus problem before running to fetch a ball, consider the path taken by a photon. "Fermat's Principle" is that light takes the path of least time. To illustrate, consider the problem of a photon travelling from a point A to a point B, as in the diagram. The shortest path between the two points is a straight line. Along this straight-line path, the time taken by the photon will be the distance divided by the speed of light. 
+
+The diagram shows another path consisting of two segments, one of length $l_1$ and the other $l_2$. Obviously, the two-segment path is longer than the straight-line path. But according to Fermat's principle, light "prefers" the longer path if the time taken to traverse it is shorter. This phenomenon is called ***refraction***.
+
+```{r echo=FALSE, out.width = "60%"}
+knitr::include_graphics(normalizePath("www/1200px-Fermat_Snellius_svg.png"))
+```
+
+The reason the indirect path might be shorter is that the speed of light differs in different physical media. Light traveling in a vacuum famously has a speed of about 300,000 km per second. In air, the speed is smaller by a factor of 1/1.003. In water, the speed is smaller still: the factor is 1/1.3.
+
+Imagine that the blue zone of the diagram is water and the clear zone air. The time for the photon to travel from point A to B is proportional to $1.003\ l_1 + 1.3\ l_2$. 
+
+```{r echo=FALSE, out.width="60%", fig.align="center"}
+knitr::include_graphics(normalizePath("www/refraction.png"))
+```
+
+To see the path actually taken by light, let's imagine that point A is $(x=0, y=10)$ and point B is $(x=20, y=-10)$, and that the boundary between water and air is at $y=0$. We'll place the point P at $(x, 0)$. The total time taken for light to traverse this path is 1.003 dist(A to P) + 1.3 dist(P to B).
+
+
+```{r daily-digital-36-QA39, echo=FALSE}
+askMC(
+  prompt = "Which of these formulas gives the total time it takes for light to traverse the path from A to P at relative speed 1/1.003 and then the path from P to B at relative speed 1/1.3? A is located at $(0, 10)$, B is located at $(20,-10)$, and P is located at $(x, 0)$",
+    "+$1.003 \\sqrt{(x-0)^2 +(0-10)^2}+ 1.3\\sqrt{(20-x)^2 + (-10 - 0)^2}$+" = "",
+    "$\\sqrt{(x-0)^2 +(0-10)^2}/1.003+ \\sqrt{(20-x)^2 + (-10 - 0)^2}/1.3$" = "It's true that you divide distance by speed to get time, but here the relative speeds are $1/1.003$ and $1/1.3$.",
+    "$1.003 \\sqrt{(x-10)^2 +(0-0)^2}+ 1.3\\sqrt{(-10 -x)^2 + (50 - 0)^2}$" = "This mixes up the x and y coordinates. The distance from A to P is $\\sqrt{(x_P - x_A)^2 + (y_P - y_A)^2}$. In this problem, point P is at $(50-x, 0)$.",
+  inline = FALSE
+)
+```
+
+
+Implement the calculation of `total_time()` in R, then use a graph to find the argmin. 
+
+
+::: {.scaffolding  data-latex=""}
+```{r eval=FALSE}
+total_time <- makeFun( your_formula ~ x)
+slice_plot(total_time(x) ~ x, domain(x=0:20))
+
+# For the next problem
+dx_time  <- D(total_time(x) ~ x)
+dxx_time <- D(total_time(x) ~ x & x)
+```
+:::
+
+```{r daily-digital-36-QA2, echo=FALSE}
+askMC(
+  prompt = "What value of $x$ (that is, the argmin) minimizes the travel time of light between points A and B? (Choose the best answer)",
+  10.52, 11.02, 12.22,  "+12.50+", 13.21, 14.94,
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-36-QA3, echo=FALSE}
+askMC(
+  prompt = "Suppose that instead of being water, the blue area was glass. The speed of light in glass is roughly 1/1.5 times as big as in vacuum. What value of $x$ minimizes the travel time of light between points A and B? (Choose the best answer)",
+  "+13.60+", 14.58, 14.85, 15.54,
+  random_answer_order = FALSE
+)
+```

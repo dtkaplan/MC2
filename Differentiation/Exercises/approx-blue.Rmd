@@ -1,0 +1,199 @@
+---
+id: "approx-blue"
+author: "Daniel Kaplan"
+origin: "141 DD-28"
+---
+
+```{r include=FALSE}
+library(etude2)
+library(mosaic)
+library(mosaicCalc)
+```
+
+```{r echo=FALSE}
+make_poly_0 <- function(f, x0) {
+  a <- f(x0)
+  function(x) rep(a, length(x))
+}
+make_poly_1 <- function(f, x0) {
+  a <- f(x0)
+  b <- (D(f(x) ~ x)) (x0)
+  function(x) {
+    a + b*(x - x0)
+  }
+}
+
+make_poly_2 <- function(f, x0) {
+  c_0 <- f(x0)
+  c_1 <- (D(f(x) ~ x))  (x0)
+  c_2 <- (D(f(x) ~ x + x))  (x0)  / 2
+  function(x) {
+    c_0 + c_1 * (x - x0) + c_2 * (x - x0)^2
+  }
+}
+
+linear_approx <- function(f, x0, y0){
+  a <- f(x0, y0)
+  b <- (D(f(x, y) ~ x))(x = x0, y = y0)
+  c <- (D(f(x, y) ~ y))(x = x0, y = y0)
+  function(x, y) a + b*(x-x0) + c*(y-y0)
+}
+bilinear_approx <- function(f, x_0,  y_0) {
+  a_0 <- f(x_0, y_0)
+  dx_f <- D(f(x, y) ~ x)
+  dxy_f <- D(dx_f(x,y) ~ y)
+  a_x <- (D(f(x, y) ~ x))(x = x_0, y = y_0)
+  a_y <- (D(f(x, y) ~ y))(x = x_0, y = y_0)
+  #a_xy <- (D(f(x, y) ~ x + y))(x = x_0, y = y_0)
+  a_xy <- dxy_f(x = x_0, y = y_0)
+  function(x, y)
+    a_0 + a_x*(x-x_0) + a_y*(y-y_0) + a_xy*(x-x_0)*(y-y_0)
+}
+quad_approx <- function(f, x0,  y0) {
+  a_0 <- f(x0, y0)
+  dx_f <- D(f(x, y) ~ x)
+  dxy_f <- D(dx_f(x,y) ~ y)
+  a_x <- (D(f(x, y) ~ x))(x = x0, y = y0)
+  a_y <- (D(f(x, y) ~ y))(x = x0, y = y0)
+  a_xy <- dxy_f(x = x0, y = y0)
+  a_xx <- (D(f(x, y) ~ x & x))(x = x0, y = y0) / 2
+  a_yy <- (D(f(x, y) ~ y & y))(x = x0, y = y0) / 2
+  function(x, y)
+    a_0 + a_x*(x-x0) + a_y*(y-y0) + a_xy*(x-x0)*(y-y0) + a_xx*(x-x0)^2 + a_yy*(y-y0)^2
+}
+```
+
+Here is a somewhat complex function in two variables. The labels A, B, C, D mark some possible reference points $(x_0, y_0)$ around which polynomial approximations are being made.
+
+```{r echo=FALSE}
+f <- rfun( ~ x + y, seed=800, n=10)
+Points <- tibble::tribble(
+  ~ x0, ~ y0, ~ label,
+  3, -2, "A",
+  -1, -0.5, "B",
+  4, 3, "C",
+  1, 0, "D"
+)
+levels <- c(-2, 0, 2, 4, 6, 8, 10, 12, 14)
+contour_plot(f(x, y) ~ x + y, domain(x=-5:5, y=-5:5)) %>%
+  gf_label(y0 ~ x0, data = Points, label=~label) 
+```
+
+For each of the following graphs, say what kind of two-variable polynomial approximation is being made and which reference point the approximation is centered on.
+
+<!-- Graph I -->
+
+```{r echo=FALSE, warning = FALSE}
+g <- bilinear_approx(f, 3, -2)  # point A
+contour_plot(g(x,y) ~ x + y, domain(x=c(-5,5), y=c(-5,5)),
+             contours_at = c(-2, 0, 2, 4, 6, 8, 10, 12, 14), skip=1) %>%
+  gf_labs(title = "Graph I")
+```
+
+
+
+
+```{r daily-digital-28-QA13, echo=FALSE}
+askMC(
+  prompt = "What order approximation in graph (I)?",
+    "constant" = "",
+    "linear" = "The contours would be straight if the approximation were linear",
+    "+bilinear+" = "Right. But it turns out that the quadratic approximation is similar, presumably because $d_{xx}f(x_0, y_0)$ and $d_{yy} f(x_0, y_0)$ are too small to make a difference.",
+    "quadratic" = "Not a bad answer. In this case, the bilinear approximation looks a lot like the quadratic.",
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-28-QA13b, echo=FALSE}
+askMC(
+  prompt = "What is the reference position $(x_0, y_0)$ for approximation in graph (I)?",
+  "+A+" = "", "B" = "", "C" = "",  "D" = "",
+  random_answer_order = FALSE
+)
+```
+
+
+
+
+<!-- Graph II -->
+
+```{r echo=FALSE, warning = FALSE}
+g <- quad_approx(f, -1, -.5)  # B
+contour_plot(g(x,y) ~ x + y, domain(x=c(-5,5), y=c(-5,5)),
+             contours_at = c(-2, 0, 2, 4, 6, 8, 10, 12, 14)) %>%
+  gf_labs(title = "Graph II")
+```
+```{r daily-digital-28-QA14, echo=FALSE}
+askMC(
+  prompt = "What order approximation in graph (II)?",
+    "constant" = "",
+    "linear" = "The contours would be straight if the approximation were linear",
+    "+bilinear+" = "Right. But it turns out that the quadratic approximation is similar, presumably because $d_{xx}f(x_0, y_0)$ and $d_{yy} f(x_0, y_0)$ are too small to make a difference.",
+    "quadratic" = "The circular (or elliptical) contours are the hallmark of a quadratic approximation near a maximum or minimum.",
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-28-QA14b, echo=FALSE}
+askMC(
+  prompt = "What is the reference position $(x_0, y_0)$ for approximation in graph (II)?",
+  "A" = "", "+B+" = "Practically a bullseye on B!", 
+  "C" = "",  "D" = "",
+  random_answer_order = FALSE
+)
+```
+
+<!-- Graph III -->
+
+```{r echo=FALSE, warning = FALSE}
+g <- linear_approx(f, 1, 0)  # D
+contour_plot(g(x,y) ~ x + y, domain(x=c(-5,5), y=c(-5,5)),
+             contours_at = c(-2, 0, 2, 4, 6, 8, 10, 12, 14)) %>%
+  gf_labs(title = "Graph III")
+```
+
+```{r daily-digital-28-QA15, echo=FALSE}
+askMC(
+  prompt = "What order approximation in graph (III)?",
+    "constant" = "",
+    "+linear+" = "A linear approximation always produces straight, parallel, evenly spaced contours.",
+    "bilinear" = "",
+    "quadratic" = "",
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-28-QA15b, echo=FALSE}
+askMC(
+  prompt = "What is the reference position $(x_0, y_0)$ for approximation in graph (III)?",
+  "A" = "", "B" = "", "C" = "",  "+D+" = "",
+  random_answer_order = FALSE
+)
+```
+
+<!-- Graph IV -->
+
+```{r echo=FALSE, warning = FALSE}
+g <- quad_approx(f, 4, 3)  # C
+contour_plot(g(x,y) ~ x + y, domain(x=c(-5,5), y=c(-5,5)),
+             contours_at = c(-2, 0, 2, 4, 6, 8, 10, 12, 14)) %>%
+  gf_labs(title = "Graph IV")
+```
+```{r daily-digital-28-QA16, echo=FALSE}
+askMC(
+  prompt = "What order approximation in graph (IV)?",
+    "constant" = "",
+    "linear" = "The contours would be straight if the approximation were linear",
+    "bilinear" = "Not a bad answer. But curvature in bilinear approximations is always in one direction.",
+    "+quadratic+" = "Sometimes quadratic approximations produce elliptical contours, as in a previous problem. But sometimes they produce the X-shaped contours seen here. In both cases, the contours curve in opposing ways in different parts of the domain. By the way, the contour pattern seen in the upper right of this graph corresponds to the shape of a saddle: curving up along one line and down along the perpendicular line. The place right in the middle of the saddle is called a 'saddle point'.",
+  random_answer_order = FALSE
+)
+```
+
+```{r daily-digital-28-QA16b, echo=FALSE}
+askMC(
+  prompt = "What is the reference position $(x_0, y_0)$ for approximation in graph (IV)?",
+  "A" = "", "B" = "", "+C+" = "",  "D" = "",
+  random_answer_order = FALSE
+)
+```

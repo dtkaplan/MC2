@@ -1,0 +1,120 @@
+---
+id: "cat-show-mug"
+created: "Mon Jul 19 19:19:17 2021"
+global_id: "LiJkK2"
+---
+
+In this exercise, you will work with an optimization problem. First, we'll ask about a mathematical solution to the problem. Next, we'll show that the mathematical solution is not necessarily the best real-world solution because of multiple objectives in decision making. Then we'll show you a real-world decision-making rubric that's widely accepted, at least among people who listen to the whole story with an open mind.
+
+The graph shows the estimated number of lives saved by three different health-care related interventions -- A, B, C -- as a function of the amount of money spent on each.
+
+```{r qaly,echo=FALSE}
+money <- seq(0,1000,length=1000)
+A <- makeFun(
+  500*pnorm(money, mean=300, sd=150) + .05*money - baseline ~ money, baseline=11.375)
+B <- makeFun(350*pnorm(money,mean=0, sd=100) + .05*money - baseline ~ money, baseline = 175)
+C <- makeFun(money/1.6 ~ money)
+slice_plot(A(x) ~ x, domain(x=c(0,1000)), label_text="(A)") %>%
+  slice_plot(B(x) ~ x, label_text="(B)", color="orange3") %>%
+  slice_plot(C(x) ~ x, label_text="(C)", color="dodgerblue") %>%
+  gf_labs(x = "Expenditure ($M)", y = "Lives saved")
+```
+
+You have $1,000,000,000 to spend altogether on these interventions. Your policy alternatives are all the different combinations of spending on (A), (B), and (C) that add up to $1B (or less). 
+
+How should you split up the money among the interventions? For example, we could spend $125M on B, $125M on C, and $750M on A. This would save an estimated 346 lives. Can we do better? 
+
+Imagine that we use $x$, $y$ and $z$ to denote expenditure, with $x$ spent on intervention A, $y$ on intervention B, and $z$ on intervention C. Altogether, the budget is $x + y + z = \$1B$.
+
+```{r tp1-1, echo=FALSE, results="markup"}
+askMC(
+  "Suppose $x = 750$, $y = 125$, and $z=125$, where units are millions of dollars. It's suggested that reducing $x$ by $1M in order to increase $z$ by that amount will produce a better outcome in terms of the total number of lives saved. That is, move some money from intervention A to intervention C. Is this suggestion correct? Why or why not?",
+  "Not correct. The number of lives saved by spending $750M on A is larger than the number that would be saved by spending that much on B or C." = "We're only talking about moving a small amount from A to C",
+  "Not correct. We will want to move the money to B instead." = "Be that as it may, the question was whether to move money from A to C.",
+  "+Correct. The derivative $\\partial_x A(x)$ at $x=750$ is smaller than the derivative $\\partial_z C(z)$ at $z=125$.+" = "Reducing $x$ by a small amount will reduce the output $A(x)$, but since $\\partial_z C(z=125)$ is greater, the loss in output due to a reduction in spending on A will be more than made up by an increase in output from spending more on C.",
+  "Correct. We should spend equally on all three interventions. That is, set $x = y = z = 333.33....$" = "This is intuitively attractive, but still doesn't address the question of whether the outcome would be improved by moving money from A to C."
+)
+```
+
+A general principle is this: If spending a little more on one intervention increases the output more than the loss due to spending less on another intervention, the shift in funding is worthwhile. 
+
+```{r tpt1-2, echo=FALSE, results="markup"}
+askMC(
+  "If you follow the above logic, you will continue to move money from A to C until it is no longer beneficial to do so. What will be the maximum amount of spending on A makes it not worthwhile to move additional money from A to C? (Choose the closest answer.)",
+  "$ 250M",
+  "$ 375M",
+  "+$ 500M+",
+  "$ 625M",
+  random_answer_order = FALSE
+)
+```
+
+```{r tpt1-3, echo=FALSE, results="markup"}
+askMC(
+  "Imagine that you have moved all the money from A to C that it's worthwhile to do . Which of these statements is true at those values $x_0$, $z_0$?",
+  "+$\\partial_x A(x_0) = \\partial_z C(z_0)$+",
+  "$A(x_0) = C(z_0)$",
+  "$C(x_0) = A(z_0)$",
+  "$\\partial_x A(x_0) = 0$ and $\\partial_z C(z_0) = 0$."
+)
+```
+
+We found it worthwhile to move expenditure from A to C to optimize the sum of their outputs and are operating at about $x_0 = \$500M$ and $z_0 = \$375M$, leaving $y=\$125M$ to spend on intervention B. Is it worthwhile to move money from A or C to B or vice versa? But first, a simpler question.
+
+```{r tpt1-4, echo=FALSE, results="markup"}
+askMC(
+  "If we were going to move a small amount of money from A or C into B, would it be better to take the money from A or from C? Why?",
+  "Take it from A, since we're spending far more on A than C.",
+  "Take it from C, since we're already spending far less on C than on A.",
+  "+Take it from C. The slope $\\partial_z C(z_0)$ compared to $\\partial_x A(z_0)$ is such that a small reduction on spending on C has less impact than a small reduction in spending on A.+",
+  "Take it from A. The slope $\\partial_z C(z_0)$ compared to $\\partial_x A(z_0)$ is such that a small reduction on spending on A has less impact than a small reduction in spending on C."
+  
+)
+```
+
+```{r tpt1-5, echo=FALSE, results="markup"}
+askMC(
+  "Right now in our process, we're planning to spend $125M on B. Is it worthwhile to move money from C to B?",
+  "No, the output of B larger than the output of C at $125M.",
+  "Yes, move most of the money from C to B.",
+  "+Yes, but only move a little money from C to B.+",
+  "No, move money from B to C."
+)
+```
+
+```{r tpt1-6, echo=FALSE, results="markup"}
+askMC(
+  "At the optimal amount of money $y^\\star$ spent on B and $z^\\star$ spent on C, which of these is true about the slopes $\\partial_y B(y^\\star)$ and $\\partial_z C(z^\\star)$?",
+  "There's not any fixed relationship. They are what they are.",
+  "+The two slopes are equal.+",
+  "The slope of B is greater than the slope of C.",
+  "The slope of C is greater than the slope of B."
+)
+```
+
+```{r tpt1-7, echo=FALSE, results="markup"}
+askMC(
+  "Is it more proper to say the \"**slope** $\\partial_z C(z^\\star)$\" rather than the \"**derivative** $\\partial_z C(z^\\star)$?\" (This is a general review problem for the course, not something specifically about optimization.)",
+  "+Yes. A derivative is a function while a slope is a quantity.+",
+  "No. Slope and derivative are the same thing." = "No, the derivative is a function. When you **evaluate** that function at a particular value of $z$ (say, $z^\\star$) the output will be the slope of the original function at that value of $z$.",
+  "Yes. \"Derivative\" sounds fancier than \"slope\"." = "It's not a matter of fancy, it's a matter of being precise.",
+  "No. Slopes measure steepness from right to left, while derivatives give steepness from left to right." = "Where did that come from. The convention for the sign of a slope is always the direction left to right."
+)
+```
+
+
+**Background:** The graphs are fictitious, but let's pretend they are:
+
+* **A** Surgical treatment of congenital heart defects in newborns.
+* **B** Treatment for hemophilia.
+* **C** Memory-care for people with Alzheimers.
+
+Notice that the people being affected are in different, non-overlapping groups. So moving funding from one group to another is effectively "robbing Peter to pay Paul." If you, as a decision maker inherited a situation where $x = \$750M$, $y=\$125M$, and $z=\$125M$, changing the expenditures would make one group better off (no matter how you did it!) and would make another group worse off. And imagine the headlines if you moved money from A to C or B: "Government slashes funding for newborns!". Or perhaps an editorial: "We need to find a way to increase funding for hemophilia without cutting other life-saving spending." This raises an important question: Is it ever worthwhile to forgo spending to save lives? How would anyone decide which lives are worth saving? Most people are uncomfortable with such questions. Yet the decisions taken by leaders, whatever they be, inevitably have a mathematically equivalent formulation which translates to the value of life.
+
+Probably, most people would decline to make a decision comparing two lives, for instance, saving a 10-year old versus saving a 90-year old. But it is not always possible to escape such trade-offs and the people who need to take the decision need guidance about what to do. In an open society, we expect such decisions to be backed by good rationale and so we have to develop means for distinguishing between better and worse rationales.
+
+One example comes from epidemiology and the concept of a "[quality-adjusted life year](https://en.wikipedia.org/wiki/Quality-adjusted_life_year)" (QALY). A QALY is a measure of duration of life adjusted for the health condition of the person --- a year of a person in good health is 1 QALY, but a year in a person in very poor health is less than 1 QALY.
+
+QALYs do not solve the problem of optimizing health-related outcomes. They are an imperfect means of dealing with an impossible problem. Sometimes that is the best we can do.
+
+
