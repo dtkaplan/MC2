@@ -20,7 +20,7 @@ For ease of reference, we'll name the dynamical function for the rest of this se
 
 The flow itself appears as the example in Figure \@ref(fig:phase-line-intro). The state space is the number line and the flow vectors are, as usual arrows that point from place to place in the state space.
 
-```{r phase-line-intro, echo=FALSE, fig.cap="A one-dimensional state space shown with its flow vectors."}
+```{r phase-line-intro, echo=FALSE, fig-cap: "A one-dimensional state space shown with its flow vectors."}
 raw <- rfun( ~ x, seed=920)
 Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-4:4),
                    nix_dyn=TRUE, narrows=25,
@@ -28,7 +28,7 @@ Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-4:4),
 ```
 Because the state space can be drawn without using the vertical coordinate of the page, we can use that vertical coordinate to show something else: the dynamical function, as in Figure \@ref(fig:phase-line-intro2).
 
-```{r phase-line-intro2, echo=FALSE, fig.cap="A one-dimensional state space shown with its flow vectors."}
+```{r phase-line-intro2, echo=FALSE, fig-cap: "A one-dimensional state space shown with its flow vectors."}
 raw <- rfun( ~ x, seed=920)
 Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-4:4), 
                    nix_dyn=FALSE, 
@@ -42,7 +42,7 @@ Near a zero crossing of the dynamical function, the flow arrows are negligibly s
 
 We can see the dynamics near fixed points more closely by zooming in, as in Figure \@ref(fig:phase-line-intro3) which shows two of the system's fixed points.
 
-```{r phase-line-intro3, echo=FALSE, fig.cap="Zooming in on the flow for the system shown in Figure \\@ref(fig:phase-line-intro2)."}
+```{r phase-line-intro3, echo=FALSE, fig-cap: "Zooming in on the flow for the system shown in Figure \\@ref(fig:phase-line-intro2)."}
 raw <- rfun( ~ x, seed=920)
 Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-3.5:-1.25), 
                    nix_dyn=FALSE, 
@@ -53,7 +53,7 @@ Notice in Figure \@ref(fig:phase-line-intro3) that the flow is slower the nearer
 
 A calculus technique you will be familiar with from previous Blocks is zooming in a region that we want to examine in detail. 
 
-```{r phase-line-zoom1, echo=FALSE, fig.cap="Zooming in closely on each of the fixed points seen in Figure \\@ref(fig:phase-line-intro3).", out.width="50%", fig.show="keep"}
+```{r phase-line-zoom1, echo=FALSE, fig-cap: "Zooming in closely on each of the fixed points seen in Figure \\@ref(fig:phase-line-intro3).", out-width: "50%", fig.show="keep"}
 raw <- rfun( ~ x, seed=920)
 Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-3.07:-3.05), 
                    nix_dyn=FALSE, 
@@ -88,7 +88,7 @@ Major Austin Davis developed such a display, using ***time*** as the third dimen
 
 So long as two dynamical systems  have similar fixed points with the same stability, their trajectories will be much the same. For example, our model dynamical function might be  different in detail, as in Figure \@ref(fig:phase-line-random), and still produce the same behavior.
 
-```{r phase-line-random, echo=FALSE, fig.cap="The dynamical function shown in black is a distortion of $f(x)$ from the previous plots. Yet the flow field is practically identical and leads to the same outcomes as $f(x)$ for any initial condition."}
+```{r phase-line-random, echo=FALSE, fig-cap: "The dynamical function shown in black is a distortion of $f(x)$ from the previous plots. Yet the flow field is practically identical and leads to the same outcomes as $f(x)$ for any initial condition."}
 Pts <- tibble::tibble(x=seq(-4,4,length=100),
                       y=rnorm(length(x))/2)
 raw <- rfun( ~ x, seed=920)
@@ -103,7 +103,7 @@ So long as two flows have similar fixed points with the same stability, their tr
 
 For example, Figure \@ref(fig:many-trajs-1) shows a score of different time series following the solutions from a score of initial conditions. The long-term behaviors for all the time series is similar: they converge to one or another of the stable fixed points.
 
-```{r many-trajs-1, echo=FALSE, fig.cap="Time series from the differential equation $\\partial_t x = f(x)$ starting at many initial conditions. The locations of the three fixed points are marked with horizontal lines. All the solutions convert to one or the other of the two stable fixed points in the system, and depart from the unstable fixed point."}
+```{r many-trajs-1, echo=FALSE, fig-cap: "Time series from the differential equation $\\partial_t x = f(x)$ starting at many initial conditions. The locations of the three fixed points are marked with horizontal lines. All the solutions convert to one or the other of the two stable fixed points in the system, and depart from the unstable fixed point."}
 raw <- rfun( ~ x, seed=920)
 Pts <- tibble(
   x = seq(-4, 4, length=100),
@@ -226,7 +226,7 @@ This biomass production model corresponds to a sustainable system. Once the biom
 
 But biomass production is not the only thing going on in the pasture. The grazing animals---let's imagine they are cows---are consuming the grass. To start very simply, suppose that each cow consumes amount $C$ of biomass each day. If there are $H$ cows, the total consumption is $H C$ per day. This modifies the dynamics to a slightly new form $$\partial_t v = r \,v(1-\frac{v}{K}) - HC$$. The original, ungrazed dynamics are compared with the grazed dynamics in Figure \@ref(fig:grazing-comparison).
 
-```{r grazing-comparison, echo=FALSE, fig.cap="Comparing the pasture dynamics for different herd sizes.", out.width="50%", fig.show="keep", warning=FALSE, message=FALSE}
+```{r grazing-comparison, echo=FALSE, fig-cap: "Comparing the pasture dynamics for different herd sizes.", out-width: "50%", fig.show="keep", warning=FALSE, message=FALSE}
 r = .3; K=10; C=0.1; H=3
 Znotes::phase_line(r*x*(1-x/K) ~ x, 
                    domain(x=0:10.5),
@@ -267,7 +267,7 @@ We've often referred to the ***modeling cycle***, using the results of a model t
 Missing from the pasture model is a simple idea of how cows eat. If there is very little biomass, the cows can't continue to eat their fill. Will the reduction in consumption per cow preserve the stable fixed point?
 
 In his *Nature* article, May modeled the consumption rate by a single cow with the functional form $$C(v) \equiv \frac{\beta v^2}{v_0 - v^2}$$ which is graphed for $\beta=0.1$ and $v_0 = 3$ in Figure \@ref(fig:cow-consumption)
-```{r cow-consumption, fig.cap="Consumption of vegetation by a single cow as a function of the amount available in the pasture."}
+```{r cow-consumption, fig-cap: "Consumption of vegetation by a single cow as a function of the amount available in the pasture."}
 consumption <- makeFun((beta*v^2/(v0^2 + v^2))~ v, beta=0.1, v0=1)
 slice_plot(consumption(v) ~ v, domain(v=0:10)) %>%
   gf_labs(y="Consumption (tons/day)", x="v: available biomass (tons)")
@@ -276,7 +276,7 @@ You can recognize this as a form of sigmoid. When the amount of vegetation is ve
 
 Figure \@ref(fig:grazing-comparison2) modifies the pasture dynamics to incorporate this sigmoidal model of consumption.
 
-```{r grazing-comparison2, echo=FALSE, fig.cap="Pasture dynamics for a sigmoidal consumption function.", out.width="50%", fig.show="keep", warning=FALSE, message=FALSE}
+```{r grazing-comparison2, echo=FALSE, fig-cap: "Pasture dynamics for a sigmoidal consumption function.", out-width: "50%", fig.show="keep", warning=FALSE, message=FALSE}
 consumption <- makeFun(0.1*v^2/(1+v^2) ~ v)
 r = .3; K=10; C=0.1; H=3
 Znotes::phase_line(r*x*(1-x/K) -3*consumption(x)~ x, 

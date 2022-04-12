@@ -51,7 +51,9 @@ Thus, $$\widehat{f(t)} = \frac{1}{3} \text{one(t)} = \frac{1}{3}\ .$$
 
 The left panel of Figure \@ref(fig:fhat-and-resid) shows the functions $f(t) \equiv t^2$ and $\color{magenta}{\widehat{f(t)} \equiv 1/3}$ on the domain. The center panel shows the residual function, that is $f(t) - \widehat{f(t)}$. The right panel gives the square of the length of the residual function, which is $\int_{-1}^1 \left[f(t) - \widehat{f(t)}\right]^{1/2}\, dt$ as indicated by the area shaded in $\color{blue}{\text{blue}}$.
 
-```{r fhat-and-resid, echo=FALSE, fig.cap="Projecting $f(t) \\equiv t^2$ onto $g(t) \\equiv \\text{one}(t)$."}
+```{r echo=FALSE}
+#| label: fig-fhat-and-resid
+#| fig-cap: "Projecting $f(t) \\equiv t^2$ onto $g(t) \\equiv \\text{one}(t)$."
 library(latex2exp)
 P1 <- slice_plot(t^2 ~ t, domain(t=-1:1)) %>%
   slice_plot(1/3 ~ t, color="magenta") %>%
@@ -83,7 +85,9 @@ As you may know, the physical stimuli involved in sound are rapid oscillations i
 
 The shapes of the "e" (as in "eel") and "o" (as in "stone") sound waves---in short, the ***waveforms***---are drawn in Figure \@ref(fig:sound-waves). 
 
-```{r sound-waves, echo=FALSE, fig.cap="The waveforms of two vowel sounds. Only about five hundredths of a second is shown.",warning=FALSE}
+```{r echo=FALSE, warning=FALSE}
+#| label: sound-waves
+#| fig-cap: "The waveforms of two vowel sounds. Only about five hundredths of a second is shown."
 P1 <- gf_line(y ~ I(t-.352), data = Vowel_ee) %>% 
   gf_labs(x="time (s)", title="e as in 'eel'") %>%
   gf_lims(x=c(0,0.051))
@@ -108,7 +112,9 @@ The sinusoid is our fundamental model of periodic phenomena. To get started with
 
 Figure \@ref(fig:sinewave) shows three sinusoids all with the same frequency, but shifted somewhat in time:
 
-```{r sinewave, echo=FALSE, fig.cap="Three sinusoids with a frequency of $\\omega=3$ cycles per second."}
+```{r echo=FALSE}
+#| label: fig-sinewave
+#| fig-cap: "Three sinusoids with a frequency of $\\omega=3$ cycles per second."
 omega <- 3
 waveA <- makeFun(sin(2*pi*3*t) ~ t)
 waveB <- makeFun(cos(2*pi*3*t) ~ t)
@@ -154,7 +160,9 @@ Since $\cos(\theta) = 0$, wave A and B are orthogonal. Admittedly, there is no r
 
 The graphical presentation of orthogonality between waveforms A and B is easier to appreciate if we plot out the dot product itself: the integral of waveform A times waveform B. Figure \@ref(fig:sin-cos-dot) shows this integral using colors, blue for positive and orange for negative. The integral is zero, since the positive (blue) areas exactly equal the negative (orange) areas.
 
-```{r sin-cos-dot, echo=FALSE, fig.cap="The dot product between waveforms A and B, graphically."}
+```{r echo=FALSE}
+#| label: fig-sin-cos-dot
+#| fig-cap: "The dot product between waveforms A and B, graphically."
 Pts <- tibble::tibble(
   t = seq(0, 1, length=300),
   y = waveA(t)*waveB(t),
@@ -170,7 +178,9 @@ slice_plot(waveA(t)*waveB(t) ~ t, domain(t=0:1), npts=300) %>%
 In contrast, waveform A is **not** orthogonal to waveform C, and similarly for waveform B. Figure \@ref(fig:AC-BC) shows this graphically: the positive and negative areas in the two integrals do not cancel out to zero.
 
 
-```{r AC-BC, echo=FALSE, fig.cap="The dot products between waveforms A and C (top panel) and between B and C (bottom panel)."}
+```{r echo=FALSE}
+#| label: AC-BC
+#| fig-cap: "The dot products between waveforms A and C (top panel) and between B and C (bottom panel)."
 Pts <- tibble::tibble(
   t = seq(0, 1, length=300),
   y = waveA(t)*waveC(t),
@@ -235,7 +245,9 @@ For our purposes here, we'll need only the Pythagorean sum and will ignore the t
 Figure \@ref(fig:cello-seg) (top) shows the waveform of a note played on a cello. The note lasts about 1 second. The bottom panel zooms in on the waveform, showing 82 ms (that is, 0.082 s).
 
 
-```{r cello-seg, echo=FALSE, fig.cap="Waveform recorded from a cello."}
+```{r echo=FALSE}
+#| label: cello-seg
+#| fig-cap: "Waveform recorded from a cello."}
 P1 <- gf_line(y ~ t, data = Cello) %>%
   gf_line(y ~ t, data=Cello_seg, color="blue")
 P2 <- gf_line(y ~ t, data=Cello_seg, color="blue")
@@ -248,7 +260,7 @@ If you count carefully in the bottom panel, you'll see that the waveform complet
 
 In modeling the cello waveform as a linear combination of sinusoids, the frequencies we use ought to respect the period of the cello vibration. Figure \@ref(fig:cello-seg2) shows the original waveform as well as the projection of the waveform onto a sinusoid with a frequency of 109.76 Hz. The figure also shows the residual from the projection, which is simply the original waveform minus the projected version.
 
-```{r cello-seg2, echo=FALSE, fig.cap="Top: The cello waveform and its projection onto a sinusoid with frequency $\\omega = 109.76$ Hz. Bottom: The residual from the projection."}
+```{r cello-seg2, echo=FALSE, fig-cap: "Top: The cello waveform and its projection onto a sinusoid with frequency $\\omega = 109.76$ Hz. Bottom: The residual from the projection."}
 omega <- 109.76
 Pts <- Cello_seg %>%
   mutate(s1 = sin(2*pi*omega*t),
@@ -333,7 +345,7 @@ Until now, all the plots of the cello waveform have been made in what's called t
 
 The decomposition into sinusoids offers another way of describing the cello waveform: the ***frequency domain***. In the frequency domain, we report the amplitude and phase of the projection onto each frequency, plotting that versus frequency. Figure \@ref(fig:cello-freq) shows the waveform in the frequency domain.
 
-```{r cello-freq, echo=FALSE, fig.cap="The frequency domain description of the cello waveform."}
+```{r cello-freq, echo=FALSE, fig-cap: "The frequency domain description of the cello waveform."}
 n <- 51
 omega <- 109.76
 phases <- amps <- numeric(n)

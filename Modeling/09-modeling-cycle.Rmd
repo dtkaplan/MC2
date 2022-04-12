@@ -51,7 +51,7 @@ set.seed(101)
 Stans_data <- CoolingWater %>% sample_n(20)
 ```
 
-```{r Fun-4-a-2-3, fig.cap="Polishing the fit using the rough model as a starting point."}
+```{r Fun-4-a-2-3, fig-cap: "Polishing the fit using the rough model as a starting point."}
 refined_params <-
   fitModel(temp ~ A + B*exp(k*time), data = Stans_data,
            start = list(A = 25, B = 83.3, k = -0.0277))
@@ -72,7 +72,7 @@ The newly refined model was a even better match to the data. But nothing's perfe
 
 Here's a graph of the model Prof. Wagon constructed to match the data.
 
-```{r Fun-4-a-2-4, echo=FALSE, out.width="70%", fig.align="center", fig.cap="A model that combines three exponentials provides an excellent fit."}
+```{r Fun-4-a-2-4, echo=FALSE, out-width: "70%", fig-align: "center", fig-cap: "A model that combines three exponentials provides an excellent fit."}
 knitr::include_graphics("www/Wagon-water-fit.png")
 ```
 
@@ -90,7 +90,7 @@ $${\color{blue}{\text{tide}(t)} \equiv 1.05 + 0.55 \sin(2\pi (t - t_0)/11)}$$
 
 The new parameter, $t_0$, should be set to be the time of a positive-going crossing of the baseline. Looking at the tide data (black) plotted in Figure \@ref(fig:Fun-4-a-3-4) we can pick out  such a crossing at about time = 17. Happily, changing the phase does not itself necessitate re-estimating the other parameters: baseline, amplitude, period. This model, incorporating the phase, has been graphed in $\color{blue}{\text{blue}}$.
 
-```{r Fun-4-a-3-4, echo=FALSE, out.width="50%", fig.show="hold", fig.cap="Shifting the **phase** of the sinusoid gives the flexibility needed to align the peaks and troughs of the model with the data. Performing this alignment for one peak makes it clear that the period is wrong."}
+```{r Fun-4-a-3-4, echo=FALSE, out-width: "50%", fig.show="hold", fig-cap: "Shifting the **phase** of the sinusoid gives the flexibility needed to align the peaks and troughs of the model with the data. Performing this alignment for one peak makes it clear that the period is wrong."}
 mod1 <- makeFun(1.05 + 0.55*sin(2*pi*hour/13) ~ hour)
 mod2 <- makeFun(1.05 + 0.55*sin(2*pi*(hour-17)/13) ~ hour)
 gf_line(level ~ hour,
@@ -112,7 +112,7 @@ Although the blue sinusoid is not perfect, having it for comparison suggests tha
 With this refinement the model is
 $${\color{green}{\text{tide}(t)} \equiv 1.05 + 0.55 \sin(2\pi (t - 17)/12.3)}$$
 
-```{r Fun-4-a-3-5, echo=FALSE, fig.cap="With the phase about right, a better estimate can be made of the period: 12.3 hours."}
+```{r Fun-4-a-3-5, echo=FALSE, fig-cap: "With the phase about right, a better estimate can be made of the period: 12.3 hours."}
 mod3 <- makeFun(0.55*sin(2*pi*(hour-17)/12.3) + 1.05 ~ hour)
 gf_line(level ~ hour, data = math141Z::RI_tide) %>%
   slice_plot(mod3(hour) ~ hour, color="violet") %>%
@@ -137,7 +137,7 @@ The command `coef(tide_mod)` displays the parameters found by `fitModel()` which
 
 These new parameters differ only slightly from the ones shown in Figure \@ref(fig:Fun-4-a-3-5), but the match to the data with the new coefficients is discernably better, even by eye.
 
-```{r Fun-4-a-3-6, echo=FALSE, fig.cap="Polishing the parameters of the sinusoid"}
+```{r Fun-4-a-3-6, echo=FALSE, fig-cap: "Polishing the parameters of the sinusoid"}
 mod4 <- makeFun(tide_mod)
 gf_line(level ~ hour, data = math141Z::RI_tide) %>%
   slice_plot(mod4(hour) ~ hour, color="orange3", npts=200) %>%

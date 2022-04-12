@@ -24,7 +24,7 @@ USPop <- USPop %>%
 
 In the 230 years spanned by the census data, the US population has grown 100-fold, from about 4 million in 1790 to about 330,000,000 in 2020.
 
-```{r pop-graph, echo=FALSE, fig.cap="US population since 1790. Left: linear axes. Right: semi-log axes", fig.margin=TRUE}
+```{r pop-graph, echo=FALSE, fig-cap: "US population since 1790. Left: linear axes. Right: semi-log axes", fig.margin=TRUE}
 popfun <- spliner(population ~ year, data = USPop)
 USPop <- USPop %>%
   mutate(yearly_growth_rate = 100*((1+growth_rate/100)^(1/10) - 1))
@@ -49,7 +49,7 @@ gridExtra::grid.arrange(P1, P2, ncol=2)
 It's tempting to look for simple patterns in such data. Perhaps the US population has been growing exponentially. A semi-log plot of the same data suggests that the growth is only very roughly exponential. A truly exponential process would present as a curve with a constant derivative, but the derivative of the function in the graph is decreasing over the centuries. 
 
 
-```{r pop-graph-log, echo=FALSE, fig.cap="Population since 1790.", fig.margin=TRUE}
+```{r pop-graph-log, echo=FALSE, fig-cap: "Population since 1790.", fig.margin=TRUE}
 
 ```
 
@@ -57,7 +57,7 @@ Insofar as the slope over the semi-log graph is informative, it amounts to this 
 $$\partial_t \ln(\text{pop}(t)) = \frac{\partial_t\, \text{pop}(t)}{\text{pop}}$$
 This is the *per-capita* rate of growth, that is, the rate of change in the population divided by the population. Conventionally, this fraction is presented as a percentage: percentage growth in the population per year, as in Figure \@ref(fig:pop-growth).
 
-```{r pop-growth, echo=FALSE, fig.cap="Annual per capita growth rate of the US population (percent)"}
+```{r pop-growth, echo=FALSE, fig-cap: "Annual per capita growth rate of the US population (percent)"}
 growth_mod <- lm(yearly_growth_rate ~ year, data = USPop)
 growth_fun <- makeFun(growth_mod)
 gf_point(yearly_growth_rate ~ year, data = USPop) %>%
@@ -82,7 +82,7 @@ In this block we'll explore the methods for calculating anti-derivatives and som
 ::: {.intheworld data-latex=""}
 The predictions from the accumulate-population-growth model are shown as a $\color{magenta}{\text{magenta}}$ line in Figure \@ref(fig:pop-prediction-bad).
 
-```{r pop-prediction-bad, echo=FALSE, warning=FALSE, fig.cap="Predicted US population based on the historical linear decline in per-capita growth."}
+```{r pop-prediction-bad, echo=FALSE, warning=FALSE, fig-cap: "Predicted US population based on the historical linear decline in per-capita growth."}
 growth_mod <- lm(yearly_growth_rate ~ year, data = USPop)
 growth_fun <- makeFun(growth_mod)
 accum <- tibble(year = 2021:2130,

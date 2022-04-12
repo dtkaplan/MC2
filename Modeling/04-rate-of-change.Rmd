@@ -72,7 +72,7 @@ water <- makeFun(60*exp(-0.0173*t) + 25 ~ t)
 
 
 
-```{r water-average, echo=FALSE, fig.cap="The exponential function that was previously matched to the cooling-water data. The slope of the straight line connecting two points on the function graph is the average rate of change during the interval."}
+```{r water-average, echo=FALSE, fig-cap: "The exponential function that was previously matched to the cooling-water data. The slope of the straight line connecting two points on the function graph is the average rate of change during the interval."}
 
 Pts <- tibble::tibble(
   t = c(10,125),
@@ -105,7 +105,7 @@ For a straight-line function---think of a car driving at constant speed on a hig
 
 Imagine a graph of the position of a car along a road as in Figure \@ref(fig:stop-and-go). Over the course of an hour, the car travelled about 25 miles. In other words, the ***average*** speed is 25 miles/hour: the *slope* of the tan line segment. Given the traffic, sometimes the car was stopped (time C), sometimes crawling (time D) and sometimes much faster than average (time B).  
 
-```{r stop-and-go, echo=FALSE, fig.cap="The position of an imaginary car over time (black curve). The average rate of change over various intervals is the slope of the straight-line segment connecting the start and end of the black curve in that interval."}
+```{r stop-and-go, echo=FALSE, fig-cap: "The position of an imaginary car over time (black curve). The average rate of change over various intervals is the slope of the straight-line segment connecting the start and end of the black curve in that interval."}
 f <- rfun(~ t, seed=105, n=5)
 raw <- function(t) 
         f(t) - t - 30*dnorm(t, 0, 3) + 60*dnorm(t,7,1)
@@ -156,7 +156,7 @@ The average rate of change during the interval is $5.4/0.14 = 38.6$ miles/hour.
 ::: {.intheworld  data-latex=""}
 Figure \@ref(fig:aver-tree) shows a simplified model of the amount of usable wood that can be harvested from a typical tree in a managed forest of Ponderosa Pine. (You can see some actual forestry research models [here](https://www.fs.fed.us/rm/pubs/rmrs_gtr292/1992_milner.pdf).) 
 
-```{r aver-tree, echo=FALSE, fig.cap="A model, somewhat realistic, of the amount of wood that can be harvested from a Ponderosa Pine as a function of years since planting to harvest."}
+```{r aver-tree, echo=FALSE, fig-cap: "A model, somewhat realistic, of the amount of wood that can be harvested from a Ponderosa Pine as a function of years since planting to harvest."}
 tree_volume <- makeFun(1000*pnorm(year, mean=15, sd=10)^3 ~ year)
 # do the deriv numerically to avoid bug in derivative
 # of normal function.
@@ -181,7 +181,7 @@ It's easy to construct a diagram that shows whether year 35 is best for the harv
 
 Figure \@ref(fig:aver-tree2) reiterates the realistic model of the tree but adds on to it several straight-line models that all give zero harvest-able wood at planting time. Each of the green lines captures a scenario where the tree is harvested at the indicated time: $t_1$, $t_2$, and so on. For the perspective of representing the rate of growth per year from planting to harvest, the straight-line green models do not need to replicate the actual growth curve. The complexities of the curve are not relevant to the growth rate, which can be simplified down to a straight-line model connecting the output at planting time to the output at harvest time. In contrast, the $\color{magenta}{\text{magenta}}$ curve is not a suitable model because it doesn't match the situation at any harvest time; it doesn't touch the curve anywhere after planting!
 
-```{r aver-tree2, echo=FALSE, fig.cap="Modeling the tree-growth model with straight lines connecting planting time to various harvest times. The slope of each line is the average rate of growth for that planting time.", warning=FALSE}
+```{r aver-tree2, echo=FALSE, fig-cap: "Modeling the tree-growth model with straight lines connecting planting time to various harvest times. The slope of each line is the average rate of growth for that planting time.", warning=FALSE}
 Pts <- tibble::tibble(
   harvest = c(15, 25, 31, 50),
   amount = tree_volume(harvest),
@@ -200,7 +200,7 @@ To maximize average lumber volume per year, choose a harvest time that produces 
 It's best to find the argmax by creating a function that shows explicitly what one is trying to optimize. (In [Chapter -@sec-optim-and-shape] we'll use the name ***objective function*** to identify such function.)  Here, the objective function is $\text{ave.growth(year)} \equiv \text{volume(year)} / \text{year}$. See Figure \@ref(fig:aver-tree3).
 
 
-```{r aver-tree3, echo=FALSE, fig.cap="Graph of the average-growth function ave_growth(year), constructed by dividing volume(year) by year."}
+```{r aver-tree3, echo=FALSE, fig-cap: "Graph of the average-growth function ave_growth(year), constructed by dividing volume(year) by year."}
 slice_plot(tree_volume(year)/year ~ year, domain(year = c(2, 50))) %>%
   gf_labs(y = "Annual growth (board-feet)",
           x = "Year after planting")
@@ -222,7 +222,7 @@ The ***average rate of change*** is the slope of a line segment connecting two p
 It turns out to be helpful to consider the rate of change of a function at an individual point $t_0$ in the domain, rather than the interval between two points. This rate of change *at a point* is called the ***instantaneous rate of change***.
 In Block 2, we'll see that a good way to define an instantaneous rate of change at $t_0$ is as the average rate of change over the interval $t_0 \leq t \leq t_0 + h$ with the proviso that the interval length $h$ goes as closely as it can to zero. Visually, this is the line that's tangent to the function's graph at the input value $t_0$ as in Figure \@ref(fig:tangent-line-exp).  
 
-```{r tangent-line-exp, echo=FALSE, fig.cap="A line tangent to a the curve at a single point. The slope of this line is the instantaneous rate of change."}
+```{r tangent-line-exp, echo=FALSE, fig-cap: "A line tangent to a the curve at a single point. The slope of this line is the instantaneous rate of change."}
 Pt <- tibble::tibble(
   t = 25,
   y = water(t),
@@ -263,7 +263,7 @@ Dlog <- makeFun((log(t+0.1) - log(t))/0.1 ~ t)
 ```
 
 
-```{r compare-pattern-book-slopes, echo=FALSE, out.width="50%", fig.show="hold", fig.cap="Comparing the pattern-book function (blue) to its slope function (tan)",warning=FALSE}
+```{r compare-pattern-book-slopes, echo=FALSE, out-width: "50%", fig.show="hold", fig-cap: "Comparing the pattern-book function (blue) to its slope function (tan)",warning=FALSE}
 slice_plot(sin(x) ~ x, domain(x=c(-10,10)), color="dodgerblue") %>%
   slice_plot(Dsin(x) ~ x, color="orange3", alpha=0.25, size=2) %>%
   gf_labs(title="Sinusoid")
@@ -316,7 +316,7 @@ Between year 30 and 32, there is hardly any change in the value of the average-r
 
 To know what is the best year for harvest from this point of view, you want to calculate the effective "interest rate" on the present amount of wood that you earn in the form of new wood. That interest rate is the ratio of the *instantaneous* rate of growth of new wood divided by the amount of existing wood. Figure \@ref(fig:tree-interest) shows this function.
 
-```{r tree-interest, echo=FALSE, warning=FALSE, fig.cap="The instantaneous investment return from the tree is the instantaneous rate of change in wood volume divided by the wood volume itself. This falls over the age of the tree as the harvestable wood volume increases."}
+```{r tree-interest, echo=FALSE, warning=FALSE, fig-cap: "The instantaneous investment return from the tree is the instantaneous rate of change in wood volume divided by the wood volume itself. This falls over the age of the tree as the harvestable wood volume increases."}
 slice_plot(100* tree_growth(year)/tree_volume(year) ~ year,
            domain(year=c(10,50)), label_text="foo") %>%
   gf_labs(y = "Growth relative to volume (%/year)") %>%

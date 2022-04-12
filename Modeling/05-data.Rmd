@@ -92,7 +92,7 @@ For functions such as the sinusoid, flipping is not much use, since the flipped 
 
 For the exponential function, the two possible types of flipping---right-for-left and top-for-bottom---produce four different curves, all of which are exponential, shown in Figure \@ref(fig:four-variations).
 
-```{r four-variations, out.width="50%", echo=FALSE, fig.cap="Four variations of the exponential function.", fig.show="hold"}
+```{r four-variations, out-width: "50%", echo=FALSE, fig-cap: "Four variations of the exponential function.", fig.show="hold"}
 ggpubr::ggarrange(
   slice_plot(exp(x) ~ x, domain(x=c(-2,2))) %>%
   gf_refine(theme_void()) %>%
@@ -121,7 +121,7 @@ slice_plot(-exp(-x) ~ x, domain(x=c(-2,2))) %>%
 
 To illustrate line fitting, let's return to the cooling mug of water. Figure \@ref(fig:Fun-4-a) shows the data along with a dozen candidate straight line functions, each one drawn in its own color.
 
-```{r Fun-4-a, echo=FALSE, warning=FALSE, fig.cap="Some candidate straight-line function models plotted on top of the cooling water data. Which one(s) would you pick as good matches to the data?"}
+```{r Fun-4-a, echo=FALSE, warning=FALSE, fig-cap: "Some candidate straight-line function models plotted on top of the cooling water data. Which one(s) would you pick as good matches to the data?"}
 set.seed(101)
 gf_point(temp ~ time, data=CoolingWater %>% sample_n(20)) %>%
   gf_labs(x = "Time (minutes)", y="Temperature (deg. C)") %>%
@@ -151,7 +151,7 @@ Step 2: Find the parameters that correspond to the line you drew.
 
 Figure \@ref(fig:Fun-4-a-3-1) shows the tide level in [Providence, Rhode Island](https://www.google.com/maps/place/Providence,+RI/@41.8071,-71.4012,14z/data=!4m5!3m4!1s0x89e444e0437e735d:0x69df7c4d48b3b627!8m2!3d41.8071!4d-71.4012), starting at midnight on April 1, 2020 and recorded every minute for four and a half days. (These data were collected by the US National Oceanic and Atmospheric Administration. [Link](https://tidesandcurrents.noaa.gov/api/datagetter?begin_date=20200401%2010:00&end_date=20200405%201:59&station=8454000&product=one_minute_water_level&datum=mllw&units=metric&time_zone=gmt&application=web_services&format=csv))   
 
-```{r Fun-4-a-3-1, echo=FALSE, fig.cap="About four days of tide-level data from Providence, Rhode Island"}
+```{r Fun-4-a-3-1, echo=FALSE, fig-cap: "About four days of tide-level data from Providence, Rhode Island"}
 #gf_line(level ~ hour, data = math141Z::Anchorage_tide[1:1000,])
 gf_line(level ~ hour, data = math141Z::RI_tide) %>%
   gf_labs(y="Water level (meters)", x="Time (hours)", title="Tide level in Providence, Rhode Island") %>%
@@ -171,7 +171,7 @@ This simple description tells almost everything needed to match a basic modeling
 
 On the scale of the above plot, it's hard to read off the time of the first peak. So, zoom in until it becomes more obvious.
 
-```{r Fun-4-a-3-2, echo=FALSE, out.width="50%", fig.show="hold", fig.cap="Zooming in on the start of the data (left) and on the last part of the data (right)."}
+```{r Fun-4-a-3-2, echo=FALSE, out-width: "50%", fig.show="hold", fig-cap: "Zooming in on the start of the data (left) and on the last part of the data (right)."}
 gf_line(level ~ hour, 
          data = math141Z::RI_tide %>% filter(hour < 25)) %>%
   gf_labs(y="Water level (meters)", x="Time (hours)",
@@ -192,7 +192,7 @@ $${\color{magenta}{\text{tide}(t)} \equiv \underbrace{1.05}_A + \underbrace{0.55
 
 Figure \@ref(fig:Fun-4-a-3-3) shows this model in $\color{magenta}{\text{magenta}}$.
 
-```{r Fun-4-a-3-3, echo=FALSE,  fig.cap="The sinusoid fails to align with the timing of peaks and troughs."}
+```{r Fun-4-a-3-3, echo=FALSE,  fig-cap: "The sinusoid fails to align with the timing of peaks and troughs."}
 mod1 <- makeFun(1.05 + 0.55*sin(2*pi*hour/13) ~ hour)
 mod2 <- makeFun(1.05 + 0.55*sin(2*pi*(hour-17)/13) ~ hour)
 gf_line(level ~ hour, 
@@ -241,7 +241,7 @@ Exponential functions also describe ***decrease*** or ***decay***. Just replace 
 
 Figure \@ref(fig:Fun-4-intro-1) shows some data collected by Prof. Stan Wagon to support his making a detailed mechanistic model of an everyday phenomenon: [The cooling of a mug of hot beverage to room temperature](https://www.researchgate.net/profile/Gianluca_Argentini/post/Is_analogy_reasoning_between_heat_transfert_and_electriocity_allows_to_apply_the_electricity_laws_about_resistance_to_thermal_resistances/attachment/59d6573379197b80779ada64/AS%3A533325451403264%401504166104259/download/Stan+WAGON+How+quickly+does+water+cool.pdf). The mug started at room temperature, which was measured at 26 degrees C. At time 0 he poured in boiling water from a kettle and measured the temperature of the water over the next few hours.
 
-```{r Fun-4-intro-1, echo=FALSE, fig.cap="Stan's data"}
+```{r Fun-4-intro-1, echo=FALSE, fig-cap: "Stan's data"}
 set.seed(101)
 gf_point(temp ~ time, data=CoolingWater %>% sample_n(20)) %>%
   gf_labs(x = "Time (minutes)", y="Temperature (deg. C)")
@@ -291,7 +291,7 @@ The $2$ in $\ln(2)$ corresponds to idea of doubling/halving. The logarithm conve
 
 Let's illustrate the general process on the water-cooling data, redrawn in Figure \@ref(fig:Fun-4-a-2-1).   
 
-```{r Fun-4-a-2-1, echo=FALSE, fig.cap="The cooling-water data, repeated here for convenience. We've sketched in an exponential-like curve that matches the data pretty well."}
+```{r Fun-4-a-2-1, echo=FALSE, fig-cap: "The cooling-water data, repeated here for convenience. We've sketched in an exponential-like curve that matches the data pretty well."}
 set.seed(101)
 gf_point(temp ~ time, data=CoolingWater %>% sample_n(20)) %>%
   gf_lims(y = c(20, NA)) %>%
@@ -316,7 +316,7 @@ d. The data show exponential decay, so we expect $k$ to be negative. Happily, it
 
 **Step 4**. Graph the function on top of the data to confirm the fitted function is a good match to the data.
 
-```{r Fun-4-a-2-2, echo=FALSE, fig.cap="An exponential function that roughly aligns with the data."}
+```{r Fun-4-a-2-2, echo=FALSE, fig-cap: "An exponential function that roughly aligns with the data."}
 set.seed(101)
 gf_point(temp ~ time, data=CoolingWater %>% sample_n(20)) %>%
   gf_lims(y = c(20, NA)) %>%
@@ -361,7 +361,7 @@ The basic modeling function suited to represent bumps in the road, or potholes, 
 
 A gaussian function has two parameters: the location^[That is, the input value at which the function value is largest.] of the peak, which we'll call the ***center*** parameter, and the sideways extent of the gaussian, which is called the ***standard deviation***. Figure \@ref(fig:Fun-3C-1) shows a few gaussian functions with different parameters.
 
-```{r Fun-3C-1, echo=FALSE, warning=FALSE, fig.cap="Gaussians with various centers and standard deviations (sd).", fig.show="hold", fig.height=3, fig.width=6}
+```{r Fun-3C-1, echo=FALSE, warning=FALSE, fig-cap: "Gaussians with various centers and standard deviations (sd).", fig.show="hold", fig.height=3, fig.width=6}
 slice_plot(dnorm(x, 1, 0.5) ~ x, domain(x=c(-3, 3))) %>%
     gf_labs(title="(a) Gaussian with center=1, sd = 0.5")
 slice_plot(dnorm(x, -1, 0.05) ~ x, domain(x=c(-3, 3)), npts=500) %>%
@@ -386,7 +386,7 @@ This business with the area will make more sense when you've learned some calcul
 
 Consider another road feature, a local ***change*** from one elevation to another as you might accomplish with a ramp. The basic modeling function corresponding to a ***local change*** from one level to another is the ***sigmoid*** function. Figure \@ref(fig:Fun-3C-2) shows three sigmoid functions.
 
-```{r Fun-3C-2, echo=FALSE, fig.cap="Sigmoids with various centers and standard deviations", fig.show="hold", warning=FALSE, fig.height=3, fig.width=6}
+```{r Fun-3C-2, echo=FALSE, fig-cap: "Sigmoids with various centers and standard deviations", fig.show="hold", warning=FALSE, fig.height=3, fig.width=6}
 slice_plot(pnorm(x, 1, 0.5) ~ x, domain(x=c(-3, 3))) %>%
     gf_labs(title="(a) Sigmoid with center=1, sd = 0.5")
 slice_plot(pnorm(x, -1, 0.05) ~ x, domain(x=c(-3, 3)), npts=500) %>%
@@ -407,13 +407,13 @@ In R, the name of the sigmoid function is `pnorm()`. The gaussian is `dnorm()`. 
 ::: {.intheworld  data-latex=""}
 Figure \@ref(fig:ebola-data) shows the cumulative number of Ebola cases during an outbreak in  Sierra Leone from May 1, 2014 to December 16, 2015.
 
-```{r ebola-data, echo=FALSE, fig.cap="Cumulative Ebola cases in Sierra Leone"}
+```{r ebola-data, echo=FALSE, fig-cap: "Cumulative Ebola cases in Sierra Leone"}
 gf_point(Cases ~ Day, data = MMAC::EbolaSierraLeone)
 ```
 
 Although the cumulative case data are roughly sigmoidal in shape, there are systematic differences in shape from a true sigmoid. For comparison, Figure \@ref(fig:true-sigmoid) is a graph of genuinely sigmoidal data.
 
-```{r true-sigmoid, echo=FALSE, warning=FALSE, fig.cap="A simulated sigmoidal growth process."}
+```{r true-sigmoid, echo=FALSE, warning=FALSE, fig-cap: "A simulated sigmoidal growth process."}
 sigmoid <- makeFun(A * pnorm(t, center,  width) ~ t)
 Points <- tibble::tibble(
   t = seq(0, 12, length=100),

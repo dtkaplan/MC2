@@ -41,7 +41,7 @@ The probability that the dart lands at a distance somewhere between $a$ and $b$ 
 Since $r$ is a distance, the dimension $[r] =\ $L.  Suppose the units of $r$ are centimeters. We need $\int g(r) dr$ to be a dimensionless number. Since the dimension of the integral is $[r] \cdot [g(r)] = [1]$, it must be that $[g(r)] = [1/r] = \text{L}^{-1}$. Thus, $g(r)$ is not a probability simply because it is not dimensionless. Instead, in the dart example, it is a "probability-per-centimeter." This kind of quantity---probability *per something*---is called a ***probability density*** and $g(r)$ itself is a ***probability density function***.  
 
 To show the aptness of the word "density," let's switch to a graphic of a function that uses literal density of ink as the indicator of the function value. Figure \@ref(fig:dart-g) shows what the dart toss's $g(r)$ probability density function might look like:
-```{r dart-g, echo=FALSE, warning=FALSE, fig.cap="Showing a probability density function for the dart distance in two modes: 1) an ordinary function graph and 2) the density of ink.", }
+```{r dart-g, echo=FALSE, warning=FALSE, fig-cap: "Showing a probability density function for the dart distance in two modes: 1) an ordinary function graph and 2) the density of ink.", }
 dat <- tibble(x=rchisq(1000, df=4))
 
 P1 <-  gf_point(0.10 ~ x, data = dat,## draw horizontal lines instead of points
@@ -65,7 +65,7 @@ gridExtra::grid.arrange(P1, P2, heights=c(4,5), ncol=1)
 ::: {.example data-latex=""} 
 Consider a simple competition of the sort you might encounter at a fund-raising fair. There is a jar on display, filled with coins that have been donated by one of the fair's sponsors. You pay $1 (which goes to a good cause) to enter the contest. Your play is to describe how much money is in the jar, writing your description down along with your name on an entry form. At the end of the day, an official will open the jar, count the money, and announce who made the best estimate. The winner gets the money in the jar.
 
-```{r echo=FALSE, out.width="25%", fig.align="center"}
+```{r echo=FALSE, out-width: "25%", fig-align: "center"}
 knitr::include_graphics("www/jar-coins.png")
 ```
 
@@ -75,7 +75,7 @@ In reality, hardly anyone believes they can estimate the amount in the jar to th
 
 In our more mathematical contest, we ask the participants to specify a function that describes their beliefs about the money in the jar. The instructions state,  "On the graph-paper axes below, sketch a continuous function expressing your best belief about how much money is in the jar. The only requirement is that the function value must be zero or greater for all inputs."
 
-```{r coin-graph-paper, echo=FALSE, fig.cap="The entry form for the money-in-the-jar contest.", warning=FALSE}
+```{r coin-graph-paper, echo=FALSE, fig-cap: "The entry form for the money-in-the-jar contest.", warning=FALSE}
 Money_graph <-
   gf_point(cyl ~ mpg, alpha=0, data = mtcars) %>%
   gf_refine(
@@ -95,7 +95,7 @@ Take a minute to look at the picture of the jar and draw your function on the ax
 
 Here are contest entries from three competitors. 
 
-```{r contest-entries, echo=FALSE, fig.cap="Three contestants' contest entries.", warning=FALSE}
+```{r contest-entries, echo=FALSE, fig-cap: "Three contestants' contest entries.", warning=FALSE}
 P1 <- Money_graph %>% gf_labs(title="Name: Johnny") %>%
   slice_plot(ifelse(mpg > 22 & mpg < 30, 5, 0) ~ mpg, 
              domain(mpg = 0:100), size=1, npts=300) %>%
@@ -119,7 +119,7 @@ $$\int_{-\infty}^\infty h(x)\, dx = A \neq 1\ .$$ Although $h(x)$ is not a proba
 
 A relative density function is entirely adequate for describing the distribution of probability. However, when comparing two or more probability distributions, it's important that they all be on the same scale. Normalizing the relative density functions to probability density functions accomplishes this. Figure \@ref(fig:contest-compare) compares the three relative probability functions in Figure \@ref(fig:contest-entries). Johnny makes the density large over a narrow domain and zero elsewhere, while Louisa specifies a small density over a large domain. All three competitors' functions have an area-under-the-curve of dimensionless 1.
 
-```{r contest-compare, echo=FALSE, warning=FALSE, fig.cap="Comparing the contest entries by normalizing each of them to a probability density function."}
+```{r contest-compare, echo=FALSE, warning=FALSE, fig-cap: "Comparing the contest entries by normalizing each of them to a probability density function."}
 Jar_functions <- 
   slice_plot(ifelse(x > 22 & x < 30, 1/8, 0) ~ x, 
              domain(x = 0:100), size=1, npts=300) %>%
@@ -150,7 +150,7 @@ Three commonly used families of probability density functions are:
 
 Figure \@ref(fig:three-density-funs) shows their shapes.
 
-```{r three-density-funs, echo=FALSE, fig.cap="Three probability density functions that are often used in applied work.", out.width="60%", fig.show="hold", }
+```{r three-density-funs, echo=FALSE, fig-cap: "Three probability density functions that are often used in applied work.", out-width: "60%", fig.show="hold", }
 First = tibble(x=seq(-.5,1, by=0.01),
                 bottom = 0, 
                 top = 1/1.5)
@@ -338,7 +338,7 @@ Likelihood functions provide the link between data and hypotheses. The idea is t
 
 To illustrate, let's return to the jar-of-money contest and the three competitors' entries as shown  in Figure \@ref(fig:contest-compare). For convenience, that Figure is reproduced here:
 
-```{r jar_functions2, echo=FALSE, fig.cap="The contest entries shown in Figure \\@ref(fig:contest-compare)."}
+```{r jar_functions2, echo=FALSE, fig-cap: "The contest entries shown in Figure \\@ref(fig:contest-compare)."}
 Jar_functions %>%
   gf_vline(xintercept=~32.14, color= "brown", alpha=0.6) 
 ```
@@ -378,7 +378,7 @@ In communicating with the public about risk, it's common to present risk as a nu
 
 Before there's enough evidence responsibly to form a solid idea, it's best to present risk not as a probability but as a probability density function. To illustrate, Figure \@ref(fig:beta-shapes) shows three different examples of what such probability density functions might look like for vague, preliminary ideas of risk. 
 
-```{r beta-shapes, echo=FALSE, fig.cap="Three different opinions about the risk of a disease."}
+```{r beta-shapes, echo=FALSE, fig-cap: "Three different opinions about the risk of a disease."}
 prior_A <- makeFun(dbeta(x, .5, 5) ~ x)
 prior_B <- makeFun(dbeta(x, 1, 1) ~ x)
 prior_C <- makeFun(dbeta(x, 1.3, 5) ~ x)
@@ -528,7 +528,7 @@ posterior <- function(prior, n=10, m=3) {
 }
 ```
 
-```{r after-1, echo=FALSE, fig.cap="Posteriors (blue) after the first screening test, which was $+$, for each of the priors in Figure \\@ref(fig:beta-shapes). The prior itself is drawn in gray.", warning=FALSE}
+```{r after-1, echo=FALSE, fig-cap: "Posteriors (blue) after the first screening test, which was $+$, for each of the priors in Figure \\@ref(fig:beta-shapes). The prior itself is drawn in gray.", warning=FALSE}
 post_A <- posterior(prior_A, 1, 1)
 post_B <- posterior(prior_B, 1, 1)
 post_C <- posterior(prior_C, 1, 1)
@@ -556,7 +556,7 @@ gridExtra::grid.arrange(P1, P2, P3, nrow=1)
 
 With just one row of data considered, the posteriors depend very much on the particular prior selected. This shouldn't be a surprise; one test result from an imperfect screening test is not going to tell us much. Let's process all of the 
 
-```{r after-10, echo=FALSE, fig.cap="Posteriors (blue) after the first ten rows of data, for each of the priors in Figure \\@ref(fig:beta-shapes). The prior itself is drawn in gray.", warning=FALSE}
+```{r after-10, echo=FALSE, fig-cap: "Posteriors (blue) after the first ten rows of data, for each of the priors in Figure \\@ref(fig:beta-shapes). The prior itself is drawn in gray.", warning=FALSE}
 post_A <- posterior(prior_A, 10, 3)
 post_B <- posterior(prior_B, 10, 3)
 post_C <- posterior(prior_C, 10, 3)
@@ -584,7 +584,7 @@ gridExtra::grid.arrange(P1, P2, P3, nrow=1)
 After the first 10 rows of data have been considered, the posteriors are similar despite the different priors.
 
 
-```{r after-100, echo=FALSE, fig.cap="Posteriors (blue) after 100 subjects have been screen, with 30 $+$ results.", warning=FALSE}
+```{r after-100, echo=FALSE, fig-cap: "Posteriors (blue) after 100 subjects have been screen, with 30 $+$ results.", warning=FALSE}
 post_A <- posterior(prior_A, 100, 30)
 post_B <- posterior(prior_B, 100, 30)
 post_C <- posterior(prior_C, 100, 30)

@@ -55,7 +55,7 @@ A lot of the theory of second-order differential equations was developed in the 
 
 The importance of ballistics to Newton can be seen by a famous diagram he drew, shown in Figure \@ref(fig:newton-ballistics). In the diagram, Newton traces the path of a ball shot horizontally from a cannon placed at the top of a mountain. 
 
-```{r newton-ballistics, echo=FALSE, fig.cap="Newton's diagram showing ballistic motion under the force of gravity.", out.width="60%"}
+```{r newton-ballistics, echo=FALSE, fig-cap: "Newton's diagram showing ballistic motion under the force of gravity.", out-width: "60%"}
 knitr::include_graphics("www/Newton-cannon.png")
 ```
 
@@ -89,7 +89,7 @@ traj <- integrateODE(
 traj_plot(y(t) ~ x(t), traj)
 traj_plot(v(t) ~ u(t), traj)
 ```
-```{r cannon-shot-1, fig.cap="Trajectory of the cannon ball shot with an initial horizontal velocity and no initial vertical velocity. The trajectory is plotted in slices of state space: position $(x, y)$ and velocity $(u, v)$. The time at which the ball reaches the points marked on the trajectory give the time."}
+```{r cannon-shot-1, fig-cap: "Trajectory of the cannon ball shot with an initial horizontal velocity and no initial vertical velocity. The trajectory is plotted in slices of state space: position $(x, y)$ and velocity $(u, v)$. The time at which the ball reaches the points marked on the trajectory give the time."}
 P1 <- traj_plot(y(t) ~ x(t), traj) %>%
   gf_hline(yintercept=~0, color="brown") %>%
   gf_labs(subtitle="(x, y) position as a function of time")
@@ -129,7 +129,7 @@ traj_plot(y(t) ~ x(t), traj)
 traj_plot(v(t) ~ u(t), traj)
 ```
 
-```{r cannon-shot-2, fig.cap="Adding air resistence to the model changes the trajectory. For reference, the trajectory *without air resistence* is plotted in $\\color{orange}{\\text{orange}}$.", warning=FALSE}
+```{r cannon-shot-2, fig-cap: "Adding air resistence to the model changes the trajectory. For reference, the trajectory *without air resistence* is plotted in $\\color{orange}{\\text{orange}}$.", warning=FALSE}
 P1 <- 
   gf_hline(yintercept=~0, color="brown") %>%
   traj_plot(y(t) ~ x(t), traj, nt=2, color="orange") %>%
@@ -146,7 +146,7 @@ Air resistance causes the cannon ball to travel a shorter horizontal distance an
 
 Consider the motion of a weight attached to a spring, as in Figure \@ref(fig:spring-mass). We'll denote the vertical position of the mass by $y(t)$. Such a spring-mass system has a fixed point where the spring is stretched just enough to cancel out gravity and the velocity is zero. We'll measure $y$ relative to this fixed point. 
 
-```{r spring-mass1, echo=FALSE, fig.cap = "A spring-mass system in motion. [Source: Svjo](https://commons.wikimedia.org/wiki/File:Animated-mass-spring.gif) [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0) via Wikimedia Commons", out.width="30%"}
+```{r spring-mass1, echo=FALSE, fig.cap = "A spring-mass system in motion. [Source: Svjo](https://commons.wikimedia.org/wiki/File:Animated-mass-spring.gif) [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0) via Wikimedia Commons", out-width: "30%"}
 knitr::include_graphics("www/Animated-mass-spring.gif")
 ```
 According to Hooke's Law, a stretched or compressed spring exerts a force that is proportional to the amount of extension or compression. With our measuring $y$ relative to the fixed point, the Hooke's Law force will be
@@ -239,7 +239,7 @@ Notice that the real part of the result oscillates between negative and positive
 
 We can get a clearer picture by plotting $e^{i\omega t}$ over the domain $0 < t < 10$. As an example, in Figure \@ref(fig:complex-exponential-plot) we'll set $\omega = 2$. We need to be a little careful, since our plotting functions are not arranged to display complex numbers. But there is an easy workaround: plot the "real" and "imaginary" parts separately. The R operators `Re()` and `Im()` do this work.
 
-```{r complex-exponential-plot, echo=TRUE, fig.cap="The real and imaginary parts of $e^{i \\omega t}$ plotted as a function of $t$."}
+```{r complex-exponential-plot, echo=TRUE, fig-cap: "The real and imaginary parts of $e^{i \\omega t}$ plotted as a function of $t$."}
 f <- makeFun(exp(1i * omega * t) ~ t, omega = 2)
 slice_plot(Re(f(t)) ~ t, 
            domain(t=0:10), color = "magenta") %>%
@@ -281,7 +281,7 @@ Result: an exponentially decaying sinusoid.
 
 To graph this function, we need to choose appropriate numerical values for $r$ and $b$. Let's set $r=1$. Since $r^2 < 4b$, we must have $\frac{1}{4} < b$: we'll choose $b = 6$ which meets this criterion. Figure \@ref(fig:decay-sinusoid1) shows the solution to the differential equation:
 
-```{r decay-sinusoid1, echo=TRUE, fig.cap="An exponentially decaying sinusoid arising from $r = 1$ and $b = 6$."}
+```{r decay-sinusoid1, echo=TRUE, fig-cap: "An exponentially decaying sinusoid arising from $r = 1$ and $b = 6$."}
 traj <- integrateODE(dv~ -r*v - b*y, dy ~ v, v=10, y=0, r=1, b=6, tdur=20)
 traj_plot(y(t) ~ t, traj)
 ```
@@ -290,7 +290,7 @@ This is the situation with a swinging door. You shove it to swing open, after wh
 
 In contrast, suppose the spring is weak compared to the damping such that $4b < r^2$. Now $\sqrt{\strut r^2 - 4b}$ is a positive number, not imaginary. What's more, since $b$ is positive, $\sqrt{\strut r^2 - 4 b} < r$.  This means that both eigenvalues are negative. We'll illustrate the situation with $r=1, b=0.2$:
 
-```{r overdamped1, echo=TRUE, fig.cap="A heavily damped spring-mass system with  $r = 1$ and $b = 0.1$."}
+```{r overdamped1, echo=TRUE, fig-cap: "A heavily damped spring-mass system with  $r = 1$ and $b = 0.1$."}
 traj2 <- integrateODE(dv~ -r*v - b*y, dy ~ v, v=10, y=0, r=1, b=0.1, tdur=20)
 traj_plot(y(t) ~ t, traj2) %>%
   gf_lims(y = c(0, NA))
@@ -299,7 +299,7 @@ The situation in Figure \@ref(fig:overdamped1) is the sort of behavior one expec
 
 Finally, consider the case where $r^2 - 4 b = 0$, a balance between resistance and springiness. In this case, both eigenvalues are $\lambda = -r/2$.
 
-```{r critically-damped, echo=TRUE, fig.cap="A critically damped oscillation with $r=1$, $b=0.25$."}
+```{r critically-damped, echo=TRUE, fig-cap: "A critically damped oscillation with $r=1$, $b=0.25$."}
 traj3 <- integrateODE(dv~ -r*v - b*y, dy ~ v, v=10, y=0, r=1, b=0.25, tdur=20)
 traj_plot(y(t) ~ t, traj3) %>%
   gf_lims(y = c(0, NA))

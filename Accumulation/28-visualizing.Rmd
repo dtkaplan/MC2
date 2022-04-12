@@ -9,7 +9,7 @@ Many students wonder how it is possible to reconstruct a function $F(x)$ from it
 You already know the notation meaning "$F(x)$ is the anti-derivative of $f(x)$": $$\large \int f(x)\, dx\ .$$
 In drawing a graph of $F(x)$, we will of course want to use coordinate axes where the quantity $x$ is represented on the horizontal axis and the quantity of the output $F(x)$ is on the vertical axis:
 
-```{r F-blank-axes, echo=FALSE, fig.cap="The graphics frame in which we want to draw the graph of $F(x)$. A small region of the domain is labeled $dx$. Within that domain, $F(x)$, whatever it is, will be a sloping segment. The gray segment shows what this might look like."}
+```{r F-blank-axes, echo=FALSE, fig-cap: "The graphics frame in which we want to draw the graph of $F(x)$. A small region of the domain is labeled $dx$. Within that domain, $F(x)$, whatever it is, will be a sloping segment. The gray segment shows what this might look like."}
 slice_plot(cos(2*pi*x/10) ~ x, domain(x=-5:5), alpha=0) %>%
   gf_lims(x=-5:5, y=-1:1) %>%
   slice_plot(0.1 + cos(2*pi*x/6) ~ x, domain(x=-2.5:-2.0), color="gray", size=2) %>%
@@ -25,7 +25,7 @@ But we can draw $f(x)$ in terms of the slope of a segment of horizontal extent $
 
 
 
-```{r F-blank-axes2, echo=FALSE, fig.cap="Graphing $f(x)$ as a series of sloped segments. The slope is the value of $f(x)$. But the vertical position of the segment is not information provided by $f(x)$, so we've drawn all of them at the same vertical level."}
+```{r F-blank-axes2, echo=FALSE, fig-cap: "Graphing $f(x)$ as a series of sloped segments. The slope is the value of $f(x)$. But the vertical position of the segment is not information provided by $f(x)$, so we've drawn all of them at the same vertical level."}
 Pts <- Znotes::segmentize(cos(2*pi*x/10) ~ x, h=0.5, domain(x=-5:5), npts=100)
 
 
@@ -43,7 +43,7 @@ Whenever we know a function $f(x)$ and have chosen a size for $dx$ we can draw a
 
 Let's now consider how to "sum up all the segments." We'll start in Figure \@ref(fig:F-232) with an example where we already know $F(x)$. That way, we can see of our sum of the $f(x) dx$ segments really does reconstruct $F(x)$. 
 
-```{r F-232, echo=FALSE, fig.cap="Top: A function $F(x)$ for demonstration purposes. Bottom: Slicing $F(x)$ into piecewise domains of width $dx=2$ and anchoring the left-most point of each slice vertically at 0." }
+```{r F-232, echo=FALSE, fig-cap: "Top: A function $F(x)$ for demonstration purposes. Bottom: Slicing $F(x)$ into piecewise domains of width $dx=2$ and anchoring the left-most point of each slice vertically at 0." }
 F <- rfun(~ x, seed = 232)
 P1 <- slice_plot(F(x) ~ x, domain(x=-5:5)) %>%
   gf_labs(title = "F(x)") %>%
@@ -69,7 +69,7 @@ Can you reconstruct $F(x)$ from the local segments?
 Start by reading off the function value from the last point in the left-most segment. That's been marked in Figure \@ref(fig:F-232) with a blue dot. The function value at that dot is 7.072. 
 
 Now take the second segment. The idea is to move that segment upward until it joins the first segment at the blue dot. You can do that by adding 7.072 to the second segment. The result is shown in Figure \@ref(fig:F-seg-2)(top).
-```{r F-seg-2, echo=FALSE, fig.cap="Reconstructing the original function $F(x)$ by moving each segment upward to meet its left neighbor. Top: The first two segments are connected. Bottom: The third segment is connected to the first two."}
+```{r F-seg-2, echo=FALSE, fig-cap: "Reconstructing the original function $F(x)$ by moving each segment upward to meet its left neighbor. Top: The first two segments are connected. Bottom: The third segment is connected to the first two."}
 One <- Pts %>% mutate(add = 7.072*(segnum==1), 
                       ymin=ymin + add,
                       ymax=ymax + add)
@@ -101,7 +101,7 @@ You may object: "Of course you can reconstruct $F(x)$ from the local segments, b
 
 When we make the segment width $h$ smaller and smaller, the individual segments become more and more like straight lines. Figure \@ref(fig:F-slice-many) shows the segments for smaller and smaller $h$.
 
-```{r F-slice-many, echo=FALSE, fig.cap="Using small segments gives each segment a simple shape. In Figure \\@ref(fig:F-seg-2) the segments had width $dx=2.0$ and were discernable curvy. Top of this figure: At width $dx=0.25$ a few of the segments look curved. Middle: This graph zooms in on the subdomain $-1 \\leq x \\leq 1$ in the top panel, where there is a notably curved segment in the top graph. Setting $dx=0.1$ breaks up such curved segment into components better approximated by a straight line. Bottom: Using $dx=0.01$ further improves the approximation of each segment to a straight line."}
+```{r F-slice-many, echo=FALSE, fig-cap: "Using small segments gives each segment a simple shape. In Figure \\@ref(fig:F-seg-2) the segments had width $dx=2.0$ and were discernable curvy. Top of this figure: At width $dx=0.25$ a few of the segments look curved. Middle: This graph zooms in on the subdomain $-1 \\leq x \\leq 1$ in the top panel, where there is a notably curved segment in the top graph. Setting $dx=0.1$ breaks up such curved segment into components better approximated by a straight line. Bottom: Using $dx=0.01$ further improves the approximation of each segment to a straight line."}
 Pts <- Znotes::segmentize(F(x) ~ x, h=0.25, domain(x=-5:5), npts=20)
 P1 <- 
   gf_rect(1.1 + -2.2 ~ -1 + 1, fill="orange", color=NA, alpha=0.2) %>%
@@ -153,7 +153,7 @@ $$\large \underbrace{\underbrace{\Large\color{magenta}{\int}}_{\color{magenta}{\
 ::: {.example data-latex=""}
 Returning to the example with which we started the chapter, here are the little segments of the slope function shown in Figure \@ref(fig:F-blank-axes2) assembled together to produce the anti-derivative function.
 
-```{r show-bits2, echo=FALSE, fig.cap="$\\color{blue}{\\int} f(x)dx$ means to assemble the straight-line pieces $f(x) dx$ in the manner described in the previous section."}
+```{r show-bits2, echo=FALSE, fig-cap: "$\\color{blue}{\\int} f(x)dx$ means to assemble the straight-line pieces $f(x) dx$ in the manner described in the previous section."}
 Pts <- Znotes::segmentize(cos(2*pi*x/10) ~ x, h=0.5, domain(x=-5:5), npts=1) %>%
   mutate(top = cumsum(ymax - ymin), bottom=top - (ymax-ymin))
 
