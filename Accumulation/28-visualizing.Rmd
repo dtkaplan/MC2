@@ -1,9 +1,5 @@
 # Totaling the little bits {#totaling-bits}
 
-<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Block-3/28-visualizing.Rmd)</div>
-
-
-
 Many students wonder how it is possible to reconstruct a function $F(x)$ from its derivative $f(x)$. The point of this short chapter is to help you develop some intuition about anti-differentiation.
 
 You already know the notation meaning "$F(x)$ is the anti-derivative of $f(x)$": $$\large \int f(x)\, dx\ .$$
@@ -21,7 +17,7 @@ It's premature to have drawn a segment of $F(x)$ because we haven't yet undertak
 
 We can't draw $f(x)$ in the ordinary way as a curve wending its way across the domain of the graph. Why not? Because the vertical axis of the graphics frame is in terms of $F(x)$ and has a different dimension than the output of $f(x)$.
 
-But we can draw $f(x)$ in terms of the slope of a segment of horizontal extent $dx$, so long as we accept that the vertical position of that segment means nothing: $f(x)$ gives information only about the **slope** of the segment. The best we can do at this point is to graph $f(x)$ in terms of sloping segments, as in Figure \@ref(fig:F-blank-axes2).
+But we can draw $f(x)$ in terms of the slope of a segment of horizontal extent $dx$, so long as we accept that the vertical position of that segment means nothing: $f(x)$ gives information only about the **slope** of the segment. The best we can do at this point is to graph $f(x)$ in terms of sloping segments, as in @fig-F-blank-axes2.
 
 
 
@@ -37,11 +33,11 @@ slice_plot(cos(2*pi*x/10) ~ x, domain(x=-5:5), alpha=0) %>%
   gf_labs(y="Output of F(x)")
 ```
 
-Each of the segments in Figure \@ref(fig:F-blank-axes2) has the same horizontal extent, namely $dx$. When we draw a sloping segment over the tiny bit $dx$ of the domain, the vertical extent of the segment will be the product of the width $dx$ and the slope $f(x)$. That is, the vertical extent will be the product $f(x) dx$.
+Each of the segments in @fig-F-blank-axes2 has the same horizontal extent, namely $dx$. When we draw a sloping segment over the tiny bit $dx$ of the domain, the vertical extent of the segment will be the product of the width $dx$ and the slope $f(x)$. That is, the vertical extent will be the product $f(x) dx$.
 
-Whenever we know a function $f(x)$ and have chosen a size for $dx$ we can draw a graph of $f(x)$ in the form shown in Figure \@ref(fig:F-blank-axes2). We're drawing it in this unusual way because we want the graphics frame to be all ready for drawing the graph of $F(x)$ in the normal fashion after we have figured out what $F(x)$ results from accumulating/summing-up all the little $f(x) dx$ segments. When we write $\large\int$ in the notation $$\large \int f(x)\, dx$$ we mean, "sum up all the $f(x) dx$ segments."
+Whenever we know a function $f(x)$ and have chosen a size for $dx$ we can draw a graph of $f(x)$ in the form shown in @fig-F-blank-axes2. We're drawing it in this unusual way because we want the graphics frame to be all ready for drawing the graph of $F(x)$ in the normal fashion after we have figured out what $F(x)$ results from accumulating/summing-up all the little $f(x) dx$ segments. When we write $\large\int$ in the notation $$\large \int f(x)\, dx$$ we mean, "sum up all the $f(x) dx$ segments."
 
-Let's now consider how to "sum up all the segments." We'll start in Figure \@ref(fig:F-232) with an example where we already know $F(x)$. That way, we can see of our sum of the $f(x) dx$ segments really does reconstruct $F(x)$. 
+Let's now consider how to "sum up all the segments." We'll start in @fig-F-232 with an example where we already know $F(x)$. That way, we can see of our sum of the $f(x) dx$ segments really does reconstruct $F(x)$. 
 
 ```{r F-232, echo=FALSE, fig-cap: "Top: A function $F(x)$ for demonstration purposes. Bottom: Slicing $F(x)$ into piecewise domains of width $dx=2$ and anchoring the left-most point of each slice vertically at 0." }
 F <- rfun(~ x, seed = 232)
@@ -59,16 +55,16 @@ P2 <- gf_segment(ymin + ymax ~ xmin + xmax, data = Pts) %>%
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
 
-Now imagine that we sliced up $F(x)$ over small sub-domains of $x$, as in Figure \@ref(fig:F-232) (bottom). That is, we approximated $F()$ piecewise locally. But we've broken the continuity of $F(x)$ by moving each slice up or down so that the left-most point has value 0.
+Now imagine that we sliced up $F(x)$ over small sub-domains of $x$, as in @fig-F-232 (bottom). That is, we approximated $F()$ piecewise locally. But we've broken the continuity of $F(x)$ by moving each slice up or down so that the left-most point has value 0.
 
 
 Can you reconstruct $F(x)$ from the local segments? 
 
 
 
-Start by reading off the function value from the last point in the left-most segment. That's been marked in Figure \@ref(fig:F-232) with a blue dot. The function value at that dot is 7.072. 
+Start by reading off the function value from the last point in the left-most segment. That's been marked in @fig-F-232 with a blue dot. The function value at that dot is 7.072. 
 
-Now take the second segment. The idea is to move that segment upward until it joins the first segment at the blue dot. You can do that by adding 7.072 to the second segment. The result is shown in Figure \@ref(fig:F-seg-2)(top).
+Now take the second segment. The idea is to move that segment upward until it joins the first segment at the blue dot. You can do that by adding 7.072 to the second segment. The result is shown in @fig-F-seg-2(top).
 ```{r F-seg-2, echo=FALSE, fig-cap: "Reconstructing the original function $F(x)$ by moving each segment upward to meet its left neighbor. Top: The first two segments are connected. Bottom: The third segment is connected to the first two."}
 One <- Pts %>% mutate(add = 7.072*(segnum==1), 
                       ymin=ymin + add,
@@ -93,13 +89,13 @@ P2 <- gf_segment(ymin + ymax ~ xmin + xmax, data = Two) %>%
   gf_text(-8 ~ -2, label="dx=2", color="orange", vjust=1.5)
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
-Now read off the new value at the end of the second segment, it's 4.198. Add this amount to the third segment as in Figure \@ref(fig:F-seg-2)(bottom).
+Now read off the new value at the end of the second segment, it's 4.198. Add this amount to the third segment as in @fig-F-seg-2(bottom).
 
 Continue this process until you have reconstructed $F(x)$ from the local segments.
 
 You may object: "Of course you can reconstruct $F(x)$ from the local segments, but this isn't the same as reconstructing $F(x)$ from its derivative $\partial_x F(x)$." My answer: "That depends on how many segments you use."
 
-When we make the segment width $h$ smaller and smaller, the individual segments become more and more like straight lines. Figure \@ref(fig:F-slice-many) shows the segments for smaller and smaller $h$.
+When we make the segment width $h$ smaller and smaller, the individual segments become more and more like straight lines. @fig-F-slice-many shows the segments for smaller and smaller $h$.
 
 ```{r F-slice-many, echo=FALSE, fig-cap: "Using small segments gives each segment a simple shape. In Figure \\@ref(fig:F-seg-2) the segments had width $dx=2.0$ and were discernable curvy. Top of this figure: At width $dx=0.25$ a few of the segments look curved. Middle: This graph zooms in on the subdomain $-1 \\leq x \\leq 1$ in the top panel, where there is a notably curved segment in the top graph. Setting $dx=0.1$ breaks up such curved segment into components better approximated by a straight line. Bottom: Using $dx=0.01$ further improves the approximation of each segment to a straight line."}
 Pts <- Znotes::segmentize(F(x) ~ x, h=0.25, domain(x=-5:5), npts=20)
@@ -141,7 +137,7 @@ Lets review. The standard notation for anti-differentiation can be interpreted i
 
 2. Now divide the domain $x$ into many little bits. Each of these sub-domains is $\large dx$, a little chunk of $x$.
 
-3. On each of the little chunks, draw in $f(x)$. Since $f(x)$ is the *slope* of $F(x)$, we will draw $f(x)$ for any given chunk as a short line segment of that slope over the chunk, as in Figure \@ref(fig:F-blank-axes2). We'll write these little bits, each of which is very nearly a straight-line, as $\large\color{blue}{f(x) dx}$. 
+3. On each of the little chunks, draw in $f(x)$. Since $f(x)$ is the *slope* of $F(x)$, we will draw $f(x)$ for any given chunk as a short line segment of that slope over the chunk, as in @fig-F-blank-axes2. We'll write these little bits, each of which is very nearly a straight-line, as $\large\color{blue}{f(x) dx}$. 
 
 4. Assemble together all the $f(x)dx$ segments from (3) to get $F(x)$. This instruction to assemble is denoted 
 $$\Large \color{blue}\int$$
@@ -151,7 +147,7 @@ Altogether, we have:
 $$\large \underbrace{\underbrace{\Large\color{magenta}{\int}}_{\color{magenta}{\text{assemble}}} \underbrace{\Large \overbrace{f(x)}^{\small\text{slope of F(x)}}\ \  \overbrace{\strut dx}^{\small \text{bits of}\ x}}_{\color{blue}{\text{the slope segments}}}}_{\text{giving}\ {\Large F(x)+C}\ \text{altogether.}}$$
 
 ::: {.example data-latex=""}
-Returning to the example with which we started the chapter, here are the little segments of the slope function shown in Figure \@ref(fig:F-blank-axes2) assembled together to produce the anti-derivative function.
+Returning to the example with which we started the chapter, here are the little segments of the slope function shown in @fig-F-blank-axes2 assembled together to produce the anti-derivative function.
 
 ```{r show-bits2, echo=FALSE, fig-cap: "$\\color{blue}{\\int} f(x)dx$ means to assemble the straight-line pieces $f(x) dx$ in the manner described in the previous section."}
 Pts <- Znotes::segmentize(cos(2*pi*x/10) ~ x, h=0.5, domain(x=-5:5), npts=1) %>%

@@ -90,7 +90,7 @@ Remember also that, in general, we scale the inputs and scale the output. This m
 
 For functions such as the sinusoid, flipping is not much use, since the flipped sinusoid curve is still a sinusoid, although with a shifted input. Similarly, a right-for-left flipped gaussian function has the same shape as the original. For the straight-line function, flipping of either sort accomplishes the same thing: changing the sign of the slope. 
 
-For the exponential function, the two possible types of flipping---right-for-left and top-for-bottom---produce four different curves, all of which are exponential, shown in Figure \@ref(fig:four-variations).
+For the exponential function, the two possible types of flipping---right-for-left and top-for-bottom---produce four different curves, all of which are exponential, shown in @fig-four-variations.
 
 ```{r four-variations, out-width: "50%", echo=FALSE, fig-cap: "Four variations of the exponential function.", fig.show="hold"}
 ggpubr::ggarrange(
@@ -119,7 +119,7 @@ slice_plot(-exp(-x) ~ x, domain(x=c(-2,2))) %>%
 ## Fitting a straight-line function
 
 
-To illustrate line fitting, let's return to the cooling mug of water. Figure \@ref(fig:Fun-4-a) shows the data along with a dozen candidate straight line functions, each one drawn in its own color.
+To illustrate line fitting, let's return to the cooling mug of water. @fig-Fun-4-a shows the data along with a dozen candidate straight line functions, each one drawn in its own color.
 
 ```{r Fun-4-a, echo=FALSE, warning=FALSE, fig-cap: "Some candidate straight-line function models plotted on top of the cooling water data. Which one(s) would you pick as good matches to the data?"}
 set.seed(101)
@@ -149,7 +149,7 @@ Step 2: Find the parameters that correspond to the line you drew.
 
 ## Curve fitting a periodic function {#fit-periodic}
 
-Figure \@ref(fig:Fun-4-a-3-1) shows the tide level in [Providence, Rhode Island](https://www.google.com/maps/place/Providence,+RI/@41.8071,-71.4012,14z/data=!4m5!3m4!1s0x89e444e0437e735d:0x69df7c4d48b3b627!8m2!3d41.8071!4d-71.4012), starting at midnight on April 1, 2020 and recorded every minute for four and a half days. (These data were collected by the US National Oceanic and Atmospheric Administration. [Link](https://tidesandcurrents.noaa.gov/api/datagetter?begin_date=20200401%2010:00&end_date=20200405%201:59&station=8454000&product=one_minute_water_level&datum=mllw&units=metric&time_zone=gmt&application=web_services&format=csv))   
+@fig-Fun-4-a-3-1 shows the tide level in [Providence, Rhode Island](https://www.google.com/maps/place/Providence,+RI/@41.8071,-71.4012,14z/data=!4m5!3m4!1s0x89e444e0437e735d:0x69df7c4d48b3b627!8m2!3d41.8071!4d-71.4012), starting at midnight on April 1, 2020 and recorded every minute for four and a half days. (These data were collected by the US National Oceanic and Atmospheric Administration. [Link](https://tidesandcurrents.noaa.gov/api/datagetter?begin_date=20200401%2010:00&end_date=20200405%201:59&station=8454000&product=one_minute_water_level&datum=mllw&units=metric&time_zone=gmt&application=web_services&format=csv))   
 
 ```{r Fun-4-a-3-1, echo=FALSE, fig-cap: "About four days of tide-level data from Providence, Rhode Island"}
 #gf_line(level ~ hour, data = math141Z::Anchorage_tide[1:1000,])
@@ -184,13 +184,13 @@ gf_line(level ~ hour,
   gf_lims(y =c(0, 2))
 ```
 
-The left panel in Figure \@ref(fig:Fun-4-a-3-2) shows about 24 hours at the start of the record. The first peak is at about 6 hours, the second at about 19 hours. That indicates that the period is roughly 19 - 6 = 13 hours. 
+The left panel in @fig-Fun-4-a-3-2 shows about 24 hours at the start of the record. The first peak is at about 6 hours, the second at about 19 hours. That indicates that the period is roughly 19 - 6 = 13 hours. 
 
 **Step 3** Plot out the model over the data. Replacing the symbols $A$, $B$, and $P$ with our estimates, the model is 
 
 $${\color{magenta}{\text{tide}(t)} \equiv \underbrace{1.05}_A + \underbrace{0.55}_B \sin(\ 2\pi t\ /\underbrace{13}_P)}$$
 
-Figure \@ref(fig:Fun-4-a-3-3) shows this model in $\color{magenta}{\text{magenta}}$.
+@fig-Fun-4-a-3-3 shows this model in $\color{magenta}{\text{magenta}}$.
 
 ```{r Fun-4-a-3-3, echo=FALSE,  fig-cap: "The sinusoid fails to align with the timing of peaks and troughs."}
 mod1 <- makeFun(1.05 + 0.55*sin(2*pi*hour/13) ~ hour)
@@ -201,12 +201,12 @@ gf_line(level ~ hour,
   gf_labs(y="Water level (meters)", x="Time (hours)") %>%
   gf_lims(y =c(0, 2))
 ```
-Figure \@ref(fig:Fun-4-a-3-3) shows the model aligning beautifully with the data at around time 80 hours, but not so well near the very beginning of the record. Looking carefully, you can see the magenta peak gradually move to the left compared to the data as you look at the peaks of the cycles one at a time moving backward from $t=80$ hours. This is diagnostic of our 13-hour estimate for the period being a little too long.
+@fig-Fun-4-a-3-3 shows the model aligning beautifully with the data at around time 80 hours, but not so well near the very beginning of the record. Looking carefully, you can see the magenta peak gradually move to the left compared to the data as you look at the peaks of the cycles one at a time moving backward from $t=80$ hours. This is diagnostic of our 13-hour estimate for the period being a little too long.
 
 A good way to refine the estimate is to change the model slightly and re-graph the data and model. Keep doing this until you have found the right alignment. In other words, parameter estimation is often an ***iterative*** process of estimate-and-refine. This is one of the aspects of the ***modeling cycle***, where a modeler builds a tentative model, looks for systematic deviations from the data, and refines the model. 
 
 ::: {.intheworld  data-latex=""}
-Another sort of deviation of the model from the data seen in Figure \@ref(fig:Fun-4-a-3-3) concerns the varying heights of the peaks and troughs in the data, which is not captured by the simple sinusoid pattern. Perhaps you can see that at the beginning of the record, the troughs are also *wider* than the peaks. Later on, as this extra width disappears, the amplitude of the peaks and troughs increases. 
+Another sort of deviation of the model from the data seen in @fig-Fun-4-a-3-3 concerns the varying heights of the peaks and troughs in the data, which is not captured by the simple sinusoid pattern. Perhaps you can see that at the beginning of the record, the troughs are also *wider* than the peaks. Later on, as this extra width disappears, the amplitude of the peaks and troughs increases. 
 
 You don't yet have the calculus tools or experience to know how or whether this phenomenon can be modeled. For now, a hint: Earth has two large orbiting bodies, the Sun and the Moon. These have slightly different periods: 24 hours for the Sun and slightly longer for the Moon.
 :::
@@ -239,7 +239,7 @@ Almost everybody is happier doing arithmetic with numbers like 2 and 10 rather t
 
 Exponential functions also describe ***decrease*** or ***decay***. Just replace $t$ with $-t$. That is, a movie of a decreasing quantity is just the movie of an increasing quantity played backwards in time!    
 
-Figure \@ref(fig:Fun-4-intro-1) shows some data collected by Prof. Stan Wagon to support his making a detailed mechanistic model of an everyday phenomenon: [The cooling of a mug of hot beverage to room temperature](https://www.researchgate.net/profile/Gianluca_Argentini/post/Is_analogy_reasoning_between_heat_transfert_and_electriocity_allows_to_apply_the_electricity_laws_about_resistance_to_thermal_resistances/attachment/59d6573379197b80779ada64/AS%3A533325451403264%401504166104259/download/Stan+WAGON+How+quickly+does+water+cool.pdf). The mug started at room temperature, which was measured at 26 degrees C. At time 0 he poured in boiling water from a kettle and measured the temperature of the water over the next few hours.
+@fig-Fun-4-intro-1 shows some data collected by Prof. Stan Wagon to support his making a detailed mechanistic model of an everyday phenomenon: [The cooling of a mug of hot beverage to room temperature](https://www.researchgate.net/profile/Gianluca_Argentini/post/Is_analogy_reasoning_between_heat_transfert_and_electriocity_allows_to_apply_the_electricity_laws_about_resistance_to_thermal_resistances/attachment/59d6573379197b80779ada64/AS%3A533325451403264%401504166104259/download/Stan+WAGON+How+quickly+does+water+cool.pdf). The mug started at room temperature, which was measured at 26 degrees C. At time 0 he poured in boiling water from a kettle and measured the temperature of the water over the next few hours.
 
 ```{r Fun-4-intro-1, echo=FALSE, fig-cap: "Stan's data"}
 set.seed(101)
@@ -249,7 +249,7 @@ gf_point(temp ~ time, data=CoolingWater %>% sample_n(20)) %>%
 
 Our task is to translate this data into the form of a function that takes time as input and returns temperature as output. Such a model would be useful for, say, filling in the gaps of the data. For instance, we might want to find the temperature of the water immediately after being poured from the kettle into the mug.
 
-Looking at the data, one sees that the temperature decreases along a curve: cooling fast at first and then more slowly. This is the pattern of the flipped right-for-left exponential. (Figure \@ref(fig:four-variations)(B)) We can imagine then that an exponential, $A e^{kt} + C$ will be a suitable model form for the cooling water.
+Looking at the data, one sees that the temperature decreases along a curve: cooling fast at first and then more slowly. This is the pattern of the flipped right-for-left exponential. (@fig-four-variations(B)) We can imagine then that an exponential, $A e^{kt} + C$ will be a suitable model form for the cooling water.
 
 What remains is to find the parameters $A$, $k$, and $C$.  Here is a general process for curve-fitting an exponential. Later, we'll apply this process specifically to the water-cooling situation. 
 
@@ -289,7 +289,7 @@ The $2$ in $\ln(2)$ corresponds to idea of doubling/halving. The logarithm conve
 
 **Exponential curve fitting applied to the water-cooling data**
 
-Let's illustrate the general process on the water-cooling data, redrawn in Figure \@ref(fig:Fun-4-a-2-1).   
+Let's illustrate the general process on the water-cooling data, redrawn in @fig-Fun-4-a-2-1.   
 
 ```{r Fun-4-a-2-1, echo=FALSE, fig-cap: "The cooling-water data, repeated here for convenience. We've sketched in an exponential-like curve that matches the data pretty well."}
 set.seed(101)
@@ -303,7 +303,7 @@ Step 0: The data indicate a smooth curve. As $t$ gets large, the curve approache
 
 **Step 1**: The curve looks like it's leveling out at a temperature of about 25 degrees C for large $t$. So $C \approx 25^{\circ} \text{C}$.
 
-**Step 2**: Looking at our imagined curve (sketched in blue in Figure \@ref(fig:Fun-4-a-2-1)), it appears to intersect the $t=0$ vertical axis at about $f(0) = 85^\circ\text{C}$. Thus, $$A = 85^\circ\text{C} - 25^\circ\text{C} = 60^\circ\text{C}$$
+**Step 2**: Looking at our imagined curve (sketched in blue in @fig-Fun-4-a-2-1), it appears to intersect the $t=0$ vertical axis at about $f(0) = 85^\circ\text{C}$. Thus, $$A = 85^\circ\text{C} - 25^\circ\text{C} = 60^\circ\text{C}$$
 
 **Step 3**:
 
@@ -359,7 +359,7 @@ Now let's add a bump to the road. A bump is a local feature, often only a few fe
 
 The basic modeling function suited to represent bumps in the road, or potholes, or mountain ranges is generically called a "hump function." In this book, we use a specific hump function called the ***gaussian*** function (`dnorm()`). 
 
-A gaussian function has two parameters: the location^[That is, the input value at which the function value is largest.] of the peak, which we'll call the ***center*** parameter, and the sideways extent of the gaussian, which is called the ***standard deviation***. Figure \@ref(fig:Fun-3C-1) shows a few gaussian functions with different parameters.
+A gaussian function has two parameters: the location^[That is, the input value at which the function value is largest.] of the peak, which we'll call the ***center*** parameter, and the sideways extent of the gaussian, which is called the ***standard deviation***. @fig-Fun-3C-1 shows a few gaussian functions with different parameters.
 
 ```{r Fun-3C-1, echo=FALSE, warning=FALSE, fig-cap: "Gaussians with various centers and standard deviations (sd).", fig.show="hold", fig.height=3, fig.width=6}
 slice_plot(dnorm(x, 1, 0.5) ~ x, domain(x=c(-3, 3))) %>%
@@ -376,15 +376,15 @@ It's easy to read off the ***center*** parameter from a graph of a gaussian. It'
 
 The ***spread*** parameter is also pretty straightforward, but you first have to become familiar with an unusual feature of the gaussian function. The output of the gaussian *far from the center* is practically zero. But it is not exactly zero. You can see from the graphs that the gaussian function has long flanks which approach zero output more or less in the manner of an exponential function. This means that we can't measure the spread of the gaussian function by the distance between the zeros on either side of the peak. Instead, we need a ***convention*** that will allow us to be precise in quantifying what is admittedly a vague concept of width.
 
-Technically, the convention is that the spread is the length of the interval from the argmax to the inflection point. This can be hard to judge from a graph, but a reasonable approximation is that the spread is the "half-width at half-height." Come down half-way from the peak value of the output. Panel (c) of Figure \@ref(fig:Fun-3C-1) marks that elevation with a thin, tan, horizontal line. Along that line, measure the width of the gaussian, as marked by the thick tan line in Panel (c). The ***spread*** parameter is half the width of the gaussian measured in this way.   
+Technically, the convention is that the spread is the length of the interval from the argmax to the inflection point. This can be hard to judge from a graph, but a reasonable approximation is that the spread is the "half-width at half-height." Come down half-way from the peak value of the output. Panel (c) of @fig-Fun-3C-1 marks that elevation with a thin, tan, horizontal line. Along that line, measure the width of the gaussian, as marked by the thick tan line in Panel (c). The ***spread*** parameter is half the width of the gaussian measured in this way.   
 
-If you have a keen eye, you'll notice that the tan line in Figure \@ref(fig:Fun-3C-1) is not exactly half-way down from the peak. It's down 39.35% from the peak. This corresponds exactly to the technical convention.
+If you have a keen eye, you'll notice that the tan line in @fig-Fun-3C-1 is not exactly half-way down from the peak. It's down 39.35% from the peak. This corresponds exactly to the technical convention.
 
 Another seeming oddity about the gaussian function is the value of the maximum. It would have seemed natural to define this as 1, so-called "unit height." The way it actually works is different: the maximum height is set so that the ***area*** under the gaussian function is 1.
 
 This business with the area will make more sense when you've learned some calculus tools, specifically "differentation" and "integration." For now though ...
 
-Consider another road feature, a local ***change*** from one elevation to another as you might accomplish with a ramp. The basic modeling function corresponding to a ***local change*** from one level to another is the ***sigmoid*** function. Figure \@ref(fig:Fun-3C-2) shows three sigmoid functions.
+Consider another road feature, a local ***change*** from one elevation to another as you might accomplish with a ramp. The basic modeling function corresponding to a ***local change*** from one level to another is the ***sigmoid*** function. @fig-Fun-3C-2 shows three sigmoid functions.
 
 ```{r Fun-3C-2, echo=FALSE, fig-cap: "Sigmoids with various centers and standard deviations", fig.show="hold", warning=FALSE, fig.height=3, fig.width=6}
 slice_plot(pnorm(x, 1, 0.5) ~ x, domain(x=c(-3, 3))) %>%
@@ -405,13 +405,13 @@ In R, the name of the sigmoid function is `pnorm()`. The gaussian is `dnorm()`. 
 
 
 ::: {.intheworld  data-latex=""}
-Figure \@ref(fig:ebola-data) shows the cumulative number of Ebola cases during an outbreak in  Sierra Leone from May 1, 2014 to December 16, 2015.
+@fig-ebola-data shows the cumulative number of Ebola cases during an outbreak in  Sierra Leone from May 1, 2014 to December 16, 2015.
 
 ```{r ebola-data, echo=FALSE, fig-cap: "Cumulative Ebola cases in Sierra Leone"}
 gf_point(Cases ~ Day, data = MMAC::EbolaSierraLeone)
 ```
 
-Although the cumulative case data are roughly sigmoidal in shape, there are systematic differences in shape from a true sigmoid. For comparison, Figure \@ref(fig:true-sigmoid) is a graph of genuinely sigmoidal data.
+Although the cumulative case data are roughly sigmoidal in shape, there are systematic differences in shape from a true sigmoid. For comparison, @fig-true-sigmoid is a graph of genuinely sigmoidal data.
 
 ```{r true-sigmoid, echo=FALSE, warning=FALSE, fig-cap: "A simulated sigmoidal growth process."}
 sigmoid <- makeFun(A * pnorm(t, center,  width) ~ t)
@@ -437,9 +437,9 @@ The Ebola data have only a rough similarity to the sigmoid shape. Still, fitting
 
 Here's a methodology for estimating the parameters `mean` and `sd` of a sigmoid graphically. 
 
-1. Sketch in a S-shaped curve that smoothly follows the data. In Figure \@ref(fig:true-sigmoid) this has already been done for you. For the Ebola data, you will have to use your judgment. 
+1. Sketch in a S-shaped curve that smoothly follows the data. In @fig-true-sigmoid this has already been done for you. For the Ebola data, you will have to use your judgment. 
 
-2. Find the top plateau of the S-curve. This is indicated by the tan line in Figure \@ref(fig:true-sigmoid). The parameter `A` is simply the height of the plateau, in this case $y \approx 15$.
+2. Find the top plateau of the S-curve. This is indicated by the tan line in @fig-true-sigmoid. The parameter `A` is simply the height of the plateau, in this case $y \approx 15$.
 
 3. Come down half way from the  plateau. Here, that's 15/2 or 7.5, indicated by the horizontal blue line segment.  Find the inverse of the S-curve from that half-way point onto the horizontal-axis. Here, that gives $t \approx 5$. The  parameter `center` is that value.
 

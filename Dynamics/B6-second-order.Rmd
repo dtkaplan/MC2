@@ -4,8 +4,6 @@
 book_file_name <- "block-6/second-order-de.html"
 ```
 
-<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Block-6/B6-equalibria.Rmd)</div>
-
 Up to now, we have been studying dynamics in the format of one or more first-order differential equations. For instance,
 $$\partial_t x = f(x, y)\\
 \partial_t y = g(x, y)$$
@@ -53,7 +51,7 @@ Since we know how to solve sets of first-order differential equations by Euler's
 
 A lot of the theory of second-order differential equations was developed in the setting of a ball being set off with an initial velocity from an initial position. Such a focus on the flight of balls might seem trivial. Fortunately, language allows us to construct a scientific-sounding word by adding the suffix "istic" to the root "ball." This suffixing produces the word ***ballistics***.
 
-The importance of ballistics to Newton can be seen by a famous diagram he drew, shown in Figure \@ref(fig:newton-ballistics). In the diagram, Newton traces the path of a ball shot horizontally from a cannon placed at the top of a mountain. 
+The importance of ballistics to Newton can be seen by a famous diagram he drew, shown in @fig-newton-ballistics. In the diagram, Newton traces the path of a ball shot horizontally from a cannon placed at the top of a mountain. 
 
 ```{r newton-ballistics, echo=FALSE, fig-cap: "Newton's diagram showing ballistic motion under the force of gravity.", out-width: "60%"}
 knitr::include_graphics("www/Newton-cannon.png")
@@ -97,7 +95,7 @@ P2 <- traj_plot(v(t) ~ u(t), traj) %>%
   gf_labs(subtitle="(u, v) velocity as a function of time")
 gridExtra::grid.arrange(P1, P2, nrow=1)
 ```
-The left panel in Figure \@ref(fig:cannon-shot-1) shows that the trajectory is a parabola. At about $t=4.4$ secs the $y$ position is zero. If zero is the location of the ground, the part of the trajectory for $4.4 < t$ is invalid, since the ball has already hit the ground. The ball travels a little more than 1100 meters horizontally before hitting the ground.
+The left panel in @fig-cannon-shot-1 shows that the trajectory is a parabola. At about $t=4.4$ secs the $y$ position is zero. If zero is the location of the ground, the part of the trajectory for $4.4 < t$ is invalid, since the ball has already hit the ground. The ball travels a little more than 1100 meters horizontally before hitting the ground.
 
 The right panel might seem somewhat strange. You can see that the vertical component of velocity, $v(t)$ starts out at zero and increases linearly with time, becoming more and more negative as gravity continuous to accelerate the ball downward. The vertical velocity, $u(t)$, stays constant at $u(t) = 250$ meters per second. This is because there is no horizontal force on the ball.
 
@@ -144,7 +142,7 @@ Air resistance causes the cannon ball to travel a shorter horizontal distance an
 
 ## The harmonic oscillator
 
-Consider the motion of a weight attached to a spring, as in Figure \@ref(fig:spring-mass). We'll denote the vertical position of the mass by $y(t)$. Such a spring-mass system has a fixed point where the spring is stretched just enough to cancel out gravity and the velocity is zero. We'll measure $y$ relative to this fixed point. 
+Consider the motion of a weight attached to a spring, as in @fig-spring-mass. We'll denote the vertical position of the mass by $y(t)$. Such a spring-mass system has a fixed point where the spring is stretched just enough to cancel out gravity and the velocity is zero. We'll measure $y$ relative to this fixed point. 
 
 ```{r spring-mass1, echo=FALSE, fig.cap = "A spring-mass system in motion. [Source: Svjo](https://commons.wikimedia.org/wiki/File:Animated-mass-spring.gif) [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0) via Wikimedia Commons", out-width: "30%"}
 knitr::include_graphics("www/Animated-mass-spring.gif")
@@ -237,7 +235,7 @@ lambda^10
 ```
 Notice that the real part of the result oscillates between negative and positive. The imaginary part also oscillates, but delayed a bit from the real part. Just like sine and cosine.
 
-We can get a clearer picture by plotting $e^{i\omega t}$ over the domain $0 < t < 10$. As an example, in Figure \@ref(fig:complex-exponential-plot) we'll set $\omega = 2$. We need to be a little careful, since our plotting functions are not arranged to display complex numbers. But there is an easy workaround: plot the "real" and "imaginary" parts separately. The R operators `Re()` and `Im()` do this work.
+We can get a clearer picture by plotting $e^{i\omega t}$ over the domain $0 < t < 10$. As an example, in @fig-complex-exponential-plot we'll set $\omega = 2$. We need to be a little careful, since our plotting functions are not arranged to display complex numbers. But there is an easy workaround: plot the "real" and "imaginary" parts separately. The R operators `Re()` and `Im()` do this work.
 
 ```{r complex-exponential-plot, echo=TRUE, fig-cap: "The real and imaginary parts of $e^{i \\omega t}$ plotted as a function of $t$."}
 f <- makeFun(exp(1i * omega * t) ~ t, omega = 2)
@@ -279,7 +277,7 @@ Suppose the stiffness of the spring is much larger than the friction. Then $r^2 
 = e^{-r t/2}\underbrace{\left[m_1 e^{i \omega t} + m2 e^{i\omega t}\right]}_{\text{sinusoid}(\omega t)}$$
 Result: an exponentially decaying sinusoid.
 
-To graph this function, we need to choose appropriate numerical values for $r$ and $b$. Let's set $r=1$. Since $r^2 < 4b$, we must have $\frac{1}{4} < b$: we'll choose $b = 6$ which meets this criterion. Figure \@ref(fig:decay-sinusoid1) shows the solution to the differential equation:
+To graph this function, we need to choose appropriate numerical values for $r$ and $b$. Let's set $r=1$. Since $r^2 < 4b$, we must have $\frac{1}{4} < b$: we'll choose $b = 6$ which meets this criterion. @fig-decay-sinusoid1 shows the solution to the differential equation:
 
 ```{r decay-sinusoid1, echo=TRUE, fig-cap: "An exponentially decaying sinusoid arising from $r = 1$ and $b = 6$."}
 traj <- integrateODE(dv~ -r*v - b*y, dy ~ v, v=10, y=0, r=1, b=6, tdur=20)
@@ -295,7 +293,7 @@ traj2 <- integrateODE(dv~ -r*v - b*y, dy ~ v, v=10, y=0, r=1, b=0.1, tdur=20)
 traj_plot(y(t) ~ t, traj2) %>%
   gf_lims(y = c(0, NA))
 ```
-The situation in Figure \@ref(fig:overdamped1) is the sort of behavior one expects when giving a shove to an exit door in theater or stadium. The shove causes the door to swing open, after which it slowly returns to the closed position. That gives plenty of time for the people following you to get to the door before it closes.
+The situation in @fig-overdamped1 is the sort of behavior one expects when giving a shove to an exit door in theater or stadium. The shove causes the door to swing open, after which it slowly returns to the closed position. That gives plenty of time for the people following you to get to the door before it closes.
 
 Finally, consider the case where $r^2 - 4 b = 0$, a balance between resistance and springiness. In this case, both eigenvalues are $\lambda = -r/2$.
 

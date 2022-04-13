@@ -4,9 +4,6 @@
 book_file_name <- "block-6/solve-DE.html"
 ```
 
-<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Block-6/B6-solution.Rmd)</div>
-
-
 As you saw in the previous chapter, each differential equation in a dynamical system relates the derivative of a function to the function itself. For instance, in $$\partial_t x = x\,(1-x)$$ left-hand side of the equation involves the function $x(t)$. The equation dictates that whatever $x(t)$ might be, it has to be such that $\partial_t x(t)$ is exactly equal to the function $x(t)\,\left(\strut 1- x(t)\right)$  *Solving* a differential equation is the phrase used for finding such self-consistent functions. This chapter is about techniques for finding solutions.
 
 ::: {.takenote data-latex=""}
@@ -58,7 +55,7 @@ Once you know the numerical vector value of the state velocity, you need to conv
 
 The conversion produces a vector whose components are denominated in the same way as the state space and thus can be plotted meaningfully in the state space.
 
-To illustrate, let's draw a flow vector for the state space coordinate $(r=2, f = 1/4)$. Above, we already calculated the components of the state velocity vector;Given the value $\partial_t f = 0.25$ and $\partial_t f = 0.66$. For the sake of illustration, we'll set $dt = 0.1$ month.  Consequently, the vector to be plotted will be $(0.25, 0.66) dt = (0.025, 0.066)$$ with units of rabbit density and fox density respectively.  the right. This flow arrow is drawn in Figure \@ref(fig:rf-flow-arrow).
+To illustrate, let's draw a flow vector for the state space coordinate $(r=2, f = 1/4)$. Above, we already calculated the components of the state velocity vector;Given the value $\partial_t f = 0.25$ and $\partial_t f = 0.66$. For the sake of illustration, we'll set $dt = 0.1$ month.  Consequently, the vector to be plotted will be $(0.25, 0.66) dt = (0.025, 0.066)$$ with units of rabbit density and fox density respectively.  the right. This flow arrow is drawn in @fig-rf-flow-arrow.
 ```{r rf-flow-arrow, echo=FALSE, out-width: "50%", fig-cap: "The flow arrow for the state value $(r=2, f=1/4)$ using $dt=0.1$ month. "}
 gf_segment(0.217 + 0.283 ~ 1.9865 + 2.0125, color="black",
            arrow = grid::arrow(end="last", type="closed")) %>%
@@ -67,7 +64,7 @@ gf_segment(0.217 + 0.283 ~ 1.9865 + 2.0125, color="black",
   gf_labs(y = "Fox density", x = "Rabbit density", subtitle="A smal part of Rabbit/Fox state space") %>%
   gf_refine(coord_fixed())
 ```
-To draw the entire flow field, repeat this process at many other points in the state space as in Figure \@ref(fig:rf-flow-field).
+To draw the entire flow field, repeat this process at many other points in the state space as in @fig-rf-flow-field.
 
 ```{r rf-flow-field, echo=FALSE, fig-cap: "Left: The flow field depicted by drawing the state velocity vector (times $dt = 0.1$) for many points in the state space. Right: Instead of plotting the state velocity vector, small snippets of trajectories of duration 0.1 are shown. The curvature of the trajectories can help to envision the flow more precisely.", out-width: "50%", fig.show="hold"}
 vectorfield_plot(0.66*r - 1.33*r*f ~ r & f,
@@ -83,7 +80,7 @@ streamlines(dr ~ 0.66*r - 1.33*r*f,
 
 ```
 
-Some people prefer a visualization of short segments of actual trajectories, as in the right panel in Figure \@ref(fig:rf-flow-field), rather than the state velocity vector. This is a matter of personal preference.
+Some people prefer a visualization of short segments of actual trajectories, as in the right panel in @fig-rf-flow-field, rather than the state velocity vector. This is a matter of personal preference.
 
 
 
@@ -91,7 +88,7 @@ With the flow field depicted in sufficient detail, you can now trace out traject
 
 To trace out a trajectory, select a initial condition for the system. Then follow the flow, taking only a small step in state space. The next step should be in the direction of the flow arrow at the end of the previous step.
 
-The trajectory you draw will be only a sketch, but it can be effective for developing intuition. Figure \@ref(fig:calcplot3d1) shows a semi-automated version of the go-with-the-flow method. The computer has been used to draw the arrows. When you click in the plot, the computer also undertakes calculation of the trajectory.
+The trajectory you draw will be only a sketch, but it can be effective for developing intuition. @fig-calcplot3d1 shows a semi-automated version of the go-with-the-flow method. The computer has been used to draw the arrows. When you click in the plot, the computer also undertakes calculation of the trajectory.
 
 
 ```{r child="CalcPlot3D/rabbits-foxes.Rmd"}
@@ -258,7 +255,7 @@ Symb_soln = makeFun(A*exp(t)/(1 + A*exp(t)) ~ t)
 slice_plot(Symb_soln(t, A=0.2) ~ t, domain(t=-5:10))
 ```
 
-Not all differential equations can be separated in this way, and even for those that can, the integrals may not be tractable. So this route to a solution is not a general-purpose one, unlike the Euler method. Still, the Euler method gives only an approximate solution, so with Euler we need to take care that the approximation is close enough for the purpose at hand. In this case, we have both an Euler solution (with $dt=0.1$) and a symbolic solution. Figure \@ref(fig:diff-Euler-separation) shows the *difference* between the two solutions, which ideally should be zero. To show more of the time domain of the solution, we'll reset the initial condition to $x_0 = 0.01$. This corresponds to $A = 1/99$.
+Not all differential equations can be separated in this way, and even for those that can, the integrals may not be tractable. So this route to a solution is not a general-purpose one, unlike the Euler method. Still, the Euler method gives only an approximate solution, so with Euler we need to take care that the approximation is close enough for the purpose at hand. In this case, we have both an Euler solution (with $dt=0.1$) and a symbolic solution. @fig-diff-Euler-separation shows the *difference* between the two solutions, which ideally should be zero. To show more of the time domain of the solution, we'll reset the initial condition to $x_0 = 0.01$. This corresponds to $A = 1/99$.
 
 ```{r diff-Euler-separation, echo=FALSE, fig-cap: "The difference between the Euler and the symbolic solution to $\\partial_t x = x (1-x)$ as a fraction of the symbolic solution. At the worst, the Euler solution is off by 1.5 parts in one-million."}
 Euler <- integrateODE(dx ~ x*(1-x), x=0.01, tdur=list(from=0, to=20, dt=0.1))
