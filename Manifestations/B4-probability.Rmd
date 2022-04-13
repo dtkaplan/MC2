@@ -40,8 +40,10 @@ The total integral is $$\int_0^\infty g(r) dr = 1\ = \int_0^a g(r) dr + \int_a^b
 The probability that the dart lands at a distance somewhere between $a$ and $b$ is $$\int_a^b g(r) dr\ .$$
 Since $r$ is a distance, the dimension $[r] =\ $L.  Suppose the units of $r$ are centimeters. We need $\int g(r) dr$ to be a dimensionless number. Since the dimension of the integral is $[r] \cdot [g(r)] = [1]$, it must be that $[g(r)] = [1/r] = \text{L}^{-1}$. Thus, $g(r)$ is not a probability simply because it is not dimensionless. Instead, in the dart example, it is a "probability-per-centimeter." This kind of quantity---probability *per something*---is called a ***probability density*** and $g(r)$ itself is a ***probability density function***.  
 
-To show the aptness of the word "density," let's switch to a graphic of a function that uses literal density of ink as the indicator of the function value. Figure \@ref(fig:dart-g) shows what the dart toss's $g(r)$ probability density function might look like:
-```{r dart-g, echo=FALSE, warning=FALSE, fig-cap: "Showing a probability density function for the dart distance in two modes: 1) an ordinary function graph and 2) the density of ink.", }
+To show the aptness of the word "density," let's switch to a graphic of a function that uses literal density of ink as the indicator of the function value. @fig-dart-g) shows what the dart toss's $g(r)$ probability density function might look like:
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-dart-g
+#| fig-cap: "Showing a probability density function for the dart distance in two modes: 1) an ordinary function graph and 2) the density of ink."
 dat <- tibble(x=rchisq(1000, df=4))
 
 P1 <-  gf_point(0.10 ~ x, data = dat,## draw horizontal lines instead of points
@@ -75,7 +77,9 @@ In reality, hardly anyone believes they can estimate the amount in the jar to th
 
 In our more mathematical contest, we ask the participants to specify a function that describes their beliefs about the money in the jar. The instructions state,  "On the graph-paper axes below, sketch a continuous function expressing your best belief about how much money is in the jar. The only requirement is that the function value must be zero or greater for all inputs."
 
-```{r coin-graph-paper, echo=FALSE, fig-cap: "The entry form for the money-in-the-jar contest.", warning=FALSE}
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-coin-graph-paper
+#| fig-cap: "The entry form for the money-in-the-jar contest."
 Money_graph <-
   gf_point(cyl ~ mpg, alpha=0, data = mtcars) %>%
   gf_refine(
@@ -95,7 +99,9 @@ Take a minute to look at the picture of the jar and draw your function on the ax
 
 Here are contest entries from three competitors. 
 
-```{r contest-entries, echo=FALSE, fig-cap: "Three contestants' contest entries.", warning=FALSE}
+```{r echo=FALSE, warning=FALSE} 
+#| label: fig-contest-entries
+#| fig-cap: "Three contestants' contest entries."
 P1 <- Money_graph %>% gf_labs(title="Name: Johnny") %>%
   slice_plot(ifelse(mpg > 22 & mpg < 30, 5, 0) ~ mpg, 
              domain(mpg = 0:100), size=1, npts=300) %>%
@@ -117,9 +123,11 @@ gridExtra::grid.arrange(P1, P2, P3, nrow=3)
 The functions called for by the contest instructions are ***relative  density*** functions. The "relative" means that the function clearly indicates where the probability is more or less dense, but the function has not yet been scaled to be a probability density function. Suppose $h(x)$ is a relative density function such that
 $$\int_{-\infty}^\infty h(x)\, dx = A \neq 1\ .$$ Although $h(x)$ is not a probability density function, the very closely related function $\frac{1}{A} h(x)$ will be a probability density function. We'll use the term ***normalizing*** to refer to the simple process of turning a relative density function into a probability density function. 
 
-A relative density function is entirely adequate for describing the distribution of probability. However, when comparing two or more probability distributions, it's important that they all be on the same scale. Normalizing the relative density functions to probability density functions accomplishes this. Figure \@ref(fig:contest-compare) compares the three relative probability functions in Figure \@ref(fig:contest-entries). Johnny makes the density large over a narrow domain and zero elsewhere, while Louisa specifies a small density over a large domain. All three competitors' functions have an area-under-the-curve of dimensionless 1.
+A relative density function is entirely adequate for describing the distribution of probability. However, when comparing two or more probability distributions, it's important that they all be on the same scale. Normalizing the relative density functions to probability density functions accomplishes this. @fig-contest-compare) compares the three relative probability functions in @fig-contest-entries). Johnny makes the density large over a narrow domain and zero elsewhere, while Louisa specifies a small density over a large domain. All three competitors' functions have an area-under-the-curve of dimensionless 1.
 
-```{r contest-compare, echo=FALSE, warning=FALSE, fig-cap: "Comparing the contest entries by normalizing each of them to a probability density function."}
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-contest-compare
+#| fig-cap: "Comparing the contest entries by normalizing each of them to a probability density function."
 Jar_functions <- 
   slice_plot(ifelse(x > 22 & x < 30, 1/8, 0) ~ x, 
              domain(x = 0:100), size=1, npts=300) %>%
@@ -148,9 +156,13 @@ Three commonly used families of probability density functions are:
 - the exponential density function
 - the uniform density function. 
 
-Figure \@ref(fig:three-density-funs) shows their shapes.
+@fig-three-density-funs) shows their shapes.
 
-```{r three-density-funs, echo=FALSE, fig-cap: "Three probability density functions that are often used in applied work.", out-width: "60%", fig.show="hold", }
+```{r echo=FALSE}
+#| label: fig-three-density-funs
+#| fig-cap: "Three probability density functions that are often used in applied work." 
+#| out-width: "60%" 
+#| fig.show="hold", }
 First = tibble(x=seq(-.5,1, by=0.01),
                 bottom = 0, 
                 top = 1/1.5)
@@ -336,9 +348,11 @@ Since the output of any likelihood function is a probability or a probability de
 
 Likelihood functions provide the link between data and hypotheses. The idea is that when data become available, it's possible to choose the relevant likelihood function. 
 
-To illustrate, let's return to the jar-of-money contest and the three competitors' entries as shown  in Figure \@ref(fig:contest-compare). For convenience, that Figure is reproduced here:
+To illustrate, let's return to the jar-of-money contest and the three competitors' entries as shown  in @fig-contest-compare). For convenience, that Figure is reproduced here:
 
-```{r jar_functions2, echo=FALSE, fig-cap: "The contest entries shown in Figure \\@ref(fig:contest-compare)."}
+```{r echo=FALSE}
+#| label: fig-jar_functions2 
+#| fig-cap: "The contest entries shown in @fig-contest-compare).
 Jar_functions %>%
   gf_vline(xintercept=~32.14, color= "brown", alpha=0.6) 
 ```
@@ -352,7 +366,7 @@ First, we need to pick the relevant likelihood function. Common sense tells us t
 
 Here's the data: The officials have opened the jar and carefully counted the money. There was $32.14 in the jar. This tells us that the relevant likelihood function is ${\cal L}_{\$32.14}(\text{contestant})$.
 
-The output of ${\cal L}_{\$32.14}(\text{contestant})$ is the probability density assigned by the contestant to the observed value $32.14. You can read this from Figure \@ref(fig:jar-functions2). For your convenience, the observation $32.14$  has been annotated with a faint brown vertical line. 
+The output of ${\cal L}_{\$32.14}(\text{contestant})$ is the probability density assigned by the contestant to the observed value $32.14. You can read this from @fig-jar-functions2). For your convenience, the observation $32.14$  has been annotated with a faint brown vertical line. 
 
 Here's a tabular version of  ${\cal L}_{\$32.14}(\text{contestant})$.
 
@@ -376,9 +390,11 @@ Consider the situation in November 2019 at the start of the COVID-19 pandemic. A
 
 In communicating with the public about risk, it's common to present risk as a number: a probability. This is an adequate presentation only when we have a solid idea of the risk. To form a solid idea, we need evidence. 
 
-Before there's enough evidence responsibly to form a solid idea, it's best to present risk not as a probability but as a probability density function. To illustrate, Figure \@ref(fig:beta-shapes) shows three different examples of what such probability density functions might look like for vague, preliminary ideas of risk. 
+Before there's enough evidence responsibly to form a solid idea, it's best to present risk not as a probability but as a probability density function. To illustrate, @fig-beta-shapes) shows three different examples of what such probability density functions might look like for vague, preliminary ideas of risk. 
 
-```{r beta-shapes, echo=FALSE, fig-cap: "Three different opinions about the risk of a disease."}
+```{r echo=FALSE}
+#| label: fig-beta-shapes
+#| fig-cap: "Three different opinions about the risk of a disease."
 prior_A <- makeFun(dbeta(x, .5, 5) ~ x)
 prior_B <- makeFun(dbeta(x, 1, 1) ~ x)
 prior_C <- makeFun(dbeta(x, 1.3, 5) ~ x)
@@ -402,7 +418,7 @@ P3 <- slice_plot(prior_C(x) ~ x, domain(x=-.1:1.1), npts=501) %>%
 gridExtra::grid.arrange(P1, P2, P3, nrow=1) 
 ```
 
-Panel (A) in Figure \@ref(fig:beta-shapes) is a strong statement that the risk is believed to be small. Even so, the density function is non-zero even for values of the risk near 100%. This is an honest admission that, as with COVID-19, something that we don't know might be going on. In the case of COVID-19, what most people didn't realize is 1) that the reported numbers were completely unrepresentative of the extent of spread, since most cases are asymptomatic and 2) that the illness can spread even by those who are asymptomatic. Epidemiologists and other public health workers knew enough from previous experience to be aware of their lack of knowledge about (1) and (2), but the rest of us, including many policy makers, didn't even know what they didn't know. The word "unk-unk" is sometimes used by engineers to refer to such an "unknown unknown". 
+Panel (A) in @fig-beta-shapes) is a strong statement that the risk is believed to be small. Even so, the density function is non-zero even for values of the risk near 100%. This is an honest admission that, as with COVID-19, something that we don't know might be going on. In the case of COVID-19, what most people didn't realize is 1) that the reported numbers were completely unrepresentative of the extent of spread, since most cases are asymptomatic and 2) that the illness can spread even by those who are asymptomatic. Epidemiologists and other public health workers knew enough from previous experience to be aware of their lack of knowledge about (1) and (2), but the rest of us, including many policy makers, didn't even know what they didn't know. The word "unk-unk" is sometimes used by engineers to refer to such an "unknown unknown". 
 
 Panel (B) says, "I have no idea!" This can often be an honest, useful appraisal of the situation. But experts who are honest in this way are often regarded by the public and policy makers as lacking credibility. 
 
@@ -416,7 +432,7 @@ For COVID-19, data eventually came in many different forms: estimates of incubat
 
 For our presentation of Bayesian reasoning, we'll consider a simplified situation where data come in only one form: screening tests for the illness. Imagine that you are conducting a contact-tracing study. Whenever a patient presents with COVID-19 symptoms and has a positive PCR test, that patient's close contacts are given a screening test for COVID. The objective is to estimate how transmissible the virus is by figuring out what proportion of close contacts become infected.
 
-We can't know which of the three priors in Figure \@ref(fig:beta-shapes) is most appropriate. After all, until rich enough data become available, each prior is just an opinion. So we'll repeat the update-with-data analysis for each of the three priors. If, in the end, the results from the three priors substantially agree, then we can conclude that the data is shaping the results, rather than the prior.
+We can't know which of the three priors in @fig-beta-shapes) is most appropriate. After all, until rich enough data become available, each prior is just an opinion. So we'll repeat the update-with-data analysis for each of the three priors. If, in the end, the results from the three priors substantially agree, then we can conclude that the data is shaping the results, rather than the prior.
 
 The unknown here is the risk $R$ of transmission. We'll denote the three priors as $\text{prior}_A (R)$, $\text{prior}_B (R)$, and $\text{prior}_C (R)$. But, in general, we'll write $\text{prior}(R)$ to stand for any of those three specific priors. 
 :::
@@ -515,7 +531,7 @@ To summarize: Three $+$ tests out of ten.
 After the first test outcome is available we can calculate the posterior: $$\text{posterior}_1 (R) = {\cal L}_+(R) \times \text{prior(R)}\ .$$ After the second test outcome, the new posterior is $$\text{posterior}_2 (R) = {\cal L}_-(R) \times {\cal L}_+(R) \times \text{prior(R)}\ .$$ And after the third (a $+$ result!) it will be $$\text{posterior}_3 (R) = {\cal L}_+(R) \times {\cal L}_-(R) \times {\cal L}_+(R) \times \text{prior(R)}\ .$$
 We continue on in this way through all ten rows of the data to get the posterior distribution after all 10 test results have been incorporated.
 
-Figure \@ref(fig:after-10) shows the posterior after the 10 rows of data have been considered for each of the three priors from Figure \@ref(fig:beta-shapes).
+@fig-after-10) shows the posterior after the 10 rows of data have been considered for each of the three priors from @fig-beta-shapes).
 
 ```{r echo=FALSE}
 L_pos <- makeFun(0.8*R + 0.3*(1-R) ~ R)
@@ -528,7 +544,9 @@ posterior <- function(prior, n=10, m=3) {
 }
 ```
 
-```{r after-1, echo=FALSE, fig-cap: "Posteriors (blue) after the first screening test, which was $+$, for each of the priors in Figure \\@ref(fig:beta-shapes). The prior itself is drawn in gray.", warning=FALSE}
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-after-1
+#| fig-cap: "Posteriors (blue) after the first screening test, which was $+$, for each of the priors in @fig-beta-shapes. The prior itself is drawn in gray."
 post_A <- posterior(prior_A, 1, 1)
 post_B <- posterior(prior_B, 1, 1)
 post_C <- posterior(prior_C, 1, 1)
@@ -556,7 +574,9 @@ gridExtra::grid.arrange(P1, P2, P3, nrow=1)
 
 With just one row of data considered, the posteriors depend very much on the particular prior selected. This shouldn't be a surprise; one test result from an imperfect screening test is not going to tell us much. Let's process all of the 
 
-```{r after-10, echo=FALSE, fig-cap: "Posteriors (blue) after the first ten rows of data, for each of the priors in Figure \\@ref(fig:beta-shapes). The prior itself is drawn in gray.", warning=FALSE}
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-after-10
+#| fig-cap: "Posteriors (blue) after the first ten rows of data, for each of the priors in @fig-beta-shapes. The prior itself is drawn in gray." 
 post_A <- posterior(prior_A, 10, 3)
 post_B <- posterior(prior_B, 10, 3)
 post_C <- posterior(prior_C, 10, 3)
@@ -584,7 +604,9 @@ gridExtra::grid.arrange(P1, P2, P3, nrow=1)
 After the first 10 rows of data have been considered, the posteriors are similar despite the different priors.
 
 
-```{r after-100, echo=FALSE, fig-cap: "Posteriors (blue) after 100 subjects have been screen, with 30 $+$ results.", warning=FALSE}
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-after-100
+#| fig-cap: "Posteriors (blue) after 100 subjects have been screen, with 30 $+$ results."
 post_A <- posterior(prior_A, 100, 30)
 post_B <- posterior(prior_B, 100, 30)
 post_C <- posterior(prior_C, 100, 30)

@@ -34,7 +34,9 @@ The income stream stops for $30 < t$.
 
 Altogether, the income stream is $$\text{income}(t) = \text{sale}(t) + \text{rental}(t) - \text{construction}(t) - \text{maintenance}(t)\ .$$ Notice that construction and maintenance are considered as *negative income*. Figure \@ref(fig:rental-graph1) shows a graph of $\text{income}(t)$. 
 
-```{r rental-graph1, echo=FALSE, fig-cap: "The income stream for an apartment-building project. Following convention, positive income is \"in the green\", and negative income is \"in the red\".", warning=FALSE}
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-rental-graph1
+#| fig-cap: "The income stream for an apartment-building project. Following convention, positive income is \"in the green\", and negative income is \"in the red\"."
 construction <- makeFun(ifelse(t < 3 & t > 0, 1e6, 0) ~ t)
 rental <- makeFun(ifelse(3 <= t & t < 30, 2.5e5, 0) ~ t)
 maintenance <- makeFun(ifelse(3 <= t & t < 30, 5e4 + 1.5e5*(t-3)/(30-3), 0) ~ t)
@@ -110,7 +112,9 @@ Let's return to the entrepreneur considering the apartment-building project.
 
 The entrepreneur goes to the bank with her business plan and financial forecasts. The bank proposes to lend money for the project at an interest rate of 7% per year.
 
-```{r rental-graph2, echo=FALSE, fig-cap: "Blue curve: The apartment project income stream discounted at 7% per year. Black curve: The undiscounted income stream."}
+```{r echo=FALSE}
+#| label: fig-rental-graph2
+#| fig-cap: "Blue curve: The apartment project income stream discounted at 7% per year. Black curve: The undiscounted income stream."
 Rental1 %>%
   slice_plot(total(t)/(1.07^t) ~ t, color="blue", 
              size=2, domain(t=0:30), npts=500)

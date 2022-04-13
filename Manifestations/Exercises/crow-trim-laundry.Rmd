@@ -39,7 +39,7 @@ fB <- spliner( B ~ expend, data=QALY_impact, monotonic=TRUE)
 The problem is to find the best values for expenditures on Proposal A and B  --- call these expenditures  $x_A$ and $x_B$ -- given constraint that total expenditure is $x_A + x_B = 50$.
 
 A simple approach is to plot out the total benefit as a function of expenditures on each of A and B:
-```{r tbenefit, exercise=TRUE, exercise.cap="Plotting the objective function.", exercise.nlines=10, eval=FALSE, message=FALSE, warning=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE}
 overall <- makeFun( fA(xA) + fB(xB) ~ xA + xB)
 g_budget <- makeFun(xA + xB ~ xA + xB)
 contour_plot(overall(xA, xB) ~ xA  + xB, 
@@ -76,7 +76,8 @@ askMC(
 
 Another way to look at the problem is to find the total QALY outcome as a function of the amount $x_A$, recognizing that once $x_A$ is set, the remaining money will go to option B, so $x_B = 50-x_A$. The following sandbox makes the plot.
 
-```{r QY2-1}
+```{r}
+#| label: fig-QY2-1
 slice_plot( fA(xA) + fB(50-xA) ~xA, domain(xA = c(0,50)))
 ```
 
@@ -89,7 +90,8 @@ For this, we're going to find values of $x_A$ and $x_B$ at which the derivatives
 
 The following graphic shows the difference $\partial_{x_A} f_A() - \partial_{x_B} f_B()$ as a function of $x_A$ and $x_B$. The contours are very twisty, but the zero contour(s) indicates the inputs for which the difference in derivatives is zero. Also shown are budget constraints (magenta).
 
-```{r QY2-2, echo=FALSE}
+```{r echo=FALSE}
+#| label: QY2-2
 dfA = D(fA(xA)~xA)
 dfB = D(fB(xB)~xB)
 contour_plot( dfA(xA) - dfB(xB) ~ xA&xB, 

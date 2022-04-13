@@ -1,8 +1,6 @@
 # Vector-valued functions
 
-<div style="float:right;">[![](www/icons/edit.png)](https://github.com/ProjectMOSAIC/MOSAIC-Calculus/blob/main/Block-4/B4-vector-valued.Rmd)</div>
-
-The functions we have worked with up to now have **outputs** that are single quantities: e.g., height or speed or fuel consumed. In Section \@ref(cubic-spline), in order to present the programmed position versus time of a robot arm, we needed to construct two functions, one giving the x-coordinate of the arm, the other giving the y-coordinate. Using differentiation with respect to time, we can calculate from the x- and y-position functions the x- and y-velocity functions and the x- and y-acceleration functions. All six functions are shown in Figure \@ref(fig:robot-functions).
+The functions we have worked with up to now have **outputs** that are single quantities: e.g., height or speed or fuel consumed. In Section \@ref(cubic-spline), in order to present the programmed position versus time of a robot arm, we needed to construct two functions, one giving the x-coordinate of the arm, the other giving the y-coordinate. Using differentiation with respect to time, we can calculate from the x- and y-position functions the x- and y-velocity functions and the x- and y-acceleration functions. All six functions are shown in @fig-robot-functions).
 
 ```{r results="hide"}
 pos_x <- spliner(x ~ t, data = Zcalc::Robot.stations)
@@ -13,7 +11,9 @@ accel_x <- D(xfun(t) ~ t & t)
 accel_y <- D(yfun(t) ~ t & t)
 ```
 
-```{r robot-functions, echo=FALSE, fig-cap: "The position, velocity, and acceleration of the robot arm as a function of time. The x-coordinate is the left column, the y-coordinate the right column."}
+```{r echo=FALSE}
+#| label: fig-robot-functions
+#| fig-cap: "The position, velocity, and acceleration of the robot arm as a function of time. The x-coordinate is the left column, the y-coordinate the right column."
 P1 <- slice_plot(pos_x(t) ~ t, domain(t=1:15)) %>%
   gf_labs(y = "x position")
 P2 <- slice_plot(pos_y(t) ~ t, domain(t=1:15)) %>%
@@ -30,7 +30,7 @@ P6 <- slice_plot(accel_y(t) ~ t, domain(t=1:15), color="magenta") %>%
 gridExtra::grid.arrange(P1, P2, P3, P4, P5, P6, ncol=2 )
 ```
 
-Relating the various functions in Figure \@ref(fig:robot-functions) is, at best, difficult. So difficult, in fact, that you may have trouble perceiving any relationships between the x- and y-functions or between, say, velocity and position.
+Relating the various functions in @fig-robot-functions) is, at best, difficult. So difficult, in fact, that you may have trouble perceiving any relationships between the x- and y-functions or between, say, velocity and position.
 
 To streamline thinking about position and other things that involve coordinates, it's useful to introduce a new concept: ***vectors***. We do this briefly in this chapter, but return to the formulation and use of the concept in Blocks 5 and 6.
 
@@ -40,15 +40,17 @@ Vectors will be particularly useful for visualization. Our graphical convention 
 
 
 
-In Figure \@ref(fig:two-presentations) the vectors are being drawn without marked coordinate axes; they are free-floating entities that have only length and direction. In the coordinate presentation, the axes are needed because the dots have meaning only relative to the coordinate frame. We can think of the dots as rooted to the origin. But to keep the coordinate presentation uncrowded we show the dots without connecting them to their roots.
+In @fig-two-presentations) the vectors are being drawn without marked coordinate axes; they are free-floating entities that have only length and direction. In the coordinate presentation, the axes are needed because the dots have meaning only relative to the coordinate frame. We can think of the dots as rooted to the origin. But to keep the coordinate presentation uncrowded we show the dots without connecting them to their roots.
 
 In drawing a vector, it is as if we pulled the coordinate dot out by the roots and show the metaphorical plant, root, stem, and all, but being careful to maintain the correct orientation.
 
 The advantage of having pulled out the plant by the roots is that we can place it anywhere. This frees us to use the placement itself to show important additional information. When plotting vector-valued functions we use the placement to represent the **input to the function** while the arrow itself shows the function **output**.
 
-To illustrate, consider the movement of the robot arm. In particular, we'll look at both velocity $\partial_t\, pos(t)$ and acceleration $\partial_{tt}\, pos(t)$.  Figure \@ref(fig:robot-functions) shows this as four distinct graphs, but Figure \@ref(fig:robot-vectors) does it in just a single graph.
+To illustrate, consider the movement of the robot arm. In particular, we'll look at both velocity $\partial_t\, pos(t)$ and acceleration $\partial_{tt}\, pos(t)$.  @fig-robot-functions shows this as four distinct graphs, but @fig-robot-vectors does it in just a single graph.
 
-```{r robot-vectors, echo=FALSE, fig-cap: "A vector presentation of the velocity (blue) and acceleration (magenta) of the robot arm as functions of time."}
+```{r echo=FALSE}
+#| label: fig-robot-vectors
+#| fig-cap: "A vector presentation of the velocity (blue) and acceleration (magenta) of the robot arm as functions of time."
 set.seed(102)
 Vecs <- tibble(
   t = seq(1, 15, by=1),
@@ -86,5 +88,4 @@ gf_segment(y0 + vy ~ t + vx, data = Vecs, color="blue",
   gf_theme(
            scale_x_continuous(limits=c(.5,15.4), breaks = 1:15)) %>%
   gf_labs(y="")
-```
 ```

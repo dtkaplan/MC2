@@ -1,0 +1,1 @@
+pattern <- "Figure \\@ref\(fig:([^\)]*)\)"
