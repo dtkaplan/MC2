@@ -20,9 +20,7 @@ We've been doing calculus on functions of one variable because it is so easy to 
 
 When figuring out the derivative function $\partial_x f(x)$ from a graph of $f(x)$, we find the tangent to the graph at each of many input values, record the slope of the line (and throw away the intercept) and then write down the series of slopes as a function of the input, typically by representing the slope by position along the vertical axis and the corresponding input by position along the horizontal axis. @fig-segment-deriv shows the process. 
 
-```{r echo=FALSE, fig.show="hold", warning=FALSE}
-#| label: fig-segment-deriv
-#| fig-cap: "(A) The graph of a smooth function annotated with small line segments that approximate the function locally. The color of each labeled segment corresponds to the value of $x$ for that segment. The slope of each segment is written numerically below the segment.  (B) The labeled dots show the slope of each segment from (A). The slope is encoded using vertical position (as usual) and carries over the numerical label from (A). Connecting the dots sketches out the derivative of the function in (A)."
+```{r echo=FALSE, warning=FALSE}
 f <- rfun(~ x, seed=977)
 df <- D(f(x) ~ x)
 dom = c(-3, 3)
@@ -39,7 +37,12 @@ graph_with_tangents(f, domain=dom,
                     offsets=rep(1, length(touches))) %>%
   gf_text(y-1 ~ x, data=Pts, color=~slope_color, label=~ slopeval) %>%
   gf_labs(y="f(x)", title="(A) Value of function f(x)")
+  ```
 
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-segment-deriv
+#| fig-cap: "(A) The graph of a smooth function annotated with small line segments that approximate the function locally. The color of each labeled segment corresponds to the value of $x$ for that segment. The slope of each segment is written numerically below the segment.  (B) The labeled dots show the slope of each segment from (A). The slope is encoded using vertical position (as usual) and carries over the numerical label from (A). Connecting the dots sketches out the derivative of the function in (A)."
+#| fig-cap-location: margin
 gf_point(dy ~ x, data = Pts, color = ~ color) %>%
   gf_refine(scale_color_identity()) %>%
   gf_segment(dy + yend ~ x + xend, data = Segments, color = ~ color) %>%
@@ -84,7 +87,7 @@ If melons and basketballs are not your style, you can play the same game on an i
 For the purposes of computation by eye, a contour graph of a surface can be easier to deal with. @fig-whole-plot shows the contour graph of a smoothly varying function. Three points have been labeled A, B, and C.  
 
 
-```{r echo=FALSE}
+```{r echo=FALSE, warning=FALSE}
 g <- rfun(~ x + y, seed=382)
 Pts <- tibble::tribble(
   ~ x, ~ y, ~ label,
@@ -132,34 +135,27 @@ PzC <- contour_plot(g(x, y) ~ x + y, domain(x=xC + 1*c(-.1, .1), y=yC +1*c(-.1, 
 ```{r echo=FALSE}
 #| label: fig-whole-plot
 #| fig-cap: "A function of 2 inputs with 3 specific inputs marked A, B, and C"
+#| fig-cap-location: margin
 P
 ```
 
 
 Zooming in on each of the marked points presents a simpler picture for each of them, although one that is different for each point. Each zoomed-in plot contains almost parallel, almost evenly spaced contours. If the surface had been exactly planar over the entire zoomed-in domain, the contours would be *exactly* parallel and exactly evenly spaced. We can approach such exact parallelness by zooming in more closely around the labeled point. 
 
-```{r echo=FALSE, fig.show="hold"}
+```{r echo=FALSE}
 #| label: fig-zoomed-plot
-#| out-width: "33%"
-#| fig-cap: "Zooming in on the neighborhoods of A, B, and C in @fig-whole-plot shows a simple, almost planar, local landscape."
-PzC
-PzA
-PzB
+#| fig-cap: "Zooming in on the neighborhoods of A, B, and C in @fig-whole-plot shows a simple, almost planar, local landscape. The bottom row shows the contours of the tangent plane near each of the neighborhoos in the top row."
+#| column: page-right
+Pc <- PzC
+Pa <- PzA
+Pb <- PzB
+gridExtra::grid.arrange(Pa, Pb, Pc, PA, PB, PC, ncol=3)
 ```
 
 Just as the function $\line(x) \equiv a x + b$ describes a straight line, the function $\text{plane}(x, y) \equiv a + b x + c y$ describes a plane whose orientation is specified by the value of the parameters $b$ and $c$. (Parameter $a$ is about the vertical location of the plane, not it's orientation.) 
 
-In @fig-facet-plot, the facets tangent to the original surface at A, B, and C are displayed. Comparing Figures \@ref(fig:zoomed-plot) and \@ref(fig:facet-plot) you can see that each facet has the same orientation as the surface; the contours face in the same way. 
+In the bottom row of @fig-zoomed-plot, the facets tangent to the original surface at A, B, and C are displayed. Comparing the top and bottom rows of @fig-zoomed-plot)  you can see that each facet has the same orientation as the surface; the contours face in the same way. 
 
-
-```{r echo=FALSE, fig.show="hold"}
-#| label: fig-facet-plot
-#| out-width: "33%"
-#| fig-cap: "The facets around the points are linear functions, each aligned with the contours near that point in @fig-whole-plot."
-PC
-PA
-PB
-```
 
 Remember that the point of constructing such facets is to generalize the idea of a derivative from a function of one input $f(x)$ to functions of two or more inputs such as $g(x,y)$. Just as the derivative $\partial_x f(x_0)$ reflects the ***slope*** of the *line* tangent to the graph of $f(x)$ at $x=x_0$, our plan for the "derivative" of $g(x_0,y_0)$ is to represent the ***orientation*** of the facet tangent to the graph of $g(x,y)$  at $(x=x_0, y=y_0)$. The question for us now is what information is needed to specify an orientation. 
 
@@ -190,11 +186,11 @@ An instructive experience is to pick up a rigid, flat object, for instance a sma
 
 ```{r echo=FALSE, fig.show="hold"}
 #| label: fig-hold-book
-#| out-width: "33%"
 #| fig-cap: "Combining two simple movements can tip a plane to all sorts of different orientations."
-knitr::include_graphics("www/level-book.png")
-knitr::include_graphics("www/rotated-book.png")
-knitr::include_graphics("www/tipped-book.png")
+P1 <- knitr::include_graphics("www/level-book.png")
+P2 <- knitr::include_graphics("www/rotated-book.png")
+P3 <- knitr::include_graphics("www/tipped-book.png")
+gridExtra::grid.arrange(P1, P2, P3, ncol=3)
 ```
 You can tip the object in one direction by raising or lowering one hand. (middle picture) And you can tip the object in the other coordinate direction by rotating the object around the line joining the points grasped by the left and right hands. (right picture) By combining these two motions, you can orient the surface of the object in a wide range of directions.^[In describing the orientation of aircraft and ships, three parameters are used: pitch, roll, and yaw. For a geometrical plane (as opposed to an aircraft or ship, which have distinct front and back ends), yaw isn't applicable.] 
 
@@ -237,9 +233,7 @@ Now that we are in the domain of multiple inputs, writing $h$ to stand for "a sm
 
 With this notation, we write the first-order polynomial approximation to a function of a single input $x$ as $$f(x+dx) = f(x) + \partial_x f(x) \times dx$$
 Applying this notation to functions of two inputs, we have:
-$$g(x + \color{magenta}{dx}, y) = g(x,y) + \color{magenta}{\partial_x} g(x,y) \times \color{magenta}{dx}\\
-\text{and} \\
-g(x, y+\color{brown}{dy}) = g(x,y) + \color{brown}{\partial_y} g(x,y) \times \color{brown}{dy}$$
+$$g(x + \color{magenta}{dx}, y) = g(x,y) + \color{magenta}{\partial_x} g(x,y) \times \color{magenta}{dx}$$ and $$g(x, y+\color{brown}{dy}) = g(x,y) + \color{brown}{\partial_y} g(x,y) \times \color{brown}{dy}$$
 
 Each of these statements is about *changing one input* while *holding the other input(s) constant*. Or, as the more familiar expression goes, "The effect of changing one input  **all other things being equal** or **all other things held constant**.^[The Latin phrase for this is *ceteris paribus*, often used in economics.] 
 
@@ -257,9 +251,10 @@ Note that $\nabla g(x,y)$ is a function of both $x$ and $y$, so in general the g
 
 The graphics convention for drawing a gradient vector for a particular input, that is, $\nabla g(x_0, y_0)$, puts an arrow with its root at $(x_0, y_0)$, pointing in direction $\nabla g(x_0, y_0)$, as in @fig-one-grad-arrow. 
 
-```{r echo=FALSE, cache=TRUE}
+```{r echo=FALSE, cache=TRUE,warning=TRUE}
 #| label: fig-one-grad-arrow
 #| fig-cap: "The gradient vector $\\nabla g(x=1,y=2)$. The vector points in the steepest uphill direction. Consequently, it is perpendicular to the contour passing through its root."
+#| fig-cap-location: margin
 graw <- rfun( ~ x + y, seed=562)
 g <- makeFun(graw(x, y)  ~ x & y)
 contour_plot(g(x, y+.2) ~ x + y, domain(x=c(-2,2), y=c(0, 4))) %>%
@@ -270,9 +265,10 @@ contour_plot(g(x, y+.2) ~ x + y, domain(x=c(-2,2), y=c(0, 4))) %>%
 
 A ***gradient field*** (see @fig-gradient-field-A) is the value of the gradient vector at each point in the function's domain. Graphically, in order to prevent over-crowding, the vectors are drawn at discrete points. The lengths of the drawn vectors are set proportional to the numerical length of $\nabla g(x, y)$, so a short vector means the surface is relatively level, a long vector means the surface is relatively steep.  
 
-```{r echo=FALSE, cache=TRUE}
+```{r echo=FALSE, cache=TRUE, warning=FALSE}
 #| label: fig-gradient-field-A
 #| fig-cap: "A plot of the gradient field $\\nabla g(x,y)$." 
+#| fig-cap-location: margin
 contour_plot(g(x, y+.2) ~ x + y, domain(x=c(-2,2), y=c(0, 4))) %>%
   gradient_plot(g(x, y) ~ x + y, color="orange3", alpha=1) %>%
   gf_refine(coord_fixed())

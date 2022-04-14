@@ -21,7 +21,9 @@ The model that relates inputs to the objective output is called the ***objective
 
 Sometimes the objective is something that you want to ***minimize***, make as small as possible. In the hiking trail problem, we seek to minimize the amount of time it takes to walk up the trail. Sometimes you want to ***maximize*** the objective, as in the wood-harvest problem where the objective is to harvest the most wood per year. 
 
-Mathematically, maximization and minimization are the same thing. Every minimization problem can be turned into a maximization problem by putting a negative sign in front of the objective function. To simplify the discussion, in talking about finding the solution to an optimization problem we'll imagine that the goal is to maximize. But keep in mind that many circumstances in the real world, "best" can mean minimization.   
+::: {.column-margin}
+Mathematically, maximization and minimization are the same thing. Every minimization problem can be turned into a maximization problem by putting a negative sign in front of the objective function. To simplify the discussion, in talking about finding the solution to an optimization problem we'll imagine that the goal is to maximize. But keep in mind that many circumstances in the real world, "best" can mean minimization.  
+:::
 
 Recall from @sec-local-extremes that there are two components to the task of maximization or minimization. The ***argmax*** is the **input** to the objective function which produces the largest output. The ***maximum*** is the value of that output.^[Another word for an "input" is "argument." Argmax is the contraction of **arg**ument producing the **max**imum output.] ***Argmin*** and ***minimum*** are the words used in a situation where you seek the smallest value of the objective function.
 
@@ -65,6 +67,7 @@ Zooming in on the $\theta$ axis let's you find the argmax with more precision:
 ```{r echo=FALSE}
 #| label: fig-ball-theta-zoom
 #| fig-cap: "Zooming in on the argmax of the objective function. It's important to look at the scale of the vertical axis. Any value of $\\theta$ between about 40 and 50 gives a very close approximation to the maximum."
+#| column: margin
 slice_plot(f(theta) ~ theta, domain(theta = c(40, 50))) %>%
   gf_labs(x = expression(theta))
 ```
@@ -107,30 +110,31 @@ At this point, we know that values $x^\star$ that give $\partial_x f(x^\star) = 
 
 For an argmin, changing $x$ from less than $x^\star$ to greater than $x^\star$;  you will be walking down into the valley, then level at the very bottom $x=x^\star$, then back up the other side of the valley after you pass $x=x^\star$. @fig-d2-hill shows the situation.  
 
-```{r echo=FALSE, warning=FALSE,fig.show="hold"}
+```{r echo=FALSE, warning=FALSE}
 #| label: fig-d2-hill
-#| out-width: "50%" 
+#| column: page-right
 #| fig-cap: "Top row: An objective function near an argmax (left) and an argmin (right). Bottom row: The derivative of the objective function. A horizontal line (orange) has been added to mark zero on the vertical axis."
 f <- makeFun(sin(2*pi*x/4)~ x)
 f2 <- D(f(x) ~ x)
-slice_plot(f(x) ~ x, domain(x=c(0.5, 1.5))) %>%
+P1 <- slice_plot(f(x) ~ x, domain(x=c(0.5, 1.5))) %>%
   gf_labs(title="Argmax x* = 1") %>%
   gf_vline(xintercept = ~ 1, color="dodgerblue", alpha = 0.25, size=2) %>%
   gf_text(.9 ~ 0.95, label="x*", size=6, color="dodgerblue")
-slice_plot(f(x) ~ x, domain(x=c(2.5, 3.5))) %>%
+P2 <- slice_plot(f(x) ~ x, domain(x=c(2.5, 3.5))) %>%
   gf_labs(title="Argmin x* = 3") %>%
   gf_vline(xintercept = ~ 3, color="dodgerblue", alpha = 0.25, size=2) %>%
   gf_text(-0.8 ~ 2.97, label="x*", size=6, color="dodgerblue")
-slice_plot(f2(x) ~ x, domain(x=c(0.5, 1.5))) %>%
+P3 <- slice_plot(f2(x) ~ x, domain(x=c(0.5, 1.5))) %>%
   gf_labs(title="Argmax x* = 1", y="Derivative of f(x)") %>%
   gf_vline(xintercept = ~ 1, color="dodgerblue", alpha = 0.25, size=2) %>%
   gf_text(0.96 ~ 0.95, label="x*", size=6, color="dodgerblue") %>%
   gf_hline(yintercept = ~ 0, color="orange")
-slice_plot(f2(x) ~ x, domain(x=c(2.5, 3.5))) %>%
+P4 <- slice_plot(f2(x) ~ x, domain(x=c(2.5, 3.5))) %>%
   gf_labs(title="Argmin x* = 3", y="Derivative of f(x)") %>%
   gf_vline(xintercept = ~ 3, color="dodgerblue", alpha = 0.25, size=2) %>%
   gf_text(.85 ~ 2.97, label="x*", size=6, color="dodgerblue") %>%
   gf_hline(yintercept = ~ 0, color="orange")
+gridExtra::grid.arrange(P1, P2, P3, P4, ncol=2)
 ```
 
 The bottom row of graphs in @fig-d2-hill shows the derivative of the objective function $f(x)$, that is, $\partial_x f(x)$. You can see that for the argmax of $f(x)$, the derivative $\partial_x f(x)$ is positive to the left and negative to the right. Similarly, near the argmin of $f(x)$, the derivative $\partial_x f(x)$ is negative to the left and positive to the right.  
@@ -139,12 +143,13 @@ Stated another way, the derivative $\partial_x f(x)$ has a negative slope just t
 
 The second derivative of the objective function $f(x)$ at a critical point $x^\star$ is what tells us whether the critical point is an argmax, an argmin, or neither. 
 
+::: {.column-margin}
 Critical point $x^\star$ | $\partial_x f(x^\star)$ | $\partial_{xx} f(x^\star)$
 -----------------------|---------------------|-------------------
 argmax | 0 | negative
 argmin | 0 | positive
 neither| 0 | 0
-
+:::
 
 ::: {.takenote  data-latex=""}
 Throughout Block 2, we have translated features of functions that are evident on a graph into the language of derivatives:
@@ -245,8 +250,7 @@ As an example, consider [a style problem that often appears in calculus textbook
 This is a lovely geometry/calculus problem. Whether it is relevant to any genuine, real-world problem is another question.
 
 ```{r echo=FALSE}
-#| fig-align: "center"
-#| out-width: "20%"
+#| column: margin
 knitr::include_graphics("www/cylinder.png")
 ```
 
@@ -258,6 +262,7 @@ $$h(r, V) \equiv V / \pi r^2 \ \ \ \implies\ \ \ A(r, V) = 2 \pi r^2 + 2 \pi r V
 Suppose $V$ were specified as 1000 liters. A good first step is to choose appropriate units for $r$ to make sure the formula for $A(r, V)$ is dimensionally consistent. Suppose we choose $r$ in cm. Then we want $V$ in cubic centimeters (cc). 1000 liters is 1,000,000 cc. Now we can plot a slice of the area function:
 
 ```{r}
+#| column: margin
 A <- makeFun(2*pi*r^2 + 2*V/r ~ r, V=1000000)
 slice_plot(A(r) ~ r, domain(r=c(10, 100))) %>%
   gf_labs(x = "radius (cm)", y = "Surface area of container (square cm)")
@@ -282,6 +287,7 @@ A good rule of thumb in modeling is this: "If you don't know what a sensible pre
 Approach (2) is always at hand, since you already know the objective function. Let's graph the objective function near $r = 54.1926$ ...
 
 ```{r echo=FALSE}
+#| column: margin
 slice_plot(A(r) ~ r, domain(r=c(50, 60))) %>%
   gf_point(A(54.1926) ~ 54.1926, shape="*", size=10) %>%
   gf_labs(x = "radius (cm)", y="Container surface area (square cm)")
@@ -298,8 +304,7 @@ In reporting the results from an optimization problem, you ought to give the dec
 We mentioned another technique for getting a handle on what precision is meaningful: (1) solve a closely related problem. This often requires some insight and creativity to frame the new problem. Here, we note that large capacity tanks often are shaped like a lozenge: a cylinder with hemi-spherical ends.  
 
 ```{r echo=FALSE}
-#| out-width: "40%"
-#| fig-align: "center"
+#| column: margin
 knitr::include_graphics("www/hemisphere.png")
 ```
 
