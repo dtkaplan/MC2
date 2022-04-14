@@ -1,15 +1,14 @@
 # Polynomials
 
-A big part of the high-school algebra curriculum is about polynomials.
-In some ways, this is appropriate since polynomials played an outsized
-part in the historical development of mathematical theory. Indeed, the
-so-called "Fundamental theorem of algebra" is about
-polynomials.[^diff-taylor-1]
+```{r child="../starter.Rmd"}
+```
 
-[^diff-taylor-1]: The fundamental theorem says that an order-n
-    polynomial has n roots (including multiplicities).
 
-For modelers, polynomials are a mixed bag. They are very widely used in modeling. Sometimes this is entirely appropriate, for instance the low-order polynomials that are the subject of Chapter @sec-local-approximations. The problems come when high-order polynomials are selected for modeling purposes. Building a reliable model with high-order polynomials requires a deep knowledge of mathematics, and introduces serious potential pitfalls. Modern professional modelers learn the alternatives to high-order polynomials, but newcomers often draw on their experience in high-school and give unwarranted credence to polynomials. This chapter attempts to guide you to the ways you are likely to see polynomials in your future work and to help you avoid them when better alternatives are available.
+A big part of the high-school algebra curriculum is about polynomials. In some ways, this is appropriate since polynomials played an outsized part in the historical development of mathematical theory. Indeed, the so-called "Fundamental theorem of algebra" is about polynomials.[^diff-taylor-1]
+
+[^diff-taylor-1]: The fundamental theorem says that an order-n polynomial has n roots (including multiplicities).
+
+For modelers, polynomials are a mixed bag. They are very widely used in modeling. Sometimes this is entirely appropriate, for instance the low-order polynomials that are the subject of @sec-local-approximations. The problems come when high-order polynomials are selected for modeling purposes. Building a reliable model with high-order polynomials requires a deep knowledge of mathematics, and introduces serious potential pitfalls. Modern professional modelers learn the alternatives to high-order polynomials, but newcomers often draw on their experience in high-school and give unwarranted credence to polynomials. This chapter attempts to guide you to the ways you are likely to see polynomials in your future work and to help you avoid them when better alternatives are available.
 
 ## Basics of polynomials with one input {#sec-polynomial-basics}
 
@@ -21,7 +20,9 @@ $$a_0 + a_1 x^1 + a_2 x^2 + a_3 x^3$$
 
 The ***domain*** of polynomials, like the power-law functions they are assembled from, is the ***real numbers***, that is, the entire number line $-\infty < x < \infty$. But for the purposes of understanding the shape of high-order polynomials, it's helpful to divide the domain into three parts: a ***wriggly domain*** at the center and two ***tail domains*** to the right and left of the center.
 
-```{r wriggly-polynomial, echo=FALSE, fig-cap: "A $n$th-order polynomial can have up to $n-1$ critical points that it wriggles among. A 7-th order polynomial is shown here in which there are six local maxima or minima alternatingly."}
+```{r echo=FALSE}
+#| label: fig-wriggly-polynomial
+#| fig-cap: "A $n$th-order polynomial can have up to $n-1$ critical points that it wriggles among. A 7-th order polynomial is shown here in which there are six local maxima or minima alternatingly."
 set.seed(101)
 n <- 8
 Pts <- tibble(x = runif(n, -3, 3), y = rnorm(n))
@@ -36,6 +37,7 @@ slice_plot(fmod(x) ~ x, domain(x=c(-2.8, 1.65))) %>%
   gf_text(-20 ~ 2.2, label="Positive tail domain", color="tan", angle=-90, size=8) %>%
   gf_labs(x = "input")
 ```
+
 @fig-wriggly-polynomial shows a 7th order polynomial---that is, the highest-order term is $x^7$. In one of the tail domains the function value heads off to $\infty$, in the other to $-\infty$. This is a necessary feature of all odd-order polynomials: 1, 3, 5, 7, ...
 
 In contrast, for even-order polynomials (2, 4, 6, ...) the function value in the two tail domains go in the same direction, either both to $\infty$ (Hands up!) or both to $-\infty$.  
@@ -44,7 +46,7 @@ In the wriggly domain in @fig-wriggly-polynomial, there are six argmins or argma
 
 **An $n$th-order polynomial can have up to $n-1$ extrema.**
 
-Note that the local polynomial approximations in Chapter @sec-local-approximations) are at most 2nd order and so there is at most 1 wriggle: a unique argmax. If the approximation does not include the quadratic terms ($x^2$ or $y^2$) then there is no argmax for the function. 
+Note that the local polynomial approximations in @sec-local-approximations) are at most 2nd order and so there is at most 1 wriggle: a unique argmax. If the approximation does not include the quadratic terms ($x^2$ or $y^2$) then there is no argmax for the function. 
 
 ## Multiple inputs?
 
@@ -64,7 +66,9 @@ Since the highest-order term is $x^3$ this is a third-order polynomial. (As you'
 Our example polynomial, $g(x) \equiv x - \frac{1}{6}x^3$, graphed in color in @fig-small-sine, doesn't look exactly like the sinusoid. If we increased the extent of the graphics domain, the disagreement would be even more striking, since the sinusoid's output is always in $-1 \leq \sin(x) \leq 1$, while the polynomial's tails are heading off to $\infty$ and $-\infty$.  But, for a small interval around $x=0$, exactly aligns with the sinusoid.
 
 
-```{r small-sine, echo=FALSE, fig-cap: "The polynomial $g(x) \\equiv x -x^3 / 6$ is remarkably similar to $\\sin(x)$ near $x=0$."}
+```{r echo=FALSE}
+#| label: fig-small-sine
+#| fig-cap: "The polynomial $g(x) \\equiv x -x^3 / 6$ is remarkably similar to $\\sin(x)$ near $x=0$."
 slice_plot(sin(x) ~ x, domain(x=c(-2.85, 2.85)), size=3, alpha=0.25) %>%
   slice_plot(x - x^3/6 ~ x, color="magenta")
 ```
@@ -75,7 +79,9 @@ It's clear from the graph that the approximation is excellent near $x=0$ and get
 One way to measure the quality of the approximation is the ***error*** ${\cal E}(x)$ which gives, as a function of $x$, the difference between the actual sinusoid and the approximation: $${\cal E}(x) \equiv |\strut\sin(x) - g(x)|$$ The absolute value used in defining the error reflects our interest in how ***far*** the approximation is from the actual function and not so much in whether the approximation is below or above the actual function. @fig-sin-error shows ${\cal E}(x)$ as a function of $x$. Since the error is the same on both sides of $x=0$, only the positive $x$ domain is shown.
 
 
-```{r sin-error,  echo=FALSE, fig-cap: "The error ${\\cal E}(x)$ of $x - x^3/6$ as an approximation to $\\sin(x)$. Top panel: linear scale. Bottom panel: on a log-log scale."}
+```{r echo=FALSE}
+#| label: fig-sin-error
+#| fig-cap: "The error ${\\cal E}(x)$ of $x - x^3/6$ as an approximation to $\\sin(x)$. Top panel: linear scale. Bottom panel: on a log-log scale."
 P <- slice_plot(abs(sin(x) - (x - x^3/6)) ~ x, 
                 domain(x=c(0.001, 3)), npts=500) %>% 
   gf_labs(y = "Error(x)")
@@ -163,14 +169,19 @@ Result: the 3rd-order Taylor polynomial approximation to the exponential at $x=0
 
 @fig-taylor-exp-3 shows the exponential function $e^x$ and its 3th-order Taylor polynomial approximation near $x=0$:
 
-```{r taylor-exp-3, echo=FALSE, class.source="code-hide", fig-cap: "The 3th-order Taylor polynomial approximation to $e^x$ arount $x=0$"}
+```{r echo=FALSE, class.source="code-hide"}
+#| label: fig-taylor-exp-3
+#| fig-cap: "The 3th-order Taylor polynomial approximation to $e^x$ arount $x=0$"
 slice_plot(exp(x) ~ x, domain(x=c(-2,2)), size=3, alpha = 0.25) %>%
   slice_plot(1 + x + x^2/2 + x^3/6  ~ x, color="magenta")
 ```
 
 The polynomial is exact at $x=0$. The ***error*** ${\cal E}(x)$ grows with increasing distance from $x=0$:
 
-```{r taylor-exp-5, echo=FALSE, class.source="code-hide", fig-cap: "The error from a 3rd-order Taylor polynomial approximation to $e^x$ around $x=0$ is a power-law function with exponent $4$.", out-width: "50%", fig.show="hold"}
+```{r echo=FALSE, class.source="code-hide", fig.show="hold"}
+#| label: fig-taylor-exp-5
+#| fig-cap: "The error from a 3rd-order Taylor polynomial approximation to $e^x$ around $x=0$ is a power-law function with exponent $4$." 
+#| out-width: "50%"
 Pts <- tibble(x = seq(-2, 2, length=100),
               y = exp(x),
               y_approx = 1 + x + x^2/2 + x^3/6,
@@ -190,7 +201,9 @@ The plot of $\log_{10} {\cal E}(x)$ versus $\log_{10} | x |$ in @fig-taylor-exp-
 ::: {.intheworld data-latex=""} 
 [Brooke Taylor](https://en.wikipedia.org/wiki/Brook_Taylor) (1685-1731), a near contemporary of Newton, published his work on approximating polynomials in 1715. Wikipedia reports: "[T]he importance of [this] remained unrecognized until 1772, when Joseph-Louis Lagrange realized its usefulness and termed it 'the main [theoretical] foundation of differential calculus'."[Source](https://en.wikipedia.org/wiki/Brook_Taylor#/media/File:Taylor_Brook_Goupy_NPG.jpg)
 
-```{r brook-taylor, echo=FALSE, fig-cap: "Brook Taylor", out.width = "40%", fig-align: "center"}
+```{r echo=FALSE, out.width = "40%", fig.align="center"} 
+#| label: fig-brook-taylor
+#| fig-cap: "Brook Taylor" 
 knitr::include_graphics(normalizePath("www/Brook_Taylor.jpg"))
 ```
 
@@ -211,7 +224,9 @@ On the other hand, $\sin(0) = 0$ as well, so the sinc function evaluated at zero
 
 Still another answer is suggested by plotting out sinc($x$) near $x=0$ and reading the value off the graph: sinc(0) = 1.
 
-```{r sinc-near-zero, fig-cap: "To judge from this plot, sin(0) = 1."}
+```{r}
+#| label: fig-sinc-near-zero
+#| fig-cap: "To judge from this plot, $\\sin(0) = 1$."
 slice_plot(sin(x) / x ~ x, domain(x=c(-10,10)), npts=500)
 ```
 The graph of sinc() looks smooth and the shape makes sense. Even if we zoom in very close to $x=0$, the graph continues to look smooth. We call such functions ***well behaved***.
@@ -220,7 +235,9 @@ Compare the well-behaved sinc() to a very closely related function (which doesn'
 
 Both $\sin(x)/x$ and $\sin(x) / x^3$, evaluated at $x=0$ involve a divide by zero. Both are indeterminate forms 0/0 at $x=0$. But the graph of $\sin(x) / x^3$ (see @fig-sinc2) is not we'll behaved.  $\sin(x) / x^3$ does not have any particular value at $x=0$; instead, it has an asymptote. 
 
-```{r sinc2, fig-cap: "Zooming in around the division by zero. Left: The graph of $\\sin(x)/x$ versus $x$. Right: The graph of $\\sin(x)/x^2$. The vertical scales on the two graphs are utterly different. "}
+```{r}
+#| label: fig-sinc2
+#| fig-cap: "Zooming in around the division by zero. Left: The graph of $\\sin(x)/x$ versus $x$. Right: The graph of $\\sin(x)/x^2$. The vertical scales on the two graphs are utterly different."
 slice_plot(sin(x) / x ~ x, domain(x=c(-0.1, 0.1)), npts=500) %>%
   gf_refine(scale_y_log10())
 slice_plot(sin(x) / x^3 ~ x, domain(x=c(-0.1, 0.1)), npts=500) %>%
@@ -282,6 +299,8 @@ Plotting software will often treat `NaN` values as "don't plot this." That's why
 
 ## Exercises
 
+`r if (knitr::is_latex_output()) knitr::knit_exit()`
+
 `r insert_calcZ_exercise("26.02", "3EdMBL", "Exercises/birch-lie-sheet.Rmd")`
 
 `r insert_calcZ_exercise("26.04", "o6dP4k", "Exercises/pig-iron-closet.Rmd")`
@@ -307,7 +326,9 @@ Plotting software will often treat `NaN` values as "don't plot this." That's why
 
 Taylor polynomials provide a means to approximate continuous and smooth functions around a center $x_0$. So long as $x$ is very close to $x_0$, the approximation will be excellent. But Taylor polynomials aren't a solution to every problem. Consider the piecewise continuous function, $ramp(x-1)$, in @fig-ramp-Taylor.
 
-```{r ramp-Taylor, echo=FALSE, fig-cap: "A piecewise continuous ramp function (gray) together with its Taylor polynomial (magenta) centered on $x_0 = 0$."}
+```{r echo=FALSE}
+#| label: ramp-Taylor
+#| fig-cap: "A piecewise continuous ramp function (gray) together with its Taylor polynomial (magenta) centered on $x_0 = 0$."
 ramp <- makeFun(ifelse(x-1 < 0, 0, x-1) ~ x)
 slice_plot(ramp(x) ~ x, size = 3, alpha = 0.25, domain(x=c(-2, 4))) %>%
   slice_plot(0 ~ x, color="magenta") %>%

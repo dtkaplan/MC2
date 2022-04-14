@@ -7,15 +7,21 @@
 Recall that the local rate of change of a function  can be written as a ratio of rise-over-run:
 $$\partial_t f(t) \equiv \frac{f(t+h) - f(t)}{h}$$ where $h$ is the length of the "run." The idea of the ***instantaneous rate of change*** is to make $h$ as small as possible. 
 
-In the very early days of calculus, the vanishing $h$ was described as "evanescent." (Dictionary definition: "tending to vanish like vapor."^[[Source](https://www.merriam-webster.com/dictionary/evanescent)]) Another good image of $h$ becoming as small as possible comes from the same University of Oxford mathematician whose poem *The Jabberwocky* we introduced in Chapter @sec-fun-notation. In *Alice in Wonderland*, Dodgson introduced the character of the Cheshire Cat. 
+In the very early days of calculus, the vanishing $h$ was described as "evanescent." (Dictionary definition: "tending to vanish like vapor."^[[Source](https://www.merriam-webster.com/dictionary/evanescent)]) Another good image of $h$ becoming as small as possible comes from the same University of Oxford mathematician whose poem *The Jabberwocky* we introduced in @sec-fun-notation. In *Alice in Wonderland*, Dodgson introduced the character of the Cheshire Cat. 
 
-```{r cheshire-cat, echo=FALSE, fig-cap: "Vanishing $h$ in the form of the Chesire Cat from *Alice in Wonderland*."}
-knitr::include_graphics(normalizePath("www/Cheshire-cat.png"))
+```{r echo=FALSE}
+#| label: fig-cheshire-cat
+#| fig-cap: "Vanishing $h$ in the form of the Chesire Cat from *Alice in Wonderland*."
+knitr::include_graphics("www/Cheshire-cat.png")
 ```
 
 Start our story with two of the basic modeling functions that, like the characters from *Alice in Wonderland*, have considerable "personality": the sinusoid (`sin()`) and the sigmoid (`pnorm()`).
 
-```{r sign-sig, echo=FALSE, out-width: "50%", fig.show = "hold", fig-cap: "The pattern-book sinusoid and sigmoidal functions. A vertical blue line has been added to mark the input $t=0$", warning=FALSE, message=FALSE}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+#| label: fig-sign-sig
+#| out-width: "50%" 
+#| fig-show: "hold" 
+#| fig-cap: "The pattern-book sinusoid and sigmoidal functions. A vertical blue line has been added to mark the input $t=0$"
 slice_plot(sin(t) ~ t, domain(t=c(-5, 2*pi))) %>%
   gf_labs(title="Sinusoid") %>%
   gf_vline(xintercept=0, color="dodgerblue", alpha=0.5)
@@ -34,9 +40,11 @@ In the tilde expression handed to `makeFun()`, we've identified `t` as the name 
 Dsin
 Dsigma
 ```
-This is a nuisance, since when using the slope functions we will always need to think about `h`, a number that we'd like to describe simply as "small," but for which we always need to provide a numerical value. A surprisingly important question in the development of calculus is, "What can we do to avoid this nuisance?" To find out, let's look at `Dsin()` and `Dsigma()` for a range of values of `h`, as in @fig-sin-sig-many-h. `r mark(2372)`
+This is a nuisance, since when using the slope functions we will always need to think about `h`, a number that we'd like to describe simply as "small," but for which we always need to provide a numerical value. A surprisingly important question in the development of calculus is, "What can we do to avoid this nuisance?" To find out, let's look at `Dsin()` and `Dsigma()` for a range of values of `h`, as in @fig-sin-sig-many-h. 
 
-```{r sin-sig-many-h, echo=FALSE, fig.show = "hold", fig-cap: "The slope functions of the sinusoid and sigmoid. Each curve shows the slope function for a particular numerical choice of `h`. Both panels show $h=2, 1, 0.5, 0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001$.", warning=FALSE, message=FALSE}
+```{r echo=FALSE, fig.show = "hold", warning=FALSE, message=FALSE}
+#| label: fig-sin-sig-many-h
+#| fig-cap: "The slope functions of the sinusoid and sigmoid. Each curve shows the slope function for a particular numerical choice of `h`. Both panels show $h=2, 1, 0.5, 0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001$."
 rain <- rev(hcl.colors(12)[-(1:3)])
 slice_plot(Dsin(t, h=1) ~ t, domain(t=c(-5, 2*pi)), color=rain[1], label_text="h=1", label_x=0.56) %>%
   slice_plot(Dsin(t, h=2) ~ t, alpha = 1, label_text="h=2", label_x=.58, color=rain[1]) %>%
@@ -71,23 +79,25 @@ Some observations from this numerical experiment:
 2. For small $h$, we have $\partial_t \sin(t) = \sin(t + \pi/2) = \cos(t)$. That is, taking the slope function of a sinusoid gives another sinusoid, shifted left by $\pi/2$ from the original. Or, in plain words, for small $h$ the cosine is the slope function of the sine.
 3. For small $h$, we have $\partial_t \pnorm(t) = \dnorm(t)$. That is, for small $h$ the gaussian function is the slope function of the sigmoid $\dnorm()$ function.
 
-You can confirm these last two statements by comparison with the original functions, especially the alignment of the peaks of the slope functions with respect to the peak of the sinusoid and the half-way point of the sigmoid. `r mark(2374)`
+You can confirm these last two statements by comparison with the original functions, especially the alignment of the peaks of the slope functions with respect to the peak of the sinusoid and the half-way point of the sigmoid. 
 
 ::: {.why  data-latex=""}
-Here you use $t$ as the name of the input and $\partial_t$ as the notation for differentiation. Previously in this block you used $x$ as the input name and $\partial_x$ for differentiation. Are they the same? `r mark(2376)`
+Here you use $t$ as the name of the input and $\partial_t$ as the notation for differentiation. Previously in this block you used $x$ as the input name and $\partial_x$ for differentiation. Are they the same? 
 
-Mathematically, the name of the input makes no difference whatsoever. We could call it $x$ or $t$ or $y$ or Josephina. What's important is that the name be used consistently on the left and right sides of $\equiv$, and that the derivative symbol $\partial$ has a subscript that identifies ***the with-respect-to*** input. All these are the same statement mathematically: `r mark(2378)`
+Mathematically, the name of the input makes no difference whatsoever. We could call it $x$ or $t$ or $y$ or Josephina. What's important is that the name be used consistently on the left and right sides of $\equiv$, and that the derivative symbol $\partial$ has a subscript that identifies ***the with-respect-to*** input. All these are the same statement mathematically: 
 
 $$\partial_x\, x = 1\ \ \ \ \partial_t\, t = 1\ \ \ \ \partial_y\, y = 1\ \ \ \ \partial_\text{Josephina} \text{Josephina} = 1$$
 Admittedly, the last one is hard to read.
 
-When we look at derivatives of functions of multiple variables we will need to be thoughtful about our choice of the with-respect-to input. But we want you to get used to seeing different input names used for differentiation. `r mark(2380)`
+When we look at derivatives of functions of multiple variables we will need to be thoughtful about our choice of the with-respect-to input. But we want you to get used to seeing different input names used for differentiation. 
 
 :::
 
 Now consider the slope functions of the logarithm and exponential functions.
 
-```{r log-exp-many-h, echo=FALSE, fig.show = "hold", fig-cap: "The slope functions of the logarithm and exponential.", warning=FALSE, message=FALSE}
+```{r echo=FALSE, fig.show = "hold", warning=FALSE, message=FALSE}
+#| label: fig-log-exp-many-h
+#| fig-cap: "The slope functions of the logarithm and exponential."
 rain <- rev(hcl.colors(12)[-(1:3)])
 Dlog <- makeFun((log(x+h) - log(x))/h ~ x)
 Dexp <- makeFun((exp(x+h) - exp(x))/h ~ x)
@@ -123,7 +133,7 @@ These numerical experiments with the logarithm and exponential functions are mor
 
 You can confirm these by evaluating the slope function of the exponential at $t=0$ and $t=1$, and the slope function of the logarithm at $t= 2, 1, 1/2, 1/4, 1/8.$
 
-"Small" and "zero," although related, are different. In constructing a derivative, we use smaller and smaller $h$, but never zero. Let's see what happens if instead of evanescent h, we use zero h. For example, we can use the slope function `Dsin()` and `Dsigma()` that we created earlier. Setting $h$ to zero does not give a result that is the instantaneous rate of change of anything: `r mark(2384)`
+"Small" and "zero," although related, are different. In constructing a derivative, we use smaller and smaller $h$, but never zero. Let's see what happens if instead of evanescent h, we use zero h. For example, we can use the slope function `Dsin()` and `Dsigma()` that we created earlier. Setting $h$ to zero does not give a result that is the instantaneous rate of change of anything: 
 
 ```{r}
 Dsin(t=1, h=0)
@@ -132,6 +142,6 @@ Dsigma(t=0, h=0)
 
 In `NaN`, you can hear the echo of your fourth-grade teacher reminding you that it is illegal to divide by zero.
 
-Think of evanescent $h$ as the vapor in the definition of "evanescent": "tending to vanish like vapor." This vapor is like the solvent in paint. You don't want the solvent once the paint is on the wall; wet paint is a nuisance. But getting the paint from the container to the wall absolutely needs the solvent.  `r mark(2386)`
+Think of evanescent $h$ as the vapor in the definition of "evanescent": "tending to vanish like vapor." This vapor is like the solvent in paint. You don't want the solvent once the paint is on the wall; wet paint is a nuisance. But getting the paint from the container to the wall absolutely needs the solvent.  
 
-We used the solvent $h$ earlier in the chapter in the numerical experiments that led us to the derivatives of the pattern-book functions, for instance $\partial_x e^x = e^x$ or $\partial_x \sin(x) = \cos(x)$.  Eventually, we'll construct an $h$-free theory of differentiation, reducing the process to a set of algebraic rules in which $h$ never appears. With this as our goal, let's continue using $h$ for a while to find some additional useful facts about derivatives. `r mark(2388)`
+We used the solvent $h$ earlier in the chapter in the numerical experiments that led us to the derivatives of the pattern-book functions, for instance $\partial_x e^x = e^x$ or $\partial_x \sin(x) = \cos(x)$.  Eventually, we'll construct an $h$-free theory of differentiation, reducing the process to a set of algebraic rules in which $h$ never appears. With this as our goal, let's continue using $h$ for a while to find some additional useful facts about derivatives. 

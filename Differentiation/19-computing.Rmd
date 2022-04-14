@@ -1,21 +1,24 @@
 # Computing derivatives {#sec-computing-derivs}
 
-To differentiate a function $g(x)$ means simply to produce the corresponding function $\partial_t g(x)$. This is often called "finding the derivative," language that resonates with the high-school algebra task of "finding $x$." Rather than conjuring an image of searching high and low for a missing function, it's more accurate to say, "compute the derivative." `r mark(2150)`
+```{r child="../starter.Rmd"}
+```
 
-In this chapter we'll introduce two ways of computing a derivative. For simplicity we will write $x$ for the with-respect-to-variable, although in practice you might be using $t$ or $z$ or something else. `r mark(2155)`
+To differentiate a function $g(x)$ means simply to produce the corresponding function $\partial_t g(x)$. This is often called "finding the derivative," language that resonates with the high-school algebra task of "finding $x$." Rather than conjuring an image of searching high and low for a missing function, it's more accurate to say, "compute the derivative." 
+
+In this chapter we'll introduce two ways of computing a derivative. For simplicity we will write $x$ for the with-respect-to-variable, although in practice you might be using $t$ or $z$ or something else. 
 
 * Symbolic differentiation, which uses a set of re-writing rules
 * Finite-differencing, which is based directly on the ${\cal D_x}$ operator
 
-In the days when functions were always presented using formulas, symbolic differentiation was usually the only method taught. Nowadays, when functions are just as likely to be described using data and an algorithm, finite-differencing provides the practical approach. `r mark(2160)`
+In the days when functions were always presented using formulas, symbolic differentiation was usually the only method taught. Nowadays, when functions are just as likely to be described using data and an algorithm, finite-differencing provides the practical approach. 
 
 ## A function from a function
 
-Recall that the goal of differentiation is to make a function out of an already known function. We'll call the already known function $g(x)$. In Chapter @sec-change-relationships we've outlined the properties that the new function should have and gave a nice naming convention, $\partial_x g(x)$ that shows where the new function comes from. In this section we'll put that aside and focus on the question of what it means to "make a function." `r mark(2165)`
+Recall that the goal of differentiation is to make a function out of an already known function. We'll call the already known function $g(x)$. In @sec-change-relationships we've outlined the properties that the new function should have and gave a nice naming convention, $\partial_x g(x)$ that shows where the new function comes from. In this section we'll put that aside and focus on the question of what it means to "make a function." 
 
-When mathematics is done with paper and pencil, "making a function" is a matter of writing a formula, such as $x^2 \sin(x) + 3$ and sometimes giving a name to the formula, e.g. $h(x) \equiv x^2 \sin(x) + 3$. We are essentially writing something down that will make sense when viewed by another person trained in the conventions of mathematical notation. `r mark(2170)`
+When mathematics is done with paper and pencil, "making a function" is a matter of writing a formula, such as $x^2 \sin(x) + 3$ and sometimes giving a name to the formula, e.g. $h(x) \equiv x^2 \sin(x) + 3$. We are essentially writing something down that will make sense when viewed by another person trained in the conventions of mathematical notation. 
 
-For a computer, on the other hand, a function is a definite kind of thing. We  "make a function" by creating that kind of thing and, usually, giving it a name. We evaluate a function---that is, apply the function to inputs to produce an output---by using specific punctuation, which in R involves the use of parentheses, for instance *name*`(`*input*`)`. `r mark(2175)`
+For a computer, on the other hand, a function is a definite kind of thing. We  "make a function" by creating that kind of thing and, usually, giving it a name. We evaluate a function---that is, apply the function to inputs to produce an output---by using specific punctuation, which in R involves the use of parentheses, for instance *name*`(`*input*`)`. 
 
 The computer language itself provides specific means to define a new function. In R/mosaic, you first construct a tilde expression naming the function inputs (right side of the tilde) and specifying the algorithm of that function (left side of the tilde), as with this formula:
 ```{r}
@@ -45,7 +48,7 @@ function(x) {x^2 * sin(x) + 3}
 
 You can see all the same information that was in the tilde description, just arranged differently.
 
-Almost every computer language provides something like `function`. The internal workings of `function` are elaborate and detailed ... only advanced programmers need to be aware of them. This, in much the same way as it's unnecessary to understand the workings of a transistor in order to use a computer, or comprehend the biochemistry of a COVID vaccine in order to benefit from it. `r mark(2180)`
+Almost every computer language provides something like `function`. The internal workings of `function` are elaborate and detailed ... only advanced programmers need to be aware of them. This, in much the same way as it's unnecessary to understand the workings of a transistor in order to use a computer, or comprehend the biochemistry of a COVID vaccine in order to benefit from it. 
 
 In the same spirit as `makeFun()`, which translates a tilde-expression into the corresponding function, in R/mosaic you have `D()` which takes a tilde expression and translates it into the derivative of the function described.^[Mathematically, one differentiates a function, not a tilde expression. But differentiation requires specification of the with-respect-to-input, so R/mosaic implements differentiation by using tilde-expression syntax.] For example:
 ```{r}
@@ -66,7 +69,9 @@ dg <- makeFun((g(x+0.1) - g(x))/0.1 ~ x)
 ```
 
 Whenever you calculate a derivative function, you should check against mistakes or other sources of error. For instance, whenever the derivative is zero, the original function should have an instantaneous slope of zero. @fig-check-dg shows a suitable plot for supporting this sort of check.
-```{r check-dg, fig-cap: "The x-position of zero crossings of the derivative function (magenta) are marked with blue lines. The zero crossings correspond to local maxima or minima in the original function (black). This is because the original function has slope zero at maxima and minima." }
+```{r}
+#| label: fig-check-dg
+#| fig-cap: "The x-position of zero crossings of the derivative function (magenta) are marked with blue lines. The zero crossings correspond to local maxima or minima in the original function (black). This is because the original function has slope zero at maxima and minima." 
 zeros_of_dg <- Zeros(dg(x) ~ x, domain(x=-5:5))
 slice_plot(g(x) ~ x, domain(x=-5:5), npts=500) %>%
   slice_plot(dg(x) ~ x, color="magenta", npts=500) %>%
@@ -81,7 +86,7 @@ In modeling work, there's nothing wrong with an approximation so long as it is g
 
 When a calculation can be done exactly (without outrageous effort) it certainly makes sense to use the exact method. However:
 
-1. It's useful to have an easy, approximate method always at hand. This lets you check the results of other methods for the possibility of some blunder or mis-conception. The slope function approach to differentiation is certainly easy, and if you think the approximation isn't good enough, then instead of 0.1 use something smaller. (Chapter @sec-evanescent-h discusses how small is **too** small.)
+1. It's useful to have an easy, approximate method always at hand. This lets you check the results of other methods for the possibility of some blunder or mis-conception. The slope function approach to differentiation is certainly easy, and if you think the approximation isn't good enough, then instead of 0.1 use something smaller. (@sec-evanescent-h discusses how small is **too** small.)
 2. The computer makes it practical to employ the slope function as a useful approximation to the derivative. There are many other mathematical methods that the computer has made feasible, for instance the methods of ***machine learning***. These methods create functions that sometimes cannot be handled by the traditional ("exact") methods of differentiation.
 :::
 
@@ -94,7 +99,7 @@ Take a look at the statement we used to construct the slope function of `g()`:
 dg <- makeFun((g(x+0.1) - g(x))/0.1 ~ x)
 ```
 
-There is almost nothing about this statement that has anything to do with the specifics of how we defined `g()`; we could have used any $g()$. The "almost" in the previous sentence is about the choice of 0.1, which isn't guaranteed to be small enough. `r mark(2200)`
+There is almost nothing about this statement that has anything to do with the specifics of how we defined `g()`; we could have used any $g()$. The "almost" in the previous sentence is about the choice of 0.1, which isn't guaranteed to be small enough. 
 
 ::: {.intheworld data-latex=""}
 
@@ -122,7 +127,7 @@ du <- slopeFun(u(x) ~ x)
 
 Creating such an R ***operator*** is a programming task and in that sense *beyond the scope of this course*. Still, it's a good idea to get in the habit of reading programming code. So here goes ... 
 
-*Creating a `slopeFun()` operator:* `r mark(2205)`
+*Creating a `slopeFun()` operator:* 
 
 1. Instead of `makeFun()` which is really just maknig for mathematical functions, R programmers use a construction named `function()`. The name of the arguments goes inside the parentheses. The function algorithm goes between curly braces: `{ }`
 2. We're going to use a ***tilde expression*** as the input to `slopeFun()`. This is how the other R/mosaic operators work. That will be easier for the user and will also give us access to those other operators if we need them in writing `slopeFun()`.
@@ -141,7 +146,7 @@ slopeFun <- function(tilde, h=0.1) {
 }
 ```
 
-Another important advantage of centralizing computations in a single operator is that the operator can be made more sophisticated without being harder to use. For instance, R/mosaic provides the `D()` operator for computing derivatives. This knows the rules for symbolic differentiation that will be introduced in Chapter @sec-prod-comp-rules and switches to a finite-difference method (like `slopeFun()`, but more sophisticated) when symbolic differentiation isn't applicable. 
+Another important advantage of centralizing computations in a single operator is that the operator can be made more sophisticated without being harder to use. For instance, R/mosaic provides the `D()` operator for computing derivatives. This knows the rules for symbolic differentiation that will be introduced in @sec-prod-comp-rules and switches to a finite-difference method (like `slopeFun()`, but more sophisticated) when symbolic differentiation isn't applicable. 
 :::
 
 
@@ -150,7 +155,7 @@ In practice, instead of home-brewed functions like `slopeFun()`, you can use the
 
 ## Symbolic differentiation {#sec-symbolic-differentiation}
 
-Symbolic differentiation is the process of taking a formula and translating it to a new formula according to certain patterns or ***rules***. Each rule is ultimately derived from the definition of the slope function and the differencing operator. `r mark(2215)`
+Symbolic differentiation is the process of taking a formula and translating it to a new formula according to certain patterns or ***rules***. Each rule is ultimately derived from the definition of the slope function and the differencing operator. 
 
 As you recall, the ***differencing operator*** $\diff{x}$ turns a function into its slope function
 $$\diff{x} f(x) \equiv \frac{f(x+h) - f(x)}{h}$$
@@ -163,7 +168,7 @@ Let's look at one where we already know the result: The straight line function $
 $$\diff{x}\line(x) = \frac{\line(x+h) - \line(x)}{h} = \frac{\left[\strut a (x+h) + b\right] - \left[\strut a x + b\right]}{h} = \frac{ah}{h} = a$$
 The derivative is the slope function with $h$ made as small as possible. It's tempting to think of this as $h = 0$, but that would imply dividing by zero in the differencing operator. 
 
-Being wary about the possibility of dividing by zero, mathematicians adopt a convention which indicates clearly that $h$ is to be small, but **not zero**. This convention is marked with the notation $\lim_{h \rightarrow 0}$, which means "as close as you can get to zero, but not zero exactly". `r mark(2220)`
+Being wary about the possibility of dividing by zero, mathematicians adopt a convention which indicates clearly that $h$ is to be small, but **not zero**. This convention is marked with the notation $\lim_{h \rightarrow 0}$, which means "as close as you can get to zero, but not zero exactly". 
 
 $$\partial_x \line(x) \equiv \lim_{h\rightarrow 0} \frac{\line(x+h) - \line(x)}{h} =\\
 \ \\
@@ -182,7 +187,7 @@ Remember that $\partial_x f(x)$ is always a function no matter what kind of func
 
 ### The square rule
 
-Only for the $\line()$ function and its three special cases is the derivative a constant function. And $\line()$ is the only function for which the $h$ in the differencing operator disappears on its own. For instance, consider the square function: $g(x) \equiv x^2$.  `r mark(2225)`
+Only for the $\line()$ function and its three special cases is the derivative a constant function. And $\line()$ is the only function for which the $h$ in the differencing operator disappears on its own. For instance, consider the square function: $g(x) \equiv x^2$.  
 
 $$\partial_x [x^2] = \lim_{h\rightarrow 0}\frac{(x+h)^2 - x^2}{h} =\\
 \ \\
@@ -300,11 +305,15 @@ gaussian (hump)     |  $\dnorm(x)$           |  $-x\, \dnorm(x)$ | not yet
 sigmoid  |  $\pnorm(x)$            |  $\dnorm(x)$ | by definition
 
 
-```{r pattern-deriv-diag, echo=FALSE, fig-cap: "A diagram showing how differentiation connects the pattern-book functions to one another."}
+```{r echo=FALSE}
+#| label: fig-pattern-deriv-diag
+#| fig-cap: "A diagram showing how differentiation connects the pattern-book functions to one another."
 knitr::include_graphics("www/pattern-derivs-diagram.png")
 ```
 
 ## Exercises
+
+`r if (knitr::is_latex_output()) knitr::knit_exit()`
 
 `r insert_calcZ_exercise("19.1", "kelwx", "Exercises/tilde-function.Rmd")`\
 
