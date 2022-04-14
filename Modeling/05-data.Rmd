@@ -152,8 +152,8 @@ Step 2: Find the parameters that correspond to the line you drew.
 @fig-Fun-4-a-3-1 shows the tide level in [Providence, Rhode Island](https://www.google.com/maps/place/Providence,+RI/@41.8071,-71.4012,14z/data=!4m5!3m4!1s0x89e444e0437e735d:0x69df7c4d48b3b627!8m2!3d41.8071!4d-71.4012), starting at midnight on April 1, 2020 and recorded every minute for four and a half days. (These data were collected by the US National Oceanic and Atmospheric Administration. [Link](https://tidesandcurrents.noaa.gov/api/datagetter?begin_date=20200401%2010:00&end_date=20200405%201:59&station=8454000&product=one_minute_water_level&datum=mllw&units=metric&time_zone=gmt&application=web_services&format=csv))   
 
 ```{r Fun-4-a-3-1, echo=FALSE, fig-cap: "About four days of tide-level data from Providence, Rhode Island"}
-#gf_line(level ~ hour, data = math141Z::Anchorage_tide[1:1000,])
-gf_line(level ~ hour, data = math141Z::RI_tide) %>%
+#gf_line(level ~ hour, data = Zcalc::Anchorage_tide[1:1000,])
+gf_line(level ~ hour, data = Zcalc::RI_tide) %>%
   gf_labs(y="Water level (meters)", x="Time (hours)", title="Tide level in Providence, Rhode Island") %>%
   gf_lims(y =c(0, 2))
 ```
@@ -173,12 +173,12 @@ On the scale of the above plot, it's hard to read off the time of the first peak
 
 ```{r Fun-4-a-3-2, echo=FALSE, out-width: "50%", fig.show="hold", fig-cap: "Zooming in on the start of the data (left) and on the last part of the data (right)."}
 gf_line(level ~ hour, 
-         data = math141Z::RI_tide %>% filter(hour < 25)) %>%
+         data = Zcalc::RI_tide %>% filter(hour < 25)) %>%
   gf_labs(y="Water level (meters)", x="Time (hours)",
           title="Start of record") %>%
   gf_lims(y =c(0, 2))
 gf_line(level ~ hour, 
-         data = math141Z::RI_tide %>% filter(hour > 90)) %>%
+         data = Zcalc::RI_tide %>% filter(hour > 90)) %>%
   gf_labs(y="Water level (meters)", x="Time (hours)",
           title = "End of record") %>%
   gf_lims(y =c(0, 2))
@@ -196,7 +196,7 @@ $${\color{magenta}{\text{tide}(t)} \equiv \underbrace{1.05}_A + \underbrace{0.55
 mod1 <- makeFun(1.05 + 0.55*sin(2*pi*hour/13) ~ hour)
 mod2 <- makeFun(1.05 + 0.55*sin(2*pi*(hour-17)/13) ~ hour)
 gf_line(level ~ hour, 
-         data = math141Z::RI_tide) %>% 
+         data = Zcalc::RI_tide) %>% 
   slice_plot(mod1(hour) ~ hour, color="magenta") %>%
   gf_labs(y="Water level (meters)", x="Time (hours)") %>%
   gf_lims(y =c(0, 2))

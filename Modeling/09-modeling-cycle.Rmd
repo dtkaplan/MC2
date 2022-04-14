@@ -94,12 +94,12 @@ The new parameter, $t_0$, should be set to be the time of a positive-going cross
 mod1 <- makeFun(1.05 + 0.55*sin(2*pi*hour/13) ~ hour)
 mod2 <- makeFun(1.05 + 0.55*sin(2*pi*(hour-17)/13) ~ hour)
 gf_line(level ~ hour,
-         data = math141Z::RI_tide %>% filter(hour < 25)) %>%
+         data = Zcalc::RI_tide %>% filter(hour < 25)) %>%
   slice_plot(mod2(hour) ~ hour, color="dodgerblue") %>%
   gf_labs(y="Water level (meters)", x="Time (hours)") %>%
   gf_lims(y =c(0, 2))
 gf_line(level ~ hour,
-         data = math141Z::RI_tide %>% filter(hour > 90)) %>%
+         data = Zcalc::RI_tide %>% filter(hour > 90)) %>%
   slice_plot(mod2(hour) ~ hour, color="dodgerblue") %>%
   gf_labs(y="Water level (meters)", x="Time (hours)")%>%
   gf_lims(y =c(0, 2))
@@ -114,7 +114,7 @@ $${\color{green}{\text{tide}(t)} \equiv 1.05 + 0.55 \sin(2\pi (t - 17)/12.3)}$$
 
 ```{r Fun-4-a-3-5, echo=FALSE, fig-cap: "With the phase about right, a better estimate can be made of the period: 12.3 hours."}
 mod3 <- makeFun(0.55*sin(2*pi*(hour-17)/12.3) + 1.05 ~ hour)
-gf_line(level ~ hour, data = math141Z::RI_tide) %>%
+gf_line(level ~ hour, data = Zcalc::RI_tide) %>%
   slice_plot(mod3(hour) ~ hour, color="violet") %>%
   gf_labs(y="Water level (meters)", x="Time (hours)", title="Period 12.3 hours") %>%
   gf_lims(y =c(0, 2))
@@ -139,7 +139,7 @@ These new parameters differ only slightly from the ones shown in Figure \@ref(fi
 
 ```{r Fun-4-a-3-6, echo=FALSE, fig-cap: "Polishing the parameters of the sinusoid"}
 mod4 <- makeFun(tide_mod)
-gf_line(level ~ hour, data = math141Z::RI_tide) %>%
+gf_line(level ~ hour, data = Zcalc::RI_tide) %>%
   slice_plot(mod4(hour) ~ hour, color="orange3", npts=200) %>%
   gf_labs(y="Water level (meters)", x="Time (hours)", title="After polishing by the computer") %>%
   gf_lims(y =c(0, 2))

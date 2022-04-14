@@ -21,27 +21,32 @@ When mathematics is done with paper and pencil, "making a function" is a matter 
 For a computer, on the other hand, a function is a definite kind of thing. We  "make a function" by creating that kind of thing and, usually, giving it a name. We evaluate a function---that is, apply the function to inputs to produce an output---by using specific punctuation, which in R involves the use of parentheses, for instance *name*`(`*input*`)`. 
 
 The computer language itself provides specific means to define a new function. In R/mosaic, you first construct a tilde expression naming the function inputs (right side of the tilde) and specifying the algorithm of that function (left side of the tilde), as with this formula:
+
 ```{r}
 f_description <- x^2 * sin(x) + 3 ~ x   # a tilde expression
 ```
 
 On its own, `f_description` cannot be used like a function because it was constructed as something else: a tilde expression. Trying to use `f_description` in the way one uses a function produces an error.
+
 ```
 f_description(2)
  Error in f_description(2): could not find function "f_description"
 ```
 
 In between the tilde expression and the final result---a function---is software that translates from tilde-expressions into functions:
+
 ```{r}
 f <- makeFun(f_description)
 ```
 
 The new creation, `f()` can now be used like any other function, e.g.
+
 ```{r}
 f(2)
 ```
 
 Down deep inside, `makeFun()` uses a more basic function-creation syntax which looks like this
+
 ```{r}
 function(x) {x^2 * sin(x) + 3}
 ```
@@ -51,6 +56,7 @@ You can see all the same information that was in the tilde description, just arr
 Almost every computer language provides something like `function`. The internal workings of `function` are elaborate and detailed ... only advanced programmers need to be aware of them. This, in much the same way as it's unnecessary to understand the workings of a transistor in order to use a computer, or comprehend the biochemistry of a COVID vaccine in order to benefit from it. 
 
 In the same spirit as `makeFun()`, which translates a tilde-expression into the corresponding function, in R/mosaic you have `D()` which takes a tilde expression and translates it into the derivative of the function described.^[Mathematically, one differentiates a function, not a tilde expression. But differentiation requires specification of the with-respect-to-input, so R/mosaic implements differentiation by using tilde-expression syntax.] For example:
+
 ```{r}
 D(f_description)
 ```
@@ -69,6 +75,7 @@ dg <- makeFun((g(x+0.1) - g(x))/0.1 ~ x)
 ```
 
 Whenever you calculate a derivative function, you should check against mistakes or other sources of error. For instance, whenever the derivative is zero, the original function should have an instantaneous slope of zero. @fig-check-dg shows a suitable plot for supporting this sort of check.
+
 ```{r}
 #| label: fig-check-dg
 #| fig-cap: "The x-position of zero crossings of the derivative function (magenta) are marked with blue lines. The zero crossings correspond to local maxima or minima in the original function (black). This is because the original function has slope zero at maxima and minima." 
@@ -95,6 +102,7 @@ When a calculation can be done exactly (without outrageous effort) it certainly 
 ## The slope-function operator
 
 Take a look at the statement we used to construct the slope function of `g()`:
+
 ```r
 dg <- makeFun((g(x+0.1) - g(x))/0.1 ~ x)
 ```
@@ -106,11 +114,13 @@ There is almost nothing about this statement that has anything to do with the sp
 In today's world, considerable mathematical content is conveyed to users not directly with formulas but with ***software*** that implements the formulas. And in software, it's a good idea to have a *name* for each operation so that the readers and authors of software have a completely explicit indication that a particular operation is being used. 
 
 When you have many slope functions to compute in some application, it can be error prone to write many statements that are versions of 
+
 ```r
 dg <- makeFun((g(x+0.1) - g(x))/0.1 ~ x)
 ```
 
 It's too easy to make a mistake in copying this over, producing a wrong computation that can be hard to detect in the code. For instance, each of these statements looks a lot like the above, but all of them are different and none is constructing a slope function:
+
 ```r
 df <- makeFun((f(x-0.1) - f(x))/0.1)
 dh <- makeFun((h(x+0.1) - f(x))/0.1)
@@ -119,6 +129,7 @@ dg <- makeFun(g(x+0.1) - g(x)/0.1)
 ```
 
 Much easier to read and more reliable would be something like this:
+
 ```r
 df <- slopeFun(f(x) ~ x)
 dh <- slopeFun(h(x) ~ x)
@@ -135,6 +146,7 @@ Creating such an R ***operator*** is a programming task and in that sense *beyon
 4. There's the matter of  whether 0.1 is small enough. So let's use an `h` argument in place of 0.1 that we can change when needed.
 
 Putting this together, here is a `slopeFun()` operator that takes a tilde expression (as do `makeFun()` and `slice_plot()`) and produces a new mathematical function that is the slope function for the mathematical function described in the tilde expression. (There are a couple of R programming elements in `slopeFun()` that you aren't expected to understand completely. But do try reading the code to see what sense you can make of it.)
+
 ```{r}
 # two arguments, a tilde expression and a choice for h
 # with a default value
@@ -218,6 +230,7 @@ Let's take on the exponential function $h(x) \equiv e^x$:
 
 $$\partial_x e^x = \lim_{h\rightarrow 0}\frac{e^{x+h} - e^x}{h} = e^x \lim_{h\rightarrow 0}\left[\frac{e^h - 1}{h}\right]$$
 At a glance, it can be hard to know what to make of $\lim_{h\rightarrow 0} (e^h-1)/h$. Setting $h=0$ in the denominator is perfectly legitimate and gives $e^0 - 1 = 0$. But that still leaves the $h$ in the numerator. Still, for any non-zero $h$, the division is legitimate, so let's see what happens as $h \rightarrow 0$:
+
 ```{r}
 f <- makeFun((exp(h) - 1)/h ~ h)
 f(0.1)
@@ -229,6 +242,7 @@ f(0.0000000001)
 ```
 
 Setting $h$ exactly to zero, however, won't work: it produces `NaN`.
+
 ```{r}
 f(0)
 ```
