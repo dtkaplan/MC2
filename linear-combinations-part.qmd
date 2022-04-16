@@ -1,5 +1,9 @@
 # Vectors and linear combinations {#sec-vectors-linear-combinations .nonumber}
 
+```{r child="starter.Rmd"}
+```
+
+<!--
 ### Chapter 41: Vectors & Dot Products
 
 i. Know that vectors can be represented as columns of data or graphically arrows
@@ -55,7 +59,9 @@ For now, we'll define a vector as a simple set of coordinates such as position o
 
 Vectors will be particularly useful for visualization, both graphical and mental. The graphical convention for presenting vectors is a simple arrow whose direction and length are immediately evident. This contrasts the the usual presentation of a $(x, y)$-coordinate as a point in space. The coordinate-point and vector-arrow conventions (Figure \@ref(fig:two-presentations)) are both useful, but for different purposes.
 
-```{r two-presentations, echo=FALSE, fig-cap: "The vector-arrow and coordinate-point presentation of $(3,2)$ (blue) and $(-1, 1.5)$."}
+```{r echo=FALSE}
+#| label: fig-two-presentations
+#| fig-cap: "The vector-arrow and coordinate-point presentation of $(3,2)$ (blue) and $(-1, 1.5)$."
 Pts <- tibble(
   x = c(3, -1),
   y = c(2, 1.5),
@@ -95,7 +101,9 @@ accel_x <- D(pos_x(t) ~ t & t)
 accel_y <- D(pos_y(t) ~ t & t)
 ```
 
-```{r robot-xy, echo=FALSE, fig-cap: "The position, velocity, and acceleration of the robot arm as a function of time. The x-coordinate is the left column, the y-coordinate the right column."}
+```{r echo=FALSE}
+#| label: fig-robot-xy
+#| fig-cap: "The position, velocity, and acceleration of the robot arm as a function of time. The x-coordinate is the left column, the y-coordinate the right column."
 P1 <- slice_plot(pos_x(t) ~ t, domain(t=1:15)) %>%
   gf_labs(y = "x position")
 P2 <- slice_plot(pos_y(t) ~ t, domain(t=1:15)) %>%
@@ -114,7 +122,9 @@ gridExtra::grid.arrange(P1, P2, P3, P4, P5, P6, ncol=2 )
 
 It's hard to form an image of the motion from these graphs. Better to show the $x-$ and $y-$ components of position in a single frame, as in Figure \@ref(fig:velocity-vs-position)
 
-```{r velocity-vs-position, echo=FALSE, fig-cap: "The three coordinate properties of the robot arm motion: position (thin black curve), velocity (blue vector) and acceleration (magenta vector)."}
+```{r echo=FALSE}
+#| label: fig-velocity-vs-position
+#| fig-cap: "The three coordinate properties of the robot arm motion: position (thin black curve), velocity (blue vector) and acceleration (magenta vector)."
 Traj <- tibble(t=seq(1,15,length = 500),
                x=pos_x(t),
                y=pos_y(t))
@@ -133,9 +143,9 @@ gf_path(y ~ x, data = Traj, size=.3, alpha=1) %>%
   
 ```
 
-Figure \@ref(fig:velocity-vs-position) consolidates into one graphical frame the relationships spread out over six frames in \@ref(fig:robot-xy). The consolidated graph makes it easy to see what the path is, as well as how speed varies along the path and the direction of instantaneous velocity relates to movement along the path. You can also see the relationship between velocity and acceleration; where straight-line motion is slowing down, acceleration points opposite velocity, where speed is increasing, acceleration points in the same direction as velocity. And where the motion is changing direction, acceleration is not aligned with velocity but points toward the curving path.
+@fig-velocity-vs-position consolidates into one graphical frame the relationships spread out over six frames in @fig-robot-xy). The consolidated graph makes it easy to see what the path is, as well as how speed varies along the path and the direction of instantaneous velocity relates to movement along the path. You can also see the relationship between velocity and acceleration; where straight-line motion is slowing down, acceleration points opposite velocity, where speed is increasing, acceleration points in the same direction as velocity. And where the motion is changing direction, acceleration is not aligned with velocity but points toward the curving path.
 
-In Chapter `r Chaps$gradient` we worked with function having multiple inputs but a single output---not a vector. But differentiation of multiple-input functions involves ***partial derivatives***: there is one partial derivative for **each of the inputs**. In other words, the output of differentiation of a function of multiple inputs is a vector. For a function $f(x,y)$, the vector is $\left({\large\strut}\partial_x f(x, y),\ \ \partial_y f(x, y)\right)$. This is called the ***gradient vector***, as described in `r Chaps$gradient`.
+In Chapter @gradient we worked with function having multiple inputs but a single output---not a vector. But differentiation of multiple-input functions involves ***partial derivatives***: there is one partial derivative for **each of the inputs**. In other words, the output of differentiation of a function of multiple inputs is a vector. For a function $f(x,y)$, the vector is $\left({\large\strut}\partial_x f(x, y),\ \ \partial_y f(x, y)\right)$. This is called the ***gradient vector***, as described in Chapter @gradient.
 
 To display a function with gradient vectors, calculate the gradient at many different points in the domain. This collection of vectors illustrates a ***vector field***, that is, a vector-valued function of continuous inputs.
 
@@ -152,7 +162,9 @@ Where <- bind_rows(one, two, three)
 ```
 
 
-```{r grad-preview1, echo=FALSE, fig-cap: "The gradient field for a function. The gradient vector points the way uphill.", width=8, height=8, out-width: "130%"}
+```{r echo=FALSE, width=8, height=8, out.width="130%"} 
+#| label: fig-grad-preview1 
+#| fig-cap: "The gradient field for a function. The gradient vector points the way uphill." 
 gradient_plot(f(x, y) ~ x & y, domain(x=-4:4, y=-4:4), npts=30) %>%
   gf_point(y ~ x, data = Where, size=3, alpha=.3,
            inherit=FALSE) %>%
@@ -162,7 +174,9 @@ The gradient vector provides a straightforward and intuitive way to locate argma
 
 The gradient vector carries much the same information as do the contours locally. Figure \@ref(fig:contour-and-gradient) plots the gradient field of the function on top of the contours. At each point in the domain, the gradient vector is perpendicular to the contour through that point. 
 
-```{r contour-and-gradient, echo=FALSE, fig-cap: "Gradient fields carry much the same information as a set of contours. Note that the gradient vector at each point is perpendicular to the contour through that point.", width=12, height=12, out-width: "180%"}
+```{r echo=FALSE, width=12, height=12, out.width="180%"}
+#| label: fig-contour-and-gradient
+#| fig-cap: "Gradient fields carry much the same information as a set of contours. Note that the gradient vector at each point is perpendicular to the contour through that point." 
 contour_plot(f(x, y) ~ x & y, domain(x=-4:4, y=-4:4), filled=FALSE) %>%
   gradient_plot(f(x, y) ~ x & y, domain(x=-4:4, y=-4:4), npts=30) %>%
   gf_point(y ~ x, data = Where, fill = ~ color, size=3, alpha=.3) %>%
@@ -170,3 +184,5 @@ contour_plot(f(x, y) ~ x & y, domain(x=-4:4, y=-4:4), filled=FALSE) %>%
 ```
 
 While the contours carry information about the output value of the function, the gradient field shows **how steep** the function is at any point.
+
+-->

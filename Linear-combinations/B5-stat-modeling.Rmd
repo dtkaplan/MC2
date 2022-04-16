@@ -1,8 +1,12 @@
 # Statistical modeling and R^2^ {#sec-stat-modeling}
 
+```{r child="../starter.Rmd"}
+```
+
 So far, we've been looking at linear combinations from a distinctively mathematical point of view: vectors, collections of vectors (matrices), projection, angles and orthogonality. We've show a few applications of the techniques for working with linear combinations, but have always expressed those techniques using mathematical terminology. In this Chapter, we will take a detour to get a sense of the perspective and terminology of another field: statistics.
 
 In the quantitative world, including fields such as biology and genetics, the social sciences, business decision making, etc. there are far more people working with linear combinations with a statistical eye than there are people working with the mathematical form of notation. Statistics is a far wider field than linear combination, so this chapter is **not** an attempt to replace the need to study statistics and data science. The purpose is merely to show you how a mathematical process can be used as part of a broader framework to provide useful information to decision-makers.
+
 
 ::: {.takenote data-latex=""}
 Since a statistics and data-science courses are part of a complete quantitative education, we want to point out from the beginning what you are likely to experience a traditional introductory statistics course and why that will seem largely disconnected from what you see here.
@@ -14,10 +18,17 @@ Perhaps coincidentally---or perhaps not---Charles Darwin (1809-1882) was a half-
 Most of the many techniques covered in traditional introductory statistics are, in fact, manifestations of the application of a general technique: the target problem. They are not taught this way, partly out of hide-bound tradition and partly because the target problem has been covered, if at all, in the fourth or fifth semester of a traditional calculus sequence.
 :::
 
+
 It often happens that a model is needed to help organize complex, multivariate data for purposes such as prediction.  As a case in point, consider the data available in the `Body_fat` data frame, which consists of measurements of characteristics such as height, weight, chest circumference, and body fat on 252 men.
 
-```{r}
-Znotes::and_so_on(Body_fat) %>% kableExtra::kable_minimal()
+```{r echo=FALSE}
+TAB <- if (knitr::is_html_output()) {
+  Znotes::and_so_on(Body_fat) %>% kableExtra::kable_minimal()
+} else {
+  Znotes::and_so_on_latex(Body_fat)
+}
+
+TAB 
 ```
 
 Body fat, the percentage of total body mass consisting of fat, is thought by some to be a good measure of general fitness. To what extent this theory is merely a reflection of general societal attitudes toward body shape is unknown. 
@@ -63,11 +74,11 @@ $$\text{body fat} = -40.5 + 0.253\, \mathtt{wrist} - 0.818\, \mathtt{thigh} - 0.
 In invoking `qr.solve(A, b)` we have created a vector `x` containing the solution to the target problem. We can use that vector `x` in the usual ways, for example to construct the model vector (`A %*% x`) or the residual vector (`b - A %*% x`).
 
 Sometimes you will want to create a **function** that implements the linear combination described by `x`. For convenience, the R/mosaic `makeFun()` knows how to accept a vector input and create the corresponding function.  For example:
+
 ```{r}
 f <- makeFun(x)
 f
 ```
-
 
 :::
 
@@ -87,19 +98,20 @@ The standard way to measure the "amount of variation" in a variable is the ***va
 var(b)
 ```
 
-
 - *How good is the model?*
 - *Could we make a better model?*
 
 To answer these questions, we'll have to develop a measure of how good the model is. And this depends on the purpose for which we'll be using the model.
 
 We can also look at the variation in the model vector, $\hat{b}$.
+
 ```{r}
 bhat <- A %*% x
 var(bhat)
 ```
 
 R^2^ is simply the ratio of these two variances:
+
 ```{r}
 var(bhat) / var(b)
 ```
@@ -107,6 +119,7 @@ var(bhat) / var(b)
 This result, 31.7%, is interpreted as the fraction of the variance in the response variable that is ***accounted for*** by the model. Near synonyms for "accounted for" is ***explained by*** or ***can be attributed to***.
 
 In the same spirit, we can ask how much of the variance in the response variable is ***unexplained by***, or ***unaccounted by*** the explanatory variables. To answer this, look at the size of the residual:
+
 ```{r}
 var(b - bhat) / var(b)
 ```
@@ -126,9 +139,10 @@ A major part of the mathematical foundation of statistical (or "machine") learni
 
 So if you're diligent, and continue your studies to take actual statistical/machine learning courses, you'll find yourself at the top of the heap. Even [xkcd](https://xkcd.com/1838/), the beloved techno-comic, gets in on the act, as this cartoon reveals: 
 
-```{r echo=FALSE, out-width: "50%", fig-align: "center"}
+```{r echo=FALSE, out.width="50%", fig.align="center"}
 knitr::include_graphics("www/xkcd_machine_learning.png")
 ```
+
 Look carefully below the paddle and you'll see the Greek letter "lambda", $\lambda$. You'll meet the linear algebra concept signified by $\lambda$---eigenvalues and eigenvectors---in Block 6.
 
 ::: {.takenote data-latex=""}
@@ -144,7 +158,9 @@ In a statistics course using R, you are very likely to encounter `lm()`. You'll 
 
 ## Exercises
 
-`r insert_calcZ_exercise("XX.XX", "97zwR6", "Exercises/girl-have-rug.Rmd")`
+`r if (knitr::is_latex_output()) knitr::knit_exit()`
+
+`rr insert_calcZ_exercise("XX.XX", "97zwR6", "Exercises/girl-have-rug.Rmd")`
 
 Exercises constructing functions with different explanatory variables. Compare R^2^. Plot the functions created? Do the interaction terms, etc. help?
 

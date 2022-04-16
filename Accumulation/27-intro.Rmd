@@ -6,8 +6,6 @@
 Every 10 years, starting in 1790, the US Census Bureau carries out a constitutionally mandated census: a count of the current population. The overall count as a function of year is shown in @fig-pop-graph. [[Source](https://en.wikipedia.org/wiki/Demographic_history_of_the_United_States)
 ]
 
-
-
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 USPop <- readr::read_csv("www/census-totals.csv")
 Tmp <- USPop %>% 
@@ -24,7 +22,9 @@ USPop <- USPop %>%
 
 In the 230 years spanned by the census data, the US population has grown 100-fold, from about 4 million in 1790 to about 330,000,000 in 2020.
 
-```{r pop-graph, echo=FALSE, fig-cap: "US population since 1790. Left: linear axes. Right: semi-log axes", fig.margin=TRUE}
+```{r echo=FALSE, fig.margin=TRUE} 
+#| label: fig-pop-graph
+#| fig-cap: "US population since 1790. Left: linear axes. Right: semi-log axes"
 popfun <- spliner(population ~ year, data = USPop)
 USPop <- USPop %>%
   mutate(yearly_growth_rate = 100*((1+growth_rate/100)^(1/10) - 1))
@@ -49,7 +49,9 @@ gridExtra::grid.arrange(P1, P2, ncol=2)
 It's tempting to look for simple patterns in such data. Perhaps the US population has been growing exponentially. A semi-log plot of the same data suggests that the growth is only very roughly exponential. A truly exponential process would present as a curve with a constant derivative, but the derivative of the function in the graph is decreasing over the centuries. 
 
 
-```{r pop-graph-log, echo=FALSE, fig-cap: "Population since 1790.", fig.margin=TRUE}
+```{r echo=FALSE, fig.margin=TRUE}
+#| label: fig-pop-graph-log
+#| fig-cap: "Population since 1790."
 
 ```
 
@@ -57,7 +59,9 @@ Insofar as the slope over the semi-log graph is informative, it amounts to this 
 $$\partial_t \ln(\text{pop}(t)) = \frac{\partial_t\, \text{pop}(t)}{\text{pop}}$$
 This is the *per-capita* rate of growth, that is, the rate of change in the population divided by the population. Conventionally, this fraction is presented as a percentage: percentage growth in the population per year, as in @fig-pop-growth.
 
-```{r pop-growth, echo=FALSE, fig-cap: "Annual per capita growth rate of the US population (percent)"}
+```{recho=FALSE}
+#| label: fig-pop-growth
+#| fig-cap: "Annual per capita growth rate of the US population (percent)"
 growth_mod <- lm(yearly_growth_rate ~ year, data = USPop)
 growth_fun <- makeFun(growth_mod)
 gf_point(yearly_growth_rate ~ year, data = USPop) %>%
@@ -82,7 +86,9 @@ In this block we'll explore the methods for calculating anti-derivatives and som
 ::: {.intheworld data-latex=""}
 The predictions from the accumulate-population-growth model are shown as a $\color{magenta}{\text{magenta}}$ line in @fig-pop-prediction-bad.
 
-```{r pop-prediction-bad, echo=FALSE, warning=FALSE, fig-cap: "Predicted US population based on the historical linear decline in per-capita growth."}
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-pop-prediction-bad
+#| fig-cap: "Predicted US population based on the historical linear decline in per-capita growth."
 growth_mod <- lm(yearly_growth_rate ~ year, data = USPop)
 growth_fun <- makeFun(growth_mod)
 accum <- tibble(year = 2021:2130,
@@ -198,9 +204,9 @@ For example, suppose the output of the accelerometer on your rocket has dimensio
 
 Thompson's first chapter starts with the notation of accumulation, which he calls "the preliminary terror."
 
-::: {.made-easy data-latex=""}
+::: {.madeeasy data-latex=""}
 
-<span style="font-variant:small-caps;">The</span> preliminary terror ... can be abolished once for all by simply stating what is the meaning---in common-sense terms---of the two principal symbols that are used in calculating.
+The preliminary terror ... can be abolished once for all by simply stating what is the meaning---in common-sense terms---of the two principal symbols that are used in calculating.
 
 These dreadful symbols are:
 
@@ -230,7 +236,7 @@ totaling up all the little bits that are indicated by
 the symbols that follow.
 :::
 
-<hr>
+---
 
 The next chapter shows what it means to "total up all the little bits" of a function.
 

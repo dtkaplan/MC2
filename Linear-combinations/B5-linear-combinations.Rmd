@@ -1,7 +1,6 @@
 # Linear combinations of vectors {#sec-linear-combs-vectors}
 
-```{r include=FALSE}
-library(Znotes)
+```{r child="../starter.Rmd"}
 ```
 
 In this chapter, we introduce ***linear combinations of vectors***. As you recall, a linear combination is a sum of basic elements each of which has been ***scaled***. For instance, in Block 1 we looked at linear combinations of functions such as $$g(t) = A + B e^{kt}$$ which involves the basic functions $\text{one}(t)$ and $e^{kt}$ scaled respectively by $A$ and $B$. 
@@ -44,7 +43,7 @@ To add two vectors, choose either one of the vectors as a start, then move the t
 #| label: fig-add-yellow-green
 #| fig-align: "center" 
 #| out-width: "50%"
-#| fig-cap: "Adding two vectors, yellow and green, by placing them tail to tip. The result is the vector going from the tail of yellow to the tip of green. This resultant is equivalent to the blue vector."}
+#| fig-cap: "Adding two vectors, yellow and green, by placing them tail to tip. The result is the vector going from the tail of yellow to the tip of green. This resultant is equivalent to the blue vector."
 knitr::include_graphics("www/pencils/addition.png")
 ```
 
@@ -52,19 +51,28 @@ Adding vectors in this way takes advantage of the rootlessness of a vector. So l
 
 
 Arithmetically, vector addition is simply a matter of applying addition  component-by-component, that is, componentwise. For instance, consider adding two vectors $\vec{v}$ and $\vec{w}$:
-$$\underbrace{\left[\begin{array}{r}1.5\\-1\\2\\6\end{array}\right]}_\vec{v} + \underbrace{\left[\begin{array}{r}2\\4\\-2\\-3.2\end{array}\right]}_\vec{w} = \underbrace{\left[\begin{array}{r}3.5\\3\\0\\2.8\end{array}\right]}_{\vec{v} + \vec{w}}$$   
+
+THIS MATH MARKUP DOESN'T COMPILE TO PDF
+
+```
+<!--\underbrace{\left[\begin{array}{r}1.5\\-1\\2\\6\end{array}\right]}_\vec{v} + \underbrace{\left[\begin{array}{r}2\\4\\-2\\-3.2\end{array}\right]}_\vec{w} = \underbrace{\left[\begin{array}{r}3.5\\3\\0\\2.8\end{array}\right]}_{\vec{v} + \vec{w}}-->
+```
 
 Unlike our pencil exemplars of vectors, which must of physical necessity always be in the three-dimensional space we inhabit, mathematical vectors can be embedded in any-dimensional space. Addition is applicable to vectors embedded in the same space. Arithmetically, this means that the two vectors to be added must have the same number of components.  
 
 Arithmetic ***subtraction*** of one vector from another is a simple component-wise operation. For example:
+
+```
 $$\underbrace{\left[\begin{array}{r}1.5\\-1\\2\\6\end{array}\right]}_\vec{v} {\Large -} \underbrace{\left[\begin{array}{r}2\\4\\-2\\-3.2\end{array}\right]}_\vec{w} = \underbrace{\left[\begin{array}{r}-0.5\\-5\\4\\9.2\end{array}\right]}_{\vec{v} - \vec{w}}\ .$$
+```
+
 From a geometrical point of view, many people like to think of $\vec{v} - \vec{w}$ in terms of placing the two vectors **tail to tail** as in @fig-subtract-blue-from-yellow). Read out the result as the vector running from the tip of $\vec{v}$ to the tip of $\vec{w}$. In @fig-subtract-blue-from-yellow), the yellow vector is $\vec{v}$, the blue vector is $\vec{w}$. The result of the subtraction is the green vector.
 
 ```{r echo=FALSE} 
 #| label: fig-subtract-blue-from-yellow 
 #| fig-align: "center"
 #| out-width: "50%" 
-#| fig-cap: "Subtracting blue from yellow gives green."}
+#| fig-cap: "Subtracting blue from yellow gives green."
 knitr::include_graphics("www/pencils/subtraction.png")
 ```
 
@@ -111,8 +119,13 @@ CW <- tibble(t=seq(0,5, by=0.1)) %>%
   mutate("exp(t)" = exp(t)) %>%
   mutate("sin(t)" = sin(t)) %>%
   mutate("pnorm(t)" = pnorm(t))
-
-and_so_on(CW, top=5, bottom=5) %>% kableExtra::kable_minimal()
+TAB <- if (knitr::is_html_output()) {
+  Znotes::and_so_on(CW, top=5, bottom=5) %>%
+    kableExtra::kable_minimal()
+} else {
+  Znotes::and_so_on_latex(CW, top=5, bottom=5)
+}
+TAB 
 ```
 In this representation, each of the pattern-book functions is a column of numbers, that is, a ***vector***.
 
@@ -124,7 +137,14 @@ CW <- tibble(t=seq(0,5, by=0.1)) %>%
   mutate("identity(t)" = t) %>%
   mutate("g(t)" = 3 - 2*t)
 
-and_so_on(CW, top=5, bottom=5) %>% kableExtra::kable_minimal()
+
+TAB <- if (knitr::is_html_output()) {
+  Znotes::and_so_on(CW, top=5, bottom=5) %>%
+    kableExtra::kable_minimal()
+} else {
+  Znotes:: and_so_on_latex(CW, top=5, bottom=5)
+}
+TAB 
 ```
 
 The table above is a collection of four vectors:  $\vec{\mathtt t}$, $\vec{\mathtt{ one(t)}}$,  $\vec{\mathtt{identity(t)}}$, and $\vec{\mathtt{g(t)}}$. Each of those vectors has 51 components. In math-speak, we can say that the vectors are "embedded in a 51-dimensional space."
@@ -151,6 +171,8 @@ $$\mathit{M} \equiv \left[\begin{array}{rr}1 & 0\\
 1 & 5.0\\
 \end{array}\right]\ .$$
 The linear combination which we might previous have called $3\cdot \vec{\mathtt{t}} - 2\,\vec{\mathtt{identity(t)}}$ can be thought of as 
+
+```
 $$\left[\overbrace{\begin{array}{r}
 1\\
 1 \\
@@ -191,6 +213,8 @@ $$\stackrel{\Large\mathit{M}}{\left[\begin{array}{rr}1 & 0\\
 1 & 5.0\\
 \end{array}\right]} \ 
 \stackrel{\Large\vec{w}}{\left[\begin{array}{r}2\\-3\end{array}\right]}$$
+```
+
 In symbolic form, the linear combination of the columns of $\mathit{M}$ using respectively the scalars in $\vec{w}$ is simply $\mathit{M} \, \vec{w}$. This is called ***matrix multiplication***. 
 
 Naturally, the operation only makes sense if there are as many components to $\vec{w}$ as there are columns in $\mathit{M}$.
@@ -235,6 +259,7 @@ It's a mistake to use `*` instead of `%*%` for matrix multiplication. Remember t
 ```{r error=TRUE}
 A * x
 ```
+
 The phrase "non-conformable arrays" is R-speak for saying "I don't know how to do component-wise multiplication with two differently shaped objects. 
 :::
 
@@ -251,9 +276,9 @@ The combinations we have in mind are: $$
 \ \ \ \ \ \ \  \ \ \
 \mathit{A} \left[\begin{array}{r}-1\\0\end{array}\right] = \left[\begin{array}{r}-2\\-5\\3\end{array}\right]
 $$ 
-A more concise way to write this collects the vectors with the values for the scalars into a matrix, which we'll call $$\mathit{X} \equiv \left[\begin{array}{rr}3 & 0 & -1\\1 & 2 & 0\end{array}\right]\ .$$ 
+A more concise way to write this collects the vectors with the values for the scalars into a matrix, which we'll call $$\mathit{X} \equiv \left[\begin{array}{rrr}3 & 0 & -1\\1 & 2 & 0\end{array}\right]\ .$$ 
 
-$$\mathit{A} \ \mathit{X}  = \left[\begin{array}{r}7 &2 &-2\\11 & -8 & -5\\-9 & 0 & 3\end{array}\right]$$
+$$\mathit{A} \ \mathit{X}  = \left[\begin{array}{rrr}7 &2 &-2\\11 & -8 & -5\\-9 & 0 & 3\end{array}\right]$$
 
 ::: {.rmosaic data-latex=""}
 In R, to create the set of linear combinations, we create the matrices $\mathit{A}$ and $\mathit{X}$ and combine them with matrix multiplication. 
@@ -293,9 +318,9 @@ Now imagine the clubhouse arranged into meeting rooms. Each meeting room is just
 
 A subspace has its own rules for admission. Vectors belong to the subspace only if they can be constructed as a linear combination of the sponsoring members. Mathematically, although the subspace is defined by the founding vectors, the subspace itself consists f *all the possible* vectors can be constructed by a linear combination of the sponsors.
 
-As an example, consider the clubhouse that is open to any and all vectors with three components. The diagram in @fig-two-vecs) shows the clubhouse with just two members present, $\color{blue}{\vec{u}}$ and $\color{magenta}{\vec{v}}$.
+As an example, consider the clubhouse that is open to any and all vectors with three components. The diagram in @fig-two-vecs shows the clubhouse with just two members present, $\color{blue}{\vec{u}}$ and $\color{magenta}{\vec{v}}$.
 
-Any vector can sponsor its own subspace. In @fig-two-vecs) the subspace sponsored by $\color{blue}{\vec{u}}$ is the extended line through $\color{blue}{\vec{u}}$, that is, all the possible scaled versions of $\color{blue}{\vec{u}}$. Similarly, the subspace sponsored by $\color{magenta}{\vec{v}}$ is the extended line through $\color{magenta}{\vec{v}}$. Each of these subspaces is one-dimensional.
+Any vector can sponsor its own subspace. In @fig-two-vecs the subspace sponsored by $\color{blue}{\vec{u}}$ is the extended line through $\color{blue}{\vec{u}}$, that is, all the possible scaled versions of $\color{blue}{\vec{u}}$. Similarly, the subspace sponsored by $\color{magenta}{\vec{v}}$ is the extended line through $\color{magenta}{\vec{v}}$. Each of these subspaces is one-dimensional.
 
 ```{r child="CalcPlot3D/spaces-A.Rmd"}
 ```
@@ -307,7 +332,7 @@ Any vector can sponsor its own subspace. In @fig-two-vecs) the subspace sponsore
 knitr::include_graphics("www/tiny-blank.png")
 ```
 
-Multiple vectors can sponsor a subspace. The subspace sponsored by both $\color{blue}{\vec{u}}$ and $\color{magenta}{\vec{v}}$ contains all the vectors that can be constructed as linear combinations of $\color{blue}{\vec{u}}$ and $\color{magenta}{\vec{v}}$. In @fig-two-vecs-planes), this subspace is shown in gray.
+Multiple vectors can sponsor a subspace. The subspace sponsored by both $\color{blue}{\vec{u}}$ and $\color{magenta}{\vec{v}}$ contains all the vectors that can be constructed as linear combinations of $\color{blue}{\vec{u}}$ and $\color{magenta}{\vec{v}}$. In @fig-two-vecs-planes, this subspace is shown in gray.
 
 ```{r child="CalcPlot3D/spaces-C.Rmd"}
 ```
@@ -319,10 +344,10 @@ Multiple vectors can sponsor a subspace. The subspace sponsored by both $\color{
 knitr::include_graphics("www/tiny-blank.png")
 ```
 
-On the other hand, the subspace sponsored by $\color{magenta}{\vec{v}}$ and $\color{blue}{\vec{u}}$ is not the entire clubhouse. $\color{magenta}{\vec{v}}$ and $\color{blue}{\vec{u}}$ lie in a common plane, but not all the vectors in the 3-dimensional clubhouse lied in that plane. In fact, if you rotate @fig-two-vecs-plane) to "look down the barrel" of either $\color{magenta}{\vec{v}}$ or $\color{blue}{\vec{u}}$, the plane will entirely disappear from view. A subspace is an infinitesimal slice of the embedding space.
+On the other hand, the subspace sponsored by $\color{magenta}{\vec{v}}$ and $\color{blue}{\vec{u}}$ is not the entire clubhouse. $\color{magenta}{\vec{v}}$ and $\color{blue}{\vec{u}}$ lie in a common plane, but not all the vectors in the 3-dimensional clubhouse lied in that plane. In fact, if you rotate @fig-two-vecs-plane to "look down the barrel" of either $\color{magenta}{\vec{v}}$ or $\color{blue}{\vec{u}}$, the plane will entirely disappear from view. A subspace is an infinitesimal slice of the embedding space.
 
 
-"Sponsored a subspace" is metaphorical. In technical language we speak of the ***subspace spanned*** by a set of vectors in the same embedding space. Usually, we refer to a "set of vectors" as a ***matrix***. For instance, letting $$\mathit{M} \equiv \left[{\Large \strut}\color{blue}{\vec{u}}\ \ \color{magenta}{\vec{v}}\right]\ ,$$ the gray plane in @fig-two-vecs-planes) is the subspace spanned by $\mathit{M}$ or, more concisely, $span(\mathit{M})$.
+"Sponsored a subspace" is metaphorical. In technical language we speak of the ***subspace spanned*** by a set of vectors in the same embedding space. Usually, we refer to a "set of vectors" as a ***matrix***. For instance, letting $$\mathit{M} \equiv \left[{\Large \strut}\color{blue}{\vec{u}}\ \ \color{magenta}{\vec{v}}\right]\ ,$$ the gray plane in @fig-two-vecs-planes is the subspace spanned by $\mathit{M}$ or, more concisely, $span(\mathit{M})$.
 
 
 For a more concrete, everyday representation of the subspace spanned by two vectors, a worthwhile experiment is to pick up two pencils pointing in different directions. Place the eraser ends together, pinched between thumb and forefinger. You can point the whole rigid assembly in any direction you like. The angle between them will remain the same. 
@@ -335,6 +360,8 @@ Notice that you can also lay a card along a *single* vector. What's different he
 
 
 ## Exercises
+
+`r if (knitr::is_latex_output()) knitr::knit_exit()`
 
 `r insert_calcZ_exercise("42.01 -- Adding vectors", "k5u7hG", "Exercises/titmouse-stand-pantry.Rmd")`
 

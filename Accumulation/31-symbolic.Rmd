@@ -1,5 +1,8 @@
 # Symbolic anti-differentiation {#sec-accum-symbolic}
 
+```{r child="../starter.Rmd"}
+```
+
 You have already learned how to write down, by sight, the anti-derivative of the many of the pattern-book functions. As a reminder, here is an (almost) complete list of the derivatives and anti-derivatives of the pattern-book functions.
 
 $\partial_x f(x)$ |      $f(x)$     | $\int f(x) dx$
@@ -48,11 +51,14 @@ In a traditional science or mathematics education, students encounter (almost ex
 
 The professional applied mathematician's catalog is much larger. You can see an example published by the US National Institute of Standards and Technology as the [Digital Library of Mathematical Functions](https://dlmf.nist.gov/). (Almost all of the 36 chapters in this catalog, important though they be, are highly specialized and not of general interest across fields.) 
 
-There is a considerable body of theory for these ***cataloged functions***, which often takes the form of relating them to one another. For instance, $\ln(a \times b) = \ln(a) + \ln(b)$ demonstrates a relationship among $\ln()$, $+$ and $\times$. Along the same lines of relating the cataloged functions to one another is $\partial_x \sin(x) = \cos(x)$ and other statements about derivatives such as those listed in Chapter `r Chaps$pattern_book_derivs`.
+There is a considerable body of theory for these ***cataloged functions***, which often takes the form of relating them to one another. For instance, $\ln(a \times b) = \ln(a) + \ln(b)$ demonstrates a relationship among $\ln()$, $+$ and $\times$. Along the same lines of relating the cataloged functions to one another is $\partial_x \sin(x) = \cos(x)$ and other statements about derivatives such as those listed in Chapter @sec-computing-derivs.
 
 Simply to illustrate what a function catalog looks like, @fig-table-of-integrals shows a page from an 1899 handbook entitled [*A Short Table of Integrals*](https://archive.org/details/integralstable00peirrich/page/114/mode/2up). 
 
-```{r table-of-integrals, echo=FALSE, fig-cap: "Entries 124-135 from *A Short Table of Integrals* (1899) by Benjamin Osgood Pierce. The book includes 938 such entries.", out-width: "60%", fig-align: "center"}
+```{r echo=FALSE}
+#| label: fig-table-of-integrals
+#| fig-cap: "Entries 124-135 from *A Short Table of Integrals* (1899) by Benjamin Osgood Pierce. The book includes 938 such entries."
+#| column: margin
 knitr::include_graphics("www/table-of-integrals-1.png")
 ```
 
@@ -62,9 +68,13 @@ The cataloged functions were assembled with great effort by mathematicians over 
 
 Calculus textbooks that include extensive coverage of the techniques and tricks should be understood as telling a story of the historical construction of catalogs, rather than conveying skills that are widely used today.  In a practical sense, when the techniques are needed, it's more reliable to access them via computer interface such as WolframAlpha, as depicted in @fig-wolfram-alpha-125.
 
-```{r wolfram-alpha-125, echo=FALSE, fig-cap: "Pierce's entry 125 as computed by the WolframAlpha system."}
+```{r echo=FALSE}
+#| label: fig-wolfram-alpha-125
+#| fig-cap: "Pierce's entry 125 as computed by the WolframAlpha system."
+#| column: margin
 knitr::include_graphics("www/wolfram-alpha-125.png")
 ```
+
 The systems can do a good job identifying cases where the techniques will not work. In such systems, they provide the anti-derivative as constructed by numerical integration. The R/mosaic `antiD()` function works in this same way, although its catalog contains only a tiny fraction of the functions found in professional systems. (But then, only a tiny fraction of the professional cataloged function are widely used in applied work.)
 
 ## Differentials
@@ -186,7 +196,7 @@ $$v(x) = \underbrace{\int v'(x) dx = \int \cos(x) dx}_{\text{from }\ v'(x)\,dx\ 
 Now that we know the $v(x)$ that's consistent with our original splitting of the anti-derivative into $\int u(x) \cdot v'(x) dx$ we can plug in our results to the right side of the parts re-arrangement equation:
 
 $$\int x \cdot \cos(x)dx = x \sin(x) - \int \underbrace{\sin(x)}_{v(x)}\  \underbrace{\ 1\ dx\ \strut}_{u'(x) dx}$$
-We're in luck, because we already know the anti-derivative $\int \sin(x) dx = -\cos(x)$, giving us the result 
+We're in luck! We already know the anti-derivative $\int \sin(x) dx = -\cos(x)$. Substituting this result for the $\int v(x) u'(x) dx$ term, we arrive at 
 $$\int x \cdot \cos(x)dx = x \sin(x) + \cos(x)\ .$$
 
 The key creative step in using integration by parts effectively is to choose a helpful split of the original integral into the $u(x)$ and $v'(x) dx$ parts. This is usually based on a solid knowledge of derivatives and anti-derivatives of basic functions as well as insight into the downstream consequences of any choice. In this sense, picking $u(x)$ and $v'(x)dx$ is like making a move in chess. Some players can see two or three moves ahead and so can pick the first move to improve their position. Without such foresight, the best most people can do is to pick a first move that seems attractive and accept that their fate might be either victory or checkmate.
@@ -261,14 +271,16 @@ The constant of integration $C$ needs to be included to make the equality true.
 
 To confirm the result, you can differentiate the right-hand side; differentiation is always easy.
 
-Alternatively, we can check numerically if $\int x \cos(x) dx - (x\sin(x)+cos(x))$ is really a constant.
+Alternatively, we can check numerically if $\int x \cos(x) dx - (x\sin(x)+cos(x))$ is a constant. (See \@fig-check-constant).)
 
-```{r out-width: "50%"}
+```{r}
+#| label: fig-check-constant
+#| column: margin
+#| fig-caption: A numerical check shows $\\int x \\cos(x) dx - (x\\sin(x)+cos(x))$ is a constant. 
 F1 <- antiD(x*cos(x) ~ x)
 F2 <- makeFun(x*sin(x) + cos(x) ~ x)
 slice_plot(F1(x) - F2(x) ~ x, domain(x=-5:5))
 ```
-Yes! The graph shows a constant function: $C$.
 :::
 
 ::: {.example data-latex=""}
@@ -351,20 +363,14 @@ We never told you the algorithm contained in `pnorm()`. Nor do we really need to
 
 One feasible algorithm for implementing $\pnorm()$ is to integrate the Taylor polynomial. It's very easy integrate polynomials. To ensure accuracy, different Taylor polynomials can be computed for different centers, say $x=0$, $x=1$, $x=2$, and so on.
 
-Another feasible algorithm is simply to integrate $\dnorm()$ numerically using an advanced algorithm such as Gauss-Hermite quadrature.
-
-In today's world, software is the means by which expert knowledge and capability is communicated and applied. Before modern computers were available, the expertise was committed to print in the form of tables. @fig-pierce-pnorm-table shows part of the table from the previously mentioned 1899 *A Short Table of Integrals*.^[The tabulated function is called the "error function," amusingly written $\text{Erf}(x)$. It is essentially the same as the gaussian, the relationship being $\text{Erf}(x) + 1 = 2\pnorm(x)$ for $0\leq x < \infty$.] Incredibly, such tables were a standard feature of statistics textbooks up through 2010. 
+Another feasible approach integrates $\dnorm()$ numerically using an advanced algorithm such as Gauss-Hermite quadrature.
 
 
-```{r pierce-pnorm-table, echo=FALSE, fig-cap: "Before the computer software era, some functions could only be presented using printed tables. This table supports calculations with a gaussian-like function for inputs from 0 to 1."}
-knitr::include_graphics("www/pierce-pnorm-table.png")
-```
-
-
-In addition to software being more compact and easier to use than printed tables, the interface to numerical integrals can be presented in the same format as any other mathematical function. That's enabled us to include $\pnorm()$ among the pattern book functions. 
 :::
 
 ## Exercises
+
+`r if (knitr::is_latex_output()) knitr::knit_exit()`
 
 `r insert_calcZ_exercise("31.03", "HoQaaq", "Exercises/owl-give-closet.Rmd")`
 

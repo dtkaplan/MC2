@@ -1,5 +1,7 @@
 # Integrals step-by-step
 
+```{r child="../starter.Rmd"}
+```
 
 The setting for anti-differentiation (and it's close cousin, integration) is that we have a function $F(t)$ which we do not yet know, but we do have access to some information about it: its slope as a function of time $f(t) \equiv \partial_t F(t)$ and, perhaps, its value $F(t_0)$ at some definite input value.
 
@@ -44,7 +46,9 @@ gives rise to a visualization that has been learned by generations of calculus s
 
 We'll start the visualization with a simple graph of $f(t)$, which is called the ***integrand*** in the integral $\int_a^b f(t) dt$. @fig-area-integrand shows the graph of $f(t)$. A specific point $t_0$ has been marked on the horizontal axis. Next to it is another mark at $t_0 + dt$. Of course, the distance between these marks is $\color{orange}{dt}$.
 
-```{r area-integrand, echo=FALSE, fig-cap: "Illustrating the interpretation of $f(t_0) dt$ as an \"area\"."}
+```{r echo=FALSE} 
+#| label: fig-area-integrand
+#| fig-cap: "Illustrating the interpretation of $f(t_0) dt$ as an \"area\"."
 raw <- rfun( ~ t, seed=541)
 f <- makeFun((raw(t)+10)/2 ~ t) 
 
@@ -69,7 +73,9 @@ The $\color{orange}{dt}$ line segment and the $\color{magenta}{f(t_0)}$ segment 
 
 In this sort of visualization, an integral is the accumulation of many of these $f(t) dt$ rectangles. For instance, @fig-bars-0-3 the visualization of the integral $$\int_{0}^3 f(t) dt\ .$$
 
-```{r bars-0-3, echo=FALSE, fig-cap: "Visualizing the integral $\\int_0^3 f(t) dt$ as the total \"area\" of several $f(t) dt$ bars. The width of each of the bars is $dt$. The height depends on the value of the function $f(t)$ at the bar. For illustration, two of the bars are marked with vertical and horizontal line segments.", warning=TRUE}
+```{recho=FALSE, warning=TRUE}
+#| label: fig-bars-0-3
+#| fig-cap: "Visualizing the integral $\\int_0^3 f(t) dt$ as the total \"area\" of several $f(t) dt$ bars. The width of each of the bars is $dt$. The height depends on the value of the function $f(t)$ at the bar. For illustration, two of the bars are marked with vertical and horizontal line segments."
 Bars <- Znotes::Riemann_bars(f(t) ~ t, h=0.3, domain(t=0:3))
 
 gf_text(1.5 ~ 2.2, label=latex2exp::TeX("$\\sim \\int_0^3 f(t)dt$"), size=10, color=alpha("blue", 0.5)) %>%
@@ -92,7 +98,9 @@ gf_rect(ymin + ymax ~ xmin + xmax, data = Bars, color= "grey", fill=~color, alph
 
 As always in calculus, we imagine $dt$ as a "small" quantity. In @fig-bars-0-3B you can see that the function output changes substantially over the sub-domain spanned by a single rectangle. Using smaller and smaller $dt$, as in @fig-bars-0-3-small brings the visualization closer and closer to the actual meaning of an anti-derivative.
 
-```{r bars-0-3B, echo=FALSE, fig-cap: "Visualizing the integral $\\int_0^3 f(t) dt$ as the total \"area\" of several $f(t) dt$ bars. The width of each of the bars is $dt$. The height depends on the value of the function $f(t)$ at the bar. For illustration, two of the bars are marked with vertical and horizontal line segments.", warning=FALSE}
+```{r echo=FALSE, warning=FALSE}
+#| label: bars-0-3B
+#| fig-cap: "Visualizing the integral $\\int_0^3 f(t) dt$ as the total \"area\" of several $f(t) dt$ bars. The width of each of the bars is $dt$. The height depends on the value of the function $f(t)$ at the bar. For illustration, two of the bars are marked with vertical and horizontal line segments."
 Bars <- Znotes::Riemann_bars(f(t) ~ t, h=0.1, domain(t=0:3))
 P1 <- 
   gf_rect(ymin + ymax ~ xmin + xmax, data = Bars, color= "grey", fill=~color, alpha=0.3 ) %>%
@@ -122,7 +130,9 @@ Why do you keep putting "area" in quotes?
 
 When $f(t_i) < 0$, then $f(t_i) dt$ will be negative. There is no such thing as a negative area, but in constructing an integral the $f(t_i)dt$, being negative, diminishes the accumulated area. 
 
-```{r neg-area, echo=FALSE, warning=FALSE, fig-cap: "The $\\int_{-2}^3 g(t) dt$ covers subdomains where $g(t) > 0$ and where $g(t) < 0$. In those latter subdomains, the \"area\" is negative, and shown in light orange here."}
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-neg-area
+#| fig-cap: "The $\\int_{-2}^3 g(t) dt$ covers subdomains where $g(t) > 0$ and where $g(t) < 0$. In those latter subdomains, the \"area\" is negative, and shown in light orange here."
 raw <- rfun( ~ t, seed=541)
 g <- makeFun((raw(-t)+10)/2 ~ t) 
 Bars3 <- Znotes::Riemann_bars(g(t) ~ t, h=0.0333, domain(t=-2:3))
@@ -135,10 +145,6 @@ gf_text(2 ~ -1, label="+7.4", color="blue", size=10) %>%
   gf_refine(scale_fill_identity(), scale_y_continuous(breaks=seq(-10,6,by=2))) %>%
   gf_text(-7 ~ -1.7, label=latex2exp::TeX("$\\sim \\int_{-2}^3 g(t)dt = +7.4\\,-18.1=10.7$"), size=8, color=alpha("blue", 0.5)) %>%
   gf_labs(x = "t")
-  
-  
-  
-
 ```
 
 Another problem is that area is a physical quantity, with dimension L$^2$. The quantity produced by integration will have physical dimension $[f(t)][t]$, the product of the dimension of the with-respect-to quantity and the output of the function. 
@@ -152,6 +158,7 @@ The previous section a visualization of an integral in terms of an area on a gra
 
 A definite integral produces a **quantity**, not a function. The anti-derivative function constructed by using quantities like $f(t) dt$ will be a ***series of quantities*** rather than a formula. In particular, it will have the form of a data table, something like this:
 
+::: {.column-margin}
 $t$ | $F(t)$
 ----|-------
 -2  | 10.62
@@ -162,6 +169,7 @@ $t$ | $F(t)$
 0.5 | 3.18 
 1.0 | 5.14
 $\vdots$ | $\vdots$
+:::
 
 To start, we'll need to create a series of $t$ values. We'll do this by specifying a starting value for $t$ and then creating successive values by adding a numerical increment $dt$ to the entries one after the other until we reach a terminating value. For instance, in the above table, the starting value for $t$ is $-2$, the numerical increment is $dt=0.5$, and the terminating value is $1$.
 
@@ -171,6 +179,7 @@ In previous chapters of this book we have worked with data tables, but always th
 Pts <- Picket(domain(t = -2:1), h=0.5)
 Pts
 ```
+
 As you can see, the data table produced by `Picket()` has the $t$ column, as well as a second column named `weight`. We haven't explained `weight` yet, but you can see that it is the same value we specified as `h`.
 
 The name `Picket()` is motivated by the shape of a picket fence. The pickets are evenly spaced, which keeps things simple but is not a requirement.
@@ -186,7 +195,9 @@ Adding a new column is a common task when dealing with data. We'll do this with 
 Pts <- Pts %>%
   mutate(vals = f(t))
 ```
+
 With this modification, the data table looks like:
+
 ```{r echo=FALSE}
 Pts
 ```
@@ -226,7 +237,7 @@ Pts
 
 We can summarize the steps in this Euler approach to numerical integration graphically:
 
-```{r, echo=FALSE, warning=FALSE}
+```{r echo=FALSE, warning=FALSE}
 dt <- 1
 f2 <- makeFun(f(t) + 2 ~ t)
 Pts <- Picket(domain(t=-5:5), h=dt) %>%
@@ -257,7 +268,8 @@ P4 <- P3 %>%
 ```
 
 
-```{r euler-integration1, echo=FALSE, fig.height=8, warning=FALSE}
+```{r echo=FALSE, fig.height=8, warning=FALSE}
+#| label: fig-euler-integration1,
 gridExtra::grid.arrange(
   P1 %>% 
     gf_labs(title="1. Create the picket", y="f(t)"), 
@@ -269,13 +281,22 @@ gridExtra::grid.arrange(
   )
 ```
 
-```{r euler-integration2, echo=FALSE, warning=FALSE, fig.cap = "Steps in a numerical construction of an anti-derivative. (1) Create a set of picket locations over the domain of interest. The locations are spread horizontally by amount dt, so each picket will be dt units wide. (2) evaluate the original function at the picket points to give picket heights. (3) Multiply the picket height by the picket width to create an \"area\". (4) Starting at zero for the left-most picket, add in successive picket areas to construct the points on the anti-derivative function (green). Note that the vertical axis in (4) has a different dimension and units than in steps (1)-(3). In (4) the vertical scale is in the units of the anti-derivative function output."}
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-euler-integration2
+#| fig.cap: "Steps in a numerical construction of an anti-derivative. (1) Create a set of picket locations over the domain of interest. The locations are spread horizontally by amount dt, so each picket will be dt units wide. (2) evaluate the original function at the picket points to give picket heights. (3) Multiply the picket height by the picket width to create an \"area\". (4) Starting at zero for the left-most picket, add in successive picket areas to construct the points on the anti-derivative function (green). Note that the vertical axis in (4) has a different dimension and units than in steps (1)-(3). In (4) the vertical scale is in the units of the anti-derivative function output."
 P4 %>% gf_labs(title = "4. Cumulative sum of areas versus t", y="F(t)")
 ```
+
 @fig-dynamic-anti-d shows a dynamic version of the process of constructing an anti-derivative by Euler steps. The integrand $f(t)$ is shown in the top panel, the anti-derivative $F(t)$ is shown being built up in the bottom panel. The $\color{magenta}{\text{magenta}}$ bar in the top plot is the current Euler step. That step is added to the previously accumulated steps to construct $F(t)$.
 
-```{r dynamic-anti-d, echo=FALSE, fig-cap: "A dynamic view of building $F(t)$ from $f(t)$ by accumulating Euler steps."}
-knitr::include_graphics("www/area-plot.gif")
+```{r echo=FALSE}
+#| label: fig-dynamic-anti-d
+#| fig-cap: "A dynamic view of building $F(t)$ from $f(t)$ by accumulating Euler steps."
+if (knitr::is_html_output()) {   
+  knitr::include_graphics("www/area-plot.gif")
+} else {
+  knitr::include_graphics("www/area-plot-still.png")
+}
 ```
 
 ::: {.intheworld data-latex=""}
@@ -330,6 +351,8 @@ The locations and weights may seem like a wizard parody of mathematics, but thos
 
 
 ## Exercises
+
+`r if (knitr::is_latex_output()) knitr::knit_exit()`
 
 `r insert_calcZ_exercise("30.02", "ady5Fh", "Exercises/monkey-light-stove.Rmd")`
 

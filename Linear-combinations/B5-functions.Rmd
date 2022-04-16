@@ -1,5 +1,8 @@
 # Functions as vectors
 
+```{r child="../starter.Rmd"}
+```
+
 Starting with @sec-vectors, we have been working with the ***dot product***, an operation that combines two vectors to produce a scalar. $$\vec{b}\bullet\vec{a} \equiv 
 \left[\begin{array}{c}b_1\\b_2\\\vdots\\b_n\end{array}\right] \bullet
 \left[\begin{array}{c}a_1\\a_2\\\vdots\\a_n\end{array}\right] \equiv b_1 a_1 + b_2 a_2 + \cdots b_n a_n$$
@@ -68,15 +71,17 @@ P3 <- slice_plot((t^2 - 1/3)^2 ~ t, domain(t=-1:1)) %>%
   gf_labs(title = TeX("$\\int \\left[f(t) - \\widehat{f(t)}\\right]^{1/2} \\,dt$"))
 gridExtra::grid.arrange(P1, P2, P3, nrow=1)
 ```
+
 ::: {.intheworld data-latex=""}
 The table links to audio files recorded by a human speaker voicing various vowels. Play the sounds to convince yourself that they really are the vowels listed. (It may help to use the controls to slow down the playback.)
 
-
+```
 Vowel | Player
 ------|-------
 "o" as in "stone" | <audio controls><source src = "https://linguistics.ucla.edu/people/hayes/103/Charts/VChart/o.wav" type = "audio/wav"></audio>
 "e" as in "eel" | <audio controls><source src = "https://linguistics.ucla.edu/people/hayes/103/Charts/VChart/y.wav" type = "audio/wav"></audio>
-      
+```
+
 As you may know, the physical stimuli involved in sound are rapid oscillations in air pressure. Our standard model for oscillations is the sinusoid function, which is parameterized by its period and it's amplitude. The period of a sound oscillation is short: between 0.3 and 10 milliseconds. The amplitude is small. To get a sense for how small, consider the change in air pressure when you take an elevator up 10 stories in a building. The pressure amplitude of sound at a conversational level of loudness corresponds to taking that elevator upward by 1 to 10 mm.
 
 The shapes of the "e" (as in "eel") and "o" (as in "stone") sound waves---in short, the ***waveforms***---are drawn in @fig-sound-waves. 
@@ -148,10 +153,13 @@ dotAC
 dotBC   <- Integrate(waveB(t) * waveC(t) ~ t, domain(t=0:1))
 dotBC
 ```
+
 The cosine of the included angle $\theta$ between functions A and B is calculated using the the dot product formula: $$\cos(\theta) = \frac{A\bullet B}{\|A\|\, \|B\|}$$ or, computationally
+
 ```{r}
 dotAB / (lengthA * lengthB)
 ```
+
 Since $\cos(\theta) = 0$, wave A and B are orthogonal. Admittedly, there is no right angle to be perceived from the graph, but the mathematics of angles gives this result.
 
 The graphical presentation of orthogonality between waveforms A and B is easier to appreciate if we plot out the dot product itself: the integral of waveform A times waveform B. @fig-sin-cos-dot shows this integral using colors, blue for positive and orange for negative. The integral is zero, since the positive (blue) areas exactly equal the negative (orange) areas.
@@ -199,6 +207,7 @@ P2 <- slice_plot(waveB(t)*waveC(t) ~ t, domain(t=0:1), npts=300) %>%
   gf_labs(subtitle=latex2exp::TeX("$B \\bullet C$"), y="")
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
+
 We can project waveform C onto the 2-dimensional subspace spanned by A and B. Since waveforms A and B are orthogonal, This can be done simply by projecting C onto each of A and B one at a time. Here's a calculation of the scalar multipliers for A and for B and the model vector (that is, the component of C in the A-B subspace):
 
 ```{r}
@@ -208,6 +217,7 @@ mod_vec <- makeFun(A_coef*waveA(t) + B_coef*waveB(t) ~ t)
 # length of mod_vec
 Integrate(mod_vec(t)*mod_vec(t) ~ t, domain(t=0:1)) %>% sqrt()
 ```
+
 You can see that the length of the model vector is exactly the same as the length of the vector being projected. This means that waveform C lies exactly in the subspace spanned by waveforms A and B.
 
 A time-shifted sinusoid of frequency $\omega$ can *always* be written as a linear combination of $\sin(2\pi\omega t)$ and $\cos(2\pi\omega t)$. The coefficients of the linear combination tell us both the amplitude of the time-shifted sinusoid and the time shift.
@@ -226,15 +236,18 @@ B_coef <- Integrate(g(t)*cos5(t) ~ t, domain(t=0:1)) /
   Integrate(cos5(t) * cos5(t) ~ t, domain(t=0:1))
 B_coef
 ```
+
 The amplitude of $g(t)$ is the Pythagorean sum of the two coefficients:
 ```{r}
 sqrt(A_coef^2 + B_coef^2)
 ```
 
 The time delay involves the ratio of the two coefficients:
+
 ```{r}
 atan2(B_coef, A_coef) / (2*pi*5) 
 ```
+
 For our purposes here, we'll need only the Pythagorean sum and will ignore the time delay.
 :::
 
@@ -243,7 +256,7 @@ For our purposes here, we'll need only the Pythagorean sum and will ignore the t
 
 ```{r echo=FALSE}
 #| label: cello-seg
-#| fig-cap: "Waveform recorded from a cello."}
+#| fig-cap: "Waveform recorded from a cello."
 P1 <- gf_line(y ~ t, data = Cello) %>%
   gf_line(y ~ t, data=Cello_seg, color="blue")
 P2 <- gf_line(y ~ t, data=Cello_seg, color="blue")
@@ -322,6 +335,7 @@ P2 <-
 
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
+
 The sinusoid with $\omega = 109.76$ is not the only one that will repeat every 0.0091 s. So will a sinusoid with frequency $2\omega = 219.52$, one with frequency $3\omega = 329.28$ and so on. These multiples of $\omega$ are called the ***harmonics*** of that frequency. In @fig-cello-build-up (top) the cello waveform is projected onto $\omega$ and its first harmonic $2\omega$. In the middle panel, the projection is made onto $\omega$ and its first three harmonics. In the bottom panel, the projection is onto $\omega$ and its first eight harmonics.
 
 ```{r echo=FALSE}
@@ -338,6 +352,7 @@ P3 <- gf_line(y ~ t, data=Pts, color="blue", alpha=.5) %>%
 
 gridExtra::grid.arrange(P1, P2, P3, nrow=3)
 ```
+
 As the number of harmonics increases, the approximation gets better and better. 
 
 Until now, all the plots of the cello waveform have been made in what's called the ***time domain***. That is, the horizontal axis of the plots has been *time*, as seems natural for a function of time.
@@ -385,6 +400,8 @@ The analogous procedure for stringed musical instruments such as the cello or vi
 :::
 
 ## Exercises
+
+`r if (knitr::is_latex_output()) knitr::knit_exit()`
 
 `r insert_calcZ_exercise("46.03", "uKOO7K", "Exercises/pony-stand-bottle.Rmd")`
 
