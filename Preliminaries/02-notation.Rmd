@@ -27,13 +27,85 @@ We'll attempt to use mathematical notation in a way that limits the conflict bet
 
 ## Functions, inputs, parameters
 
-Our style of notation will be to give functions and their inputs *explicit names*. The basic principle is that a function name is a sequence of letters followed by an empty pair of parentheses, for instance $\sin()$ or $\ln()$.
+Our style of notation will be to give functions and their inputs *explicit names*. The basic principle is that a function name is a sequence of letters followed by an empty pair of parentheses, for instance $\sin()$ or $\ln()$. The parentheses provide a clear indication that this is a function name.
 
-As you've seen in the previous chapter, our notation for ***defining*** a function also includes the names of the parameters. In our mathematical notation, both the name of the function and the names of the inputs are shown on the left-hand side of the $\equiv$ symbol. For instance, $$g(u, z) \equiv u\,\cos(z)$$ involves a function named $g()$ and two inputs named $u$ and $z$ respectively. We'll also use names with subscripts and superscripts, e.g. the function names $g_3()$ or $h_\text{water}()$.
+::: {.column-margin}
+When we come to introduce computer notation in Section @sec-makefun, you'll see that function definition is done in a somewhat different manner. Why? We need to work within the syntax and grammar of the computer language. We will be using the R language, but other mainstream computer languages would impose similar requirements.
+:::
+
+As you saw in Chapter @sec-quantity-function-space, our notation for ***defining*** a function includes the names of the parameters. In our mathematical notation, both the name of the function and the names of the inputs are shown on the left-hand side of the $\equiv$ symbol. 
+For instance, $$g(u, z) \equiv u\,\cos(z)$$ involves a function named $g()$ and two inputs named $u$ and $z$ respectively. We'll also use names with subscripts and superscripts, e.g. the function names $g_3()$ or $h_\text{water}()$.
+
+A sensible person will define a function because they are planning to use it later on, perhaps multiple times. "Using" a function might mean including it in the formula in the definition of another function. But there is also a more specific sense of "using" to which we need to give a precise name. To ***apply a function*** means providing specific input quantities so that the output of the function can be calculated. An equivalent phrase is ***evaluate a function on*** an input(s). For instance, to apply the function $g()$ to the input quantity 3, any of the following mathematical expressions might be used:
+$$g(3)\ \ \ \text{or}\ \ \ \ g(x=3) \ \ \ \text{or}\ \ \ \ g(x)\left.\Large\strut\right|_{x=3}\ .$$
+Remember that $g(3)$ or its equivalents are not themselves functions. They are the quantity that results from applying a the function to an input quantity.
+
+::: {.column-margin}
+Distinguish carefully between the ***definition*** of a function, say, $g(t) \equiv \sin(t)/t$ and the ***application of a function to an input***. When a function is being applied, the argument can be a numeral or any name that contains the value to serve as input. For instance, any of $g(b)$, $g(\text{age})$, or $g(\text{population})$ can be correct ways to apply $g()$.
+:::
+
+The right-hand side of a function definition is a ***formula***. The formula specifies how each of the inputs will get used in a computation of the function output. When a function has more than one input, the input names serve to indicate where each input goes in the formula defining the calculation.  For instance:
+$$h(x, y) \equiv x^2 e^y\ .$$
+$h()$ is a completely different function than, say,
+$f(x, y) \equiv y^2 e^x$. 
 
 
+### Input names
 
-To the right of $\equiv$ in a function definition is a ***formula*** written in terms of functions applied to inputs and the familiar 
+::: {.column-margin}
+You may notice that we use the function names $f()$, $g()$, and $h()$ a lot. Consider these names to be the equivalent of pronouns in English like "this", "that", "it", and so on. Function names like $f()$ or $F()$  or $G()$ will be used when we need to refer to a function for just a moment: a sentence, a paragraph, a section.
+:::
+
+To simplify identifying function definitions, we tend to use a small set of names for inputs:
+
+
+- $\large x$ or $\large y$ or $\large z$. 
+- $\large t$. This name is typically used when the input is meant to be ***time***. 
+- Less frequently, $u$, $v$, $w$ when the other arguments are already in use.
+
+In modeling, to make clearer the relationship of functions and the real-world setting, it's a good idea to use more descriptive names, like $T$ for "temperature" or $V$ for volume, or even $\text{altitude}$ (which describes itself). 
+
+Often, the functions we define will have formulas that include quantities other than the inputs. For instance, we might define:
+$$h(t) \equiv A \sin(t) + B\ .$$
+This definition explicitly identifies $t$ and the name of the function input. So what are $A$ and $B$? These names also stand for quantities, and to apply the function---say, $h(t=3)$---we would have to know the values of these quantities. We use the word ***parameter*** to refer to such quantities.
+
+Distinguishing between *inputs* and *parameters* is an important way to communicate with the human reader. The idea is that a function, once defined, will be applied to inputs potentially many times. What changes between these function applications is the value of the input quantity. By writing a quantity as a parameter, we are signaling that these quantities will not be changing when we apply the function.
+
+::: {.column-margin}
+There is no absolute rule for identifying a named quantity used in a function's formula as a parameter rather than as an input. It's a matter of style and the conventions of the field in which you're working. When we get to the computer notation for defining functions, you'll see that we simplify things by considering all named quantities used in a function formula as inputs.
+:::
+
+::: {.example}
+A pendulum is a device that swings back and forth from a fixed pivot. The **period** of a pendulum is the time it takes to go through one complete cycle of motion---one "back" and one "forth." It happens that it is simple to compute the period of a pendulum, $$\text{period}(L) \equiv \sqrt{\strut L/g\ }\ ,$$ where $L$ is the length of the pendulum, $g$ is the "acceleration due to gravity." 
+
+We could have written the function as $\text{period}(L, g) \equiv \sqrt{\strut L/g\ }$, treating both quantities $L$ and $g$ as inputs. We wrote instead $\text{period}(L)$ to signify something to the human reader: that we are anticipating the user of $\text{period}()$ to be calculating the periods of various pendula, with different $L$, but all in about the same location. That location will presumably be near the surface of the Earth, where $g \approx 9.8$ m/s^2^. In other words, the definition of $\text{period}(L)$ treats the acceleration due to gravity as a *parameter* rather than an input.
+
+Of course, you might be the kind of person who puts pendula in elevators or on Mars. If so, you would need to use a different value for $g$ than $9.8$ m/s^2^.
+
+You'll see much more use of parameters in Block @sec-modeling-part when we use parameters to "fit" functions to data.
+:::
+
+### Parameter names
+
+To make it easy to recognize ***parameters***, we'll use names like $a$, $b$, $c$, $\ldots$, or their upper-case cousins $A$, $B$, $\ldots$. For instance, here is a definition of a function called a "cubic polynomial": 
+$$h(x)\equiv a + b x + c x^2 + d x^3\ .$$
+
+::: {.column-margin}
+Pronounce names $a_0$ or $b_3$ as "a-sub-zero" and "b-sub-three" respectively.
+:::
+
+But there will be occasions where we need to compare two or more functions and run out of appropriate names from the start of the alphabet. A way to keep things organized is to use subscripts on the letters, for instance comparing
+$$g(x) \equiv a_0 + a_1 x^2 + a_2 x^2 + a_3 x^3 + a_4 x^4$$
+to 
+$$f(x) \equiv b_0 + b_1 x^2 + b_2 x^2\ .$$
+
+::: {.column-margin}
+The tradition of using letters from the start of the alphabet as parameter names comes from Isaac Newton.
+
+Professional models often use Greek letters as parameter names: $\alpha$, $\beta$, $\gamma$, $\delta$, ...
+:::
+
+### Functions without names
 
 Traditional mathematical notation writes many functions both without a name and without the parentheses. Examples that you have likely seen are $x^2$, $\sqrt{\strut x}$, and $e^x$. If we were to absolutely impose the name/parentheses principle we would refer to these functions as, say, square() and sqrt() and exp(). Notice that the $x$ is not part of the name.
 
@@ -41,60 +113,20 @@ Sometimes will will use names like square() just to emphasize the point that we 
 
 The name/parentheses notation, like exp() or sin() allows us to avoid having to write $x$ as the indicator of where the input to the function goes. That's helpful because, after all, the actual input might be something completely different from $x$.
 
-Still, there are times in which we do need to state the name of the input to functions. One of these is when ***defining a function***. To define a function, we will use an expression like
-$$g(y) \equiv y \cos(y)\ .$$
-On the left of the $\equiv$ goes the name of the function, with the name of the input(s) in parentheses.  On the right of $\equiv$ goes a formula for computing the output from the input. This formula is written in terms of the input name given on the left side of the definition.
 
-In situations where there is just one input to a function, as in $g()$ above, we could use any name for the input. For instance, all of these are exactly equivalent to the definition for $g()$ given above:
 
-$$g(x) \equiv x \cos(x)\\
-g(z) \equiv z \cos(z))\\
-g(zebra) \equiv zebra\ \cos(zebra)$$
 
-We'll tend to avoid hard-to-read input names like $zebra$. Instead, we'll mostly use :
 
-- $\large x$ or $\large y$ or $\large z$. 
-- $\large t$. This name is typically used when the input is meant to be ***time***. So if we were creating a function to represent the relationship between time (of day) and outdoor brightness, we might use this notation: $\text{brightness}(t)$
 
-Other input names we will use often in this book include $u$, $v$, $w$, following the 17th-century convention introduced by Newton that input names come from the end of the alphabet. But we won't shy away from more descriptive names, like $T$ for "temperature" or $V$ for volume, or even $\text{altitude}$ (which describes itself). 
 
-When a function has more than one input, the input names serve to indicate where each input goes in the formula defining the calculation.  For instance:
-$$h(x, y) \equiv x^2 e^y\ .$$
-$h()$ is a completely different function than, say,
-$f(x, y) \equiv y^2 e^x$. 
-
-You may have noticed that we've used the names $f()$, $g()$, and $h()$ a lot. Consider these names to be the equivalent of pronouns in English like "this", "that", "it", and so on. Function names like $f()$ or $F()$ will be used when we need to refer to a function for a moment: a sentence, a paragraph, a section. 
-
-We will also have many occasions where we need to give a name to a quantity. Of course, a quantity is different from a function; functions are ***relationships*** between quantities.
-
-For example, we will use names for quantities that are ***parameters*** in a function, like:
-$$g(x) \equiv a x^2 + b x + c\ .$$ Here, $x$ is the name given to the input to $g()$, while $a$, $b$, and $c$ are names for other quantities involved in the formula.
-
-Again following Newton's convention, names for quantities will come from the beginning of the alphabet. For instance, here is a definition of a function called a "cubic polynomial": 
-$$h(x)\equiv a + b x + c x^2 + d x^3\ .$$
-But there will be occasions where we need to compare two or more functions and run out of appropriate names from the start of the alphabet. A way to keep things organized is to use subscripts on the letters, for instancecomparing
-$$g(x) \equiv a_0 + a_1 x^2 + a_2 x^2 + a_3 x^3 + a_4 x^4$$
-to 
-$$f(x) \equiv b_0 + b_1 x^2 + b_2 x^2\ .$$
-
-Other ways professionals expand the set of letters from the start of the alphabet:
-
-- Use capital letters: $A$, $B$, $C$, and so on
-- Use Greek letters: $\alpha$, $\beta$, $\gamma$, $\delta$, ...
-
-## Function output
-
-We will often ***apply a function to *** specific input quantities in order to produce an output from the function. An equivalent phrase is ***evaluate a function on*** an input. For instance, to apply the function $g()$ to the input quantity 3, any of the following mathematical expressions might be used:
-$$g(3)\ \ \ \text{or}\ \ \ \ g(x=3) \ \ \ \text{or}\ \ \ \ g(x)\left.\Large\strut\right|_{x=3}\ .$$
-Remember that $g(3)$ or its equivalents are not themselves functions. They are the quantity that results from applying a the function to an input quantity.
 
 ## Inputs, arguments, and variables
 
 In everyday speech, an "argument" is a discussion between people with differing views. But in mathematics and computing, ***argument*** means something else entirely: it is a synonym for "input to a function."
 
-In this text, we'll mostly use "input" to refer to what goes into a mathematical function, although using "argument" would be fine. As regards computer functions ... In @sec-makefun you'll see how to instruct the computer to create a mathematical function like $g()$ or $f()$ from the previous section. The names and format of such  instructions---e.g. make a mathematical function from a formula, draw a graph of a function, plot data---are given in the same function notation we use in math. For example, `makeFun()` constructs a function from a formula, `slice_plot()` graphs a function, `gf_point()` makes one style of data graphic. These R entities saying "do this" are also called "functions." 
+In this text, we'll mostly use "input" to refer to what goes into a mathematical function, although using "argument" would be fine. As regards computer functions ... In Section @sec-makefun you'll see how to instruct the computer to create a mathematical function like $g()$ or $f()$ from the previous section. The names and format of such  instructions---e.g. make a mathematical function from a formula, draw a graph of a function, plot data---are given in the same function notation we use in math. For example, `makeFun()` constructs a function from a formula, `slice_plot()` graphs a function, `gf_point()` makes one style of data graphic. These R entities saying "do this" are also called "functions." 
 
-When referring to such R "do this" functions, we'll refer to the stuff that goes in between the parentheses as "arguments." The word "input" would also be fine. The point of using "input" for math functions and "argument" for R "do this" functions is merely to help you identify when we are talking about mathematics and when we are talking about computing.
+When referring to such R "do this" functions, we'll refer to the stuff that goes in between the parentheses as "arguments." The word "input" would also be fine. The point of using "input" for math functions and "argument" for R "do-this" functions is merely to help you identify when we are talking about mathematics and when we are talking about computing.
 
 A word we will **not** make much use of is "variable." You are probably used to statements like, "$x$ and $y$ are the variables," and it will take you a while to stop using them reflexively. The reason we will use "input" or "argument" instead of "variable" is that variable means too many different things in different contexts. For instance, in the algebra-course instruction, "Solve $3x - 2 = x^2$," the $x$ is really a quantity, unknown at first but soon to be resolved by your algebraic skills. The $x$ in the solving problem would often be called a "variable," but it's not at all an "input" or an "argument."
 
