@@ -1,41 +1,67 @@
-# Graphs and graphics {#sec-graphs-and-graphics}
+# Vizualizing functions {#sec-graphs-and-graphics}
 
 ```{r child="../starter.Rmd"}
 ```
 
+In Chapter @sec-quantity-function-space we encouraged you to think of a function in terms of the space of possible inputs---the domain---and another space of outputs. In this chapter, we introduce ways to visualize the input and output space of a function together.
 
-Before we go much further in exploring the creation and uses of functions, let's remember the general idea of mathematical modeling: the construction of mathematical representations of systems. The word "system" is familiar in everyday speech and is used to describe all manner of things: means of communication, ecology, politics, the workings of the market, etc. A "system" involves a group of related components that operates as a whole. For instance, the digestive system consists of body organs and reflexes that, collectively, transform food into the elementary substances needed for metabolism. In the economic theory of the market, components are prices, demand, and supply. These three components are not independent. Demand is related to price as is supply, both are what economists sometimes call "curves" but which we would call functions.
-
-Key steps in making a mathematical representation---a model---of a system involve identifying the system components and describing quantitatively the relationships among them. In brief, mathematical modeling is about describing the ***relationships*** between things.
-
-
-::: {.practice data-latex=""}
-Let's start with a simple system that is so familiar that you likely do not think of it as a system: a triangle.
-
-A triangle consists of three connected line segments: the sides. It has other properties that are related to the sides and each other, for example, the angles between sides, the perimeter, or the area enclosed by the triangle. 
-
-Here's a description of the relationship between the perimeter $p$ and the lengths of the sides, $a$, $b$, $c$, written in the form of a function:
-$$p(a,b,c) \equiv a + b + c\ .$$
-The mathematical expression of the relationship between area $A$ enclosed by the triangle and the side lengths goes back at least 2000 years to [Heron of Alexandria](https://en.wikipedia.org/wiki/Hero_of_Alexandria) (circa 10–70). As a function, it can be written
-$$A(a,b,c) \equiv \frac{1}{4}\sqrt{\strut 4a^2b^2-(a^2+b^2-c^2)^2}\ .$$
-:::
+Let's start with a space suitable for representing a single quantity. That is, of course, the familiar number line.
 
 ```{r echo=FALSE}
-#| label: fig-carbon-phases
-#| fig-cap: "Phase diagram for CO_2_. [Source](https://commons.wikimedia.org/wiki/File:Carbon_dioxide_pressure-temperature_phase_diagram.svg) Ben Finney, Mark Jacobs, CC0, via Wikimedia Commons"
-#| column: margin
-knitr::include_graphics("www/CO2-phases.png")
+#| column: page-right
+knitr::include_graphics("www/number-line2.png") 
 ```
 
+On the number line, any specific quantity is a single point. For instance, let's use the number line to show the two quantities $\color{blue}{6.3}$ and $\color{magenta}{-4.5}$.
 
+```{r echo=FALSE}
+#| column: page-right
+knitr::include_graphics("www/number-line3.png") 
+```
 
-::: {.example data-latex=""}
-**Solid CO_2**
+A ***function*** connects each point in the input space to a corresponding point in the output space. Figure @fig-show-lines-function gives a sketch of an arbitrary function where the input and output spaces are shown one above the other. Arrows are drawn for several input values, showing where those values are mapped to in the output space. (There are infinitely more arrows to be drawn in between those shown, but the graphic would become illegible.)
 
-There's considerable interest in ways to remove CO_2 from the atmosphere and store it permanently underground. It's hard to store gasses in the massive quantities needed to mitigate climate change. But CO_2_ storage is part of a system that includes temperature, pressure, and chemical affinity. 
+```{r echo=FALSE}
+#| label: fig-show-lines-function
+#| column: page-right
+#| fig-cap: "A function is a mapping from an input space to an output space."
+knitr::include_graphics("www/number-line-function.png")
+```
 
-@fig-carbon-phases shows the relationship between physical form of pure CO_2_ and the temperature and pressure of the gas. 
+::: {.column-margin}
+In everyday speech, the word "graphic" refers to any drawing. In mathematics, a "graph" is a drawing made in the Cartesian plane, with the input values marked by the horizontal axis and the function output marked by the vertical axis.
 :::
+
+
+@fig-show-lines-function gives information about the function, but it is in a format that is almost impossible to interpret. Renė Descartes (1596–1650) proposed a better visualization: place the input and output spaces at right angles to one another and, instead of the head and tail of the arrows connecting corresponding positions on the input and on the output spaces, use the head and tail values as coordinates in the joint input/output space. This setup is shown in @fig-graph1 and is called, as you know, the ***graph*** of the function. 
+
+
+
+```{r echo=FALSE}
+#| label: fig-graph1
+#| fig-cap: "The mapping from @fig-show-lines-function translated into the form of a graph. The input space is marked by the horizontal axis, and the output space by the vertical axis. Each of the arrows in @fig-show-lines-function is represented by a point, whose x-coordinate is the position of the tail of the arrow in the input space and whose y-coordinate is the position of the head of the arrow in the output space. This is the ***graph*** of the function."
+Mapping <- tibble(
+  x = c(-4.8, -4.4,  -3.5, -2.7, -0.9, -0.4, -0.3, 0.3,  0.7, 0.9,  1.5, 2.3, 3.5,  5.6,  5.7, 6.0 ),
+  y = c(-4.8, -4.65, -4.5, -2.4, -2.4, -2.4, -1.5,-0.9, -0.3, 0.25, 0.5, 2.1, 3.5, -5.8, -1.2, 0),
+  hue = c("red", "green", "blue", "tan", "green", "purple", "orange", "red", "blue", "purple", "brown", "blue", "magenta", "purple", "red", "purple")
+)
+
+fun <- spliner(y ~ x, data = Mapping)
+
+gf_point(y ~ x, data = Mapping, color=~ hue, size=2, alpha=0.5) %>%
+  gf_vline(xintercept=~ x, data = Mapping, color=~ hue, size=.1) %>%
+  gf_hline(yintercept=~ y, data = Mapping, color=~ hue, size=.1) %>%
+  slice_plot(fun(x) ~ x, domain(x=-5:6.1), npts=500) %>%
+  gf_labs(x="input", y="output") %>%
+  gf_refine(scale_color_identity(), 
+            scale_y_continuous(breaks=seq(-6, 6, by=1), limits=c(-6.5, 6.5)),
+            scale_x_continuous(breaks=seq(-5, 6, by=1)))
+```
+
+A major advantage of this format is that the function output can be displayed not just at a discrete set of input values, but at each and every point in the continuous input space. @fig-graph1 shows a function consistent with the discrete points, but there are many functions that could be drawn to connect the dots. That is, the discrete arrows shown in @fig-show-lines-function do not *completely* specify a unique function. 
+
+
+
 
 ::: {.intheworld data-latex=""}
 Nerve cells communicate via electrical voltages and currents. For long-distance communications (distances longer than about 1 mm) the signaling takes the form of pulses of voltage occuring repetitively at different rates. The formation of these pulses, called "action potentials," was the subject of an extensive research project in the 1950s involving inserting tiny electrodes into relatively large ("giant") nerve cells that mediate the fleeing reaction of squid. A typical experiment involved regulating artificially the voltage across the cell membrane. By these experiments, the scientists--- John Eccles, Alan Hodgkin and Andrew Huxley---were able to describe mathematically the relationship between membrane voltage and the current across the membrane. A calculus model built from the relationships provided a concise description of the biophysics of action potentials. A 1963 Nobel Prize was awarded for this work.
@@ -75,9 +101,9 @@ On the other hand, functions cannot represent all types of relationships. For in
 
 Care needs to be taken in using functions to represent relationships. For the nerve-cell current-voltage relationship, for instance, we can construct a function current(voltage) to represent the relationship. That's because for any given value of voltage there is just one corresponding current. But there is no voltage(current) function, even though knowing the current tells you a lot about the voltage.
 
-## Function graphs
+## Function graphs in R/mosaic
 
-Given a function, it's easy to draw the corresponding relationship as a graphic. This section describes how to do that for functions that have one or two inputs. The opposite---given a relationship, represent it using functions---is not always so easy and will require modeling techniques that we'll develop in Block 1.
+Given a function, it's easy to draw the corresponding relationship as a graphic. This section describes how to do that for functions that have one or two inputs. The opposite---given a relationship, represent it using functions---is usually not so easy and will require modeling techniques that we'll develop in Block 1.
 
 Contemporary practice is to draw graphs of functions using a computer. R/mosaic provides several functions that do this, you need only learn how to use them.
 
@@ -102,18 +128,37 @@ To draw a graph of a function with one input, use `slice_plot()`. The tilde expr
 ```{r}
 #| label: fig-first-slice-plot
 #| fig.cap: "Graph of the function $f(y) \\equiv y e^y$."
-#| cap-location: margin
+#| column: margin
 slice_plot(y * exp(y) ~ y, domain(y=0:10))
 ```
 
-[The ***graphics frame*** in @fig-first-slice-plot is a 2-dimensional area for drawing. The ***domain*** of the function being graphed in that frame, $f() \equiv y e^y$, is the number line, that is, the space of all real numbers. The plot, however, shows only a finite interval $0 \leq y \leq 10$ of that domain.]{.aside}
+
 
 Recall the situation seen in @fig-fhn-model which shows a two-dimensional space of all possible (voltage, current) pairs for nerve cells. The experimental data identified many possible pairs---marked by the dots in @fig-fhn-model ---that are consistent with the relationships of the nerve-cell system.
+
+[The ***graphics frame*** in @fig-first-slice-plot is a 2-dimensional area for drawing. The ***domain*** of the function being graphed in that frame, $f() \equiv y e^y$, is the number line, that is, the space of all real numbers. The plot, however, shows only a finite interval $0 \leq y \leq 10$ of that domain.]{.aside}
 
 The same is true of @fig-first-slice-plot, the graph of a function with a single input. The two-dimensional space shown in the @fig-first-slice-plot contains (input, output) pairs, only a small fraction of which are consistent with the relationship described by the function. The points in that small fraction could be marked by individual dots, but instead of dots we draw  the continuous curve connecting the dots. Every point on the curve is consistent with the relationship between input and output represented by the function. 
 
 
 ### Contour plot
+
+```{r echo=FALSE}
+#| label: fig-carbon-phases
+#| fig-cap: "Phase diagram for CO_2_. [Source](https://commons.wikimedia.org/wiki/File:Carbon_dioxide_pressure-temperature_phase_diagram.svg) Ben Finney, Mark Jacobs, CC0, via Wikimedia Commons"
+#| column: margin
+knitr::include_graphics("www/CO2-phases.png")
+```
+
+::: {.example data-latex=""}
+**Solid CO_2**
+
+INTEGRATE THIS INTO THE CONTOUR-PLOT DISCUSSION. Talk about the discrete phases and that each point in the input space corresponds to one of the possible phases: solid, liquid, gas, ...  Then transition into continuous outputs.
+
+There's considerable interest in ways to remove CO_2 from the atmosphere and store it permanently underground. It's hard to store gasses in the massive quantities needed to mitigate climate change. But CO_2_ storage is part of a system that includes temperature, pressure, and chemical affinity. 
+
+@fig-carbon-phases shows the relationship between physical form of pure CO_2_ and the temperature and pressure of the gas. 
+:::
 
 Functions with **two inputs** can be displayed with `contour_plot()`. Naturally, the tilde expression defining the function will have **two** names on the right-hand side of <span style="font-size:250%'">~</span>. Similarly, the domain specification will have two arguments, one for each of the names in the tilde expression.
 
@@ -143,6 +188,7 @@ the space of all possibilities (y, z, output) is three-dimensional, but very few
 ```{r echo=FALSE}
 #| label: fig-first-surface
 #| fig-cap: "Displaying $g(y,z) \\equiv e^{-z}\\sin(y)$ as a surface plot annotated with contour lines."
+#| fig-cap-location: margin
 if (!knitr::is_html_output()) {
   knitr::include_graphics("www/surface-plot1.png")
 } else {
@@ -211,12 +257,13 @@ Saying "graph" for a display of $f(x)$ versus $x$ is correct and reasonable. But
 
 Almost always, when mathematically modeling a real-world situation or phenomenon, we do not try to capture every nuance of every relationship that might exist in the real world. We leave some things out. Such simplifications make modeling problems easier to deal with and encourage us to identify the most important features of the most important relationships.
 
-[As you become practiced reading contour plots, you might prefer to read this one as a hilltop (shaded yellow) side-by-side with a hollow or bowl (shaded purple), with green, almost level flanks at the left and right edges of the frame.]{.aside}
+
 
 
 ```{r  echo=FALSE}
 #| label: fig-contour-pre-slice
 #| fig-cap: "A hypothetical relationship among three quantities."
+#| fig-cap-location: margin
 f2 <- rfun( ~ input_1 + input_2, seed=96)
 contour_plot(f2(input_1, input_2) ~ input_1 + input_2,
                  domain(input_1=c(-5, 5), input_2 = c(0, 4)),
@@ -227,11 +274,11 @@ contour_plot(f2(input_1, input_2) ~ input_1 + input_2,
 
 
 
-In this spirit, it's useful always to assume that our models are leaving something out and that a more complete model involves a function with more inputs than the present candidate. The present candidate model should be considered as a ***slice*** of a more complete model. Our slice leaves out one or more of the input quantitie=s in a more complete model.
+In this spirit, it's useful always to assume that our models are leaving something out and that a more complete model involves a function with more inputs than the present candidate. The present candidate model should be considered as a ***slice*** of a more complete model. Our slice leaves out one or more of the input quantities in a more complete model.
 
-To illustrate this, suppose that the actual system involves relationships among three quantitiess, which we represent in the form of a function of two inputs, as shown in @fig-contour-pre-slice. (The third quantity in the relationship is the output of the function.)
+[As you become practiced reading contour plots, you might prefer to read this one as a hilltop (shaded yellow) side-by-side with a hollow or bowl (shaded purple), with green, almost level flanks at the left and right edges of the frame.]{.aside}
 
-
+To illustrate this, suppose that the actual system involves relationships among three quantities, which we represent in the form of a function of two inputs, as shown in @fig-contour-pre-slice. (The third quantity in the relationship is the output of the function.)
 
 The most common forms of ***slice*** involve constructing a simpler function that has one input but not the other. For example, our simpler function might ignore input 22. There are different ways of collapsing the function of two inputs into a function of one input. An especially useful way in calculus is to take the two-input function and set one of the inputs to a ***constant value***.
 
@@ -242,7 +289,7 @@ For instance, suppose we set input 22 to the constant value 1.5. This means that
 ```{r echo=FALSE, warning=FALSE}
 #| label: fig-contour-slice
 #| fig-cap: "Left: A slice (red) through the domain of a contour plot. Right: The value of the function along the red slice presented as a mathematical graph,  generated by `slice_plot()`."
-#| fig-column: page-right
+#| fig-cap-location: margin
 #| fig-height: 2.5
 f2 <- rfun( ~ input_1 + input_2, seed=96)
 PL <- contour_plot(f2(input_1, input_2) ~ input_1 + input_2,
@@ -262,7 +309,7 @@ Slices can be taken in any direction or even along a curved path! The blue line 
 ```{r echo=FALSE,  warning=FALSE}
 #| label: fig-one-c-three
 #| fig-cap: "A path (blue) along which to cut a slice. The graph is made with `contour_plot()`. Right: Slice plot along the blue path. The graph is made with `slice_plot()`."
-#| fig-column: page-right
+#| fig-cap-location: margin
 #| fig-height: 2.5
 Pleft <- contour_plot(f2(input_1, input_2) ~ input_1 + input_2,
                  domain(input_1=c(-5, 5), input_2 = c(0, 4)),
@@ -282,6 +329,7 @@ gridExtra::grid.arrange(Pleft, Pright, ncol=2)
 
 `r insert_calcZ_exercise("XX.XX", "bYHEy6", "Exercises/squirrel-hold-bulb.Rmd", skill="read surface plots")`
 
+`r insert_calcZ_exercise("XX.XX", "sUmMZv", "Exercises/seahorse-hear-magnet.Rmd", skill="slice through 4-dimensional space")`
 
 EXERCISE: USE a plot like `surface_plot(exp(-z)*sin(y) ~ y & z, interval(y=-6:6, z=0:2), type="contour")` so that students can read off the (x,y,z) value. Ask for the value of the function at several input points. Ask them to trace the output value as the cursor moves along a contour line.
 
