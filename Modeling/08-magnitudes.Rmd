@@ -43,12 +43,7 @@ We haven't shown you the digit() function for anything but the handful of discre
 In practice, digit() is so useful that it could well have been one of our basic modeling functions: 
 $$\text{digit(x)} = 2.302585 \ln(x)$$ or, in R, `log10()`. We elected  $\ln()$ rather than digit() for reasons that will be seen when we study ***differentiation***.
 
-<!-- Proposed exercise about binary digits
 
-`rrr insert_calcZ_exercise(15.1, "TLCIX", "Exercises/Dimension/count-the-digits.Rmd")`
-
-
--->
 
 ## Quantity and magnitude
 
@@ -73,7 +68,7 @@ You may have guessed that `digits()` is handy for computing differences in terms
 1. Make sure that the quantities are expressed in the same ***units***. 
 2. Calculate the difference between the `digits()` of the numerical part of the quantity.
 
-::: {.workedexample}
+::: {.practice data-latex=""}
 What is the order-of-magnitude difference in velocity between a snail and a walking human. A snail slides at about 1 mm/sec, a human walks at about 5 km per hour. Putting human speed in the same units as snail speed: 
 $$5 \frac{km}{hr} = \left[\frac{1}{3600} \frac{hr}{sec}\right] 5 \frac{km}{hr} = \left[10^6 \frac{mm}{km}\right] \left[\frac{1}{3600} \frac{hr}{sec}\right] 5 \frac{km}{hr} = 1390 \frac{mm}{sec} $$
 Calculating the difference in `digits()` between 1 and 1390:
@@ -117,14 +112,19 @@ Think about this in terms of the kinds of quantities that are the input and outp
 
 In order to display a variable from data that varies over multiple orders of magnitude, it helps to plot the ***logarithm*** rather than the variable itself. Let's illustrate using the `Engine` data frame, which contains measurements of many different internal combustion engines of widely varying size. For instance, we can graph engine RPM (revolutions per second) versus enging mass, as in Figure \@ref(fig:rpm-mass).
 
-```{r rpm-mass, fig-cap: "Engine RPM versus mass for 39 different enginges plotted on the standard linear axis."}
+```{r}
+#| label: fig-rpm-mass
+#| fig-cap: "Engine RPM versus mass for 39 different enginges plotted on the standard linear axis."
 gf_point(RPM ~ mass, data = Engines)
 ```
+
 In the graph, most of the engines have a mass that is ... zero. At least that's what it appears to be. The horizontal scale is dominated by the two huge 100,000 pound monster engines plotted at the right end of the graph.
 
 Plotting the logarithm of the engine mass spreads things out, as in Figure \@ref(fig:rpm-mass-log).
 
-```{r rpm-mass-log, fig-cap: "Engine RPM versus mass on semi-log axes."}
+```{r}
+#| label: fig-rpm-mass-log
+#| fig-cap: "Engine RPM versus mass on semi-log axes."
 gf_point(RPM ~ mass, data = Engines) %>%
   gf_refine(scale_x_log10())
 ```
@@ -133,7 +133,9 @@ Note that the horizontal axis has been labelled with the actual mass (in pounds)
 
 When both axes are labeled this way, we have a ***log-log*** plot, as shown in Figure \@ref(fig:rpm-mass-log-log). 
 
-```{r rpm-mass-log-log, fig-cap: "Engine RPM versus mass on log-log axes."}
+```{r}
+#| label: fig-rpm-mass-log-log
+#| fig-cap: "Engine RPM versus mass on log-log axes."
 gf_point(RPM ~ mass, data = Engines) %>%
   gf_refine(
     scale_x_log10(),
@@ -155,7 +157,9 @@ https://chem.libretexts.org/Courses/University_of_California_Davis/UCD_Chem_002A
 
 Famously, Boyle's Law states that, at constant temperature, the pressure of a constant mass of gas is inversely proportional to the volume occupied by the gas. Figure \@ref(fig:boyle-movie) shows a cartoon of the relationship.
 
-```{r boyle-movie, echo=FALSE, fig-cap: "A cartoon illustrating Boyle's Law. Source: [NASA Glenn Research Center](https://www.grc.nasa.gov/WWW/K-12/airplane/aboyle.html)"}
+```{r echo=FALSE}
+#| label: fig-boyle-movie
+#| fig-cap: "A cartoon illustrating Boyle's Law. Source: [NASA Glenn Research Center](https://www.grc.nasa.gov/WWW/K-12/airplane/aboyle.html)"
 if (knitr::is_html_output()) {
     knitr::include_graphics("www/Boyles_Law_animated.gif")
 } else {
@@ -165,7 +169,9 @@ if (knitr::is_html_output()) {
 
 Figure \@ref(fig:boyle-data) plots out Boyle's actual experimental data. I
 
-```{r boyle-data, fig-cap: "A plot of Boyle's pressure vs volume data on linear axes. The straight line model is a poor representation of the pattern seen in the data."}
+```{r} 
+#| label: fig-boyle-data
+#| fig-cap: "A plot of Boyle's pressure vs volume data on linear axes. The straight line model is a poor representation of the pattern seen in the data."
 gf_point(pressure ~ volume, data = Boyle) %>%
   gf_lm()
 ```
@@ -173,13 +179,15 @@ You can see a clear relationship between pressure and volume, but it's hardly a 
 
 Plotting Boyle's data on log-log axes reveals that, in terms of the logarithm of pressure and the logarithm of volume, the relationship is linear.
 
-```{r boyle-data-log, fig-cap: "Plotting the logarithm of pressure against the logarithm of volume reveals a straight-line relationship."}
+```{r}
+#| label: fig-boyle-data-log
+#| fig-cap: "Plotting the logarithm of pressure against the logarithm of volume reveals a straight-line relationship."
 gf_point(log(pressure) ~ log(volume), data = Boyle) %>%
   gf_lm()
 ```
 :::
 
-Figure \@ref(fig:boyle-data-log) shows that Boyle's log-pressure and log-volume data are a straight-line function. In other words:
+@fig-boyle-data-log shows that Boyle's log-pressure and log-volume data are a straight-line function. In other words:
 
 $$\ln(\text{Pressure}) = a + b \ln(\text{Volume})$$
 
@@ -196,9 +204,12 @@ A power-law relationship!
 
 Plotting the logarithm of a quantity gives a visual display of the magnitude of the quantity and labels the axis as that magnitude. A useful graphical technique is to label the axis with the original quantity, letting the position on the axis show the magnitude.   
 
-To illustrate, Figure \@ref(fig:mag-scales-1)(left) is a log-log graph of horsepower versus displacement for the internal combustion engines reported in the `Engines` data frame. The points are admirably evenly spaced, but it is hard to translate the scales to the physical quantity. The right panel in Figure \@ref(fig:mag-scales-1) shows *exactly the same data points*, but now the scales are labeled using the original quantity.
+To illustrate, @fig-mag-scales-1(left) is a log-log graph of horsepower versus displacement for the internal combustion engines reported in the `Engines` data frame. The points are admirably evenly spaced, but it is hard to translate the scales to the physical quantity. The right panel in @fig-mag-scales-1 shows *exactly the same data points*, but now the scales are labeled using the original quantity.
 
-```{r mag-scales-1, out-width: "50%", fig.show="hold", fig-cap: "Horsepower versus displacement from the `Engines` data.frame plotted with log-log scales."}
+```{r fig.show="hold"}
+#| label: fig-mag-scales-1
+#| out-width: "50%"
+#| fig-cap: "Horsepower versus displacement from the `Engines` data.frame plotted with log-log scales."
 gf_point(log(BHP) ~ log(displacement), data = Engines)
 gf_point(BHP ~ displacement, data = Engines) %>%
   gf_refine(scale_y_log10(), scale_x_log10()) 
@@ -318,9 +329,11 @@ for (k in 1:6) {
 
 You can play this game for weeks. We asked the computer to play the game for about half a second and expanded the original digit() table to `r nrow(start %>% filter(output >= -2, output <= 6))` rows.
 
-Figure \@ref(fig:expanded-log) plots the expanded digits() function table.
+@fig-expanded-log plots the expanded digits() function table.
 
-```{r expanded-log, echo=FALSE, fig-cap: "The digit function with more entries"}
+```{r echo=FALSE}
+#| label: fig-expanded-log
+#| fig-cap: "The digit function with more entries"
 ticks <- 1:10
 
 gf_point(output ~ input, 
@@ -328,11 +341,16 @@ gf_point(output ~ input,
   gf_refine(scale_x_continuous(breaks=ticks)) %>%
   gf_line()
 ```
+
 Now we have a smooth function that plays by the digit rules of multiplication.
 
 Henry Briggs and his assistants did a similar calculation by hand. Their work was published in 1617 as a table. 
 
-```{r briggs-first-page, echo=FALSE, out-width: "100%", fig-cap: "Part of the first page of Henry Briggs table of logarithms", fig-align: "center"}
+```{r echo=FALSE}
+#| label: fig-briggs-first-page
+#| out-width: "100%"
+#| fig-cap: "Part of the first page of Henry Briggs table of logarithms"
+#| fig-align: "center"
 knitr::include_graphics("www/Briggs-starttable.png")
 ```
 
@@ -381,13 +399,20 @@ A third version of the logarithm function is called the ***natural logarithm*** 
 
 `rr insert_calcZ_exercise("3.2", "pUKm4c", "Exercises/sheep-buy-dress.Rmd")`
 
+<!-- Proposed exercise about binary digits
+
+`rrr insert_calcZ_exercise(15.1, "TLCIX", "Exercises/Dimension/count-the-digits.Rmd")`
+
+
+-->
+
 ## Drill
 
 `r Znotes:::MC_counter$reset(labels="roman")`
 
 
 ```{r drill-Scales-1, echo=FALSE, results='markup'}
-Znotes::askMC(
+askMC(
   prompt = r"(What is the correct form for the relationship shown in the graph? <br><img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/log-scales/exponential-neg.png" width="80%">)",
 r"(+$g(x) \equiv e^{10} e^{-2 x}$+)" = r"( )",
   r"($g(x) \equiv 10 e^{-2 x}$)" = r"(When $x=0$, the ln(output) is 10. This isn't the same as saying the output is 10.)",
@@ -401,7 +426,7 @@ r"(+$g(x) \equiv e^{10} e^{-2 x}$+)" = r"( )",
 
 
 ```{r drill-Scales-2, echo=FALSE, results='markup'}
-Znotes::askMC(
+askMC(
   prompt = r"(What is the correct form for the relationship shown in the graph? <br><img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/log-scales/power-law-neg.png" width="80%">)",
 r"($g(x) \equiv e^{10} e^{-2 x}$)" = r"(Are these semi-log axes?)",
   r"($g(x) \equiv 10 x^{-2}$)" = r"(When $x=0$, the ln(output) is 10. This isn't the same as saying the output is 10.)",
@@ -415,7 +440,7 @@ r"($g(x) \equiv e^{10} e^{-2 x}$)" = r"(Are these semi-log axes?)",
 
 
 ```{r drill-Scales-3, echo=FALSE, results='markup'}
-Znotes::askMC(
+askMC(
   prompt = r"(What is the correct form for the relationship shown in the graph? <br><img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/log-scales/power-law.png" width="80%">)",
 r"($g(x) \equiv e^{2} e^{1.5 x}$)" = r"(Are these semi-log axes?)",
   r"($g(x) \equiv 2 x^{1.5}$)" = r"(When $x=0$, the ln(output) is 2. This isn't the same as saying the output is 2.)",
@@ -429,7 +454,7 @@ r"($g(x) \equiv e^{2} e^{1.5 x}$)" = r"(Are these semi-log axes?)",
 
 
 ```{r drill-Scales-4, echo=FALSE, results='markup'}
-Znotes::askMC(
+askMC(
   prompt = r"(The figure shows a horizontal axis for a graph. How can you tell that this is a logarithmic axis? <br><img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/log-scales/scales-base2-x.png" width="80%"> )",
 r"(The labels are all multiples of 2.)" = r"(On it's own, that has nothing to do with logarithms.)",
   r"(+The labels are evenly spaced **and** each label is a factor of 2 larger than the previous one.+)" = r"( )",
@@ -441,7 +466,7 @@ r"(The labels are all multiples of 2.)" = r"(On it's own, that has nothing to do
 
 
 ```{r drill-Scales-5, echo=FALSE, results='markup'}
-Znotes::askMC(
+askMC(
   prompt = r"(The figure shows a horizontal axis for a graph. How can you tell that this is a logarithmic axis? <br><img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/log-scales/scales-semidecade-x.png" width="80%"> )",
 r"(The labels are 1, 3, 5, 10, ...)" = r"(On it's own, that has nothing to do with logarithms.)",
   r"(The labels are evenly spaced **and** each label is a factor of 3 larger than the previous one.)" = r"(If so, the labels would be 1, 3, 9, 27, 81, 243, ....)",
@@ -454,7 +479,7 @@ r"(The labels are 1, 3, 5, 10, ...)" = r"(On it's own, that has nothing to do wi
 
 
 ```{r drill-Scales-6, echo=FALSE, results='markup'}
-Znotes::askMC(
+askMC(
   prompt = r"(The figure shows a horizontal axis for a graph. How can you tell that this is a logarithmic axis? <br><img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/log-scales/scales-bogus-x.png" width="80%"> )",
 r"(The labels are 10, 20, 30, 40, ...)" = r"(On a linear scale, such labels would be evenly spaced.)",
   r"(Each label is 10 + the previous label.)" = r"(On a linear scale, such labels would be evenly spaced.)",

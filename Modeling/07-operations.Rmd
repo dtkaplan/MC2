@@ -34,7 +34,10 @@ In Figure \@ref(fig:penguin-flipper), the data point plot of the penguin flipper
 
 When we construct a function to model the pattern observed in that cloud, we need to respect the mathematical definition of function, part of which is that a function has ***only one output*** for any given input. 
 
-```{r penguin-flipper2,echo=FALSE, warning=FALSE,message=FALSE, out-width: "50%", fig.show="keep", fig-cap: "Connecting the penguin data points with lines (left) doesn't directly describe any sensible mathematical function.  We use modeling to create a smooth function (right) that stays close, but not too close, to the data points."}
+```{r echo=FALSE, warning=FALSE,message=FALSE, fig.show="keep"}
+#| label: fig-penguin-flipper2
+#| out-width: "50%" 
+#| fig-cap: "Connecting the penguin data points with lines (left) doesn't directly describe any sensible mathematical function.  We use modeling to create a smooth function (right) that stays close, but not too close, to the data points."
 gf_line(flipper_length_mm/10 ~ body_mass_g/1000, 
          data=penguins) %>%
   gf_labs(y = "Flipper length (cm)", x = "Body mass (kg)") 
@@ -152,7 +155,9 @@ Straight-line (with non-zero slope), exponential ($e^{kt}$ where $k\neq 0$), and
 
 There's an easy graphical test for whether there is a unique inverse function or not. Draw the graph, then see if any horizontal line touches the graph of the function in more than one place. If so, there is no unique inverse function.
 
-```{r Fun-3a2-1, echo=FALSE, out-width: "50%", warning=FALSE, fig.show="hold"}
+```{r echo=FALSE, warning=FALSE, fig.show="hold"}
+#| label: fig-Fun-3a2-1 
+#| out-width: "50%"
 Exp <- Zeros(exp(x) - 1.5 ~ x, domain(x=-2:2)) %>%
   mutate(y = exp(x))
 Square <- Zeros(x^2 -1.75 ~ x, domain(x=-2:2)) %>%
@@ -201,6 +206,7 @@ are in the club?*^[This translates to an equation, where $x$ is the number of me
 
 Let's pose the problem in terms of a function, money_raised$(x)$ where $x$ is the original number of members in the investment club. Originally, the members were each going to pay $9000/x$. But after the two people drop out, each of the remaining members has to pay $9000/x + 50$. Since there are $x-2$ remaining members, the total amount raised is $$\text{money.raised}(x) \equiv (x-2) \left(\frac{9000}{x} + 50\right)$$
 Figure \@ref(fig:money-raised) graphs $\text{money.raised}(x)$
+
 ```{r money-raised}
 money_raised <- makeFun((x-2)*(9000/x + 50) ~ x)
 slice_plot(money_raised(x) ~ x, domain(x=c(10,25)))
