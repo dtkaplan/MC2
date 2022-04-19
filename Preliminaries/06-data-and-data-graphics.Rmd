@@ -46,19 +46,20 @@ Although published more than 350 years ago, it's still possible for a literate h
 
 First, recognize that the data shown in  @fig-bill-of-mortality consist of several different tables.  The first table, just under the title, starts with
 
+::: {#tbl-top-lines .column-page-right}
 $\ $   | Buried | Plague | $\ $ | Buried | Plague | $\cdots$   
 -----------------------|-----|-----|------------------------|----|----|-----
 S^t^ Albans Woodstreet | 100 | 121 | S^t^ Clemens Eastcheap | 18 | 20 | $\cdots$
 S^t^ Alhallowes Barking| 514 | 330 | S^t^ Diones Back-church| 78 | 27 | $\cdots$
 
-: My Caption {#tbl-letters}
+The first two lines of the main table from the Bill of Mortality
+:::
 
-See @tbl-letters.
 
-THE ABOVE IS AN EXAMPLE OF HOW TO CAPTION and label a table.
 
-The modern form of this is not spread out across the width of the page, and has an unique identifier for every column, as in
+The modern form of this is not spread out across the width of the page. It has a single set of columns rather than sets repeated side by side as in @tbl-top-lines.
 
+::: {#tbl-narrow-parish .column-margin}
 parish          | buried | plague
 ----------------|--------|------
 S^t^ Albans Woodstreet   | 100 | 121  
@@ -67,11 +68,14 @@ S^t^ Alhallowes Barking  | 514 | 330
 S^t^ Diones Back-church  | 78  | 27 
 $\vdots$              |$\vdots$| $\vdots$
 
+In a modern format, all the parishes are listed in one column, so that each row of the table corresponds to a single parish.
+:::
+
 Each ***column*** of the modern table is called a ***variable***. So there is a variable "buried" that contains the number buried and another variable "plague" containing the number who died of plague. 
 
 Each row of the table is called a ***case***, but often simply ***row*** is used. For each table, all the cases are the same kind of thing, for instance, here, a parish.
 
-Another table displayed on the sheet is entitled, "The diseases and casualities this year." In a modern format, this table starts out:
+Another table displayed on the sheet is entitled, "The diseases and casualities this year." In this table, the case is a disease or other cause of death, which we've put under the name "condition." 
 
 condition | deaths     | year
 ----------|------------|-----
@@ -81,49 +85,17 @@ Ague and Feaver        | 5257 | 1665
 Appoplex and Suddenly  | 116  | 1665
 Bedrid                 | 10   | 1665
 
-In this table, the case is a disease or other cause of death, which we've put under the name "condition." We've added the variable "year" with an eye toward consolidating many years of the Bills into one table.
 
-Toward the bottom of the sheet are entries that in a modern format would be two separate tables: one for people christened and one for people who died of plague. 
+We've added the variable "year" with an eye toward consolidating many years of the Bills into one table.
 
-::: {#tbl-births-deaths layout-ncol=2}
+\newpage
 
-males | females | year
-------|---------|------
-5114  | 4853    | 1665
+A modern organization for the data being presented in the Bill of Mortality would go back to the raw records that were collected in the field, stacking them into just two tables: Deaths and Births. The Deaths table might look like @tbl-deaths.
 
-: "Christened": the number of births {#tbl-christened}
-
-males | females | year
-------|---------|------
-48569 | 48737   | 1665
-
-: "Buried": the number of deaths {#tbl-buried}
-
-Two tables from near the bottom of the Bill of Mortality, in a contemporary format. In the Christened and Buried tables, the case is "one year." (We're imagining that the data from other years would go in additional rows.) Summaries such as the "In all" for the Christened and Plague tables would not be included in a moern format, since they can be computed from other data in the table. Such summaries are easily computed as needed using appropriate computer database commands. 
-
-:::
-
-::: {.column-margin}
-
-You might wonder why the Christened and Buried tables aren't put together in a single table, perhaps something like
-
-           | males | females | year 
-:----------|------:|--------:|------
-Christened | 5114  | 4853    | 1665
-Buried     |48569  | 48737   | 1665
-
-One the important topics in the field of ***data science*** is the effective organization of data. It's beyond the scope of this book why the table above is not a professional form for data organization. (A hint is the lack of a name for the first column; it's hard to say what is being captured by that column.)
-:::
-
-A modern organization for the data being presented in the Bill of Mortality go back to the raw records that were collected in the field, stacking them into just two tables: Deaths and Births.
-
-The Deaths table might look like:
-
-::: {.fullwidth}
-
+::: {#tbl-deaths .column-screen-right}
 
 name | date | parish | sex | age  | cause
------|------|--------|-----|------|---------
+--------------|-------------|------------|--|--|------
 Percivell Bullingham | 1665-06-01 | S^t^ Mary le Bow    | M | 29 | plague
 Owin Swancott        | 1665-08-13 | Trinitie            | M | 2  | plague
 Winifred Romford     | 1665-11-09 | S^t^ Swithings      | F | 19 | childbed
@@ -134,7 +106,7 @@ Katherine Murton     | 1665-12-01 | S^t^ Alholowes Lesse| F | 24 | childbed
 Bainbridge Fletcher  | 1665-03-17 | S^t^ Martins        | M | 2  | plague
 Cicely Ouston        | 1665-03-08 | S^t^ Austins        | F | 35 | plague
 
-: An imagined re-organization of the data that went into the Bill of Mortality report {#tbl-raw-deaths}
+An imagined re-organization of the data that went into the Bill of Mortality report.
 
 ::: 
 
@@ -148,24 +120,23 @@ In a data science course you will learn several ways of storing and accessing ta
 
 ***Data wrangling*** is a term used to describe working with and summarizing data. This includes merging multiple data frames. In *MOSAIC Calculus* our uses of data will be focused on constructing functions that show the patterns in data and plotting data to reveal those patterns to the eye. 
 
-For our work, you can access the data frames we need directly in R by name. For instance, the `Engines` data frame records the characteristics of several internal combustion engines of various sizes:
+For our work, you can access the data frames we need directly in R by name. For instance, the `Engines` data frame (@tbl-engine-table) records the characteristics of several internal combustion engines of various sizes:
 
-```{r echo=FALSE}
-#| label: tbl-engine-table
-#| fig-cap: "Various attributes of internal combustion engines, from the very small to the very large."
-set.seed(104)
-if (knitr::is_latex_output()) {
-  knitr::kable(sample(Engines, size=8) %>%
-                select(Engine, mass, BHP, RPM, bore, stroke) %>%
-                arrange(mass))
-} else {
-  knitr::kable(sample(Engines, size=8) %>%
-                select(Engine, mass, BHP, RPM, bore, stroke) %>%
-                arrange(mass),
-              rownames=FALSE, autoHideNavigation=TRUE) %>%
-    kableExtra::kable_styling()
-}
-```
+::: {#tbl-engine-table .column-page-right}
+Engine | mass | BHP | RPM | bore | stroke
+:------|-----:|----:|----:|-----:|---------:
+Webra Speed 20 | 0.25 | 0.78 | 22000 | 16.5 | 16
+Enya 60-4C | 0.61 | 0.84 | 11800 | 24.0 | 22
+Honda 450 | 34.00 | 43.00 | 8500 | 70.0 | 58
+Jacobs R-775 | 229.00 | 225.00 | 2000 | 133.0 | 127
+Daimler-Benz 609 | 1400.00 | 2450.00 | 2800 | 165.0 | 180
+Daimler-Benz 613 | 1960.00 | 3120.00 | 2700 | 162.0 | 180
+Nordberg | 5260.00 | 3000.00 | 400 | 356.0 | 407
+Cooper-Bessemer V-250 | 13500.00 | 7250.00 | 330 | 457.0 | 508
+
+
+Various attributes of internal combustion engines, from the very small to the very large.
+:::
 
 ## Variable names
 
@@ -241,13 +212,13 @@ Arguably more important in practice to the representation of functions are ***ta
 knitr::include_graphics("www/Briggs-starttable.png")
 ```
 
-In  @chap-pattern-book-functions we'll introduce a small set of functions which we call the "pattern-book functions." Each of the functions is indeed a pattern that could be written down once and for all in tabular form. Generating such tables originally required the work of human "computers" who undertook extensive and elaborate arithmetical calculations by hand. What's considered the first programmable engine, a mechanical device designed by Charles Babbage (1791-1871) and programmed by Ada Lovelace (1815-1852), was conceived for the specific purpose of generating printed tables of functions. 
+In  @sec-pattern-book-functions we introduced a small set of pattern-book functions. Each of the functions is indeed a pattern that could be written down once and for all in tabular form. Generating such tables originally required the work of human "computers" who undertook extensive and elaborate arithmetical calculations by hand. What's considered the first programmable engine, a mechanical device designed by Charles Babbage (1791-1871) and programmed by Ada Lovelace (1815-1852), was conceived for the specific purpose of generating printed tables of functions. 
 
 It's helpful to think of functions, generally, as a sort of data storage and retrieval device that uses the input value to locate the corresponding output and return that output to the user. Any device capable of this, such as a table or graph with a human interpreter, is a suitable way of implementing a function.
 
 To reinforce this idea, we ask you to imagine a long corridor with a sequence of offices, each identified by a room number. The input to the function is the room number. To ***evaluate*** the function for that input, you knock on the appropriate door and, in response, you'll receive a piece of paper with a number to take away with you. That number is the output of the function. 
 
-This will sound at first too simple to be true, but ... In a mathematical function each office gives out exactly the same number every time someone knocks on the door. Obviously, being a worker in such an office is highly tedious and requires no special skill. Every time someone knocks on the worker's door, he or she writes down the *same* number on a piece of paper and hands it to the person knocking. What that person will do with the number is of absolutely no concern to the office worker.
+This will sound at first too simple to be true, but ... In a mathematical function each office gives out the same number every time someone knocks on the door. Obviously, being a worker in such an office is highly tedious and requires no special skill. Every time someone knocks on the worker's door, he or she writes down the *same* number on a piece of paper and hands it to the person knocking. What that person will do with the number is of absolutely no concern to the office worker.
 
 The utility of such functions depends on the artistry and insight of the person who creates them: the ***modeler***. An important point of this course is to teach you some of that artistry. Hopefully you will learn through that artistry to translate your insight to the creation of functions that are useful in your own work. But even if you just use functions created by others, knowing how functions are built will be helpful in using them properly.
 
