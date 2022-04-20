@@ -3,22 +3,20 @@
 ```{r child="../starter.Rmd"}
 ```
 
-When we need a new function for some purpose, we practically always build it out of existing functions. For instance, a  parameterized function like $$f(x) \equiv A \sin\left(\frac{2 \pi}{P}x\right) + B$$ is built by assempling together a straight-line input scaling, a pattern-book $\sin()$ function, and another straight-line function for scaling the output from $\sin()$. This is an example of ***function composition*** where functions are "layered," the output of one function being given as the input to another. For instance,
-$f(x)$ is put together from three composed functions, $\text{output}()$, $\sin()$, $\text{input}()$ where $$f(x) = \text{output}(sin(\text{input}(x))$$ where 
-$$\text{output}(x) \equiv Ax + B \ \ \ \text{and}\ \ \ \text{input}(x) \equiv a x + b$$
+When we need a new function for some purpose, we practically always build it out of existing functions. For illustrate, a function like $$f(x) \equiv A \sin\left(\frac{2 \pi}{P}x\right) + B$$ is built by assembling a straight-line input scaling ($2\pi/P$), a pattern-book $\sin()$ function, and another straight-line function $A f(x) + B$ for scaling the output from $\sin()$. 
 
-
-In this chapter, we'll review three general frameworks for combining functions: linear combination, composition, and multiplication. You have almost certainly seen all three of these frameworks in your previous mathematical studies, although you might not have known that they have names.
+In this chapter, we'll review four general frameworks for combining functions: linear combination of functions, function composition, function multiplication, and "piecewise" splitting of the domain. You have almost certainly seen all four of these frameworks in your previous mathematical studies, although you might not have known that they have names.
 
 ## Linear combination 
 
-One of the most widely used sorts of combination is called a ***linear combination***. The mathematics of linear combination is, it happens, at the core of the use of math in applications, whether that be constructing a Google-like search engine or analyzing medical data to see if a treatment has a positive effect.
+One of the most widely used sorts of combination is called a ***linear combination***. The mathematics of linear combination is, it happens, at the core of the use of math in a large variety of real-world applications, whether that be constructing a Google-like search engine or analyzing medical data to see if a treatment has a positive effect.
 
 You've worked for many years with one kind of linear combination: polynomials. No doubt you've seen functions^[It's likely that you saw polynomials as things to be factored, rather than as functions taking an input and producing an output. So they were written as *equations*: $3 x^2 + 5x - 2 = 0$.] like $$f(x) \equiv 3 x^2 + 5 x - 2$$
 
-There are three pattern-book functions in this polynomial. In  polynomials the functions being combined are all power-law functions: $g_0(x) \equiv 1$, $g_1(x) \equiv x$, and $g_2(x) \equiv x^2$. With these functions defined, we can write the polynomial $f(x)$ as $$f(x) \equiv 3 g_2(x) + 5 g_1(x) - 2 g_0(x)$$
-Each of the functions is being scaled by a quantity---3, 5, and -2 in this example---and the scaled functions are added up. That's a linear combination; scale and add. (Later, we'll see that the ***scalars*** generally come with units. So we might well have a metric polynomial and an equivalent traditional-unit polynomial. Just wait.)
+[There is a special name for a quantity used to scale the output of a function: a ***scalar***. Scalars are ordinary quantities; the word “scalar” is merely a way to distinguish the quantity from the function it is multiplying.  Scalars generally come with units. So we might well have a metric polynomial and an equivalent traditional-unit polynomial.]{.aside}
 
+There are three pattern-book functions in this polynomial. In  polynomials the functions being combined are all power-law functions: $g_0(x) \equiv 1$, $g_1(x) \equiv x$, and $g_2(x) \equiv x^2$. With these functions defined, we can write the polynomial $f(x)$ as $$f(x) \equiv 3 g_2(x) + 5 g_1(x) - 2 g_0(x)$$
+Each of the functions is being scaled by a quantity: 3, 5, and -2 in this example. Then the scaled functions are added up. That's a linear combination; scale and add. 
 
 There are other places where you have seen linear combinations: 
 
@@ -26,7 +24,7 @@ There are other places where you have seen linear combinations:
 - The parameterized ***exponential*** $$A e^{kt} + B$$ The functions being combined are $e^{kt}$ and $1$. The scalars are, again, $A$ and $C$.
 - The straight line function, such as $\mbox{output}(x) \equiv A x + B$ and  $\mbox{input}(x) \equiv a x + b$. The functions being combined are $x$ and $1$, the scalars are $a$ and $b$.  
 
-Note that neither the parameterized exponential or the parameterized sinusoid is a polynomial simply because it is not constructed exclusively from monomials.
+[Note that neither the parameterized exponential or the parameterized sinusoid is a polynomial. A polynomial is always a linear combination of monomials. (As Section @sec-power-law-family, describes, monomials are the power-law functions $x^0$, $x_1$, $x_2$, and so on.)]{.aside} 
 
 There are a few reasons for us to be introducing linear combinations here.
 
@@ -46,102 +44,38 @@ Notice that CtoK() takes temperature in $^\circ C$ as input. With this, we can w
 
 It's important to distinguish the above time $\rightarrow$ Kelvin function from something that looks very much the same but is utterly different: $\text{AirTemp}\left(\text{CtoK}(C)\right)$. In the first, the input is time. In the second, it is temperature in celsius.
 
+::: {.example data-latex=""}
+Any one who lives far from the equator is familiar with the annual cycle of short winter days and long summer days. The magnitude of this cycle is a function of ***latitude***; the further away from the equator the larger the winter-summer day-length difference. 
 
-Here is a model of the length of daylight (in hours) as a function of latitude $L$ and the declination angle $\delta$ of the sun. 
+A simple model accounts for length of daylight (in hours) as a function of latitude $L$ and the declination angle $\delta$ of the sun. 
 
 $$\text{daylight}(L, \delta) \equiv {\small\frac{2}{15}} \arccos\left(-\tan(L)*\tan(\delta)\right)$$
-The declination angle is the latitude of the point on the earth's surface pierced by an imagined line connecting the centers of the earth and the sun. On the summer solstice, the longest day of the year, it is $23.44^\circ$. On $day$, where midnight before January 1 is $day=0$ and the end of December 31 is $day=365.25$, the declination is
-$$\delta(day) = 23.44 \sin\left({\small\frac{2\pi}{365.25}} (day-9)\right)\ ,$$
-a composition of $\sin()$ with the straight-line function ${\small\frac{2\pi}{365.25}} (day - 9)$.
 
-Composing day_length$(L, \delta)$ onto $\delta(day)$ gives the length of daylight as a function of day of the year:
-$$\text{light}(L, day) \equiv {\small\frac{2}{15}} \arccos\left(-\tan(L)*\tan(\delta(day))\right)\ .$$
-Function composition enables us to transform a function that takes one kind of thing as input (say, declination) and turn it into a function that takes another kind of thing as input (say, day of the year).
+
+The declination angle is the latitude of the point on the earth's surface pierced by an imagined line connecting the centers of the earth and the sun. This angle is a function of the "day of year" ($doy$) measured as 0 at midnight before January 1 and 365.25 at the midnight ending December 31.
 
 
 
-::: {.intheworld  data-latex=""}
-Income inequality is a matter of perennial political debate. In the US, most people support Social Security, which is an income re-distribution programming dating back almost a century. But other re-distribution policies are controversial. Some believe they are essential to a healthy society, others that the "cure" is worse than the "disease." 
+On the summer solstice, the longest day of the year, it is $23.44^\circ$. On $day$, where midnight before January 1 is $doy=0$ and  is $doy=365.25$, the declination as a function of is a composition of $\sin()$ with the straight-line function ${\small\frac{2\pi}{365.25}} (doy - 9)$.
 
-Whatever one's views, it's helpful to have a way to quantify inequality. There are many ways that this might be done. A mathematically sophisticated one is called the ***Gini coefficient***.
+::: {.column-margin}
 
-Imagine that society was divided statistically into income groups, from poorest to richest. Each of these income groups consists of a fraction of the population and has, in aggregate, a fraction of the national income. Poor people tend to be many in number but to have a very small fraction of income. Wealthy people are few in number, but have a large fraction of income. The table shows data for US households in 2009:^[These data, as well as the general idea for the topic come from La Haye and Zizler (2021), "The Lorenz Curve in the Classroom", *The American Statistician*, 75(2):217-225]
+![](www/declination-angle.png)
 
-group label  | population | aggregate income | cumulative income | cumulative pop.
-:------------|-----------:|-----------------:|:-------
-poorest      | 20%   | 3.4%  | 3.4%         | 20%
-low-middle   | 20%   | 8.6%  | 12.0%        | 40%
-middle       | 20%   | 14.6% | 26.6%        | 60%
-high-middle  | 20%   | 23.2% | 47.8%        | 80%
-richest      | 20%   | 50.2% | 100.0%       | 100%
+Declination angle as a function of day-of-year: 
 
+$\delta(doy) = 23.44 \sin\left({\small\frac{2\pi}{365.25}} (doy-9)\right)$]{.aside}
 
-The ***cumulative*** income shows the fraction of income of all the people in that group or poorer.  The cumulative population adds up the population fraction in that row and previous rows. So, a cumulative population of 60% means "the poorest 60% of the population" which, as the table shows, earn as a group 14.6% of the total income for the whole population.
+The output has units degrees.
 
-A function that relates the cumulative population to the cumulative income is called a ***Lorenz function***. The data are graphed in @fig-lorenz-data and available as the `US_income` data frame in the `r sandbox_link()`. Later, in @fig-lorenz-one-fun, we'll fit parameterized functions to the data.
-
-```{r echo=FALSE}
-#| label: fig-lorenz-data
-#| fig-cap: "Data on household incomes in the US in 2009."
-#| fig-cap-location: margin
-Income <- tibble::tribble(
-  ~ income, ~ pop,
-  0,     0,
-  3.4,  20,
-  12.0, 40, 
-  26.6, 60,
-  47.8, 80,
-  100, 100
-) %>%
-  mutate(income=income/100, pop=pop/100)
-P <- gf_point(income ~ pop, data = Income) %>%
-  gf_labs(x="Population percentile (p)", y="Cumulative income percentile (L)") %>%
-  gf_refine(coord_fixed())
-P
-```
-
-Lorenz curves must:
-
-- Be concave up, which amounts to saying that the curve gets steeper and steeper as the population percentile increases. (Why? Because at any point, poorer people are to the left and richer to the right.) 
-- Connect (0,0) to (1, 1). 
-
-Calling the income percentile $L$ a function of the population percentile $p$, a Lorenz function is $L(p)$ that satisfies the requirements in the previous paragraph.
-Here are some functions that meet the requirements:
-
-- $L_b(p) \equiv p^b$ where $1 \leq b$.
-- $L_q(p) \equiv 1 - (1-p)^q$ where $0 < q \leq 1$
-
-Notice that each of these functions has just one parameter. It seems implausible that the workings of a complex society can be summarized with just one number. We can use the curve-polishing techniques that will be introduced in @chap-fitting-polishing to find the "best" parameter value to match the data. 
-
-```{r}
-Lb <- fitModel(income ~ pop^b, data = Income, start=list(b=1.5))
-Lq <- fitModel(income ~ 1 - (1-pop)^q, data = Income, start=list(q=0.5))
-```
-
-@fig-lorenz-one-fun compares the fitted functions to the data.
-
-```{r echo=FALSE}
-#| label: fig-lorenz-one-fun
-#| fig-cap: "Lorenz curves $L_b(p)$ (blue) and $L_q(p)$ (magenta) fitted to the household income data."
-#| fig-cap-location: margin
-P %>%
-  slice_plot(Lb(pop) ~ pop, color="dodgerblue", npts=500) %>%
-  slice_plot(Lq(pop) ~ pop, color="orange3", npts=500) %>%
-  slice_plot(.55*Lb(pop) + .45*Lq(pop) ~ pop, color="magenta")
-```
-
-Neither form $L_b(p)$ or $L_q(p)$ gives a compelling description of the data. Where should we go from here?
-
-We can provide more parameters by constructing more complicated Lorenz functions. Here are two ways to build a new Lorenz function out of an existing one:
-
-- The product of any two Lorenz functions, $L_1(p) L_2(p)$ is itself a Lorenz function.
-- A linear combination of any two Lorenz functions, $a L_1(p) + (1-a) L_2(p)$, so long as the scalars add up to 1, is itself a Lorenz function. For instance, the magenta curve in @fig-lorenz-one-fun is the linear combination of 0.45 times the tan curve plus 0.55 times the blue curve.
-
-Question: Is the composition of two Lorenz functions a Lorenz function? That is, does the composition meet the two requirements for being a Lorenz function?
-
-To get started, figure out whether or not $L_1(L_2(0)) = 0$ and $L_1(L_2(1)) = 1$. If the answer is yes, then we need to find a way to compute the concavity of a Lorenz function to determine if the composition will always be concave up. We'll need additional tools for this. We'll introduce these in Block 2.
-
+[Image source](https://www.researchgate.net/publication/298318962_Calculation_of_Optimum_Fixed_Tilt_Angle_of_PV_Panels_Depending_on_Solar_Angles_and_Comparison_of_the_Results_with_Experimental_Study_Conducted_in_Summer_in_Bilecik_Turkey?enrichId=rgreq-51488ef1a53e60fdea18a99d842428bf-XXX&enrichSource=Y292ZXJQYWdlOzI5ODMxODk2MjtBUzozMzk4NjIxMDU0MTE1OThAMTQ1ODA0MDg0ODkzMg%3D%3D&el=1_x_2&_esc=publicationCoverPdf)
 :::
+
+Composing day_length$(L, \delta)$ onto $\delta(doy)$ gives the length of daylight as a function of day of the year:
+$$\text{daylight}(L, day) \equiv {\small\frac{2}{15}} \arccos\left(-\tan(L)*\tan(\delta(doy))\right)\ .$$
+Function composition enables us to transform a function that takes one kind of thing as input (declination in this example) and turn it into a function that takes another kind of thing as input (day of year).
+:::
+
 
 
 
@@ -149,9 +83,15 @@ To get started, figure out whether or not $L_1(L_2(0)) = 0$ and $L_1(L_2(1)) = 1
 
 ## Function multiplication
 
-The third in our repertoire of methods for making new function out of old is plain old multiplication. With two functions $f(x)$ and $g(x)$, the product is simply $f(x)g(x)$.
+Multiplication is the third in our repertoire of methods for making new functions. With two functions $f(x)$ and $g(x)$, the product is simply $f(x)g(x)$.
 
 It's essential to distinguish between function multiplication and function composition:
+
+::: {.column-margin}
+In function composition, the order of the functions matters: $f(g(x))$ and $g(f(x))$ are in general completely different functions.
+
+In function multiplication, the order doesn't matter because multiplication is ***commutative***, that is, if $f()$ and $g()$ are the functions to be multiplied $f(x) \times g(x) = g(x)\times f(x)$. 
+:::
 
 $$\underbrace{f(x) g(x)}_\text{multiplication}\ \ \ \ \underbrace{f(g(x)) \ \ \text{or}\ \ \ g(f(x))}_\text{composition}$$
 
@@ -159,9 +99,7 @@ In function composition, only one of the functions---the ***interior function***
 
 In multiplication, each of the functions is applied to the input individually. Then their outputs are multiplied to produce the overall output.
 
-In function composition, the order of the functions matters: $f(g(x))$ and $g(f(x))$ are in general completely different functions.
 
-In function multiplication, the order doesn't matter because multiplication is ***commutative***, that is, if $f()$ and $g()$ are the functions to be multiplied $f(x) \times g(x) = g(x)\times f(x)$. 
 
 
 ::: {.example data-latex=""}
@@ -228,57 +166,6 @@ and like this in computer notation:
 ```{r}
 h <- makeFun(sin(t)*exp(-t) ~ t)
 ```
-
-
-
-## Watch your domain!
-
-Each of our pattern-book functions, with two exceptions, has a domain that is the entire number line $-\infty < x < \infty$. No matter how big or small is the value of the input, the function has an output. Such functions are particularly nice to work with, since we never have to worry about the input going out of bounds. 
-
-The two exceptions are:
-
-1. the logarithm function, which is defined only for $0 < x$.
-2. some of the power-law functions: $x^p$. 
-    - When $p$ is negative, the output of the function is undefined when $x=0$. You can see why with a simple example: $g(x) \equiv x^{-2}$. Most students had it drilled into them that "division by zero is illegal," and $g(0) = \frac{1}{0} \frac{1}{0}$, a double law breaker. 
-    - When $p$ is not an integer, that is $p \neq 1, 2, 3, \cdots$ the domain of the power-law function does not include negative inputs. To see why, consider the function $h(x) \equiv x^{1/3}$. 
-    
-::: {.rmosaic data-latex=""}
-It can be tedious to make sure that you are on the right side of the law when dealing with functions whose domain is not the whole number line. The designers of the hardware that does computer arithmetic, after several decades of work, found a clever system to make it easier. It's a standard part of such hardware that whenever a function is handed an input that is not part of that function's domain, one of two special "numbers" is returned. To illustrate:
-
-```{r warning=FALSE}
-sqrt(-3)
-(-2)^0.9999
-1/0
-```
-
-`NaN` stands for "not a number." Just about any calculation involving `NaN` will generate `NaN` as a result, even those involving multiplication by zero or cancellation by subtraction or division.^[One that does produce a number is `NaN^0`.] For instance:
-
-```{r warning=FALSE}
-0 * NaN
-NaN - NaN
-NaN / NaN
-```
-
-Division by zero produces `Inf`, whose name is reminiscent of "infinity." `Inf` infiltrates any calculation in which it takes part: 
-
-```{r warning=FALSE}
-3 * Inf
-sqrt(Inf)
-0 * Inf
-Inf + Inf
-Inf - Inf
-1/Inf
-```
-
-To see the benefits of the `NaN` / `Inf` system let's plot out the logarithm function over the graphics domain $-5 \leq x \leq 5$. Of course, part of that graphics domain, $-5 \leq x \leq 0$ is not in the domain of the logarithm function and the computer is entitled to give us a slap on the wrists. The `NaN` provides some room for politeness. 
-
-Open an R console and see what happens when you make the plot.
-
-```{r eval=FALSE}
-slice_plot(log(x) ~ x, domain(x=c(-5,5)))
-```
-
-:::
 
 ## Splitting the domain
 
@@ -373,6 +260,57 @@ The graph looks somewhat like a hockey stick. A sloping straight-line dependence
 We can accomplish the hockey-stick shape with a linear combination of the ramp() function and a constant. The ramp function represents gas used for heating, the constant is the other uses of gas (which are modeled as not depending on temperature. Overall, the model is  $$\text{gas}(x) \equiv 4.3\,  \text{ramp}(62-x)  + 15\ .$$
 Even simpler is the model for the other uses of natural gas:
 $$\text{other}(x) \equiv 15\ .$$ 
+:::
+
+
+
+## Computing outside the domain
+
+Each of our pattern-book functions, with two exceptions, has a domain that is the entire number line $-\infty < x < \infty$. No matter how big or small is the value of the input, the function has an output. Such functions are particularly nice to work with, since we never have to worry about the input going out of bounds. 
+
+The two exceptions are:
+
+1. the logarithm function, which is defined only for $0 < x$.
+2. some of the power-law functions: $x^p$. 
+    - When $p$ is negative, the output of the function is undefined when $x=0$. You can see why with a simple example: $g(x) \equiv x^{-2}$. Most students had it drilled into them that "division by zero is illegal," and $g(0) = \frac{1}{0} \frac{1}{0}$, a double law breaker. 
+    - When $p$ is not an integer, that is $p \neq 1, 2, 3, \cdots$ the domain of the power-law function does not include negative inputs. To see why, consider the function $h(x) \equiv x^{1/3}$. 
+    
+::: {.rmosaic data-latex=""}
+It can be tedious to make sure that you are on the right side of the law when dealing with functions whose domain is not the whole number line. The designers of the hardware that does computer arithmetic, after several decades of work, found a clever system to make it easier. It's a standard part of such hardware that whenever a function is handed an input that is not part of that function's domain, one of two special "numbers" is returned. To illustrate:
+
+```{r warning=FALSE}
+sqrt(-3)
+(-2)^0.9999
+1/0
+```
+
+`NaN` stands for "not a number." Just about any calculation involving `NaN` will generate `NaN` as a result, even those involving multiplication by zero or cancellation by subtraction or division.^[One that does produce a number is `NaN^0`.] For instance:
+
+```{r warning=FALSE}
+0 * NaN
+NaN - NaN
+NaN / NaN
+```
+
+Division by zero produces `Inf`, whose name is reminiscent of "infinity." `Inf` infiltrates any calculation in which it takes part: 
+
+```{r warning=FALSE}
+3 * Inf
+sqrt(Inf)
+0 * Inf
+Inf + Inf
+Inf - Inf
+1/Inf
+```
+
+To see the benefits of the `NaN` / `Inf` system let's plot out the logarithm function over the graphics domain $-5 \leq x \leq 5$. Of course, part of that graphics domain, $-5 \leq x \leq 0$ is not in the domain of the logarithm function and the computer is entitled to give us a slap on the wrists. The `NaN` provides some room for politeness. 
+
+Open an R console and see what happens when you make the plot.
+
+```{r eval=FALSE}
+slice_plot(log(x) ~ x, domain(x=c(-5,5)))
+```
+
 :::
 
 

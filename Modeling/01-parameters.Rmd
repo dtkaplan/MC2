@@ -3,47 +3,63 @@
 ```{r child="../starter.Rmd"}
 ```
 
-The pattern-book functions provide the modeler with a collection of shapes. They are not yet fully suited to represent real-world phenomena. To illustrate, consider @fig-covid-exp which shows the number of officially confirmed COVID-19 cases in the US in March 2020.
+The variety of shapes of the nine pattern-book functions means that, often, one or another will be suitable for the modeling situation in hand. [Marginal: Combining the functions to create a greater diversity of shapes is the subject of Chapter COMBINING]{.aside}
 
-The case count versus time in the COVID pandemic was widely and appropriately described as "exponential." So it seems appropriate  alongside the data @fig-covid-exp shows the function $\text{cases}(t) \equiv e^t$ plotted as a $\color{magenta}{\text{magenta}}$ curve.
+
+Even if the shape of the function used is appropriate, the pattern still needs to be “adjusted” so that the units of output and input are well matched to the phenomenon being modeled. Let's consider data from the outbreak of COVID-19 as an example.  @fig-covid-exp shows, day-by-day, the number of officially confirmed COVID-19 cases as the in the US in March 2020.
+
+During the outbreak, case numbers increased with time. As time went on, the rate of case-number increase itself grew faster and faster. This is the same pattern provided by the exponential function.
+
+Alongside the case-number data @fig-covid-exp shows the function $\text{cases}(t) \equiv e^t$ plotted as a $\color{magenta}{\text{magenta}}$ curve.
 
 ```{r echo=FALSE, warning=FALSE}
 #| label: fig-covid-exp
-#| fig-cap: "Cumulative officially confirmed COVID-19 cases during the month of March, 2020. The $\\color{magenta}{\\text{magenta curve}}$ is $e^t$."
+#| fig-cap: "Cumulative officially confirmed COVID-19 cases (in 10000s) during the month of March, 2020. The $\\color{magenta}{\\text{magenta curve}}$ is $e^t$."
 #| fig-cap-location: margin
 March <- Covid_US %>% filter(lubridate::month(date)==3, 
                              lubridate::year(date)==2020) %>%
-  mutate(day = lubridate::mday(date))
+  mutate(day = lubridate::mday(date),
+         confirmed = confirmed/10000)
 Pcases <- gf_point(confirmed ~ day, 
          data = March) %>%
-  gf_labs(y = "Cumulative confirmed cases", x = "Day in March, 2020") %>%
-  gf_lims(y=c(0,200000)) 
+  gf_labs(y = "Cumulative cases (10000s)", x = "Day in March, 2020") %>%
+  gf_lims(y=c(0,20)) 
 Pcases %>%
-  slice_plot(exp(t) ~ x, domain(t=c(0,15)), 
+  slice_plot(exp(t) ~ x, domain(t=c(0,7)), 
              color="magenta", label_text = "exp(t)\n\n",
              label_x=0.6, label_vjust = "left", size=1) 
 ```
 
 There's an obvious mismatch between the data and the function $e^t$. Does this mean the COVID pattern is not exponential?
 
-For the pattern book functions, the input is always a ***pure number***. For instance, we read $t=10$ off the horizontal axis at which point $e^t {\left.\Large\right|}_{t=10}  \approx 22000$, consistent with the curve shown in the graph. 
+This chapter will introduce the way that modelers stretch and shift the individual patter-book functions so that they can be used in models of real-world situations such as the outbreak of COVID-19. 
 
-But the place on the horizontal axis marked 10 does not correspond to the number 10. Rather, that place stands for "10 days," a quantity with units. Perhaps surprisingly, there is no such thing as $e^{10\,\text{days}}$. The reason for this will be detailed in Chapter @chap-dimensions-and-units, but for now we'll simply point out that the domain of $\exp()$ is the set of real numbers, and real numbers don't have units. 
+## Matching numbers to quantities
 
-If we want the input to $\text{cases}(t)$ to be denominated in days, we'll have to convert $t$ to a pure pure number (e.g. 10, not "10 days") *before* the quantity is handed off as the argument to $\exp()$. We do this by introducing a ***parameter*** when we use the exponential function for describing relationships between quantities. The standard from for this is $e^{kt}$ as opposed to $e^t$. The $k$ parameter will be a quantity with units of "per-day." Suppose we set $k=0.2$ per day. Then $k\, t{\LARGE\left.\right|}_{t=10 days} = 2$. This "2" is a pure number because the units on the 0.2 ("per day") and on the 10 (days) cancel out:
+The coordinate axes in @figure19 represent quantities. On the horizontal axis is time, measured in days. The vertical axis is denominated in "10000 cases," meaning that the numbers on the vertical scale should be multiplied by 10000 to get the number of cases.  
+
+The exponential function takes as input a **pure number** and produces an output that is also a pure number. This is true for all the pattern-book functions. Since the graph axes don't show pure numbers, it's no surprise then that the pattern-book exponential function doesn’t align with the COVID case data.
+
+[Recall that ***pure numbers***, like 17.32, do not have units. Quantities, on the other hand, usually do have units, as in 17.3 days or 34 meters.]{.aside}
+
+If we want the input to the model function $\text{cases}(t)$ to be denominated in days, we'll have to convert $t$ to a pure pure number (e.g. 10, not "10 days") *before* the quantity is handed off as the argument to $\exp()$. We do this by introducing a ***parameter***. 
+
+[In every case, these parameters are arranged to translate a with-units quantity into a pure number suitable as an input to the pattern-book function. Similarly, parameters will translate the pure-number output from the pattern-book function into a quantity with units.]{.aside}
+
+The standard parameterization for the exponential function is $e^{kt}$. The parameter $k$ will be a quantity with units of "per-day." Suppose we set $k=0.2$ per day. Then $k\, t{\LARGE\left.\right|}_{t=10 days} = 2$. This "2" is a pure number because the units on the 0.2 ("per day") and on the 10 (days) cancel out:
 $$0.2\, \text{day}^{-1} \cdot 10\, \text{days} = 2\ .$$
 The use of a parameter like $k$ does more than handle the formality of converting input quantities into pure numbers. Having a choice for $k$ allows us to stretch or compress the function to align with the data. @fig-covid-exp2 plots the modeling version of the exponential function to the COVID-case data:
 
 ```{r echo=FALSE, warning=FALSE}
 #| label: fig-covid-exp2
-#| fig-cap: "Using the function form $A e^{kt}$, with parameters $k=0.19$ per day and $A = 573$ cases, matches the COVID-case data well."
+#| fig-cap: "Using the function form $A e^{kt}$, with parameters $k=0.19$ per day and $A = 0.0573$ cases (in 10000s), matches the COVID-case data well."
 #| fig-cap-location: margin
 Pcases %>%
-  slice_plot(573*exp(0.19*t) ~ t, interval(t=0:31), color="blue", label_x=0.5,
+  slice_plot(.0573*exp(0.19*t) ~ t, interval(t=0:31), color="blue", label_x=0.5,
              label_text="A exp(k t)\nA = 593 cases\nk=0.19 per day\n", label_vjust = "left")
 ```
 
-This chapter will introduce new functions, based on the pattern-book functions, but that have parameters so that the inputs and outputs can be **quantities** rather than pure numbers. 
+
 
 ## Parallel scales
 
@@ -75,10 +91,10 @@ In @sec-output-scaling we'll introduce a second scale conversion function, for t
 
 ## Input scaling {#sec-input-scaling}
 
-@fig-tides-RI1 is based on the data frame `RI-tide` which is a minute-by-minute record of the tide level in Providence, Rhode Island (USA) for the period April 1 to 5, 2010. The `level` variable is measured in meters; the `hour` variable gives the time of the measurement in hours after midnight at the start of April 1.
+@fig-tides-ri1 is based on the data frame `RI-tide` which is a minute-by-minute record of the tide level in Providence, Rhode Island (USA) for the period April 1 to 5, 2010. The `level` variable is measured in meters; the `hour` variable gives the time of the measurement in hours after midnight at the start of April 1.
 
 ```{r echo=FALSE}
-#| label: fig-tides-RI1
+#| label: fig-tides-ri1
 #| fig-cap: "Tide levels oscillate up and down over time. This is analogous to the $\\sin(t)$ pattern-book function."
 #| fig-cap-location: margin
 Pa <- gf_line(level ~ hour, data = RI_tide, color="blue") %>%
@@ -138,12 +154,12 @@ gf_point(y ~ x, data = Pts) %>%
 
 You can calculate for yourself that the function that relates $\color{blue}{\mathbf{\text{blue}}}$ to **black** is $$t(\color{blue}{time}) = \underbrace{\frac{1}{2}}_a \color{blue}{time}  \underbrace{-1\LARGE\strut}_b$$
 
-Replacing the pure number $t$ as the input to pattern-book $\sin(t)$ with the transformed $\frac{1}{2} \color{blue}{time} 1 1$ we get a new function:
+Replacing the pure number $t$ as the input to pattern-book $\sin(t)$ with the transformed $\frac{1}{2} \color{blue}{time}$ we get a new function:
 $$g(\color{blue}{time}) \equiv \sin\left(\strut {\small\frac{1}{2}}\color{blue}{time} - 1\right)\ .$$
-@fig-tides-RI2 plots $g()$ along with the actual tide data.
+@fig-tides-ri2 plots $g()$ along with the actual tide data.
 
 ```{r echo=FALSE}
-#| label: fig-tides-RI2
+#| label: fig-tides-ri2
 #| fig-cap: "The sinusoid with input scaling (black) aligns nicely with the tide-level data."
 #| fig-cap-location: margin
 g1 <- ggplotGrob(Pa)
@@ -172,13 +188,14 @@ Just as the natural input needs to be scaled before it reaches the pattern-book 
 #| label: fig-scaling-nature
 #| fig-cap: "Natural **quantities** must be scaled to pure numbers before being suited to the pattern-book functions. The output from the pattern-book function is a pure number which is scaled to the natural **quantity** of interest."
 #| column: page-right
+#| out-width: "150%"
 #| fig-cap-location: top
 knitr::include_graphics("www/scaling-nature.png")
 ```
 
 The overall result of input and output scaling is to tailor the pattern-book function so that it is ready to be used in the real world.
 
-Let's return to @fig-tides-RI2 which shows that the function $g(\color{blue}{time})$, which scales the input to the pattern-book sinusoid, has a much better alignment to the tide data. Still, the vertical axes of the two graphs in the figure are not the same.
+Let's return to @fig-tides-ri2 which shows that the function $g(\color{blue}{time})$, which scales the input to the pattern-book sinusoid, has a much better alignment to the tide data. Still, the vertical axes of the two graphs in the figure are not the same.
 
 This is the job for ***output scaling***, which takes the output of $g(\color{blue}{time})$ (bottom graph) and scales it to match the $\color{magenta}{level}$ axis on the top graph. That is, we seek to align the **black** vertical scale with the $\color{magenta}{\mathbf{\text{magenta}}}$ vertical scale.
 To do this, we note that the range of the $g(\color{blue}{time})$ is -1 to 1, whereas the range of the tide-level is about 0.5 to 1.5. The output scaling will take the straight-line form
@@ -258,27 +275,17 @@ where $$t_0 = - \log(A)/a = - \log(593)/0.19 = -33.6\ .$$
 You can interpret $t_0$ as the starting point of the pandemic. When $t = t_0$, the model output is $e^{k 0} = 1$: the first case. According to the parameters we matched to the data for March, the pandemic's first case would have happened about 33 days before March 1, which is late January. We know from other sources of information, the outbreak began in late January. It's remarkable that even though the curve was constructed without any data from January or even February, the data from March, translated through the curve-fitting process, pointed to the start of the outbreak. This is a good indication that the exponential form for the model is fundamentally correct.
 :::
 
-## Parameterization idioms
+## Parameterization conventions
 
-English has many *idioms*, phrases to express an idea to those in the know, but will be confusing to others to take the phrase literally. Examples of such idioms (many of which come from Shakespeare's plays):
+There are conventions for the symbols used for input-scaling parameterization of the pattern-book functions. Knowing these conventions makes it easier to read and assimilate mathematical formulas. In several cases, there is more than one conventional option. For instance, the sinusoid has a variety of parameterization forms that get used depending on which feature of the function is easiest to measure. @tbl-param that are used in practice.
 
-- break the ice
-- it's Greek to me
-- elbow room
-- beat around the bush
-- break a leg
-
-Part of the process of learning a language is gaining familiarity with idioms.
-
-The same is true for mathematics as it's spoken in different disciplines. Such idioms appear in the way input scaling is parameterized and the names used for the parameters. Often, the idiomatic parameterization is intended to make it easy to give a value to a parameter from easy-to-make observations. Knowing and using the idiom of mathematical notation will help you read and write mathematics more fluently. 
-
-Here are some input-scaling parameterizations that are used in practice.
-
+::: {#tbl-parameterization .column-screen-inset-right}
 Function    | Written form | Parameter 1 | Parameter 2
-------------|--------------|-------------|-------------
-Exponential | $e^{kt}$     | $k$ "exponential constant" | Not used
+----------|-------------|-------------|--------------
+Exponential | $e^{kt}$     | $k$  | Not used
 Exponential | $e^{t/\tau}$     | $\tau$ "time constant" | Not used
-Exponential | $2^{t/\tau_2}$     | $\tau_2$ "doubling time"^[$-\tau_2$ is sometimes called the "half life."] | Not used    
+Exponential | $2^{t/\tau_2}$     | $\tau_2$ "doubling time" | Not used 
+Exponential | $2^{-\tau_{1/2}}$ | $-\tau_{1/2}$ "half life" | Not used
 Power-law   | $[x - x_0]^p$    | $x_0$ x-intercept | exponent
 Sinusoid    | $\sin\left(\frac{2 \pi}{P} (t-t_0)\right)$ | $P$ "period" | $t_0$ "time shift" 
 Sinusoid | $\sin(\omega t + \phi)$ | $\omega$ "angular frequency" | $\phi$ "phase shift"
@@ -288,6 +295,8 @@ Sigmoid  | pnorm(x, mean, sd) | "mean" (center) | sd "standard deviation"
 Straight-line | $mx + b$ | $m$ "slope" | $b$ "y-intercept"
 Straight-line | $m (x-x_0)$ | $m$ "slope" | $x_0$ "center"
 
+Some standard forms of input scaling parameterizations
+:::
 
 ## Exercises
 
