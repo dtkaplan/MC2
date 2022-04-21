@@ -31,7 +31,7 @@ When a guitar string is at rest it forms a straight line connecting its two fixe
 ```
 :::
 
-```{r echo=FALSE}
+```{r echo=FALSE, eval=knitr::is_latex_output()}
 #| label: fig-guitar-still
 #| column: margin
 #| fig-cap: The position of a guitar string is a function of both time and space. ([Access the video](https://www.youtube.com/watch?v=F0NsJ7J8rYM) at <https://www.youtube.com/watch?v=F0NsJ7J8rYM>) 
@@ -89,6 +89,36 @@ We left function ***composition*** out of the list of ways to build multi-input 
 For instance, consider the two functions $f(x)$ and $g(t)$. The composition $f(g(t))$ has only **one** input: $t$. Similarly, $g(f(x))$ has only one input: $x$.
 
 :::
+
+## Constructing your own from data
+
+Even if you don't yet have a theoretical understanding of how to construct functions with multiple inputs from data, you can R/mosaic operations for doing so. A key function is `fitModel()`, which like `makeFun()`, constructs a function. And, like `makeFun()`, you need to use a tilde expression to specify the model formula. But, unlike `makeFun()`, you can leave it to the computer to find the parameters that will make the function align with data.
+
+To illustrate, we can construct a housing-price model from the `SaratogaHouses` data:
+
+```{r}
+price <- fitModel(price ~ A + B*livingArea + C*bedrooms + D*bathrooms,
+                  data = SaratogaHouses)
+
+```
+
+[Note that in applying the `price()` function to inputs, we are using the names of the inputs explicitly. To write the command `price(2000,3,2)` risks mixing up which input is which.]{.aside}
+
+Use the function in the ordinary way. For instance, here's what the model has to say about the anticipated sales price of a house with 2000 square feet of living area, three bedrooms, and two bathrooms. 
+
+```{r}
+price(livingArea=2000, bedrooms=3, bathrooms=2)
+```
+
+
+
+The units of the output are the same as the units of `price` in the `SaratogaHouses` data frame: dollars.
+
+::: {.column-margin}
+To look at a function, give the function name *without* parentheses, e.g. `price`. In contrast, you'll always use parentheses when applying the function to inputs.
+:::
+
+For technical reasons, the functions created by `fitModel()` have a lot of computer-programming jargon in them, as you can see by constructing the model itself and then looking at the function. But you will also see clearly the values of the parameters found by `fitModel()`.
 
 
 
