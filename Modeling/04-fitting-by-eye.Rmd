@@ -18,17 +18,38 @@ In this chapter, we'll build on both these ideas to make them easier to use:
 
 Taken together, the tools of parameter selection and finding linear combination support a standard process for building model functions. 
 
-## Parameter names
 
-The functions we will work with in this chapter either have no parameters (e.g. one() or identity()) of have standard formats and names for parameters. 
+## Drawing a straight line
 
-The gaussian and sigmoid share the same parameters: "mean" and "sd" (short for "standard deviation").
+cooling mug of water. @fig-Fun-4-a shows the data along with a dozen candidate straight line functions, each one drawn in its own color.
 
-The exponential function is written in several different forms with different parameter names. Perhaps the most standard is $\exp(k t)$ with "k" as the parameter name. Closely related is the form $\exp(-k t)$, which is used especially for exponential decay. Another form often seen is $\exp(-t / \tau)$, where the parameter $\tau$ (a Greek letter pronounced "tau") is the "time constant." In practice, as you'll see, it's common to estimate quantities called the "doubling time" or "half-life," which are relatively easy to read from a graph, but then have to be converted the $k$ or $\tau$ form.
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-Fun-4-a
+#| fig-cap: "Some candidate straight-line function models plotted on top of the cooling water data. Which one(s) would you pick as good matches to the data?"
+set.seed(101)
+gf_point(temp ~ time, data=CoolingWater %>% sample_n(20)) %>%
+  gf_labs(x = "Time (minutes)", y="Temperature (deg. C)") %>%
+  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="dodgerblue") %>%
+  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="aquamarine") %>%
+  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="cadetblue") %>%
+  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="green") %>%
+  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="cadetblue") %>%
+  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="royalblue") %>%
+  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20),color="seagreen") %>%
+  gf_abline(intercept = 100, slope=-0.21, color = "plum") %>%
+  gf_abline(intercept = 90, slope=-0.19, color = "plum3") %>%
+  gf_abline(intercept = 63, slope=-0.05, color = "purple") %>%
+  gf_abline(intercept = 120, slope=-0.51, color = "purple3") %>%
+  gf_abline(intercept = 7, slope=.21, color = "orchid")
+```
 
-For the sinusoid, we will often use the form $\sin\left(\frac{2\pi}{P} (t- t_0)\right)$, where the parameter $P$ is the "period" of oscillation. But in fields such as engineering or physics one frequently encounters the sinusoid parameterized by "frequency" or "angular frequency" or "wave number" or "wavelength." All of these get at the same characteristic as "period," but in ways that are more or less convenient depending on the application. 
+Some of the straight-line models are a much better match to the data than others. The blue-shaded functions are pretty good fits, at least when you consider the limitations of matching data with a curved pattern by a straight line.  The green-colored functions are maybe OK but not as good as the blue, and the purple-shaded functions are just horrible.
 
-## Straight-line function
+Now that you know what a reasonable straight-line model looks like, you will find it pretty easy to draw one on data graphics that even remotely show a straight-line pattern. 
+
+Step 1: Draw a reasonable straight-line through the data points. 
+
+Step 2: Find the parameters that correspond to the line you drew. 
 
 
 ## Gaussian and Sigmoid
@@ -96,6 +117,41 @@ An expression like $A e^{kx} + C$ combines the exponential (obviously!) and a se
 
 Polynomials are an important example of linear combinations. Something like $p(x) \equiv a + b t + c t^2$ is a linear combination of the constant function, the proportional function, and the square function. 
 
+
+
+## MOVED HERE FROM A DISCARDED CHAPTER
+
+Name        |  Pattern-book form | Modeling form
+------------|-------------|------------------
+exponential |  $e^x$      | $A e^{kx} + C$
+sinusoid    | $\sin(x)$   | $A \sin\left(\frac{2 \pi}{P} (x-x_0)\right) + C$
+proportional | $x$        | $a x + b$
+
+::: {.takenote  data-latex=""}
+The parameter $C$ is often called the ***baseline*** or the ***offset***. Statisticians call it the "intercept," because it plays the same role as $b$ in the straight-line function.
+
+When working with sinusoids, parameter $A$ is called the ***amplitude***.
+
+```{r show-sin-params, echo=FALSE, warning=FALSE, fig-cap: "Baseline (blue), amplitude (red), and period (green) for the sinusoid."}
+# making waveforms for the figure
+slice_plot(sin(x) ~ x, domain(x=c(-1, 12))) %>%
+  gf_hline(yintercept=0, color="dodgerblue") %>%
+  gf_refine(theme_void()) %>%
+  gf_errorbar(0 + 1 ~ pi/2, color="orange3") %>%
+  gf_errorbar(-1 + 0 ~ 3*pi/2, color="orange3") +
+  geom_errorbarh(aes(y=1/2, xmin=0, xmax=2*pi), color="green", size=.5)
+```
+
+```{r show-exp-baseline, echo=FALSE, warning=FALSE, fig-cap: "The baseline for the exponential is the horizontal asymptote. There is no vertical asymptote."}
+slice_plot(exp(x) ~ x, domain(x=c(-2, 2))) %>%
+  gf_hline(yintercept=0, color = "dodgerblue") %>%
+  gf_segment(0 + 0 ~ 0 + (-2), color="orange", arrow=arrow(ends="last", type="closed")) %>%
+
+  gf_refine(theme_void())
+```
+:::
+
+-----
 
 
 ## Exercises

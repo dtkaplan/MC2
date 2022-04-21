@@ -39,20 +39,7 @@ Just to show how these things are done, the functions have been drawn in differe
 
 ## Fitting parameters
 
-Seen very abstractly, a mathematical model is a set of ***functions*** that represent the relationships between inputs and outputs.  
 
-At the most simple level, building a model can be a short process:
-
-1. Develop an understanding of the relationship you want to model. Often, part of this "understanding" is the pattern seen in data.
-2. Choose a function type---e.g. exponential, sinusoidal, sigmoid---that you think would be a good match to the relationship.
-3. Find ***parameters*** that scales your function to be able to accept real-world inputs and generate real-world outputs.
-
-It's important to distinguish between two basic types of model:
-
-1. ***Empirical models*** which are rooted in ***observation*** and ***data***.
-2. ***Mechanistic models*** such as those created by applying fundamental laws of physics, chemistry, and such.
-
-We are going to put off mechanistic models for a while, for two reasons. First, the "fundamental laws of physics, chemistry, and such" are often expressed with the concepts and methods of calculus. We are heading there, but at this point you don't yet know the core concepts and methods of calculus. Second, most students don't make a careful study of the "fundamental laws of physics, chemistry, and such" until *after* they have studied calculus. So examples of mechanistic models will be a bit hollow at this point.
 
 We'll start then with empirical modeling: finding functions that are a good summary of data. The process of constructing a model that is a good match for data is called ***curve fitting***, or, more generally, ***fitting a model***.
 
@@ -66,22 +53,13 @@ A good place to start building a model is to pick one of the basic modeling func
 The basic modeling functions are the same, but replace the plain $x$ in the pattern-book function with a straight-line function, for instance $ax + b$ or, equivalently $a(x - x_0)$.  In use, the parameter $a$ is often written with some other letter and, often, the $b$ or $-x_0$ part is not needed. 
 
 
-Here are some of the common forms of the basic modeling functions you will encounter:
-
-Name | Common forms | note
------|--------------|------------
-Exponential | $e^{k t}$ or  $e^{-k t}$ or $e^{-t/ \tau}$
-Sinusoid | $\sin\left(\frac{2 \pi}{P} (t-t_0)\right)$, $\sin\left(\frac{2 \pi}{P} t\right)$, or $\sin(\omega t)$ | $P$ is "period", $\omega$ is "angular frequency."
-Monomials | $[x-x_0]$ or $[x-x_0]^2$, and so on
-Power-law generally | $x^p$ or $[x-x_0]^p$ | $p$ is "power."
-Gaussian | $\dnorm(x, mean, sd)$ | Interpret "mean" as "center."
-Sigmoid | $\dnorm(x, mean, sd)$ | $sd$ is "standard deviation" or "spread."
-
 
 
 It helps in making the selection to have ready to mind the basic shape of each of these function families. To review, revisit Section \@ref(function-shapes).
 
 Remember also that, in general, we scale the inputs and scale the output. This means that in choosing a model family, we don't have to worry at first about the numbers on the axes. (Of course, those numbers will be critically important later on in the process!) The scaling does, however, allow us to consider some variations on the shapes of the modeling functions. In particular, the ***input scaling*** lets us flip the shape right-for-left. And the ***output scaling*** lets us flip the shape top-for-bottom.
+
+## Flipping
 
 - $f(t)$, basic shape
 - $f(-t)$, flipped right-for-left
@@ -119,38 +97,6 @@ slice_plot(-exp(-x) ~ x, domain(x=c(-2,2))) %>%
 
 ```
 
-## Fitting a straight-line function
-
-
-To illustrate line fitting, let's return to the cooling mug of water. @fig-Fun-4-a shows the data along with a dozen candidate straight line functions, each one drawn in its own color.
-
-```{r echo=FALSE, warning=FALSE}
-#| label: fig-Fun-4-a
-#| fig-cap: "Some candidate straight-line function models plotted on top of the cooling water data. Which one(s) would you pick as good matches to the data?"
-set.seed(101)
-gf_point(temp ~ time, data=CoolingWater %>% sample_n(20)) %>%
-  gf_labs(x = "Time (minutes)", y="Temperature (deg. C)") %>%
-  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="dodgerblue") %>%
-  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="aquamarine") %>%
-  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="cadetblue") %>%
-  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="green") %>%
-  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="cadetblue") %>%
-  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="royalblue") %>%
-  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20),color="seagreen") %>%
-  gf_abline(intercept = 100, slope=-0.21, color = "plum") %>%
-  gf_abline(intercept = 90, slope=-0.19, color = "plum3") %>%
-  gf_abline(intercept = 63, slope=-0.05, color = "purple") %>%
-  gf_abline(intercept = 120, slope=-0.51, color = "purple3") %>%
-  gf_abline(intercept = 7, slope=.21, color = "orchid")
-```
-
-Some of the straight-line models are a much better match to the data than others. The blue-shaded functions are pretty good fits, at least when you consider the limitations of matching data with a curved pattern by a straight line.  The green-colored functions are maybe OK but not as good as the blue, and the purple-shaded functions are just horrible.
-
-Now that you know what a reasonable straight-line model looks like, you will find it pretty easy to draw one on data graphics that even remotely show a straight-line pattern. 
-
-Step 1: Draw a reasonable straight-line through the data points. 
-
-Step 2: Find the parameters that correspond to the line you drew. 
 
 ## Curve fitting a periodic function {#sec-fit-periodic}
 
