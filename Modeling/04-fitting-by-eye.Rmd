@@ -1,11 +1,56 @@
-# Fitting and polishing {#sec-fitting-polishing}
+# Fitting with features {#sec-fitting-polishing}
 
 ```{r child="../starter.Rmd"}
 ```
 
-Remember also that, in general, we scale the inputs and scale the output. This means that in choosing a model family, we don't have to worry at first about the numbers on the axes. (Of course, those numbers will be critically important later on in the process!) The scaling does, however, allow us to consider some variations on the shapes of the modeling functions. In particular, the ***input scaling*** lets us flip the shape right-for-left. And the ***output scaling*** lets us flip the shape top-for-bottom.
+For more than three centuries, there has been a standard calculus model of an everyday phenomenon: a hot object such as a cup of coffee cooling off to room temperature. The model, called ***Newton's Law of Cooling***, posits that the rate of cooling is proportional to the *difference* between the object temperature and the ambient temperature. The technology for measuring temperature  (@fig-early-thermometers) was rudimentary in Newton's era, raising the question of how Newton formulated a quantitative theory of cooling. (We'll return to this question in @sec-low-order.)
+
+```{r echo=FALSE}
+#| label: fig-early-thermometers
+#| column: margin
+#| fig-cap: Thermometers in the 1600s were primative affairs. This is thought to be the earliest published image of thermometers, by Jean Leurechon in *Recréation Mathématicque* (1626) [Image source](https://commons.wikimedia.org/w/index.php?curid=67780885)
+knitr::include_graphics("www/early-thermometers.png")
+```
+
+Using today's technology, Prof. Stan Wagon of Macalester College investigated the accuracty Newton's "Law." 
+@fig-Fun-4-intro-1 shows some of Wagon's data from experiments with cooling water. He poured boiling water from a kettle into an empty room-temperature mug (26 degrees C) and measured the temperature of the water over the next few hours.
+
+```{r echo=FALSE}
+#| label: fig-stans-data
+#| fig-cap: "Temperature of a mug of cooling water. [Source](https://www.researchgate.net/profile/Gianluca_Argentini/post/Is_analogy_reasoning_between_heat_transfert_and_electriocity_allows_to_apply_the_electricity_laws_about_resistance_to_thermal_resistances/attachment/59d6573379197b80779ada64/AS%3A533325451403264%401504166104259/download/Stan+WAGON+How+quickly+does+water+cool.pdf)"
+set.seed(101)
+gf_point(temp ~ time, data=CoolingWater ) %>%
+  gf_labs(x = "Time (minutes)", y="Temperature (deg. C)")
+```
+
+This chapter shows simple techniques to translate data, such as in @fig-stans-data, into a quantitative model assembled from the pattern-book functions. We'll do this by making a handful of measurements of the shape of the pattern shown by the data and translating those measurements into the parameters introduced in @sec-assembling.
+
+In each case, the first step is to select a pattern-book function that has roughly the same shape as the data.
+
+```{r echo=FALSE, eval=FALSE}
+# helper function used to generate the pattern-book png files
+make_shape <- function(f, min, max) {
+  Pts <- tibble(
+    x = seq(min, max, length=100),
+    y = f(x)
+  ) %>% mutate(ifelse(abs(x) > 0.05, y, NaN))
+  plot(Pts$x, Pts$y, type="l", xaxt="n", yaxt="n", xlab="", ylab="", bty="n", lwd=12)
+}
+```
+
+::: {#tbl-pattern-book-shapes .column-page-inset-right}
+const | prop | square | recip | gaussian | sigmoid | sinusoid | exp | ln
+:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:
+![](www/pb-const.png) | ![](www/pb-proportional.png) | ![](www/pb-square.png)| ![](www/pb-recip.png)| ![](www/pb-gauss.png) | ![](www/pb-sigmoid.png) | ![](www/pb-sin.png) | ![](www/pb-exp.png) | ![](www/pb-log.png) 
+
+Shapes of the pattern-book functions
+:::
 
 ## Flipping
+
+It seems fair to say that the data in @fig-stans-data don't match any of the pattern-book shapes in #tbl-pattern-book-shapes.
+
+Looking at the data, one sees that the temperature decreases along a curve: cooling fast at first and then more slowly. This is the pattern of the flipped right-for-left exponential. (@fig-four-variations(B)) We can imagine then that an exponential, $A e^{kt} + C$ will be a suitable model form for the cooling water.
 
 - $f(t)$, basic shape
 - $f(-t)$, flipped right-for-left
@@ -16,31 +61,29 @@ For functions such as the sinusoid, flipping is not much use, since the flipped 
 
 For the exponential function, the two possible types of flipping---right-for-left and top-for-bottom---produce four different curves, all of which are exponential, shown in @fig-four-variations.
 
-```{r out.width="50%", echo=FALSE, fig.show="hold"}
+```{r echo=FALSE, fig.show="hold"}
 #| label: fig-four-variations
 #| fig-cap: "Four variations of the exponential function." 
-
-ggpubr::ggarrange(
-  slice_plot(exp(x) ~ x, domain(x=c(-2,2))) %>%
+#| column: page-right
+Pa <- slice_plot(exp(x) ~ x, domain(x=c(-2,2))) %>%
   gf_refine(theme_void()) %>%
   gf_theme(plot.title = element_text(size=16)) %>%
-  gf_labs(title="A. The exponential function, no flipping"), 
+  gf_labs(subtitle="A. Exponential function") 
   
-slice_plot(exp(-x) ~ x, domain(x=c(-2,2))) %>%
+Pb <- slice_plot(exp(-x) ~ x, domain(x=c(-2,2))) %>%
   gf_refine(theme_void()) %>%
     gf_theme(plot.title = element_text(size=16)) %>%
-  gf_labs(title="B. Flipped right-for-left"), ncol=2)
+  gf_labs(subtitle="B. Flipped right-for-left")
 
-ggpubr::ggarrange(
-  slice_plot(-exp(x) ~ x, domain(x=c(-2,2))) %>%
+Pc <- slice_plot(-exp(x) ~ x, domain(x=c(-2,2))) %>%
   gf_refine(theme_void()) %>%
     gf_theme(plot.title = element_text(size=16)) %>%
-  gf_labs(title="C. Flipped top-for-bottom"),
-slice_plot(-exp(-x) ~ x, domain(x=c(-2,2))) %>%
+  gf_labs(subtitle="C. Flipped top-for-bottom")
+Pd <- slice_plot(-exp(-x) ~ x, domain(x=c(-2,2))) %>%
   gf_refine(theme_void()) %>%
     gf_theme(plot.title = element_text(size=16)) %>%
-  gf_labs(title="D. Flipped both right-for-left and top-for-bottom"), ncol=2)
-
+  gf_labs(subtitle="D. Flipped both right-for-left and top-for-bottom")
+gridExtra::grid.arrange(Pa, Pb, Pc, Pd)
 ```
 
 ## An earlier start
@@ -189,21 +232,6 @@ Almost everybody is happier doing arithmetic with numbers like 2 and 10 rather t
 
 Exponential functions also describe ***decrease*** or ***decay***. Just replace $t$ with $-t$. That is, a movie of a decreasing quantity is just the movie of an increasing quantity played backwards in time!    
 
-@fig-Fun-4-intro-1 shows some data collected by Prof. Stan Wagon to support his making a detailed mechanistic model of an everyday phenomenon: [The cooling of a mug of hot beverage to room temperature](https://www.researchgate.net/profile/Gianluca_Argentini/post/Is_analogy_reasoning_between_heat_transfert_and_electriocity_allows_to_apply_the_electricity_laws_about_resistance_to_thermal_resistances/attachment/59d6573379197b80779ada64/AS%3A533325451403264%401504166104259/download/Stan+WAGON+How+quickly+does+water+cool.pdf). The mug started at room temperature, which was measured at 26 degrees C. At time 0 he poured in boiling water from a kettle and measured the temperature of the water over the next few hours.
-
-```{r echo=FALSE}
-#| label: fig-Fun-4-intro-1
-#| fig-cap: "Stan's data"
-set.seed(101)
-gf_point(temp ~ time, data=CoolingWater %>% sample_n(20)) %>%
-  gf_labs(x = "Time (minutes)", y="Temperature (deg. C)")
-```
-
-Our task is to translate this data into the form of a function that takes time as input and returns temperature as output. Such a model would be useful for, say, filling in the gaps of the data. For instance, we might want to find the temperature of the water immediately after being poured from the kettle into the mug.
-
-Looking at the data, one sees that the temperature decreases along a curve: cooling fast at first and then more slowly. This is the pattern of the flipped right-for-left exponential. (@fig-four-variations(B)) We can imagine then that an exponential, $A e^{kt} + C$ will be a suitable model form for the cooling water.
-
-What remains is to find the parameters $A$, $k$, and $C$.  Here is a general process for curve-fitting an exponential. Later, we'll apply this process specifically to the water-cooling situation. 
 
 **General process for curve-fitting an exponential**
 
@@ -483,7 +511,9 @@ The parameter $C$ is often called the ***baseline*** or the ***offset***. Statis
 
 When working with sinusoids, parameter $A$ is called the ***amplitude***.
 
-```{r show-sin-params, echo=FALSE, warning=FALSE, fig-cap: "Baseline (blue), amplitude (red), and period (green) for the sinusoid."}
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-show-sin-params
+#| fig-cap: "Baseline (blue), amplitude (red), and period (green) for the sinusoid."
 # making waveforms for the figure
 slice_plot(sin(x) ~ x, domain(x=c(-1, 12))) %>%
   gf_hline(yintercept=0, color="dodgerblue") %>%
@@ -493,7 +523,9 @@ slice_plot(sin(x) ~ x, domain(x=c(-1, 12))) %>%
   geom_errorbarh(aes(y=1/2, xmin=0, xmax=2*pi), color="green", size=.5)
 ```
 
-```{r show-exp-baseline, echo=FALSE, warning=FALSE, fig-cap: "The baseline for the exponential is the horizontal asymptote. There is no vertical asymptote."}
+```{r echo=FALSE, warning=FALSE} 
+#| label: fig-show-exp-baseline
+#| fig-cap: "The baseline for the exponential is the horizontal asymptote. There is no vertical asymptote."
 slice_plot(exp(x) ~ x, domain(x=c(-2, 2))) %>%
   gf_hline(yintercept=0, color = "dodgerblue") %>%
   gf_segment(0 + 0 ~ 0 + (-2), color="orange", arrow=arrow(ends="last", type="closed")) %>%
@@ -519,7 +551,7 @@ slice_plot(exp(x) ~ x, domain(x=c(-2, 2))) %>%
 `r insert_calcZ_exercise(12.6, "daylength", "Exercises/length-of-day.Rmd")`
 
 
-`r insert_calcZ_exercise("XX.XX", "p6jxx5", "/Users/kaplan/MC2/Modeling/Exercises/duck-see-socks.Rmd", skill="linear combinations")`
+`r insert_calcZ_exercise("XX.XX", "p6jxx5", "Exercises/duck-see-socks.Rmd", skill="linear combinations")`
 
 
 
