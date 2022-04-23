@@ -6,7 +6,90 @@
 
 NOTE NOTE NOTE
 
-The material in this first section has been moved to the new Block 1 chapter 6. CHANGE THIS CHAPTER TO FOCUS ON THE ANALYSIS OF LOW-ORDER POLYNOMIALS BY differentiation.
+The material in this first section has been moved to the new Block 1 chapter 5. CHANGE THIS CHAPTER TO FOCUS ON THE ANALYSIS OF LOW-ORDER POLYNOMIALS BY differentiation.
+
+
+The information that you have about the relationship often takes the form of a data table. Each row records one trial in which the values of the inputs have been measured and the corresponding output value recorded. We'll discuss the methods of constructing functions to match such data in Block 5 of this course. 
+
+Another common form for the information about the relationship is about derivatives. That is, you know something about the derivative of a relationship even though you don't (yet) have a form for the function describing the relationship. As an example, think about building a model of the sustainable speed of a bicycle as a function of the gear selected and the grade of the road---up or down. 
+
+Consider these three questions that any experienced bicyclist can likely answer:
+
+1. On a given grade of road, is there an optimal gear for the highest sustained speed? (Have in mind a particular rider, perhaps yourself.)
+2. Imagine that the grade of the road is described by a positive number for uphill and a negative number for downhill: that is, the slope of the road. For a positive (uphill) grade and at a fixed gear, will the bike's sustained speed be higher or lower as a function of the grade?^[It's much the same for downhill biking, but you have to keep in mind that a shallow downhill has a higher numerical slope than a steep downhill. That is, the derivative of the hill is near zero for a very shallow grade and far from zero (that is, more negative) for a steep downhill grade.]
+3. Assuming you answered "yes" to question (1): Does the optimal gear choice depend on the grade of the road? (In concrete terms, would you choose different gears for an uphill climb than for a level road or a downhill stretch?) 
+
+Using the methods in this chapter, the answers to those three questions let you choose an appropriate form for the speed(gear, grade) function. Then, using methods in Block 5 of this text, you can make a few measurements for any given rider and construct a model customized to that rider. 
+
+Note that the three questions all have to do with derivatives. An "optimal gear" is a gear at which $\partial_\text{gear} \text{speed}(\text{gear}, \text{grade}) = 0$. That you ride slower the higher the numerical value of the slope means that  $\partial_\text{grade} \text{speed}(\text{gear}, \text{grade}) < 0$. And we know that $\partial_\text{gear} \text{speed}(\text{gear}, \text{grade})$ depends on the grade; that's why there's a different optimal gear at each grade. 
+
+
+
+
+::: {.intheworld data-latex=""}
+If you're like many people, you find it harder to walk uphill than down, and find it takes more out of you to walk longer distances than shorter. Let's build a model of this, using nothing more than your intuition and the method of low-order polynomial approximations.
+
+Let's call the map distance walked $d$. ("Map distance" is the horizontal change in position, disregarding vertical changes.) The steepness of the hill will be the "grade" $g$, which is measured as the horizontal distance covered divided by the vertical climb. If you're going downhill, the grade is negative. 
+
+The key ingredient in the model: We'll measure the "difficulty" or "exertion" to walking as the ***energy consumed*** during the walk: $E(d, g)$.
+
+Some assumptions about walking and energy consumed:
+
+1. If you don't walk, you consume zero energy walking.
+2. The energy consumed should be proportional to the length of the walk. This is an assumption, and is probably valid, only for walks of short to medium distances, as opposed to forced marches over tens of miles. 
+
+
+We'll start with the full 2nd-order polynomial in two inputs, and then seek to eliminate terms that aren't needed.
+
+$$E_{big}(d, g) \equiv a_0 + a_d\, d + a_g\, g + a_{dg}\, d\, g + a_{dd}\,d^2 + a_{gg}\,g^2$$
+According to assumption (1), when $E(d=0, g) = 0$. Of course, if you are walking zero distance, it doesn't matter what the grade is; the energy consumed is still zero.
+
+Consequently, we know that all terms that don't include a $d$ should go away. This leaves us with
+
+$$E_{medium}(d, g) \equiv  a_d\, d + a_{dg}\, d\, g + a_{dd}\,d^2 = d \left[\strut a_d + a_{dg}\, g + a_{dd}\,d\right]$$
+Assumption (2) says that energy consumed is proportional to $d$. The multiplier on $d$ in $E_{medium}()$ is $\left[\strut a_d + a_{dg}\, g + a_{dd}\,d\right]$ which is itself a function of $d$. A proportional relationship implies a multiplier that doesn't depend on the quantity itself. This means that $a_{dd} = 0$.
+
+This leaves us with a very simple model: $$E(d, g) \equiv \left[\strut a_1 + a_2\, g\right]\, d$$ where we have simplified the labeling on the coefficients since there are only two in the model.
+
+Perhaps assumption (2) is misplaced and that the energy consumed per unit distance in a walk increases with the length of the walk. If so, we would need to return to the question of $a_{dd}$. This is typical of the modeling cycle. Trying to be economical with model terms highlights the question of which terms are so small they can be ignored.
+:::
+
+
+::: {.example   data-latex=""}
+In selecting cadets for pilot training, two criteria are the cadet's demonstrated flying aptitude and the leadership potential of the cadet. Let's assume that the overall merit $M$ of a candidate is a function of flying aptitude $F$ and leadership potential $L$. 
+
+Currently, the merit score is a simple function of the $F$ and $L$ scores: $$M_{current}(F, L) \equiv F + L$$
+
+The general in charge of the training program is not satisfied with the current merit function. "I'm getting too many cadets who are great leaders but poor pilots, and too many pilot hot-shots who are not good leaders.  I would rather have an good pilot who is a good leader than have a great pilot who is a poor leader or a poor pilot who is a great leader." (You might reasonably agree or disagree with this point of view, but the general is in charge.)
+
+The general has tasked you to revise the formula to better match her views about the balance betwen flying ability and leadership potential. 
+
+How should you go about constructing $M_{improved}(F, L)$?
+
+You recognize that $F + L$ is a low-order polynomial: just the linear terms are present without a constant or interaction term or quadratic terms. Low-order polynomials are a good way to approximate any formula locally, so you have decided to follow that route.
+
+Quadratic terms are appropriate when a model needs to feature a locally ***optimal*** level of the of the inputs. But it will never be the case that a lower flying score will be more favored than a higher score, and the same thing for the leadership score. So your model doesn't need quadratic terms. 
+
+That leaves the interaction term as the way forward. The low-order polynomial model will be 
+$$M_{improved}(F, L) \equiv d_0 + F + L + d_{FL} FL$$
+Should $d_{FL}$ be positive or negative? 
+
+Imagine a cadet Drew with acceptable and equal F and L scores. Another cadet, Blake, has scores that are $F+\epsilon$ and $L-\epsilon$, where $\epsilon$ might be positive or negative. Under the original formula for merit, Drew and Blake have equal merit. Under the new criteria, Drew should have a higher merit than Blake. In other words:
+$$M_{improved}(F, L) - M_{improved}(F+\epsilon, L-\epsilon) > 0$$
+
+Replace $M_{improved}(F, L)$ with the low-order polynomial approximation given earlier. 
+$$\underbrace{d_0 + F + L + d_{FL} FL}_{M_{improved}(F, L)} - \underbrace{\left[{\large\strut} d_0 + \left[ F + \epsilon\right] + \left[ L - \epsilon\right] + d_{FL} (FL -\epsilon L + \epsilon F -  \epsilon^2)\right]}_{M_{improved}(F+\epsilon, L-\epsilon)} > 0$$
+Collecting and cancelling terms in the above gives 
+$$- d_{FL}(\epsilon(F-L) + \epsilon^2) > 0$$
+Since $F$ and $L$ were assumed equal, this results in 
+$$M_{improved}(F, L) - M_{improved}(F+\epsilon, L-\epsilon) = d_{FL}\, \epsilon^2 > 0$$
+Thus, $d_{FL}$ will have to be positive.
+:::
+
+
+
+
+END OF MATERIAL COPIED From modeling/05-low-order-polynomials.Rmd
 
 We have focused in this book on a small set of basic modeling functions and three operations for assembling new functions out of old ones: ***linear combination***, ***multiplication***, and ***composition***. All of these have a domain that is the whole number line, or the positive half of the number line, or perhaps the whole number line leaving out zero or some other isolated point. Consider such domains to be ***global***. 
 

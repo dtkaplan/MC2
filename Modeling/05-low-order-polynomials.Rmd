@@ -1,161 +1,125 @@
-# Low order polynomials {#sec-low-order}
+# Low-order polynomials {#sec-low-order}
 
 ```{r child="../starter.Rmd"}
 ```
 
-```{r include=FALSE}
-book_file_name <- "modeling/06-low-order-polynomials.html"
-```
+Chapter @sec-fitting-by-feature looked at the task of modifying a pattern-book function to display a desired pattern, focusing on patterns originating in graphs of data. The procedure involved identifying an appropriate pattern-book function, then using input and output scaling to stretch, flip, and lift that function so that it overlays, as much as possible, the desired pattern.
 
-Newton's law of cooling from last chapter, Hooke's law 
+In this chapter, we'll take on a different strategy for constructing appropriately shaped functions using linear combinations of a handful of simple functions: the monomials.
 
+## Polynomials
 
-## The modeling polynomial {#sec-modeling-polynomial-1}
+Recall that the monomials are the power-law functions with non-negative, integer exponents: $x^0$, $x^1$, $x^2$, $x^3$, and so on. The "and so on" refers to even higher integer exponents such as $x^4$ or $x^{51}$ or $x^{213}$, to name but a few. The more common name for a linear combination of monomials is ***polynomial***. 
 
-Sometimes, in order to model some simple relationship you need to build a function whose graph has a simple, curving shape.  
+:::{.column-margin}
+The first two terms in the polynomial $g(t)$ could be written using exponents, like this:
+$$ g(t) \equiv a_0 t^0 + a_1 t^1 + \cdots$$
+In practice, nobody writes out explicitly the $t^0$ function. Instead, recognizing that $t^0 = 1$, we write the first term simply as $a_0$. Similarly, rather than writing $t^1$ in the second term, we write $a_1 t$, without the exponent. This practice makes the formulas for polynomials more concise but at the cost of failing to remind the reader that all the functions in the linear combination are monomials.
+:::
 
-A simple but surprisingly powerful approach is to use a ***low-order polynomial***. The ***order of a polynomial*** is the highest exponent on the input. For example:
+For instance, a fifth-order polynomial consists of a linear combination of monomials up to ***order*** 5. That is, up to $x^5$. This will have six terms because we count the order of the monomials starting with 0.
+$$g(t) \equiv a_0 + a_1 t + a_2 t^2 + a_3 t^3 + a_4 t^4 + a_5 t^5\ .$$
 
-- A ***straight-line function***, $g_1(x) \equiv a_0 + a_1 x$, is a **first-order** polynomial. 
-- A ***quadratic***, $g_2(x) \equiv b_0 + b_1 x + b_2 x^2$ is a **second-order** polynomial.
+The challenge in shaping a polynomial is to find the scalar multipliers---usually called ***coefficients*** when it comes to polynomials---that give us the shape we want. This might seem to be a daunting task, and it is for a human. But it can easily be handled using volumes of arithmetic, too much arithmetic for a human to take on but ideally suited for computing machines.
 
-Many modelers are tempted to extend the technique to third-, fourth-, fifth-order and even higher. This is only rarely worthwhile since all second-, fourth-, sixth- and higher-even-order ***monomials*** have basically the same U-shape, like a referee signalling a touch-down. Similarly, first-, third-, fifth- and higher odd-order monomial have  similar ![](www/cubic.png) shapes.  
+## Low-order polynomial models
 
-An ofttimes better approach is to compose the polynomial with a curved but monotonic function, such as a logarithm.
+Polynomials in general can show a wide variety of snake-like patterns. A fifth-order polynomial can have up to four internal curves. A tenth-order polynomial can have 9 internal curves, and so. There is, however, rarely a need for generating functions with all those curves. Instead, a great deal of modeling work can be accomplished with just first-order polynomials (no internal curves) or second-order polynomials (one internal curve). 
 
-::: {.why  data-latex=""}
-Notice that in writing low-order polynomials like $$g_1(x) \equiv a_0 + a_1 x$$ or  $$g_2(x) \equiv b_0 + b_1 x + b_2 x^2$$ we are using a specific naming convention for the scalars in the linear combinations. For each different function, we use a different start-of-the-alphabet name, like $a$ and $b$. That same name is used for all the scalars in the function, and a subscript is used to make the distinction between the different functions being combined. Thus, we have $a_1$ for the $x$ function in $g_1()$ and $b_2$ for the $x^2$ function in $g_2()$.
+\begin{eqnarray}
+\textbf{First-order: }\ \ \ \ \ & f_1(t) \equiv b_0 + b_1 t\\
+\textbf{Second-order: }\ \ \ \ \ & f_2(t) \equiv c_0 + c_1 t + c_2 t^2
+\end{eqnarray}
+
+::: {.column-margin}
+Note that we're using different names for the coefficients in each of the polynomial examples. The only significance of this is a reminder that each of the coefficients can be any number at all and isn't necessarily related to any of the other coefficients. In addition to the usual $a$, $b$, $c$, we've used the Greek alpha, beta, and gamma, that is $\alpha$, $\beta$, and $\gamma$. The subscript on the coefficient name indicates which term it belongs to. For instance, the coefficient on the $y^2$ term of the $h_c$ polynomial is named $\gamma_{yy}$ while the coefficient on the $x y$ term has the subscript $_{xy}$. Always, the coefficients are constant quantities and not functions of $x$ or any other input. 
 
 In high-school mathematics, polynomials are often written without subscript, for instance $a x^2 + b x + c$. This can be fine when working with only one polynomial at a time, but in modeling we often need to compare multiple, related polynomials.
 :::
 
+You may prefer to think about a first-order polynomial as a straight-line function. Similarly, a second-order polynomial is also known as a "quadratic" or even a "parabola." Nonetheless, it's good to see them as polynomials distinguished by their order. This puts them into a general framework, all of which can be handled by the technology of linear combinations. And polynomials can also involve more than one input. For instance, here are three polynomial forms that involve inputs $x$ and $y$:
 
 
 
-## Parentheses
+\begin{eqnarray}
+h_a(x, y) &\equiv & \alpha_0 + \alpha_x\, x + \alpha_y\, y\\
+h_b(x, y) &\equiv & \beta_0 + \beta_x\, x + \beta_y\, y + \beta_{xy}\, x y\\
+h_c(x, y) &\equiv & \gamma_0 + \gamma_x\, x + \gamma_y\, y + \gamma_{xy}\, x y + \gamma_{xx}\, x^2 + \gamma_{yy}\, y^2
+\end{eqnarray}
 
-::: {.why  data-latex=""}
-In writing $\line(x) \equiv a [x - x_0]$ I used ***square braces*** $\left[\strut\ \right]$ rather than parentheses $\left(\strut\ \right)$ to surround $x - x_0$. Either could be used and there is no difference in meaning. In traditional mathematical notation, either serves to demarcate a sub-expression. We'll be using parentheses very extensively in expressions like $\line(x)$, so it's nice to have a visual break. 
-:::
-
-
-REVIEW STRAIGHT-LINE FUNCTION and zero finding of it.
-
-One of the central techniques in calculus is to use straight-line functions to approximate more complicated functions. We'll start using this technique extensively in Block 2, but it's worth pointing out some basic symbolic manipulations of the straight-line function.
-
-1. Find the zero crossing (which you might have called "x-intercept")
-2. Find the slope.
-3. Point/slope form. $g(x) \equiv m(x-x_0)$ which implies $b=-m x_0$
+The reason to work with first- and second-order polynomials is rooted in the experience of modelers. Second-order polynomials provide a useful amount of flexibility while remaining simple and avoiding pitfalls.
 
 
-
-NOTE NOTE NOTE
-
-Much of this material is redundant with Block 2 chapter 25. Make sure to take it out of there. Let Chapter 25 focus on the analysis of low-order polynomials by differentiation and the interpretation of terms.
-
-
-We have focused in this book on a small set of basic modeling functions and three operations for assembling new functions out of old ones: ***linear combination***, ***multiplication***, and ***composition***. All of these have a domain that is the whole number line, or the positive half of the number line, or perhaps the whole number line leaving out zero or some other isolated point. Consider such domains to be ***global***. 
-
-We also discussed the components of ***piecewise functions***. Each component is a function defined on a limited domain, an interval $a \leq x \leq b$. In contrast to the global domains, we'll call the limited domains ***local***.  
-
-In this chapter, we'll explore a simple and surprisingly powerful method to approximate any function ***locally***, that is, over a small domain.  
-
-::: {.why  data-latex=""}
-Why would you want to approximate a function? Why not just use the function itself? 
-
-It's often the case that we know about or hypothesize about relationships only from data. We believe there is a definite functional form for the relationship, but it's unknown and unknowable to us. Still, we can approximate even an unknown function, matching the approximation to the data that is the visible manifestation of the unknown function. Local approximations provide a general-purpose method for creating functions that can represent a wide range of relationship patterns, even ones that are not otherwise known to us.
-
-In fields such as physics or engineering, there are often theories that dictate a particular form of function. For example, Newton's universal law of gravitation posits an inverse square law for the force of gravity as a function of distance. Mechanical engineers use power laws to describe the shape of a beam under load, and communications engineers (and others) make extensive use of sinusoids. Textbooks in those fields rightfully emphasize those particular function forms. 
-
-The utility of the local approximation method is that you can move forward even in the absence of a detailed theory. You need only apply your insight to posit which quantities are related to each other and then apply the approximation methods to produce a functional form. This approach is ubiquitous in all fields. 
-
-Sometimes, the local approximation *becomes* the theory. This is seen, for instance, in [Newton's law of cooling](https://en.wikipedia.org/wiki/Newton%27s_law_of_cooling), in [Hooke's law](https://en.wikipedia.org/wiki/Hooke%27s_law) relating force and extension, or the chemist's [law of mass action](https://en.wikipedia.org/wiki/Law_of_mass_action). 
-
-:::
-
-The information that you have about the relationship often takes the form of a data table. Each row records one trial in which the values of the inputs have been measured and the corresponding output value recorded. We'll discuss the methods of constructing functions to match such data in Block 5 of this course. 
-
-Another common form for the information about the relationship is about derivatives. That is, you know something about the derivative of a relationship even though you don't (yet) have a form for the function describing the relationship. As an example, think about building a model of the sustainable speed of a bicycle as a function of the gear selected and the grade of the road---up or down. 
-
-Consider these three questions that any experienced bicyclist can likely answer:
-
-1. On a given grade of road, is there an optimal gear for the highest sustained speed? (Have in mind a particular rider, perhaps yourself.)
-2. Imagine that the grade of the road is described by a positive number for uphill and a negative number for downhill: that is, the slope of the road. For a positive (uphill) grade and at a fixed gear, will the bike's sustained speed be higher or lower as a function of the grade?^[It's much the same for downhill biking, but you have to keep in mind that a shallow downhill has a higher numerical slope than a steep downhill. That is, the derivative of the hill is near zero for a very shallow grade and far from zero (that is, more negative) for a steep downhill grade.]
-3. Assuming you answered "yes" to question (1): Does the optimal gear choice depend on the grade of the road? (In concrete terms, would you choose different gears for an uphill climb than for a level road or a downhill stretch?) 
-
-Using the methods in this chapter, the answers to those three questions let you choose an appropriate form for the speed(gear, grade) function. Then, using methods in Block 5 of this text, you can make a few measurements for any given rider and construct a model customized to that rider. 
-
-Note that the three questions all have to do with derivatives. An "optimal gear" is a gear at which $\partial_\text{gear} \text{speed}(\text{gear}, \text{grade}) = 0$. That you ride slower the higher the numerical value of the slope means that  $\partial_\text{grade} \text{speed}(\text{gear}, \text{grade}) < 0$. And we know that $\partial_\text{gear} \text{speed}(\text{gear}, \text{grade})$ depends on the grade; that's why there's a different optimal gear at each grade. 
 
 ## Eight simple shapes
 
-In many modeling situations with a single input, you can get very close to a good modeling function $f(x)$ by selecting one of ***eight simple shapes***, shown in Figure \@ref(fig:eight-simple-shapes). 
+An easy way to think about how to use low-order polynomials in modeling is to think about the shapes of their graphs. @fig-eight-simple-shapes shows eight simple shapes for functions with a single input that occur often in modeling.
 
 ```{r echo=FALSE, fig.show="keep"}
 #| label: fig-eight-simple-shapes
-#| out-width: "40%"
-#| fig-cap: "The ***eight simple shapes***, locally, of functions with one input. (See Chapter \\@ref(local-approximations).)"
+#| out-width: "160%"
+#| fig-width: 15
+#| fig-height: 10
+#| fig-pos: "h"
+#| column: page-inset-right
+#| fig-cap: "The ***eight simple shapes*** of functions with one input."
 g <- makeFun(a + b*x + c*x^2 ~ x, a=-1, b=2, c=1)
-slice_plot(-g(x, c=0) ~ x, domain(x=c(-3,1)), size=2  ) %>%
-  gf_labs(y="Output", x="Input", title="(A) downward sloping line")
-slice_plot(g(x, c=0) ~ x, domain(x=c(-3,1)), size=2  ) %>%
-  gf_labs(y="Output", x="Input", title="(B) upward sloping line")
-slice_plot(g(x) ~ x, domain(x=c(-3,-1)), size=2) %>%
-  gf_labs(y="Output", x="Input", title="(C) downward sloping, concave up; steep then shallow")
-slice_plot(g(x) ~ x, domain(x=c(-1,1)), size=2) %>% 
-  gf_labs(y="Output", x="Input", title="(D) upward sloping, concave up; shallow then steep")
-slice_plot(-g(x) ~ x, domain(x=c(-3,-1)), size=2) %>% 
-  gf_labs(y="Output", x="Input", title="(E) upward sloping, concave down; steep then shallow")
-slice_plot(-g(x) ~ x, domain(x=c(-1,1)), size=2) %>%
-  gf_labs(y="Output", x="Input", title="(F) downward sloping, concave down; shallow then steep")
-slice_plot(g(x) ~ x, domain(x=c(-3,1)), size=2) %>%
-  gf_labs(y="Output", x="Input", title="(G) local minimum")
-slice_plot(-g(x) ~ x, domain(x=c(-3,1)), size=2) %>% 
-  gf_labs(y="Output", x="Input", title="(H) local maximum")
+Pa <- slice_plot(-g(x, c=0) ~ x, domain(x=c(-3,1)), size=2  ) %>%
+  gf_labs(y="", x="", subtitle="(A) downward sloping line")
+Pb <- slice_plot(g(x, c=0) ~ x, domain(x=c(-3,1)), size=2  ) %>%
+  gf_labs(y="", x="", subtitle="(B) upward sloping line")
+Pc <- slice_plot(g(x) ~ x, domain(x=c(-3,-1)), size=2) %>%
+  gf_labs(y="", x="", subtitle="(C) downward sloping, concave up; steep then shallow")
+Pd <- slice_plot(g(x) ~ x, domain(x=c(-1,1)), size=2) %>% 
+  gf_labs(y="", x="", subtitle="(D) upward sloping, concave up; shallow then steep")
+Pe <- slice_plot(-g(x) ~ x, domain(x=c(-3,-1)), size=2) %>% 
+  gf_labs(y="", x="", subtitle="(E) upward sloping, concave down; steep then shallow")
+Pf <- slice_plot(-g(x) ~ x, domain(x=c(-1,1)), size=2) %>%
+  gf_labs(y="", x="", subtitle="(F) downward sloping, concave down; shallow then steep")
+Pg <- slice_plot(g(x) ~ x, domain(x=c(-3,1)), size=2) %>%
+  gf_labs(y="", x="", subtitle="(G) local minimum")
+Ph <- slice_plot(-g(x) ~ x, domain(x=c(-3,1)), size=2) %>% 
+  gf_labs(y="", x="", subtitle="(H) local maximum")
+gridExtra::grid.arrange(Pa, Pb, Pc, Pd, Pe, Pf, Pg, Ph, ncol=3)
 ```
 
+Recall that Chapter @sec-describing-functions introduced terms such as concavity, monotonicity, and slope for describing functions. To choose among these shapes, consider your modeling context: 
 
+- is the relationship positive (slopes up) or negative (slopes down)?
+- is the relationship monotonic or not?
+- is the relationship concave up, concave down, or neither?
 
-To choose among these shapes, consider your modeling context: 
+Each of the eight simple shapes corresponds to a particular set of answers to these equations. Consider these modeling contexts as examples:
 
-- is the relationship positive (slopes up) or negative (slopes down)
-- is the relationship monotonic or not
-- is the relationship concave up, concave down, or neither
+* How many minutes can you run as a function of speed? Concave down and downward sloping: Shape (F).  In everyday terms, you wear out faster if you run at high speed. 
 
-Some examples, scenarios where the modeler knows about the derivative and concavity of the relationship being modeled. It's often the case that your knowledge of the system comes in this form. 
+* How much fuel is consumed by an aircraft as a function of distance? For long flights, the function is concave up and positive sloping: Shape (D).  In everyday terms: fuel use increases with distance, but the amount of fuel you have to carry also increases with distance. A heavy aircraft uses more fuel per mile.
+
+* How far can you walk as a function of time? Steep-then-shallow and concave down: Shape (E). Your pace slows as you get tired.
+
+* How does the stew taste as a function of saltiness? There's a local maximum: Shape (H). The taste improves as the amount of salt increases ... up to a point. Too much salt and the stew is unpalatable.
+ 
 
 * The incidence of an out-of-control epidemic versus time is concave up, but shallow-then-steep. As the epidemic is brought under control, the decline is steep-then-shallow and concave up. Over the whole course of an epidemic, there is a maximum incidence. Experience shows that epidemics can have a phase where incidence reaches a local minimum: a decline as people practice social distancing followed by an increase as people become complacent. 
 
-* How many minutes can you run as a function of speed? Concave down and shallow-then-steep; you wear out faster if you run at high speed. How far can you walk as a function of time? Steep-then-shallow and concave down; your pace slows as you get tired.
+* In micro-economic theory there are ***production functions*** that describe how much of a good is produced at any given price, and ***demand functions*** that describe how much of the good will be purchased as a function of price. As a rule, production increases with price and demand decreases with price. 
 
-* How does the stew taste as a function of saltiness. The taste improves as the amount of salt increases ... up to a point. Too much salt and the stew is unpalatable.
+- In the short term, production functions tend to be concave down, since it's hard to squeeze increased production out of existing facilities. Production functions are Shape (E).   
+    - For demand in the short term, functions will be concave up when there is some group of consumers who have no other choice than to buy the product. Downward sloping and concave up: Shape (C).  In the long term, consumption functions can be concave down as consumers find alternatives to the high-priced good. For example, high prices of gasoline may, in the long term, prompt a switch to more efficient cars, hybrids, or electric vehicles. This will push demand down steeply.  
 
-* The temperature of cooling water or the emission of radioactivity as functions of time are concave up and steep-then-shallow. 
+Remarkably, all the eight simple shapes can be generated by appropriate choices for the coefficients in a second-order polynomial: $g(x) = a_0 + a_1 x + a_2 x^2$. So long as $a_2 \neq 0$, the graph of the second-order polynomial will be a parabola. 
 
-*  How much fuel is consumed by an aircraft as a function of distance? For long flights the function is concave up and shallow-then-steep; fuel use increases with distance, but the amount of fuel you have to carry also increases with distance and heavy aircraft use more fuel per mile.
+- The parabola opens upward if $0 < a_2$. That's the shape of a ***local minimum***.
+- The parabola opens downward if $a_2 < 0$. That's the shape of a ***local maximum***
 
-* In micro-economic theory there are ***production functions*** that describe how much of a good is produced at any given price, and ***demand functions*** that describe how much of the good will be purchased as a function of price.  
-    - As a rule, production increases with price and demand decreases with price. In the short term, production functions tend to be concave down, since it's hard to squeeze increased production out of existing facilities.  
-    - For demand in the short term, functions will be concave up when there is some group of consumers who have no other choice than to buy the product. An example is the consumption of gasoline versus price: it's hard in the short term to find another way to get to work. In the long term, consumption functions can be concave down as consumers find alternatives to the high-priced good. For example, high prices for gasoline may, in the long term, prompt a switch to more efficient cars, hybrids, or electric vehicles. This will push demand down steeply.  
+Consider what happens if $a_2 = 0$. The function becomes simply $a_0 + a_1\, x$, the straight-line function. 
 
- 
+- When $0 < a_1$ the line slopes upward.
+- When $a_1 < 0$ the line slopes downward.
 
-## Low-order polynomials
+To produce the steep-then-shallow or shallow-then-steep shapes, you also need to restrict the function domain to be on one side or another of the turning point of the parabola as shown in @fig-four-shapes.
 
 
-There is a simple, familiar functional form that, by selecting parameters appropriately, can take on each of the eight simple shapes: the ***second-order polynomial***.
-$$g(x) \equiv a + b x + c x^2$$
-As you know, the graph of $g(x)$ is a parabola. 
-
-- The parabola opens upward if $0 < c$. That's the shape of a ***local minimum***.
-- The parabola opens downward if $c < 0$. That's the shape of a ***local maximum***
-
-Consider what happens if $c = 0$. The function becomes simply $a + bx$, the straight-line function. 
-
-- When $0 < b$ the line slopes upward.
-- When $b < 0$ the line slopes downward.
-
-With the appropriate choice of parameters, the form $a + bx + cx^2$ is  capable of representing four of the ***eight simple shapes***. What about the remaining four? This is where the idea of ***local*** becomes important. Those remaining four shapes are the sides of parabolas, as in Figure \@ref(fig:four-shapes). 
 
 ```{r echo=FALSE, warning=FALSE}
 #| label: fig-four-shapes
@@ -170,21 +134,28 @@ gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
 
 
+
+
 ## The low-order polynomial with two inputs {#sec-low-order-two}
 
 For functions with two inputs, the low-order polynomial approximation looks like this:
 
 $$g(x, y) \equiv a_0 + a_x x + a_y y + a_{xy} x y + a_{yy} y^2 + a_{xx} x^2$$
-In reading this form, note the system being used to name the polynomial's coefficients. First, we've used $a$ as the root name of all the coefficients. Sometimes we might want to compare two or more low-order polynomials, so it's convenient to be able to use $a$ for one, $b$ for another, and so on. 
 
-The subscripts on the coefficients describes exactly which term in the polynomial involves each coefficient. For instance, the $a_{yy}$ coefficient applies to the $y^2$ term, while $a_x$ applies to the $x$ term.  
-
-Each of $a_0, a_x,$ $a_y,$ $a_{xy}, a_{yy}$, and $a_{xx}$ will, in the final model, be a constant quantity. Don't be confused by the use of $x$ or $y$ in the name of the coefficients. Each coefficient is a constant and not a function of the inputs. Often, your prior knowledge of the system being modeled will tell you something about one or more of the coefficients, for example, whether it is positive or negative. Finding a precise value is often based on quantitative data about the system.  
-
-It helps to have different names for the various terms. It's not too bad to say something like, "the $a_{xy}$ term." (Pronounciation: "a sub x y" or  "a x y") But the proper names are: ***linear terms***, ***quadratic terms***, and ***interaction term***. And a shout out to $a_0$, the ***constant term***. 
+It helps to have different names for the various terms. It's not too bad to say something like, "the $a_{xy}$ term." (Pronunciation: "a sub x y" or  "a x y") But the proper names are: ***linear terms***, ***quadratic terms***, and ***interaction term***. And a shout out to $a_0$, the ***constant term***. 
 
 $$g(x, y) \equiv a_0 + \underbrace{a_x x + a_y y}_\text{linear terms} \ \ \ + 
 \underbrace{a_{xy} x y}_\text{interaction term} +\ \ \  \underbrace{a_{yy} y^2 + a_{xx} x^2}_\text{quadratic terms}$$
+
+
+The interaction term arises in models of phenomena such as the spread of epidemics, the population dynamics of predator and prey animals, and the rates of chemical reactions. In each of these situations, one thing is interacting with another: a predator killing a prey animal, an infective individual meeting a person susceptible to the disease, one chemical compound reacting with another. 
+
+Under certain circumstances, modelers include one or both ***quadratic terms***, as in
+$$h_3(x, y) \equiv c_0 + c_x\, x + c_y\, y + c_{xy}\,x\, y + \underbrace{c_{yy}\, y^2}_\text{quadratic in y}$$
+The skilled modeler can often deduce which terms to include from basic facts about the system being modeled. We'll need some additional calculus concepts before we can explain this straightforwardly.
+
+
+
 
 ```{r echo=FALSE, warning=FALSE}
 make_gxy <- function(seed=1) {
@@ -202,110 +173,41 @@ show_poly2 <- function(seed=1, domain=list(x=c(-2, 2), y=c(-2, 2))) {
   P2 = interactive_plot(f(x, y) ~ x + y, domain=domain))
 }
 
+Bowl <- makeFun(x + y - 1*x*y + x^2 + 2*y^2 ~ x & y)
+Pbowl <- contour_plot(Bowl(x, y) ~ x & y, domain(x=-3:3, y=-3:3), skip=0) %>%
+  gf_refine(coord_fixed())
 
-Four <- show_poly2(104)
-
-Four$P1
+Phill <- contour_plot(40-Bowl(x, y) ~ x & y, domain(x=-3:3, y=-3:3), skip=0) %>%
+  gf_refine(coord_fixed()) 
+Saddle <- show_poly2(104)
 ```
 
-```{r echo=FALSE}
-#| label: fig-saddle2
-#| fig-cap: "A saddle" 
-if (knitr::is_html_output()) {
-  Four$P2
-} else {
-  knitr::include_graphics("www/show_poly2_104.png")
-}
+A second-order polynomial with two inputs can take on any one of three shapes: a bowl, a hilltop, or a saddle.
+
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-xy-poly-graph
+#| fig-cap: "The three forms for a second-order polynomial with two inputs."
+#| out-width: "150%"
+#| column: page-inset-right
+Pa <- Pbowl %>% gf_labs(subtitle="Bowl")
+Pb <- Phill %>% gf_labs(subtitle="Hill")
+
+Pc <- Saddle$P1 %>%
+  gf_refine(coord_fixed()) %>% gf_labs(subtitle="Saddle")
+gridExtra::grid.arrange(Pa, Pb, Pc, ncol=3)
 ```
 
-::: {.intheworld data-latex=""}
-If you're like many people, you find it harder to walk uphill than down, and find it takes more out of you to walk longer distances than shorter. Let's build a model of this, using nothing more than your intuition and the method of low-order polynomial approximations.
+Other shapes for modeling can be extracted from these three basic shapes. For example, the lower-right quadrant of the Saddle has the shape of seats in an amphitheater.
 
-Let's call the map distance walked $d$. ("Map distance" is the horizontal change in position, disregarding vertical changes.) The steepness of the hill will be the "grade" $g$, which is measured as the horizontal distance covered divided by the vertical climb. If you're going downhill, the grade is negative. 
+## Theory out of a hat
 
-The key ingredient in the model: We'll measure the "difficulty" or "exertion" to walking as the ***energy consumed*** during the walk: $E(d, g)$.
+The start of Chapter @sec-fitting-by-feature introduced a little mystery. Newton introduced his Law of Cooling in the 17th century: The rate at which an object cools depends on the difference in temperature between the object and its ambient environment. But in the 17th century, there was no precise way to measure a rate of temperature change. So how did Newton do it?
 
-Some assumptions about walking and energy consumed:
+Even with primitive thermometers, one can confirm that a mug of hot water will cool and a glass of cold water will warm to room temperature and stay there. So Newton could deduce that the rate of temperature change is zero when the object's temperature is the same as the environment. Similarly, it's easy to observe with a primitive thermometer that a big difference in temperature between an object and its environment produces a rapid change in temperature, even if you can't measure the rate precisely. So the rate of cooling is a function of the temperature difference $\Delta T$ between object and environment.
 
-1. If you don't walk, you consume zero energy walking.
-2. The energy consumed should be proportional to the length of the walk. This is an assumption, and is probably valid, only for walks of short to medium distances, as opposed to forced marches over tens of miles. 
+What kind of function?
 
-
-We'll start with the full 2nd-order polynomial in two inputs, and then seek to eliminate terms that aren't needed.
-
-$$E_{big}(d, g) \equiv a_0 + a_d\, d + a_g\, g + a_{dg}\, d\, g + a_{dd}\,d^2 + a_{gg}\,g^2$$
-According to assumption (1), when $E(d=0, g) = 0$. Of course, if you are walking zero distance, it doesn't matter what the grade is; the energy consumed is still zero.
-
-Consequently, we know that all terms that don't include a $d$ should go away. This leaves us with
-
-$$E_{medium}(d, g) \equiv  a_d\, d + a_{dg}\, d\, g + a_{dd}\,d^2 = d \left[\strut a_d + a_{dg}\, g + a_{dd}\,d\right]$$
-Assumption (2) says that energy consumed is proportional to $d$. The multiplier on $d$ in $E_{medium}()$ is $\left[\strut a_d + a_{dg}\, g + a_{dd}\,d\right]$ which is itself a function of $d$. A proportional relationship implies a multiplier that doesn't depend on the quantity itself. This means that $a_{dd} = 0$.
-
-This leaves us with a very simple model: $$E(d, g) \equiv \left[\strut a_1 + a_2\, g\right]\, d$$ where we have simplified the labeling on the coefficients since there are only two in the model.
-
-Perhaps assumption (2) is mis-placed and that the energy consumed per unit distance in a walk increases with the length of the walk. If so, we would need to return to the question of $a_{dd}$. This is typical of the modeling cycle. Trying to be economical with model terms highlights the question of which terms are so small they can be ignored.
-:::
-
-
-::: {.example   data-latex=""}
-In selecting cadets for pilot training, two criteria are the cadet's demonstrated flying aptitude and the leadership potential of the cadet. Let's assume that the overall merit $M$ of a candidate is a function of flying aptitude $F$ and leadership potential $L$. 
-
-Currently, the merit score is a simple function of the $F$ and $L$ scores: $$M_{current}(F, L) \equiv F + L$$
-
-The general in charge of the training program is not satisfied with the current merit function. "I'm getting too many cadets who are great leaders but poor pilots, and too many pilot hot-shots who are not good leaders.  I would rather have an good pilot who is a good leader than have a great pilot who is a poor leader or a poor pilot who is a great leader." (You might reasonably agree or disagree with this point of view, but the general is in charge.)
-
-The general has tasked you to revise the formula to better match her views about the balance betwen flying ability and leadership potential. 
-
-How should you go about constructing $M_{improved}(F, L)$?
-
-You recognize that $F + L$ is a low-order polynomial: just the linear terms are present without a constant or interaction term or quadratic terms. Low-order polynomials are a good way to approximate any formula locally, so you have decided to follow that route.
-
-Quadratic terms are appropriate when a model needs to feature a locally ***optimal*** level of the of the inputs. But it will never be the case that a lower flying score will be more favored than a higher score, and the same thing for the leadership score. So your model doesn't need quadratic terms. 
-
-That leaves the interaction term as the way forward. The low-order polynomial model will be 
-$$M_{improved}(F, L) \equiv d_0 + F + L + d_{FL} FL$$
-Should $d_{FL}$ be positive or negative? 
-
-Imagine a cadet Drew with acceptable and equal F and L scores. Another cadet, Blake, has scores that are $F+\epsilon$ and $L-\epsilon$, where $\epsilon$ might be positive or negative. Under the original formula for merit, Drew and Blake have equal merit. Under the new criteria, Drew should have a higher merit than Blake. In other words:
-$$M_{improved}(F, L) - M_{improved}(F+\epsilon, L-\epsilon) > 0$$
-
-Replace $M_{improved}(F, L)$ with the low-order polynomial approximation given earlier. 
-$$\underbrace{d_0 + F + L + d_{FL} FL}_{M_{improved}(F, L)} - \underbrace{\left[{\large\strut} d_0 + \left[ F + \epsilon\right] + \left[ L - \epsilon\right] + d_{FL} (FL -\epsilon L + \epsilon F -  \epsilon^2)\right]}_{M_{improved}(F+\epsilon, L-\epsilon)} > 0$$
-Collecting and cancelling terms in the above gives 
-$$- d_{FL}(\epsilon(F-L) + \epsilon^2) > 0$$
-Since $F$ and $L$ were assumed equal, this results in 
-$$M_{improved}(F, L) - M_{improved}(F+\epsilon, L-\epsilon) = d_{FL}\, \epsilon^2 > 0$$
-Thus, $d_{FL}$ will have to be positive.
-:::
-
-
-
-
-
-## Two-input modeling polynomial
-
-In @sec-modeling-polynomial-1 we introduced the low-order polynomial, either $g_1(x) \equiv a_0 + a_1 x$ or $g_1(x) \equiv b_0 + b_1 x + b_2 x^2$ as a general-purpose way of generating a function with a smoothly curved shape. The same applies in constructing simple functions of two inputs.
-
-Almost always, you should use at least a first-order polynomial, which is:
-$$h_1(x, y) \equiv a_0 + a_x x + a_y y$$
-But there is an important extension of this, using what's called a ***bilinear term*** or, more evocatively in statistics, an ***interaction term***.  This is
-$$h_2(x, y) \equiv \underbrace{b_0}_\text{intercept} + \underbrace{b_x\, x + b_y\, y}_\text{linear terms} + \underbrace{b_{xy}\,x\, y}_\text{bilinear term}$$
-
-The bilinear term arises  in models of phenemona such as the spread of epidemics, the population dynamics of predator and prey animals, and the rates of chemical reactions. In each of these situations one thing is interacting with another: a predator killing a prey animal, an infective individual meeting a person susceptible to the disease, one chemical compound reacting with another. 
-
-Under certain circumstances, modelers include one or both ***quadratic terms***, as in
-$$h_3(x, y) \equiv c_0 + c_x\, x + c_y\, y + c_{xy}\,x\, y + \underbrace{c_{yy}\, y^2}_\text{quadratic in y}$$
-The skilled modeler can often deduce which terms to include from basic facts about the system being modeled. We'll need some additional calculus concepts before we can explain this in a straightforward way.
-
-
-::: {.why  data-latex=""}
-In writing polynomials like $$h_1(x, y) \equiv a_0 + a_x x + a_y y$$ or $$h_3(x, y) \equiv c_0 + c_x x + c_y\ y + c_{xy} x\ y$$
-we are using **letters** as subscripts on the coefficients. Think of $c_x$ as saying, "I am the coefficient on the $x$ term in the polynomial." Using this style lets us use different letters from the start of the alphabet for the names of coefficients in the different polynomials while still making it clear which term each coefficient is scaling.
-
-:::
-
-## What's wrong with polynomials
-
+Low-order polynomials to the rescue! The simplest model is that the rate of cooling will be $a_0 + a_1 \Delta T$, a first-order polynomial. But we know that the rate of cooling is zero when $\Delta T = 0$, implying that $a_0=0$. All that's left is the first-order term $\Delta T$, which you can recognize as the proportional() function.
 
 ## Exercises
 
