@@ -12,8 +12,7 @@ For more than three centuries, there has been a standard calculus model of an ev
 knitr::include_graphics("www/early-thermometers.png")
 ```
 
-Using today's technology, Prof. Stan Wagon of Macalester College investigated the accuracty Newton's "Law." 
-@fig-Fun-4-intro-1 shows some of Wagon's data from experiments with cooling water. He poured boiling water from a kettle into an empty room-temperature mug (26 degrees C) and measured the temperature of the water over the next few hours.
+Using today's technology, Prof. Stan Wagon of Macalester College investigated the accuracty Newton's "Law." @fig-Fun-4-intro-1 shows some of Wagon's data from experiments with cooling water. He poured boiling water from a kettle into an empty room-temperature mug (26 degrees C) and measured the temperature of the water over the next few hours.
 
 ```{r echo=FALSE}
 #| label: fig-stans-data
@@ -23,81 +22,129 @@ gf_point(temp ~ time, data=CoolingWater ) %>%
   gf_labs(x = "Time (minutes)", y="Temperature (deg. C)")
 ```
 
-This chapter shows simple techniques to translate data, such as in @fig-stans-data, into a quantitative model assembled from the pattern-book functions. We'll do this by making a handful of measurements of the shape of the pattern shown by the data and translating those measurements into the parameters introduced in @sec-assembling.
+This chapter is about ***fitting***, finding parameters that will align the functions with the data such as in @fig-stans-data. In particular, in this chapter we'll work the the  the exponential, sinusoid, and gaussian functions. In Chapter @sec-magnitude we'll consider the power-law and logarithm functions.
 
-In each case, the first step is to select a pattern-book function that has roughly the same shape as the data.
 
-```{r echo=FALSE, eval=FALSE}
-# helper function used to generate the pattern-book png files
-make_shape <- function(f, min, max) {
-  Pts <- tibble(
-    x = seq(min, max, length=100),
-    y = f(x)
-  ) %>% mutate(ifelse(abs(x) > 0.05, y, NaN))
-  plot(Pts$x, Pts$y, type="l", xaxt="n", yaxt="n", xlab="", ylab="", bty="n", lwd=12)
-}
-```
+In every instance, the first step, before finding parameters, is to determine that the pattern shown in the data is a reasonable match to the shape of the function you are considering. Here's a reminder of the shapes of the functions we'll be fitting to data in this chapter. If the shapes don't match, there's little point looking for the parameters to fit the data!
 
-::: {#tbl-pattern-book-shapes .column-page-inset-right}
-const | prop | square | recip | gaussian | sigmoid | sinusoid | exp | ln
-:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:
-![](www/pb-const.png) | ![](www/pb-proportional.png) | ![](www/pb-square.png)| ![](www/pb-recip.png)| ![](www/pb-gauss.png) | ![](www/pb-sigmoid.png) | ![](www/pb-sin.png) | ![](www/pb-exp.png) | ![](www/pb-log.png) 
+
+::: {.column-page-margin}
+
+![Gaussian](www/pb-gauss.png) 
+
+![Sinusoid](www/pb-sin.png)  
+
+![Exponential](www/pb-exp.png) 
 
 Shapes of the pattern-book functions
 :::
 
-## Flipping
+## Gaussian
 
-It seems fair to say that the data in @fig-stans-data don't match any of the pattern-book shapes in #tbl-pattern-book-shapes.
+[SHOW A density plot that's close to the gaussian]. Derive the amplitude parameter (which will turn out to be 1 for )
 
-Looking at the data, one sees that the temperature decreases along a curve: cooling fast at first and then more slowly. This is the pattern of the flipped right-for-left exponential. (@fig-four-variations(B)) We can imagine then that an exponential, $A e^{kt} + C$ will be a suitable model form for the cooling water.
+Explain about cones and colors. Image from Cynthia Tedore & Dan-Eric Nilsson (2019) "Avian UV vision enhances leaf surface contrasts in forest environments", *Nature Communications* 10:238
 
-- $f(t)$, basic shape
-- $f(-t)$, flipped right-for-left
-- $-f(t)$, flipped top-for-bottom
-- $-f(-t)$, flipped both top-for-bottom and right-for-left
+```{r echo=FALSE}
+#| label: fig-bird-cones
+#| fig-cap: "SAY SOMETHING ABOUT sensitivity to light of cone cells in birds. [Source](https://doi.org/10.1038)
+knitr::include_graphics("www/bird-cones.png")
 
-For functions such as the sinusoid, flipping is not much use, since the flipped sinusoid curve is still a sinusoid, although with a shifted input. Similarly, a right-for-left flipped gaussian function has the same shape as the original. For the straight-line function, flipping of either sort accomplishes the same thing: changing the sign of the slope. 
-
-For the exponential function, the two possible types of flipping---right-for-left and top-for-bottom---produce four different curves, all of which are exponential, shown in @fig-four-variations.
-
-```{r echo=FALSE, fig.show="hold"}
-#| label: fig-four-variations
-#| fig-cap: "Four variations of the exponential function." 
-#| column: page-right
-Pa <- slice_plot(exp(x) ~ x, domain(x=c(-2,2))) %>%
-  gf_refine(theme_void()) %>%
-  gf_theme(plot.title = element_text(size=16)) %>%
-  gf_labs(subtitle="A. Exponential function") 
-  
-Pb <- slice_plot(exp(-x) ~ x, domain(x=c(-2,2))) %>%
-  gf_refine(theme_void()) %>%
-    gf_theme(plot.title = element_text(size=16)) %>%
-  gf_labs(subtitle="B. Flipped right-for-left")
-
-Pc <- slice_plot(-exp(x) ~ x, domain(x=c(-2,2))) %>%
-  gf_refine(theme_void()) %>%
-    gf_theme(plot.title = element_text(size=16)) %>%
-  gf_labs(subtitle="C. Flipped top-for-bottom")
-Pd <- slice_plot(-exp(-x) ~ x, domain(x=c(-2,2))) %>%
-  gf_refine(theme_void()) %>%
-    gf_theme(plot.title = element_text(size=16)) %>%
-  gf_labs(subtitle="D. Flipped both right-for-left and top-for-bottom")
-gridExtra::grid.arrange(Pa, Pb, Pc, Pd)
 ```
 
-## An earlier start
 
-In [Chapter -@sec-assembling] we discussed a framework for building on pattern-book functions by use of ***input scaling*** and ***output scaling***, as with:
+## Baseline
 
-$$\text{tide}(t) \equiv A \sin\left(a (t - t_0)\right) + B\ .$$
-In this chapter, we'll build on both these ideas to make them easier to use:
+In our standard parameterization form for the pattern-book functions,
+$$\text{model}(t) \equiv A g\left(\strut k\, (t - t_0)\right) + B\ ,$$
+the left-to-right or top-to-bottom flipping is entirely reflected by the signs of the parameters $A$ and $k$. Consequently, when you determined which pattern book function with which flipping is a match to the data, you will know the signs of $A$ and $k$. A case in point: for the cooling-water data, the left-to-right exponential function is a good match. This tells us that the parameter $k$ is negative for a model of that data.
 
-- input scaling will become ***parameter selection***: We'll give standard procedures that allow you to determine by eye the input-scaling parameters for the functions $\exp()$, $\sin()$, gaussian(), and sigmoid(). These will be similar in spirit to the procedures you learned in high-school for finding the parameters of the straight-line function from visually identifiable aspects such as the slope and y-intercept.
+Our task in this section is to estimate from the data the value of parameter $B$. This is done by looking for a ***baseline***. Several of the pattern book shapes have a horizontal asymptote heading toward zero. The pattern-book exponential approaches zero for large negative values of the input. The same is true for the sigmoidal function. The gaussian approaches zero both for large negative and large positive values of the input. If the data display a pattern similar to a horizontal asymptote, this provides an easy way to estimate the numerical value of the $B$ parameter. 
 
-- output scaling will become finding ***linear combinations***: We'll generalize the idea beyond the A/B format used in [@sec-assembling] to include finding linear combinations of any numbers of functions, e.g. $A f(x) + B g(x) + C h(y) + \ldots$. The importance of building linear combinations can hardly be overstated. In fact, Block 5 of *MOSAIC Calculus* is entirely about this.
+For instance, @fig-stans-data shows the water temperature leveling off as time increases, heading toward approximately 26 degrees C.  The $B$ parameter is set to match that leveling-off value. 
 
-Taken together, the tools of parameter selection and finding linear combination support a standard process for building model functions. 
+For instance, in the cooling water data, we can set parameter $B$ to be 26 deg. C.
+
+Sinusoids are also considered to have a baseline, even though they do not have a horizontal asymptote. (The sinusoid continues to oscillate between -1 and 1 even for very large negative or positive inputs, it doesn't get closer and closer to a fixed value.)  The baseline for the sinusoid is the value mid-way between the top of the oscillations and the bottom. For example,  @fig-tides-ri1 (reproduced in the margin) shows the sinusoidal-like pattern of tide levels. Dashed horizontal lines ($\color{brown}{\text{brown}}$) have been drawn roughly going through the top of the oscillation and the bottom of the oscillation. The baseline ($\color{magenta}{\text{magenta}}$) will be halfway between these top and bottom levels.
+
+```{r echo=FALSE}
+#| label: fig-tides-ri2
+#| fig-cap: "A reproduction of the data originally shown in @fig-tides-ri1. The baseline for the sinusoid is mid-way between the top of the oscillation and the bottom."
+#| column: margin
+gf_line(level ~ hour, data = RI_tide, color="blue") %>%
+  gf_hline(yintercept=c(0.5, 1.6), color="brown", linetype = "dashed") %>%
+  gf_hline(yintercept=1.05, color="magenta") %>%
+  gf_labs(x = "t (hours)")
+```
+
+In @fig-tides-ri2, the baseline has been identified as $B \approx 1.05$.
+
+## Input scaling
+
+We've already seen that the sign of the $k$ parameter reflects left-to-right flipping of the pattern-book function. Now we will examine how to estimate a numerical value for $k$. 
+
+The situation is fundamentally different for the different shaped functions, so let's consider them one at a time.
+
+### Sinusoid
+
+$k$ in the sinusoid sets the ***period*** of the cycle. Measuring the period from the data can be done by noting the input for a distinct point such as a local maximum, then counting off one or more cycles forward and reading off the input for the same kind of distinct point. For instance, in @fig-tides-ri2, the tide level reaches a local maximum at an input of about 6 hours. We can count $n=8$ cycles in the graph; the peak of the 8th cycle is at about 106 hours. So 8 cycles in $106-6 = 100$ hours gives a period of $P = 100/8 = 12.5$ hours.
+
+We have been writing the sinusoid as $$\sin\left(\frac{2\pi}{P} (t-t_0)\right)$$ so we can conclude that the parameter $$k=\frac{2\pi}{P} = 0.5\ \text{per hour}\ .$$ 
+Why "per hour?" Because $P$, which has units of hours, is in the denominator of the fraction $\frac{2\pi}{P}$.
+
+### Exponential
+
+The exponential has a unique property of "doubling in contant time" as described in Section @sec-doubling-time. We can exploit this to find the parameter $k$ for the exponential function.
+
+a. The procedure starts with your estimate of the baseline for the exponential function. In @fig-exp-water-k the baseline has been marked in $\color{magenta}{\text{magenta}}$ with a value of 25 deg C.
+
+b. Pick a convenient place along the horizontal axis. You want a place such that the distance of the data from the baseline to be pretty large. In @fig-exp-water-k the convenient place was selected at $t=25$. 
+
+
+
+```{r echo=FALSE}
+#| label: fig-exp-water-k
+#| fig-cap: "Determining parameter $k$ for the exponential function using the doubling time."
+#| column: margin
+myarrow = grid::arrow(ends="both", length=unit(.3, "cm"))
+baseline=25
+Pts <- tibble(
+  t = c(25, 65),
+  
+  y = c(61, 43.5),
+  amp = y - baseline
+)
+gf_point(temp ~ time, data=CoolingWater ) %>%
+  gf_labs(x = "Time (minutes)", y="Temperature (deg. C)") %>%
+  gf_hline(yintercept=~25, color="magenta") %>%
+  gf_segment(25 + y ~ t + t, data = Pts, color="brown", arrow=myarrow ) %>%
+  gf_text(43 ~ 25, label="convenient place", color="brown", hjust = -1, angle=90) #%>% slice_plot(74*exp(-0.0173*time) + 25~ time, color="red")
+  
+```
+
+c. Measure the vertical distance from the baseline at the convenient place. In @fig-exp-water-k the data curve has a value of about 61 deg C at the convenient place. This is $61-25 = 36$ deg C from the baseline.
+
+d. Calculate half of the value from (c). In @fig-exp-water-k this is $36/2=18$ deg C. But you can just as well do the calculation visually, by marking half the distance from the baseline at the convenient place.
+
+e. Scan horizontally along the graph to find an input where the vertical distance from the data curve to the baseline is the value from (d). In @fig-exp-water-k that half-the-vertical-distance input is at about $t=65$. Then calculate the horizontal distance between the two vertical lines. In @fig-exp-water-k that's $65 - 25 = 40$ minutes. This is the doubling time. Or, you might prefer to call it the "half-life" since the water temperature is decaying over time.
+
+f. Calculate the magnitude $\|k\|$ as $\ln(2)$ divided by the doubling time from (e). That doubling time is 40 minutes, so $\|k\|= \ln(2) / 40 = 0.0173$.  We already know that the sign of $k$ is negative, since the pattern shown by the data is exponential decay toward the baseline. So, $k=-0.0173$.
+
+## Output scaling
+
+The output scaling is captured by the parameter $A$ in $A\ g\left(\strut k(t-t_0)\right) + B$. It's easy to measure $A$ from the data graph.
+
+### Sinusoid
+
+As part of finding the baseline of the sinusoid, as in @fig-tides-ri2, you found the top and bottom of the oscillation. In @fig-tides-ri2 that's 1.6 and 0.5 respectively. We averaged these values to get the baseline $B$. To get $A$, find the difference and divide by two: $A = (1.6 - 0.5)/2 = 1.1/2 = 0.55$.
+
+### Exponential
+
+Find the value of the data curve at $t=0$. In Figure @fig-exp-water-k that's just under 100 deg C. From that, subtract off the baseline you estimated earlier. ($B = 25$ deg C for the cooling water data.) The amplitude parameter $A$ is half the difference between these two: $A = 99 - 25 = 74$ deg C.
+
+
+## Input shift
+
 
 
 ## Drawing a straight line
@@ -131,184 +178,6 @@ Now that you know what a reasonable straight-line model looks like, you will fin
 Step 1: Draw a reasonable straight-line through the data points. 
 
 Step 2: Find the parameters that correspond to the line you drew. 
-
-## Curve fitting a periodic function {#sec-fit-periodic}
-
-@fig-Fun-4-a-3-1 shows the tide level in [Providence, Rhode Island](https://www.google.com/maps/place/Providence,+RI/@41.8071,-71.4012,14z/data=!4m5!3m4!1s0x89e444e0437e735d:0x69df7c4d48b3b627!8m2!3d41.8071!4d-71.4012), starting at midnight on April 1, 2020 and recorded every minute for four and a half days. (These data were collected by the US National Oceanic and Atmospheric Administration. [Link](https://tidesandcurrents.noaa.gov/api/datagetter?begin_date=20200401%2010:00&end_date=20200405%201:59&station=8454000&product=one_minute_water_level&datum=mllw&units=metric&time_zone=gmt&application=web_services&format=csv))   
-
-```{r echo=FALSE}
-#| label: fig-Fun-4-a-3-1
-#| fig-cap: "About four days of tide-level data from Providence, Rhode Island"
-#gf_line(level ~ hour, data = Zcalc::Anchorage_tide[1:1000,])
-gf_line(level ~ hour, data = Zcalc::RI_tide) %>%
-  gf_labs(y="Water level (meters)", x="Time (hours)", title="Tide level in Providence, Rhode Island") %>%
-  gf_lims(y =c(0, 2))
-```
-
-It's not too hard to see what's going on. The tide rises and falls about every 12 hours. The difference between high tide and low tide is a little more than one meter. The tide gauge is calibrated so that a typical reading is 1 meter, although we don't know what that is respect to. (Certainly not sea level, since then the typical reading would be around zero.)
-
-This simple description tells almost everything needed to match a basic modeling function to the tide level. Given the clear pattern in the data, we'll use a sinusoid, that is, a function of the form $$\text{tide}(t) \equiv A \sin(2\pi t/P) + B$$ The procedure is straightforward:
-
-**Step 0**: Determine whether a sinusoid model is appropriate. As you know, sinusoids oscillate up and down repeatedly with a steady ***period***. That certainly seems the case here. But sinusoids are also steady in the ***peak*** and ***trough*** values for each cycle. That's only approximately true in the Providence data. Models inevitably involve approximation. We'll have to keep an eye on whether modeling with sinusoids and their ***fixed amplitude*** still lets us extract useful information. 
-
-**Step 1**: Choose a sensible value to represent the low point repeatedly reached. 0.5 m seems appropriate here, but obviously the exact position of the trough of each cycle varies over the 4.5 day duration of the data.  Similarly, the peak is near 1.6 m. Parameter $B$ is the mean of the peak and trough values: $\frac{1.6 + 0.5}{2} = 1.05$ m here. Parameter $A$ is half the difference between the peak and trough values: $\frac{1.6 - 0.5}{2} = 0.55$. Parameter $B$ is called the ***baseline*** of the sinusoid. Parameter $A$ is the ***amplitude***. (Note that by convention, the amplitude is always *half* the high-to-low range of the sinusoid.)
-
-**Step 2**: Estimate the period $P$ of the sinusoid. This can be done with the horizontal axis scale: measure the horizontal duration of a complete cycle. I like to use the time between peaks, but the time between troughs would work just as well. Another good choice is the time between positive sloping crossings of the baseline. (But be careful. The time between *successive* baseline crossings, one positive sloping and the other negative, give just *half* the period.) 
-
-
-On the scale of the above plot, it's hard to read off the time of the first peak. So, zoom in until it becomes more obvious.
-
-```{r echo=FALSE, fig.show="hold"}
-#| label: fig-Fun-4-a-3-2
-#| out-width: "50%"
-#| fig-cap: "Zooming in on the start of the data (left) and on the last part of the data (right)."
-gf_line(level ~ hour, 
-         data = Zcalc::RI_tide %>% filter(hour < 25)) %>%
-  gf_labs(y="Water level (meters)", x="Time (hours)",
-          title="Start of record") %>%
-  gf_lims(y =c(0, 2))
-gf_line(level ~ hour, 
-         data = Zcalc::RI_tide %>% filter(hour > 90)) %>%
-  gf_labs(y="Water level (meters)", x="Time (hours)",
-          title = "End of record") %>%
-  gf_lims(y =c(0, 2))
-```
-
-The left panel in @fig-Fun-4-a-3-2 shows about 24 hours at the start of the record. The first peak is at about 6 hours, the second at about 19 hours. That indicates that the period is roughly 19 - 6 = 13 hours. 
-
-**Step 3** Plot out the model over the data. Replacing the symbols $A$, $B$, and $P$ with our estimates, the model is 
-
-$${\color{magenta}{\text{tide}(t)} \equiv \underbrace{1.05}_A + \underbrace{0.55}_B \sin(\ 2\pi t\ /\underbrace{13}_P)}$$
-
-@fig-Fun-4-a-3-3 shows this model in $\color{magenta}{\text{magenta}}$.
-
-```{r echo=FALSE}
-#| label: fig-Fun-4-a-3-3
-#| fig-cap: "The sinusoid fails to align with the timing of peaks and troughs."
-mod1 <- makeFun(1.05 + 0.55*sin(2*pi*hour/13) ~ hour)
-mod2 <- makeFun(1.05 + 0.55*sin(2*pi*(hour-17)/13) ~ hour)
-gf_line(level ~ hour, 
-         data = Zcalc::RI_tide) %>% 
-  slice_plot(mod1(hour) ~ hour, color="magenta") %>%
-  gf_labs(y="Water level (meters)", x="Time (hours)") %>%
-  gf_lims(y =c(0, 2))
-```
-
-@fig-Fun-4-a-3-3 shows the model aligning beautifully with the data at around time 80 hours, but not so well near the very beginning of the record. Looking carefully, you can see the magenta peak gradually move to the left compared to the data as you look at the peaks of the cycles one at a time moving backward from $t=80$ hours. This is diagnostic of our 13-hour estimate for the period being a little too long.
-
-A good way to refine the estimate is to change the model slightly and re-graph the data and model. Keep doing this until you have found the right alignment. In other words, parameter estimation is often an ***iterative*** process of estimate-and-refine. This is one of the aspects of the ***modeling cycle***, where a modeler builds a tentative model, looks for systematic deviations from the data, and refines the model. 
-
-::: {.intheworld  data-latex=""}
-Another sort of deviation of the model from the data seen in @fig-Fun-4-a-3-3 concerns the varying heights of the peaks and troughs in the data, which is not captured by the simple sinusoid pattern. Perhaps you can see that at the beginning of the record, the troughs are also *wider* than the peaks. Later on, as this extra width disappears, the amplitude of the peaks and troughs increases. 
-
-You don't yet have the calculus tools or experience to know how or whether this phenomenon can be modeled. For now, a hint: Earth has two large orbiting bodies, the Sun and the Moon. These have slightly different periods: 24 hours for the Sun and slightly longer for the Moon.
-:::
-
-**Step 4** Our model omitted one of the parameters of the sinusoid basic modeling function: the time shift $t_0$. A more complete model would be: 
-$$\text{tide}_\text{shifted}(t) \equiv A \sin(2\pi (t - t_0)/P) + B$$
-Whether including this parameter is important depends on our purpose for the model. If the goal is to find the period of the tides, the time shift hardly matters. But if the goal is to predict a future tide level, the time shift is critical.
-
-Estimating $t_0$ can only be done once the period $P$ is known precisely. In practice, as you'll see in @sec-modeling-cycle, we use a numerical method called ***polishing*** to estimate both $P$ and $t_0$ at the same time.
-
-
-## Curve fitting an exponential function {#sec-fit-exponential}
-
-The exponential function is particularly useful when the quantity we want to model shows ***constant proportional increase***. Many quantities in everyday life are this way. For instance, an increase in salary is typically presented in a format like "a 3% increase." The population growth of a country is often presented as "percent per year." Inflation in the price of goods is similarly described in percent per year. Interest on money in a bank savings account is also described as percent per year. But if you have the bad fortune to owe money to a loan shark, the proportional increase might be described as "percent per month" or "percent per week."   
-
-When you know the "percent increase per time" of a quantity whose initial value is $A$, the exponential function is easy to write down: $$f(t) = A (1+r)^t$$ 
-The number $r$ is often called the ***interest rate*** or ***discount rate*** and is given in **percent**. 
-
-::: {.takenote  data-latex=""}
-Regrettably, it's extremely easy and common to forget the rules for addition with percent. If $r = 5\%$, then $(1+r) = 1.05$, not 6. Always keep in mind that $5\%$ means $\frac{5}{100}$.
-
-Another source of error stems from the tradition in mathematics of using the number $e=2.718282$ as the "natural" base of the exponential function, whereas in $f(t) = A (1+r)^t$ the base is $1+r$. 
-
-You can translate an exponential $b^t$ in any base $b$ to the "natural" base. This is just a matter of calculating the appropriate parameter $k$ such that $e^k = b$. Using logarithms, $$e^k = b\ \ \implies \ \  k=\ln(b)$$ For instance, if 
-$r=5\%$ per year, we'll have $k = \ln(1+r) = \ln(1.05) = 0.488$ per year.
-
-Almost everybody is happier doing arithmetic with numbers like 2 and 10 rather than $e=2.718282$. For this reason, you may see formulations of the exponential function as $g(t) \equiv 2^{a t}$ or $h(t) \equiv 10^{c t}$. Remember that $2^{a t}$ and $e^{at}$, although both exponential functions, are quantitatively different. If you want to write $2^{at}$ using the "natural" base, it will be $e^{\ln(2) a\, t }$. Similarly, $10^{ct} = e^{\ln(10) c\, t}$.
-:::
-
-
-Exponential functions also describe ***decrease*** or ***decay***. Just replace $t$ with $-t$. That is, a movie of a decreasing quantity is just the movie of an increasing quantity played backwards in time!    
-
-
-**General process for curve-fitting an exponential**
-
-The goal is to find the parameters $A$, $k$, and $C$ in the formula $A e^{kx} + C$.
-
-**Step 0**: Check that the data show an exponential pattern in one of its varieties, namely a smooth increase or decrease and leveling out beyond some value of $x$. If this isn't true, reconsider whether you should be using an exponential function in the first place. Using your mind's eye (or paper, if you like) sketch out an exponential-shaped curve that follows the overall trend of the data. We'll call this imagined curve $f(x)$.
-
-**Step 1**: Find the ***baseline***. This is the output level at which the function has a horizontal asymptote, that is, at which the function levels off. $C$ is this baseline level. 
-
-**Step 2**: Find the numerical value of the imagined function $f()$ at input $x = 0$. We'll call this value $f(0)$. Then $A \equiv f(0) - C$.
-
-**Step 3** Estimate parameter $k$ using these steps:
-
-a. Pick any input value, which we'll call $x_2$, such that $f(x_2)$ is far from the baseline.
-
-b. Find an input value, which we'll call $x_1$ such that $f(x_1)$ is halfway^[The motivation for the equation is that the distance between $f(x_1)$ and $C$ should be half that of the distance between $f(x_2)$ and $C$. In other words, $$f(x_1) - C = \frac{f(x_2) - C}{2}$$ Simplifying the algebra a little tells you to look for $x_1$ such that $$f(x_1) = \frac{f(x_2) + C}{2}$$] between the baseline $C$ and $f(x_2)$, that is  $$f(x_1) = \frac{f(x_2) + C}{2}$$
-
- 
-c. Once you have $x_1$ and $x_2$, you can immediately find $k$: $$k = \frac{\ln(2)}{x_2 - x_1} \approx \frac{0.693}{x_2 - x_1}$$
-
-d. Using this simple test to double-check your work. If the horizontal asymptote of $f()$ (that is, approach to the baseline) is for $x \rightarrow \infty$, then $k$ should be **negative**. If the horizontal asymptote is for $x \rightarrow - \infty$, then $k$ will be positive. 
-    
-
-Notice that the question of "growth or decay" depends only on the sign of the parameter $k$. You can have an exponentially decaying process that's increasing. Consider, for instance, the speed of a car as it merges onto a highway from a slow speed on the entrance ramp.  The car's velocity is increasing, but as you approach highway speed the rate of increase gets smaller. That's exponential **decay**.
-
-The procedure in Step 3 for estimating $k$ stems from a very important property of exponential functions: Exponential functions always double/half at a constant pace. By design, the parameter $k$
-directly determines that pace. Picking an $x_2$ and finding the corresponding $x_1$ gives the length of the input interval, $x_1 - x_2$ over which the distance from the baseline doubles/halves. 
- 
-What’s remarkable about the doubling/halving time is that, for a genuinely exponential function, it doesn’t matter which point we choose for $x_1$. In practice working with graphed data, it's best to choose so that  $f(x_1)$ is discernibly far from the baseline. 
-
-The $2$ in $\ln(2)$ corresponds to idea of doubling/halving. The logarithm converts $2$ to a scale that will generate 2 when exponentiated.
-
-
-**Step 4** If you can plot the data, do so. Add to that a graphics layer showing the function $A e^{k x} + C$ using the values for $A$, $C$, and $k$ that you just found. If you are not satisfied with the way the plotted function approximates the data, tweak the parameters a bit until you are.
-
-**Exponential curve fitting applied to the water-cooling data**
-
-Let's illustrate the general process on the water-cooling data, redrawn in @fig-Fun-4-a-2-1.   
-
-```{r echo=FALSE}
-#| label: fig-Fun-4-a-2-1
-#| fig-cap: "The cooling-water data, repeated here for convenience. We've sketched in an exponential-like curve that matches the data pretty well."
-set.seed(101)
-gf_point(temp ~ time, data=CoolingWater %>% sample_n(20)) %>%
-  gf_lims(y = c(20, NA)) %>%
-  gf_smooth()
-```
-
-Step 0: The data indicate a smooth curve. As $t$ gets large, the curve approaches a constant. So an exponential model is reasonable.
-
-
-**Step 1**: The curve looks like it's leveling out at a temperature of about 25 degrees C for large $t$. So $C \approx 25^{\circ} \text{C}$.
-
-**Step 2**: Looking at our imagined curve (sketched in blue in @fig-Fun-4-a-2-1), it appears to intersect the $t=0$ vertical axis at about $f(0) = 85^\circ\text{C}$. Thus, $$A = 85^\circ\text{C} - 25^\circ\text{C} = 60^\circ\text{C}$$
-
-**Step 3**:
-
-a. Now choose a time $t_2$ where $f(t_2)$ is far from the baseline. ... It looks like $t_2 = 25$ will do the job, at which point we can read off the graph that the function value is $f(25) \approx 65$.
-b. Find an input value $t_1$ such that $f(t_1) -C = (f(t_2)-C)/2.$ This tells us that $f(t_1) = 25 + (65-25)/2 = (65+25)/2 = 45$. Referring to the graph, the time at which the function is about 45 is $t_1 \approx 65$, that is, $f(t_1) \approx 65$.
-c. We have $t_1 \approx 65$ and $t_2 = 25$. From this, we calculate $k$:
-$$ k = \frac{\ln(2)}{25 - 65} = 0.693/(-40) = -0.0173$$
-d. The data show exponential decay, so we expect $k$ to be negative. Happily, it is. If it hadn't been, we would go back to look for a sign error someplace.
-
-
-**Step 4**. Graph the function on top of the data to confirm the fitted function is a good match to the data.
-
-```{r echo=FALSE}
-#| label: fig-Fun-4-a-2-2
-#| fig-cap: "An exponential function that roughly aligns with the data."
-set.seed(101)
-gf_point(temp ~ time, data=CoolingWater %>% sample_n(20)) %>%
-  gf_lims(y = c(20, NA)) %>%
-  slice_plot(60*exp(-.0173*time) + 25 ~ time, 
-             domain(time=c(0,250)), color="blue")
-```
-
-Step 5: The flat zone of the data is to the right. So we've got exponential decay and $k < 0$. 
 
 
 
@@ -441,35 +310,6 @@ Here's a methodology for estimating the parameters `mean` and `sd` of a sigmoid 
 
 
 
-## FROM EARLIER INTRO
-
-introduced three important techniques for constructing new functions out of existing ones:
-
-- Composition, e.g. $f(g(x))$
-- Multiplication, e.g. $f(x) g(x)$ or, a function with two inputs, $f(y) g(x)$
-- Linear combination, e.g. $A f(x) + B\, g(x)$ or, a function with two inputs, $A f(y) + B\, g(x)$
-
-Don't be misled by the short examples: any of the three techniques can be used to combine any number of combinations. In [Chapter -@sec-low-order, for instance, you'll see instances when we flexibly build new functions with two inputs by linearly combining six standard functions.
-
-This chapter is about the uses of linear combination 
-
-
-
-
-
-We've discussed ***shifting the baseline*** of the exponential and sinusoid functions by adding a constant to the basic modeling function, like this:
-
-$$f(t) \equiv A e^{kt} + C\\
-\ \\
-g(t) \equiv A \sin\left(\frac{2\pi}{P} t\right) + C$$
-
-We've called this output scaling. It's an example of a much more general and powerful way of contructing modeling functions called ***linear combinations***.
-
-In a linear combination, you start with one or more basic functions. For discussion, let's call these $f_1(t)$, $f_2(t)$, $f_3(t)$ and so on. In making a linear combination, multiply each of the basic functions by some quantity and add the results together:
-
-$$\text{linear combination of}\ f_1(t)\ \text{and}\ f_2(t): \ \ A_1 f_1(t) + A_2 f_2(t)$$
-The quantities $A_1$ and $A_2$ are called ***scalars*** because they **scale** the functions. (In [Chapter -@sec-vectors you will see that we make a distinction between a **scalar**, which is a single quantity, and a **vector**, which is a set of scalars.)
-
 ::: {.example data-latex=""}
 NEATEN THIS UP!!
 
@@ -479,68 +319,14 @@ $\sin(x + \phi) = \cos(\phi)\sin(x) + \sin(\phi) \cos(x)$
 $C \sin(x +\phi) = A \sin(x) + B \cos(x)$ where $C^2 = A^2 + B^2$ and $\phi=\arctan(A/B)$
 :::
 
-It's common to take linear combinations of functions with different inputs, for example
-$$h(x, y, t) \equiv 4 e^{-kt} + 7 y + 2\,\pnorm(x-3) - 19$$
-
-In fields like statistics and economics and other social sciences, as well as clinical medical research, a great number of modeling techniques involve such combinations of functions of various inputs.
-
-In engineering and physics, an important class of functions involves a linear combination of many sinusoids of different periods, e.g. 
-
-$$\text{signal}(t) \equiv A_1 \sin\left(\frac{2 \pi}{P_1}t\right) + 
-A_2 \sin\left(\frac{2 \pi}{P_2}t\right) + 
-A_3 \sin\left(\frac{2 \pi}{P_3}t\right) + \cdots$$
-
-Linear combination of functions provides a powerful and flexible general-purpose modeling technique in part because many physical systems seem to work this way and in part because the methods for finding the scalars---$A_1$, $A_2$, and so on---have an extremely strong theory and fast computer implementations that automatically solve the problem once the modeler has selected the functions she wants to combine. In Block 4, we use the name ***target problem*** to refer the problem of finding scalars to match as well as possible a linear combination to data.
-
-An expression like $A e^{kx} + C$ combines the exponential (obviously!) and a second function that isn't immediately obvious: the constant function $\text{constant}(x) \equiv 1$. It might be overkill to re-write the expression as $A e^{kx} + C\, \text{constant}(x)$ but get in the habit of seeing the constant function as a constant presence in linear combinations!
-
-Polynomials are an important example of linear combinations. Something like $p(x) \equiv a + b t + c t^2$ is a linear combination of the constant function, the proportional function, and the square function. 
-
-
-
-## MOVED HERE FROM A DISCARDED CHAPTER
-
-Name        |  Pattern-book form | Modeling form
-------------|-------------|------------------
-exponential |  $e^x$      | $A e^{kx} + C$
-sinusoid    | $\sin(x)$   | $A \sin\left(\frac{2 \pi}{P} (x-x_0)\right) + C$
-proportional | $x$        | $a x + b$
-
-::: {.takenote  data-latex=""}
-The parameter $C$ is often called the ***baseline*** or the ***offset***. Statisticians call it the "intercept," because it plays the same role as $b$ in the straight-line function.
-
-When working with sinusoids, parameter $A$ is called the ***amplitude***.
-
-```{r echo=FALSE, warning=FALSE}
-#| label: fig-show-sin-params
-#| fig-cap: "Baseline (blue), amplitude (red), and period (green) for the sinusoid."
-# making waveforms for the figure
-slice_plot(sin(x) ~ x, domain(x=c(-1, 12))) %>%
-  gf_hline(yintercept=0, color="dodgerblue") %>%
-  gf_refine(theme_void()) %>%
-  gf_errorbar(0 + 1 ~ pi/2, color="orange3") %>%
-  gf_errorbar(-1 + 0 ~ 3*pi/2, color="orange3") +
-  geom_errorbarh(aes(y=1/2, xmin=0, xmax=2*pi), color="green", size=.5)
-```
-
-```{r echo=FALSE, warning=FALSE} 
-#| label: fig-show-exp-baseline
-#| fig-cap: "The baseline for the exponential is the horizontal asymptote. There is no vertical asymptote."
-slice_plot(exp(x) ~ x, domain(x=c(-2, 2))) %>%
-  gf_hline(yintercept=0, color = "dodgerblue") %>%
-  gf_segment(0 + 0 ~ 0 + (-2), color="orange", arrow=arrow(ends="last", type="closed")) %>%
-
-  gf_refine(theme_void())
-```
-:::
-
------
-
 
 ## Exercises
 
+`r knitr::knit_exit()`
+
 `r if (knitr::is_latex_output()) knitr::knit_exit()`
 
+`r insert_calcZ_exercise("XX.XX", "j0LTYT", "Exercises/lion-chew-bowl.Rmd", skills = "fitting by shape")`
 
 
 
@@ -552,13 +338,6 @@ slice_plot(exp(x) ~ x, domain(x=c(-2, 2))) %>%
 
 
 `r insert_calcZ_exercise("XX.XX", "p6jxx5", "Exercises/duck-see-socks.Rmd", skill="linear combinations")`
-
-
-
-
-## Exercises
-
-`r if (knitr::is_latex_output()) knitr::knit_exit()`
 
 
 `rr insert_calcZ_exercise("8.1", "0rvpbu", "Exercises/kid-type-boat.Rmd")`

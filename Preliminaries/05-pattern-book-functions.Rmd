@@ -24,8 +24,6 @@ Costume designers use their imagination, often enhanced by referencing published
 
 Similarly, we will start with a pattern set of functions that have been collected from generations of experience. To remind us of their role in modeling, we'll call these ***pattern-book functions***. These pattern-book functions are useful in describing diverse aspects of the real world and have simple calculus-related properties that make them relatively easy to deal with. There are just a handful of pattern-book functions from which untold numbers of useful modeling functions can be constructed. Mastering calculus is in part a matter of becoming familiar with the mathematical connections among the pattern-book functions. (You'll see these in due time.) 
 
-
-
 Here is a list of our pattern-book functions written traditionally and in R:
 
 [The list of pattern-book functions is short. You should memorize the names and be able easily to associate each name with the traditional notation.]{.aside}
@@ -34,6 +32,28 @@ Here is a list of our pattern-book functions written traditionally and in R:
 ```
      
 The input name used in the table, $x$, is entirely arbitrary. You can (and will) use the pattern-book functions with other quantities---$y$, $z$, $t$, and so on, even zebra if you like.
+
+In addition to the names of the pattern-book functions, you should be able to draw their shapes easily. @tbl-pattern-book-shapes provides a handy guide.
+
+```{r echo=FALSE, eval=FALSE}
+# helper function used to generate the pattern-book png files
+make_shape <- function(f, min, max) {
+  Pts <- tibble(
+    x = seq(min, max, length=100),
+    y = f(x)
+  ) %>% mutate(ifelse(abs(x) > 0.05, y, NaN))
+  plot(Pts$x, Pts$y, type="l", xaxt="n", yaxt="n", xlab="", ylab="", bty="n", lwd=12)
+}
+```
+
+
+::: {#tbl-pattern-book-shapes .column-page-inset-right}
+const | prop | square | recip | gaussian | sigmoid | sinusoid | exp | ln
+:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:
+![](www/pb-const.png) | ![](www/pb-proportional.png) | ![](www/pb-square.png)| ![](www/pb-recip.png)| ![](www/pb-gauss.png) | ![](www/pb-sigmoid.png) | ![](www/pb-sin.png) | ![](www/pb-exp.png) | ![](www/pb-log.png) 
+
+Shapes of the pattern-book functions
+:::
 
 
 These pattern-book functions are widely applicable. But nobody would confuse the pictures in a pattern book with costumes that are ready for wear. Each pattern must be tailored to fit the actor and customized to fit the theme, setting, and action of the story. We'll study how this is done starting in Chapter @sec-parameters.
@@ -185,7 +205,37 @@ slice_plot(sin(x) ~ x, domain(x=c(-20,20)), npts=500) %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
 ```
 
+## Exponentials &  doubling time {#sec-doubling-time}
 
+The exponential function has a characteristic property that makes it extremely important in models of many phenomena: The value ***doubles in constant time***. That phrase, "doubles in constant time" can be obscure, so let's look at it carefully with reference to a graph of the exponential function.
+
+@fig-exp-doubling-time is a graph of the exponential function, annotated with a set of evenly spaced vertical lines. The intersection of each vertical line with the function has been marked with a dot to make it easier to read off the output of the exponential when the input has any of the values marked by the vertical lines. For example, one of the vertical lines is at $t=0$. From that you can confirm that $\exp(t=0) = 1$. Looking at the vertical line at $t = 1 \times 0.693$ you can confirm that $\exp(t=0.693) = 2$. Similarly $\exp(t=2\times 0.693) = 4$ and $\exp(t=3\times 0.693) = 8$.
+
+
+```{r echo=FALSE}
+#| label: fig-exp-doubling-time
+#| fig-cap: "The exponential function doubles in constant time."
+#| column: column-page-inset-right
+#| out-height: 4
+#| out-width: 8
+Pts <- tibble(
+  n = (-2):3,
+  t = 0.693*n,
+  y = exp(t),
+  z = c(8, 8, 8, 8, 2, 2),
+  label = glue::glue("t = {n} × 0.693")
+  
+)
+gf_vline(xintercept=~t, data=Pts, color="brown", 
+         alpha=0.5) %>%
+slice_plot(exp(t) ~ t, domain(t=-1.6:2.2), color="blue") %>%
+  gf_theme(scale_y_continuous(breaks = -1:10)) %>%
+  gf_hline(yintercept=~0, linetype="dashed") %>%
+  gf_point(y ~ t, data = Pts, color="magenta") %>%
+  gf_text(z ~ t, label=~ label, color="brown", size=2.4, angle=90, nudge_x=-.06)
+  
+```
+In other words, the output of the exponential function *doubles* whenever the input is increased by 0.693. Likewise, decreasing the input by 0.693 cuts the output by half. No other function than the exponential has this property that a constant change in the input (namely, 0.693) leads to a doubling of the output. So, 0.693 is "constant time" that leads to doubling. 
 
 ## The power-law family {#sec-power-law-family}
 
@@ -301,6 +351,9 @@ gridExtra::grid.arrange(Pa, Pb, ncol=2)
   
 ```
 
+### Computing note
+
+When a function like $\sqrt[3]{x}$ is written as $x^{1/3}$ make sure to include the exponent in grouping parentheses: `x^(1/3)`. Similarly, later in the book you will encounter power-law functions where the exponent is written as a formula. Particularly common will be power-law functions written $x^{n-1}$ or $x^{n+1}$. In translating this to computer notation, make sure to put the formula within grouping parentheses, for instance `x^(n-1)` or `x^(n+1)`.
 
 ## Domains of pattern-book functions
 
@@ -403,7 +456,7 @@ A mnemonic phrase for exponentials functions is
 Of course, the exponential function can have inputs with names other than $x$, for instance, $f(y) \equiv 2^y$, but the name "x" makes for a nice alliteration in the mnemonic.
 :::
 
-### Exponential and logarithm
+### Exponential and logarithm {#sec-exp-log-symb}
 
 We will Basic symbolic patterns for exponentials are (i) and (ii)
 
@@ -469,11 +522,9 @@ $\LARGE\mathbf{(xiii)}\ \ \ \ \ \ \ x^0 \leftrightarrow 1$
 $\sin(x)$ is periodic with period $2\pi$. Zero-crossings of $\sin(x)$ are at $x=..., -2\pi, -\pi, 0, \pi, 2\pi, ...$
 
 As we mentioned earlier, we will be calling both the $\sin()$ and $\cos()$ function "sinusoids." They are merely shifted versions of one another:
-$$\cos(x) = \sin\left(x + \frac{\pi}{2}\right)\ .$
+$$\cos(x) = \sin\left(x + \frac{\pi}{2}\right)\ .$$
 
-::: {.takenote  data-latex=""}
-When a function like $\sqrt[3]{x}$ is written as $x^{1/3}$ make sure to include the exponent in grouping parentheses: `x^(1/3)`. Similarly, later in the book you will encounter power-law functions where the exponent is written as a formula. Particularly common will be power-law functions written $x^{n-1}$ or $x^{n+1}$. In translating this to computer notation, make sure to put the formula within grouping parentheses, for instance `x^(n-1)` or `x^(n+1)`.
-:::
+
 
 ### The straight-line function
 
@@ -526,6 +577,8 @@ Although invented for the practical work of numerical calculation, the logarithm
 
 EXERCISES:
 Show that $\ln(x^p) = p \ln(x)$
+
+
 
 ## Drill
 
@@ -743,6 +796,44 @@ r"(-1)" = r"( )",
 )
 ```
 
+```{r drill-Quiz-1-11, echo=FALSE, results='markup'}
+askMC(
+  prompt =  "By how much should you increase the input to the exponential function in order to produce a doubling of the output?",
+  "0.5",
+  "+0.693+" = "This is called the doubling time.",
+  "1",
+  "1.386",
+  "2", 
+  'none of these',
+  random_answer_order=FALSE,
+  item_label = "Drill "
+)
+```
 
+```{r drill-Quiz-1-12, echo=FALSE, results='markup'}
+askMC(
+  prompt =  "By how much should you increase the input to the exponential function in order to produce a quadrupling of the output?",
+  "0.5",
+  "0.693" = "This is called the doubling time.",
+  "1",
+  "+1.386+" = "Increasing by twice the doubling time quadruples the output.",
+  "2", 
+  'none of these',
+  random_answer_order=FALSE,
+  item_label = "Drill "
+)
+```
 
-
+```{r drill-Quiz-1-13, echo=FALSE, results='markup'}
+askMC(
+  prompt =  "By how much should you **decrease** the input to the exponential function in order to cut the output value by a factor of one-half?",
+  "0.5",
+  "+0.693+" = "A halving of the output is accomplished by decreasing the input by the doubling time 0.693.",
+  "1",
+  "1.386",
+  "2", 
+  'none of these',
+  random_answer_order=FALSE,
+  item_label = "Drill "
+)
+```
