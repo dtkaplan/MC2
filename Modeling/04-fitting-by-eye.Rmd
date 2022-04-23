@@ -3,16 +3,16 @@
 ```{r child="../starter.Rmd"}
 ```
 
-For more than three centuries, there has been a standard calculus model of an everyday phenomenon: a hot object such as a cup of coffee cooling off to room temperature. The model, called ***Newton's Law of Cooling***, posits that the rate of cooling is proportional to the *difference* between the object temperature and the ambient temperature. The technology for measuring temperature  (@fig-early-thermometers) was rudimentary in Newton's era, raising the question of how Newton formulated a quantitative theory of cooling. (We'll return to this question in @sec-low-order.)
+For more than three centuries, there has been a standard calculus model of an everyday phenomenon: a hot object such as a cup of coffee cooling off to room temperature. The model, called ***Newton's Law of Cooling***, posits that the rate of cooling is proportional to the *difference* between the object's temperature and the ambient temperature. The technology for measuring temperature  (@fig-early-thermometers) was rudimentary in Newton's era, raising the question of how Newton formulated a quantitative theory of cooling. (We'll return to this question in @sec-low-order.)
 
 ```{r echo=FALSE}
 #| label: fig-early-thermometers
 #| column: margin
-#| fig-cap: Thermometers in the 1600s were primative affairs. This is thought to be the earliest published image of thermometers, by Jean Leurechon in *Recréation Mathématicque* (1626) [Image source](https://commons.wikimedia.org/w/index.php?curid=67780885)
+#| fig-cap: Thermometers in the 1600s were primitive affairs. This is thought to be the earliest published image of thermometers, by Jean Leurechon in *Recréation Mathématicque* (1626) [Image source](https://commons.wikimedia.org/w/index.php?curid=67780885)
 knitr::include_graphics("www/early-thermometers.png")
 ```
 
-Using today's technology, Prof. Stan Wagon of Macalester College investigated the accuracty Newton's "Law." @fig-Fun-4-intro-1 shows some of Wagon's data from experiments with cooling water. He poured boiling water from a kettle into an empty room-temperature mug (26 degrees C) and measured the temperature of the water over the next few hours.
+Using today's technology, Prof. Stan Wagon of Macalester College investigated the accuracy of Newton's "Law." @fig-Fun-4-intro-1 shows some of Wagon's data from experiments with cooling water. He poured boiling water from a kettle into an empty room-temperature mug (26 degrees C) and measured the temperature of the water over the next few hours.
 
 ```{r echo=FALSE}
 #| label: fig-stans-data
@@ -22,79 +22,124 @@ gf_point(temp ~ time, data=CoolingWater ) %>%
   gf_labs(x = "Time (minutes)", y="Temperature (deg. C)")
 ```
 
-This chapter is about ***fitting***, finding parameters that will align the functions with the data such as in @fig-stans-data. In particular, in this chapter we'll work the the  the exponential, sinusoid, and gaussian functions. In Chapter @sec-magnitude we'll consider the power-law and logarithm functions.
+This chapter is about ***fitting***, finding parameters that will align the functions with the data such as in @fig-stans-data. In this chapter,  we'll work the the exponential, sinusoid, and gaussian functions. In Chapter @sec-magnitude we'll consider the power-law and logarithm functions.
+
+::: {#tbl-three-fitted-shapes .column-margin}
+
+Gaussian | Sinusoid | Exponential
+:--:|:--:|:--:
+![Gaussian](www/pb-gauss.png) | ![Sinusoid](www/pb-sin.png) | ![Exponential](www/pb-exp.png) 
 
 
-In every instance, the first step, before finding parameters, is to determine that the pattern shown in the data is a reasonable match to the shape of the function you are considering. Here's a reminder of the shapes of the functions we'll be fitting to data in this chapter. If the shapes don't match, there's little point looking for the parameters to fit the data!
-
-
-::: {.column-page-margin}
-
-![Gaussian](www/pb-gauss.png) 
-
-![Sinusoid](www/pb-sin.png)  
-
-![Exponential](www/pb-exp.png) 
-
-Shapes of the pattern-book functions
+Function shapes for this chapter
 :::
+
+In every instance, the first step, before finding parameters, is to determine that the pattern shown in the data is a reasonable match to the shape of the function you are considering. Here's a reminder of the shapes of the functions we'll be fitting to data in this chapter. If the shapes don't match, there's little point in looking for the parameters to fit the data!
+
+
+
 
 ## Gaussian
 
-[SHOW A density plot that's close to the gaussian]. Derive the amplitude parameter (which will turn out to be 1 for )
 
-Explain about cones and colors. Image from Cynthia Tedore & Dan-Eric Nilsson (2019) "Avian UV vision enhances leaf surface contrasts in forest environments", *Nature Communications* 10:238
+
+The ability to perceive color comes from "cones": specialized light-sensitive cells in the retina of the eye.  Human color perception involves three sets of cones. The L cones are most sensitive to relatively long wavelengths of light near 570 nanometers. The M cones are sensitive to wavelengths near 540 nm, and the S cones to wavelengths near 430nm.
+
+The current generation of Landsat satellites uses nine different wavelength-specific sensors. This makes it possible to distinguish features that would be undifferentiated by the human eye. 
+
+```{r echo=FALSE}
+#| label: fig-bird-views
+#| fig-cap: "Two views of the same scene synthesized by combining the output of different types of cones. The top picture uses V, M, and S cones; the bottom  only S, M, and L cones. The dark geen leaves clearly revealed in the top picture are not distinguishable in the bottom picture. (Source: Tedore and Nilsson)"
+#| column: margin
+knitr::include_graphics("www/bird-vision.png")
+``` 
+
+Back toward Earth, birds have five sets of cones that cover a wider range of wavelengths than humans. (@fig-bird-cones) Does this give them a more powerful sense of the differences between natural features such as foliage or plumage? One way to answer this question is to take photographs of a scene using cameras that capture many narrow bands of wavelengths. Then, knowing the sensitivity spectrum of each set of cones, new "false-color" pictures can be synthesized recording the view from each set.^[Cynthia Tedore & Dan-Eric Nilsson (2019) "[Avian UV vision enhances leaf surface contrasts in forest environments](https://doi.org/10.1038)", *Nature Communications* **10**:238  -@fig-bird-views  and -@fig-bird-cones ] 
+
 
 ```{r echo=FALSE}
 #| label: fig-bird-cones
-#| fig-cap: "SAY SOMETHING ABOUT sensitivity to light of cone cells in birds. [Source](https://doi.org/10.1038)
+#| fig-cap: "Sensitivity to wavelength for each of the five types of bird cones. [Source: Tedore and Nilsson]"
 knitr::include_graphics("www/bird-cones.png")
-
 ```
 
-
-## Baseline
-
-In our standard parameterization form for the pattern-book functions,
-$$\text{model}(t) \equiv A g\left(\strut k\, (t - t_0)\right) + B\ ,$$
-the left-to-right or top-to-bottom flipping is entirely reflected by the signs of the parameters $A$ and $k$. Consequently, when you determined which pattern book function with which flipping is a match to the data, you will know the signs of $A$ and $k$. A case in point: for the cooling-water data, the left-to-right exponential function is a good match. This tells us that the parameter $k$ is negative for a model of that data.
-
-Our task in this section is to estimate from the data the value of parameter $B$. This is done by looking for a ***baseline***. Several of the pattern book shapes have a horizontal asymptote heading toward zero. The pattern-book exponential approaches zero for large negative values of the input. The same is true for the sigmoidal function. The gaussian approaches zero both for large negative and large positive values of the input. If the data display a pattern similar to a horizontal asymptote, this provides an easy way to estimate the numerical value of the $B$ parameter. 
-
-For instance, @fig-stans-data shows the water temperature leveling off as time increases, heading toward approximately 26 degrees C.  The $B$ parameter is set to match that leveling-off value. 
-
-For instance, in the cooling water data, we can set parameter $B$ to be 26 deg. C.
-
-Sinusoids are also considered to have a baseline, even though they do not have a horizontal asymptote. (The sinusoid continues to oscillate between -1 and 1 even for very large negative or positive inputs, it doesn't get closer and closer to a fixed value.)  The baseline for the sinusoid is the value mid-way between the top of the oscillations and the bottom. For example,  @fig-tides-ri1 (reproduced in the margin) shows the sinusoidal-like pattern of tide levels. Dashed horizontal lines ($\color{brown}{\text{brown}}$) have been drawn roughly going through the top of the oscillation and the bottom of the oscillation. The baseline ($\color{magenta}{\text{magenta}}$) will be halfway between these top and bottom levels.
+Creating the false-color pictures on the computer requires a mathematical model of the sensitivities of each type of cone. The graph of each sensitivity function resembles a Gaussian function.
 
 ```{r echo=FALSE}
+#| label: fig-gauss-param-estimates
+#| column: margin
+#| fig-cap: "A Gaussian function annotated to identify the parameters mean (location of peak of graph) and sd (half-width at half-height)."
+myarrow = grid::arrow(ends="both", length=unit(.3, "cm"))
+slice_plot(dnorm(w, mean=600, sd=35) ~ w, domain(w=400:750), color="red") %>%
+  gf_vline(xintercept=~600, color="blue", linetype="dashed") %>%
+  gf_text(.0016 ~ 590, label="mean", color="blue", angle=90) %>%
+  gf_hline(yintercept=~0.0055, color="brown", linetype="dotted") %>%
+  gf_text(0.006 ~ 450, label="half-height", color="brown")%>%
+  gf_segment(0.0055+0.0055 ~ 600 + 640, color="brown", arrow=myarrow) %>%
+  gf_text(0.006 ~ 620, label="sd", color="brown")
+ 
+```
+
+The Gaussian has two parameters: the "mean" and the "sd" (short for standard deviation). It's straightforward to estimate values of the parameters from a graph, as in @fig-gauss-param-estimates. The parameter "mean" is the location of the peak. The standard deviation is, roughly, half the width of the graph at a point halfway down from the peak. 
+
+## Sinusoid
+
+We'll use three parameters for fitting a sinusoid to data: 
+$$A \sin\left(\frac{2\pi}{P}\right) + B$$ 
+where 
+
+- $A$ is the "amplitude"
+- $B$ is the "baseline" 
+- $P$ is the period. 
+
+```{r echo=FALSE, warning=FALSE}
 #| label: fig-tides-ri2
-#| fig-cap: "A reproduction of the data originally shown in @fig-tides-ri1. The baseline for the sinusoid is mid-way between the top of the oscillation and the bottom."
+#| fig-cap: "A reproduction of the data originally shown in @fig-tides-ri1. The baseline for the sinusoid is midway between the top of the oscillation and the bottom."
 #| column: margin
 gf_line(level ~ hour, data = RI_tide, color="blue") %>%
   gf_hline(yintercept=c(0.5, 1.6), color="brown", linetype = "dashed") %>%
   gf_hline(yintercept=1.05, color="magenta") %>%
-  gf_labs(x = "t (hours)")
+  gf_labs(x = "t (hours)") %>%
+  gf_vline(xintercept = ~ 6, color="black", linetype="dotted") %>%
+  gf_vline(xintercept = ~ 106, color="black", linetype="dotted")
 ```
 
-In @fig-tides-ri2, the baseline has been identified as $B \approx 1.05$.
+The ***baseline*** for the sinusoid is the value mid-way between the top of the oscillations and the bottom. For example,  @fig-tides-ri1 (reproduced in the margin) shows the sinusoidal-like pattern of tide levels. Dashed horizontal lines ($\color{brown}{\text{brown}}$) have been drawn roughly going through the top of the oscillation and the bottom of the oscillation. The baseline ($\color{magenta}{\text{magenta}}$) will be halfway between these top and bottom levels.
 
-## Input scaling
+The ***amplitude*** is the vertical distance between the baseline and the top of the oscillations. Equivalently, the amplitude is **half** the vertical distance between the top and the bottom of the oscillations. 
 
-We've already seen that the sign of the $k$ parameter reflects left-to-right flipping of the pattern-book function. Now we will examine how to estimate a numerical value for $k$. 
+In a pure, perfect sinusoid, the top of the oscillation---the peaks---is the same for every cycle, and similarly with the bottom of the oscillation---the troughs. The data in @fig-tides-ri1 is only approximately a sinusoid so the top and bottom have been set to be representative. In @fig-tides-ri2, the top of the oscillations is marked at level 1.6, the bottom at level 0.5. The baseline is therefore $B \approx = (1.6 + 0.5)/2 = 1.05$. The amplitude is $A  = (1.6 - 0.5)/2 = 1.1/2 = 0.55$.  
 
-The situation is fundamentally different for the different shaped functions, so let's consider them one at a time.
 
-### Sinusoid
+To estimate the ***period*** from the data, mark the input for a distinct point such as a local maximum, then count off one or more cycles forward and mark the input for the corresponding distinct point for the last cycle. For instance, in @fig-tides-ri2, the tide level reaches a local maximum at an input of about 6 hours, as marked by a black dotted line. Another local maximum occurs at about 106 hours, also marked with a black dotted line. In between those two local maxima you can count  $n=8$ cycles. Eight cycles in $106-6 = 100$ hours gives a period of $P = 100/8 = 12.5$ hours.
 
-$k$ in the sinusoid sets the ***period*** of the cycle. Measuring the period from the data can be done by noting the input for a distinct point such as a local maximum, then counting off one or more cycles forward and reading off the input for the same kind of distinct point. For instance, in @fig-tides-ri2, the tide level reaches a local maximum at an input of about 6 hours. We can count $n=8$ cycles in the graph; the peak of the 8th cycle is at about 106 hours. So 8 cycles in $106-6 = 100$ hours gives a period of $P = 100/8 = 12.5$ hours.
+## Exponential {#sec-exponential-water}
 
-We have been writing the sinusoid as $$\sin\left(\frac{2\pi}{P} (t-t_0)\right)$$ so we can conclude that the parameter $$k=\frac{2\pi}{P} = 0.5\ \text{per hour}\ .$$ 
-Why "per hour?" Because $P$, which has units of hours, is in the denominator of the fraction $\frac{2\pi}{P}$.
+To fit an exponential function, we estimate the three parameters: $A$, $B$, and $k$ in 
+$$A \exp(kt)+ B$$
 
-### Exponential
+::: {.column-margin}
 
-The exponential has a unique property of "doubling in contant time" as described in Section @sec-doubling-time. We can exploit this to find the parameter $k$ for the exponential function.
+Exp. growth | Exp. decay | . | .
+:--:|:--:|:----:|:----:
+![Exponential growth](www/pb-exp-small.png) | ![Exponential decay](www/pb-exp2-small.png) | . |.
+
+Exponential decay is a left-to-right flip of exponential growth. 
+:::
+
+@fig-stans-data illustrates the procedure. The first question to ask is whether the pattern shown by the data resembles an exponential function. After all, the exponential pattern book function grows in output as the input gets bigger, whereas the water temperature is getting smaller---the word *decaying* is used---as time increases. To model exponential decay, use $\exp(-k t)$, where the negative sign effectively flips the pattern-book exponential left to right. 
+
+The exponential function has a horizontal asymptote for negative inputs. The left-to-right flipped exponential $\exp(-k t)$ also has a horizontal asymptote, but for positive inputs.
+
+The parameter $B$, again called the "baseline," is the location of the horizontal asymptote on the vertical axis. @fig-stans-data suggests the asymptote is located at about 25 deg. C. Consequently, the estimated value is $B \approx 25$ deg C.
+
+### Estimating A
+
+The parameter $A$ can be estimated by finding the value of the data curve at $t=0$. In Figure @fig-exp-water-k that's just under 100 deg C. From that, subtract off the baseline you estimated earlier: ($B = 25$ deg C). The amplitude parameter $A$ is the *difference* between these two: $A = 99 - 25 = 74$ deg C.
+
+### Estimating k
+
+The exponential has a unique property of "doubling in constant time" as described in Section @sec-doubling-time. We can exploit this to find the parameter $k$ for the exponential function.
 
 a. The procedure starts with your estimate of the baseline for the exponential function. In @fig-exp-water-k the baseline has been marked in $\color{magenta}{\text{magenta}}$ with a value of 25 deg C.
 
@@ -128,196 +173,49 @@ d. Calculate half of the value from (c). In @fig-exp-water-k this is $36/2=18$ d
 
 e. Scan horizontally along the graph to find an input where the vertical distance from the data curve to the baseline is the value from (d). In @fig-exp-water-k that half-the-vertical-distance input is at about $t=65$. Then calculate the horizontal distance between the two vertical lines. In @fig-exp-water-k that's $65 - 25 = 40$ minutes. This is the doubling time. Or, you might prefer to call it the "half-life" since the water temperature is decaying over time.
 
-f. Calculate the magnitude $\|k\|$ as $\ln(2)$ divided by the doubling time from (e). That doubling time is 40 minutes, so $\|k\|= \ln(2) / 40 = 0.0173$.  We already know that the sign of $k$ is negative, since the pattern shown by the data is exponential decay toward the baseline. So, $k=-0.0173$.
+f. Calculate the magnitude $\|k\|$ as $\ln(2)$ divided by the doubling time from (e). That doubling time is 40 minutes, so $\|k\|= \ln(2) / 40 = 0.0173$.  We already know that the sign of $k$ is negative since the pattern shown by the data is exponential decay toward the baseline. So, $k=-0.0173$.
 
-## Output scaling
+## Graphics layers
 
-The output scaling is captured by the parameter $A$ in $A\ g\left(\strut k(t-t_0)\right) + B$. It's easy to measure $A$ from the data graph.
+When fitting a function to data, it's wise to plot out the resulting function *on top of* the data. This involves making graphics with two ***layers***, as described in Chapter @sec-data-and-data-graphics. As a reminder, here's an example comparing the cooling-water data to the exponential function we fitted in Section @sec-exponential-water.
 
-### Sinusoid
+The fitted function we found was
+$$T_{water}(t) \equiv 74 \exp(-0.0173 t) + 25$$ where $T$ stands for "temperature."
 
-As part of finding the baseline of the sinusoid, as in @fig-tides-ri2, you found the top and bottom of the oscillation. In @fig-tides-ri2 that's 1.6 and 0.5 respectively. We averaged these values to get the baseline $B$. To get $A$, find the difference and divide by two: $A = (1.6 - 0.5)/2 = 1.1/2 = 0.55$.
+To compare $T_{water}()$ to the data, we'll first plot out the data with `gf_point()`, then add a slice plot of the function. We'll also show a few bells and whistles of plotting: labels, colors, and such. 
 
-### Exponential
-
-Find the value of the data curve at $t=0$. In Figure @fig-exp-water-k that's just under 100 deg C. From that, subtract off the baseline you estimated earlier. ($B = 25$ deg C for the cooling water data.) The amplitude parameter $A$ is half the difference between these two: $A = 99 - 25 = 74$ deg C.
-
-
-## Input shift
-
-
-
-## Drawing a straight line
-
-cooling mug of water. @fig-Fun-4-a shows the data along with a dozen candidate straight line functions, each one drawn in its own color.
-
-```{r echo=FALSE, warning=FALSE}
-#| label: fig-Fun-4-a
-#| fig-cap: "Some candidate straight-line function models plotted on top of the cooling water data. Which one(s) would you pick as good matches to the data?"
-set.seed(101)
-gf_point(temp ~ time, data=CoolingWater %>% sample_n(20)) %>%
-  gf_labs(x = "Time (minutes)", y="Temperature (deg. C)") %>%
-  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="dodgerblue") %>%
-  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="aquamarine") %>%
-  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="cadetblue") %>%
-  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="green") %>%
-  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="cadetblue") %>%
-  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20), color="royalblue") %>%
-  gf_lm(temp ~ time, data = CoolingWater %>% sample_n(20),color="seagreen") %>%
-  gf_abline(intercept = 100, slope=-0.21, color = "plum") %>%
-  gf_abline(intercept = 90, slope=-0.19, color = "plum3") %>%
-  gf_abline(intercept = 63, slope=-0.05, color = "purple") %>%
-  gf_abline(intercept = 120, slope=-0.51, color = "purple3") %>%
-  gf_abline(intercept = 7, slope=.21, color = "orchid")
+```{r echo=TRUE}
+#| label: fig-water-function-compare
+#| column: margin
+#| fig-cap: "A graphic with two layers: one for the cooling-water data and the other with the exponential function fitted to the data."
+T_water <- makeFun(74*exp(-0.0173*t) + 25 ~ t)
+gf_point(temp ~ time, data=CoolingWater, alpha=0.5 ) %>%
+  slice_plot(T_water(time) ~ time, color="blue") %>%
+  gf_labs(x = "Time (minutes)", y="Temperature (deg. C)")
 ```
 
-Some of the straight-line models are a much better match to the data than others. The blue-shaded functions are pretty good fits, at least when you consider the limitations of matching data with a curved pattern by a straight line.  The green-colored functions are maybe OK but not as good as the blue, and the purple-shaded functions are just horrible.
+The `slice_plot()` command inherited the domain interval from the `gf_point()` command. This happens only when the name of the input used in `slice_plot()` is the same as that in `gf_point()`. (It's `time` in both.) You can add additional data or function layers by extending the pipeline.
 
-Now that you know what a reasonable straight-line model looks like, you will find it pretty easy to draw one on data graphics that even remotely show a straight-line pattern. 
+By the way, the fitted exponential function is far from a perfect match to the data. We'll return to this mismatch in Chapter @sec-modeling-cycle when we explore the ***modeling cycle***.
 
-Step 1: Draw a reasonable straight-line through the data points. 
+## Fitting other pattern-book functions
 
-Step 2: Find the parameters that correspond to the line you drew. 
+This chapter has looked at fitting the exponential, sinusoid, and Gaussian functions to data. Those are only three of the nine pattern-book functions. What about the others?
 
+::: {#tbl-pattern-book-shapes .column-page-inset-right}
+const | prop | square | recip | gaussian | sigmoid | sinusoid | exp | ln
+:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:
+![](www/pb-const.png) | ![](www/pb-proportional.png) | ![](www/pb-square.png)| ![](www/pb-recip.png)| ![](www/pb-gauss.png) | ![](www/pb-sigmoid.png) | ![](www/pb-sin.png) | ![](www/pb-exp.png) | ![](www/pb-log.png) 
 
-
-## Curve fitting a power-law function
-
-You have been using power-law functions from early in your math and science education.  Some examples:   
-
-Setting | Function formula | exponent
---------|------------------|----------
-Circumference of a circle | $C(r) = 2 \pi r$ | 1
-Area of a circle | $A(r) = \pi r^2$ | 2
-Volume of a sphere | $V(r) = \frac{4}{3} \pi r^3$ | 3
-Distance traveled by a falling object | $d(t) = \frac{1}{2} g t^2$ | 2
-Gas pressure versus volume | $P(V) = \frac{n R T}{V}$ | $-1$
-... perhaps less familiar ... | | 
-Distance traveled by a diffusing gas | $X(t) = D \sqrt{
-\strut t}$ | $1/2$
-Animal lifespan (in the wild) versus body mass | $L(M) = a M^{0.25}$ | 0.25
-Blood flow versus body mass | $F(M) = b M^{0.75}$ | 0.75
-
-One reason why power-law functions are so important in science has to do with the logic of physical quantities such as length, mass, time, area, volume, force, power, and so on. We'll discuss this at length later in the course and the principles will appear throughout calculus.
-
-As for finding the power law $f(x) \equiv A x^p$ that provides a good match to data, we'll need some additional tools to be introduced in @sec-magnitudes.
-
-
-
-## Gaussian and sigmoid functions
-
-Our last two basic modeling functions express an important idea in modeling: ***localness***. To put this in concrete terms, imagine creating a function to depict the elevation above sea level of a long road as a function of distance in miles, $x$, from the start of the road. If the road were level at 1200 feet elevation, a sensible model would be $\text{elevation}(x) = 1200 \text{ft}$. If the road were gently sloping, a better model would be $\text{elevation}(x) = 1200 + 0.01 x$.   
-
-Now let's add a bump to the road. A bump is a local feature, often only a few feet wide. Or, perhaps the road is crossing a mountain range. That's also a local feature, but unlike a bump in the road a mountain range extends for many miles.
-
-The basic modeling function suited to represent bumps in the road, or potholes, or mountain ranges is generically called a "hump function." In this book, we use a specific hump function called the ***gaussian*** function (`dnorm()`). 
-
-A gaussian function has two parameters: the location^[That is, the input value at which the function value is largest.] of the peak, which we'll call the ***center*** parameter, and the sideways extent of the gaussian, which is called the ***standard deviation***. @fig-Fun-3C-1 shows a few gaussian functions with different parameters.
-
-```{r echo=FALSE, warning=FALSE, fig.show="hold", fig.height=3, fig.width=6}
-#| label: fig-Fun-3C-1
-#| fig-cap: "Gaussians with various centers and standard deviations (sd)."
-slice_plot(dnorm(x, 1, 0.5) ~ x, domain(x=c(-3, 3))) %>%
-    gf_labs(title="(a) Gaussian with center=1, sd = 0.5")
-slice_plot(dnorm(x, -1, 0.05) ~ x, domain(x=c(-3, 3)), npts=500) %>%
-    gf_labs(title="(b) Gaussian with center=-1, sd = 0.05")
-slice_plot(dnorm(x, 0.25, 1.2) ~ x, domain(x=c(-3, 3)), npts=500) %>%
-    gf_labs(title="(c) Gaussian with center=0.25, sd = 1.2") %>%
-  gf_hline(yintercept = ~dnorm(1.2+0.25, 0.25, 1.2), color="orange3") %>%
-    gf_segment(0.2016 + 0.2016 ~ -0.95 + 1.45, color="orange3", size=3, alpha=.03)
-```
-
-It's easy to read off the ***center*** parameter from a graph of a gaussian. It's the location of the top of the function graph. (We mentioned before that a mathematical word for "the location of the top" is ***argmax***; the value for the input of the function that produces the maximum output.)
-
-The ***spread*** parameter is also pretty straightforward, but you first have to become familiar with an unusual feature of the gaussian function. The output of the gaussian *far from the center* is practically zero. But it is not exactly zero. You can see from the graphs that the gaussian function has long flanks which approach zero output more or less in the manner of an exponential function. This means that we can't measure the spread of the gaussian function by the distance between the zeros on either side of the peak. Instead, we need a ***convention*** that will allow us to be precise in quantifying what is admittedly a vague concept of width.
-
-Technically, the convention is that the spread is the length of the interval from the argmax to the inflection point. This can be hard to judge from a graph, but a reasonable approximation is that the spread is the "half-width at half-height." Come down half-way from the peak value of the output. Panel (c) of @fig-Fun-3C-1 marks that elevation with a thin, tan, horizontal line. Along that line, measure the width of the gaussian, as marked by the thick tan line in Panel (c). The ***spread*** parameter is half the width of the gaussian measured in this way.   
-
-If you have a keen eye, you'll notice that the tan line in @fig-Fun-3C-1 is not exactly half-way down from the peak. It's down 39.35% from the peak. This corresponds exactly to the technical convention.
-
-Another seeming oddity about the gaussian function is the value of the maximum. It would have seemed natural to define this as 1, so-called "unit height." The way it  works is different: the maximum height is set so that the ***area*** under the gaussian function is 1.
-
-This business with the area will make more sense when you've learned some calculus tools, specifically "differentation" and "integration." For now though ...
-
-Consider another road feature, a local ***change*** from one elevation to another as you might accomplish with a ramp. The basic modeling function corresponding to a ***local change*** from one level to another is the ***sigmoid*** function. @fig-Fun-3C-2 shows three sigmoid functions.
-
-```{r echo=FALSE, fig.show="hold", warning=FALSE, fig.height=3, fig.width=6}
-#| label: fig-Fun-3C-2
-#| fig-cap: "Sigmoids with various centers and standard deviations"
-slice_plot(pnorm(x, 1, 0.5) ~ x, domain(x=c(-3, 3))) %>%
-    gf_labs(title="(a) Sigmoid with center=1, sd = 0.5")
-slice_plot(pnorm(x, -1, 0.05) ~ x, domain(x=c(-3, 3)), npts=500) %>%
-    gf_labs(title="(b) Sigmoid with center=-1, sd = 0.05")
-slice_plot(pnorm(x, 0.25, 1.2) ~ x, domain(x=c(-3, 3)), npts=500) %>%
-    gf_labs(title="(c) Sigmoid with center=0.25, sd = 1.2") 
-```
-The name "sigmoid" comes from vague resemblance of the graph to the letter S (which is "sigma" in Greek: ![](www/variant-sigma.png)). 
-
-The parameters of the sigmoid function are the same as for the gaussian function: ***center*** and ***width***. The center is easy to estimate from a graph. It's the value of the input that produces an output of 0.5, half-way between the max and min of the sigmoid. As with the gaussian function, the ***width*** is measured according to a convention. The width is the ***change in input*** needed to go from an output of 0.5 to an output of 0.8413. This use of 0.8413 must seem loony at first exposure, but there is a reason. We'll need more calculus tools before it can make sense.
-
-Gaussian functions and sigmoid functions with the same center and width parameters have a very close relationship. The ***instantaneous rate of change*** of the sigmoid function is the corresponding ***gaussian*** function. Figures \@ref(fig:Fun-3C-1) and \@ref(fig:Fun-3C-2) show corresponding gaussian and sigmoid functions. To the very far left, the sigmoid function is effectively flat: a slope near zero. Moving toward the center the sigmoid has a gentle slope: a low number. In the center, the sigmoid is steepest: a higher number. Then the slope of the sigmoid becomes gentle again before gradually falling off to zero. Near zero, then low, then higher, then low again, then falling off to zero: that's also the description of a gaussian function!
-
-In R, the name of the sigmoid function is `pnorm()`. The gaussian is `dnorm()`. The parameters that specify center and spread are named `mean` and `sd`. The word "mean" accurately conveys the idea of "center." It would be nice to be able to say that `sd` comes from `s`prea`d`, but in fact `sd` is short for ***standard deviation***, a term familiar to students of statistics.   
-
-
-
-::: {.intheworld  data-latex=""}
-@fig-ebola-data shows the cumulative number of Ebola cases during an outbreak in  Sierra Leone from May 1, 2014 to December 16, 2015.
-
-```{r echo=FALSE}
-#| label: fig-ebola-data,
-#| fig-cap: "Cumulative Ebola cases in Sierra Leone"
-gf_point(Cases ~ Day, data = MMAC::EbolaSierraLeone)
-```
-
-Although the cumulative case data are roughly sigmoidal in shape, there are systematic differences in shape from a true sigmoid. For comparison, @fig-true-sigmoid is a graph of genuinely sigmoidal data.
-
-```{r echo=FALSE, warning=FALSE}
-#| label: fig-true-sigmoid
-#| fig-cap: "A simulated sigmoidal growth process."
-sigmoid <- makeFun(A * pnorm(t, center,  width) ~ t)
-Points <- tibble::tibble(
-  t = seq(0, 12, length=100),
-  y = sigmoid(t, A=15, center=5, width = 2) + runif(length(t), min=-1, max=0.5)
-) %>% 
-  mutate(y = pmin(15, cummax(y)))
-
-gf_point(y ~ t, data  = Points,  height = 0.5, alpha = 0.25) %>%
-slice_plot(sigmoid(t, A=15, center = 5, width = 2) ~ t,
-           domain(t = c(-1, 15))) %>%
-  gf_hline(yintercept  = 15, color  = "orange3",  alpha = 0.5) %>%
-  gf_vline(xintercept = 5, color = "dodgerblue", alpha = 0.5) %>%
-  gf_vline(xintercept =  c(3, 7),  color = "green", alpha = 0.5) %>%
-  gf_segment(7.5 + 7.5 ~ -1 + 5, color = "dodgerblue",  alpha = 0.5) %>%
-  gf_labs(title  = "A genuine sigmoid and its parameters")
-```
-
-The Ebola data have only a rough similarity to the sigmoid shape. Still, fitting a model and then examining closely the deviations of the model from the data can prompt questions that can lead to a better understanding of the data and what's needed in an appropriate model.
-
+Shapes of the pattern-book functions
 :::
 
-Here's a methodology for estimating the parameters `mean` and `sd` of a sigmoid graphically. 
+In Blocks @sec-differentiation-part and @sec-accumulation-part, you'll see how the Gaussian and the sigmoid are intimately related to one another. Once you see that relationship, it will be much easier to understand how to fit a sigmoid to data.
 
-1. Sketch in a S-shaped curve that smoothly follows the data. In @fig-true-sigmoid this has already been done for you. For the Ebola data, you will have to use your judgment. 
+The remaining five pattern-book functions, the ones we haven't discussed in terms of fitting, are the logarithm and the four power-law functions included in the pattern-book set. In Chapter @sec-magnitude we'll introduce a technique for estimating from data the exponent of a single power-law function. 
 
-2. Find the top plateau of the S-curve. This is indicated by the tan line in @fig-true-sigmoid. The parameter `A` is simply the height of the plateau, in this case $y \approx 15$.
+In high school, you may have done exercises where you estimated the parameters of straight-line functions and other polynomials from graphs of those functions. In professional practice, such estimations are done with an entirely different and completely automated method called ***regression***. We'll introduce regression briefly in Chapter @sec-modeling-cycle. However, the subject is so important that all of Block @sec-vectors-linear-combinations is devoted to it and its background.
 
-3. Come down half way from the  plateau. Here, that's 15/2 or 7.5, indicated by the horizontal blue line segment.  Find the inverse of the S-curve from that half-way point onto the horizontal-axis. Here, that gives $t \approx 5$. The  parameter `center` is that value.
-
-4. From the center of the S-shaped curve, follow the curve upward about 2/3 of the way to the  plateau. In the diagram, that point is marked with a green line at $t \approx 7$. The `width` is the distance along the horizontal axis from the blue centerline to the green line. Here, that's $7 - 5$ giving 2 as the `width`.
-
-5. You might also want  to trace the S-curve *downward* from the centerline about 2/3 of the way to zero. That's indicated by the  left green line.  In the standard sigmoid, the two green lines will be equally spaced around the centerline. Of course the data may not be in the shape of the standard sigmoid, so you might find the two green lines are not equally spaced from the center.
-
-
-
-::: {.example data-latex=""}
-NEATEN THIS UP!!
-
-Linear combination to represent phase shift.
-$\sin(x + \phi) = \cos(\phi)\sin(x) + \sin(\phi) \cos(x)$
-
-$C \sin(x +\phi) = A \sin(x) + B \cos(x)$ where $C^2 = A^2 + B^2$ and $\phi=\arctan(A/B)$
-:::
 
 
 ## Exercises
@@ -326,7 +224,7 @@ $C \sin(x +\phi) = A \sin(x) + B \cos(x)$ where $C^2 = A^2 + B^2$ and $\phi=\arc
 
 `r if (knitr::is_latex_output()) knitr::knit_exit()`
 
-`r insert_calcZ_exercise("XX.XX", "j0LTYT", "Exercises/lion-chew-bowl.Rmd", skills = "fitting by shape")`
+`r insert_calcZ_exercise("XX.XX", "j0LTYT", "Exercises/lion-chew-bowl.Rmd", skill="fitting by shape")`
 
 
 
@@ -444,22 +342,7 @@ r"(It's the same as input.)" = r"(Use **input** rather than variable! Even if yo
 )
 ```
 
-## Graphics layers
 
-MODIFY THIS TO BE ABOUT OVERLAYING a function on data.
-
-You will often want to compare two functions, or compare a function to data. You can do this using the ordinary graphics functions, e.g. `slice_plot()` or `gf_point()`, arranging things so that both types of graphics are drawn together in the same graphics frame. To create this kind of compound graphic, arrange the individual graphics commands into a ***pipeline***, which is a list of commands connected together by `%>%`.  Your pipeline might include two commands or twenty, depending on how complicated is the graphic you want to draw. As long as you use `%>%` after each command, the next command is taken to build upon the previous command.  The very last command in that pipeline should not be followed by `%>%`.”  
-
-::: {.practice data-latex=""}
-Here is an just-for-demonstration plot composed from three graphs, each displaying one of the pattern-book functions. At the start of the pipeline, the `domain()` must be given explicitly as an argument to `slice_plot()`. You're welcome to specify other domains in the commands further along the pipeline, but if you don't the original `domain()` will be passed down the pipeline.
-
-```{r echo=TRUE}
-slice_plot(dnorm(x) ~ x, domain(x=c(-4,4))) %>%
-  slice_plot(pnorm(x) ~ x, color="red", size=2) %>%
-  slice_plot(sin(x) ~ x, color="green", size=4, alpha = 0.2)
-```
-Just to show how these things are done, the functions have been drawn in different colors, different widths (e.g., `size=2`) and different levels of transparency (e.g. `alpha=0.2`). You can use such styling arguments in any slice-plot.
-:::
 
 
 
