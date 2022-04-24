@@ -1,13 +1,74 @@
-# Operations {#sec-operations}
+# Operations on functions {#sec-operations}
 
 ```{r child="../starter.Rmd"}
 ```
 
-```{r include=FALSE}
-book_file_name <- "modeling/07-operations.html"
+Chapters @sec-parameters through @sec-fitting-by-feature introduced concepts and techniques for constructing functions. This is an important aspect of building models, but it is not the only one. Typically, a modeler, after constructing appropriate functions, will manipulate them in ways that provide the ***information*** required to answer questions that motivated the modeling work.
+
+This will introduce some of the operations and manipulations used to extract information from model functions. There are five such operations that you will see many times throughout this book. They are:
+
+1. Inversion: finding an input that produces a desired output
+2. Optimization: finding an input that produces the largest output
+3. Iteration: building a result step-by-step
+4. Differentiation
+5. Integration
+
+This chapter will introduce the first three of these. The remaining two---differentiation and integration---are the core operations of calculus. They will be introduced starting in Block @sec-differentiation.
+
+We will look at the three operations from two different perspectives: graphical and computational. Often, a graph can let you carry out the operation with sufficient precision for the purpose at hand. Graphs are relatively modern, coming into mainstream use only in the 1700s. Much of mathematics was developed before graphs were invented. One consequence of this is that function tasks that are easy using a graph might be very hard with the previous algebraic ways of implementing functions. 
+
+More refined work is done with a computer. We'll show you software that will let you direct the computer to do precise calculations. The computing algorithms used for inversion and optimization are often based on concepts from calculus which we have not yet encountered. The magic of software is the way it allows experts in a field to communicate with newbies so that people new to a field can use the operation in practice without necessarily developing a complete theoretical understanding of the algorithm. At this stage, our computational focus will be on how to set up the calculation and how to interpret the results. 
+
+## Inversion
+
+A function is a mechanism for turning any given input into an output. ***Inversion*** is about going the other way: given an output value, find the corresponding input. As an example, consider the exponential function $e^x$. Given a specific input, say $x=2.135$ you can easily compute the corresponding output:
+
+```{r}
+exp(2.135)
 ```
 
-Graphs are relatively modern, coming into mainstream use only in the 1700s. Much of mathematics was developed before graphs were invented. One consequence of this is that function tasks that are easy using a graph might be very hard with the previous ways of implementing functions. This is analogous to the way that arithmetic is pretty easy with Arabic numerals, but really hard with Roman numerals. 
+But suppose the information you have at hand is in the form of a output from the function, say $e^{x_0} = 4.93$. We don't (yet) know $x_0$ but, whatever it might be, we know that $e^{x_0}$ will produce the value 4.93.
+
+How do you find the specific input $x_0$ that will produce that output? The answer typically presented in high-school is to apply another function, $\ln()$, to the output:
+
+```{r}
+log(4.93)
+```
+
+To confirm that the result 1.595339 is correct, apply the exponential function to it and check that the output is the same as the original, given output 4.93.
+
+```{r}
+exp(1.595339)
+```
+
+This process works because we happen to have a function at hand, the logarithm, that is perfectly set up to "undo" the action of the exponential function. In high-school, you learned a handful of function/inverse pairs: `exp()` and `log()` as you've just seen, `sin()` and `arcsin()`, square and square root, etc.
+
+Another situation that is usually addressed in high-school is inverting low-order polynomial functions. For instance, suppose your modeling function is $g(x) \equiv 1.7 - 0.85 x + 0.063 x^2$ and you seek the $x_0$ such that $g(x_0) = 3$. High school students are taught to approach such problems in a process using the quadratic formula. In order to apply the quadratic formula, you need to place the problem into a standard format, not $$1.7 - 0.85 x + 0.063 x^2 = 3$$ but 
+$$0.063\, x^2 - 0.85\, x - 1.4 = 0$$
+
+One reason that low-order polynomials are popular in modeling is that such operations are straightforward.
+
+If none of the high-school approaches are suited to your modeling function, as is often the case, you can still carry out the inverting operation.
+
+In a modeling situation, however, you may have a function $h(x)$ that you constructed by linear combination and/or function multiplication and/or function composition. Faced with the need to find an $x_0$ such that $h(x_0) = 3$, you can use a graphical or a computational method called ***zero finding***.
+
+```{r echo=FALSE}
+#| label: fig-zero-finding1
+#| fig-cap: "Finding an $x_0$ such that $h(x_0) = 3$"
+#| column: margin
+h <- rfun(~ x, seed=9632)
+slice_plot(h(x) ~ x, domain(x=-4:4)) %>%
+  gf_hline(yintercept = ~ 3, color="magenta") %>%
+  gf_labs(y="h(x)") %>%
+  gf_theme(scale_y_continuous(breaks=c(0,3,6,9,12)))
+```
+
+The graphical process of zero-finding is straightforward. To illustrate, we'll work with the function $h(x)$ graphed in @fig-zero-finding1. And suppose the output for which we want to find a corresponding input is 3, that is, we want to find $x_0$ such that $h(x_0)=3$. 
+
+i. Graph the function $h(x)$ over a domain interval of interest.
+ii. Draw a horizontal line located at the value on the right-hand side of the equation $h(x_0) = 3$. (This is the $\color{magenta}{\text{magenta}}$ line in @fig-zero-finding1.)
+iii. Find the places, if any, where the horizontal line intersects the graph of the function. In @fig-zero-finding1, there are two such values: $x_0 = -3.5$ or $x_0 = 2.75$.
+
 
 WHEN INTRODUCING Zeros() or argM(), we need to name the output so that we can use it in another part of the model. MODIFY THIS: We will also use subscripts and non-numeric superscripts with input names to identify specific, isolated input quantities that are significant in some way. So you'll see $x_0$ or $y^\star$. For instance, such notation will be used for an input value where the function output is zero.
 
@@ -27,30 +88,6 @@ Integrate --- returns a quantity
 ### Data frame as input
 
 Returns a function: spliner, fitModel
-
-## Data and functions
-
-In Figure \@ref(fig:penguin-flipper), the data point plot of the penguin flipper length vs body mass, there are generally multiple penguins with the same body mass but different flipper lengths. The overall impression is that of a ***cloud of points***.
-
-When we construct a function to model the pattern observed in that cloud, we need to respect the mathematical definition of function, part of which is that a function has ***only one output*** for any given input. 
-
-```{r echo=FALSE, warning=FALSE,message=FALSE, fig.show="keep"}
-#| label: fig-penguin-flipper2
-#| out-width: "50%" 
-#| fig-cap: "Connecting the penguin data points with lines (left) doesn't directly describe any sensible mathematical function.  We use modeling to create a smooth function (right) that stays close, but not too close, to the data points."
-gf_line(flipper_length_mm/10 ~ body_mass_g/1000, 
-         data=penguins) %>%
-  gf_labs(y = "Flipper length (cm)", x = "Body mass (kg)") 
-gf_point(flipper_length_mm/10 ~ body_mass_g/1000, 
-         data=penguins) %>%
-  gf_smooth(color="orange3") %>%
-  gf_labs(y = "Flipper length (cm)", x = "Body mass (kg)") 
-```
-
-::: {.intheworld  data-latex=""}
-To create the model of flipper length as a function of body mass, we used one of a set of techniques called ***machine learning***. That is, we didn't specify that the form should be an exponential or a gaussian or a sigmoid or any other particular shape. We simply asked the computer to figure out a smooth function that stays close to the data. The result, as it happens, was a sigmoid. 
-:::
-
 
 
 ## Inverting a function
@@ -149,7 +186,7 @@ You can of course read this table either from left to right or from right to lef
 
 As you know, for a function $g(x)$, the set of valid values of $x$ is called the ***domain*** of the function. The set of possible outputs from the function is called the ***range*** of the function. The inverse function to $g()$ has a domain which is the range of $g()$ and a range which is the domain of $g()$.
 
-Sometimes the notation $g^{-1}(x)$ is used for "the inverse function of $g()$. This is potentially confusing, since $g^{-1}(x)$ might reasonable be interpretted as $1/g(x)$ and, in general, those two things are not equal. 
+Sometimes the notation $g^{-1}(x)$ is used for "the inverse function of $g()$. This is potentially confusing, since $g^{-1}(x)$ might reasonable be interpreted as $1/g(x)$ and, in general, those two things are not equal. 
 
 Straight-line (with non-zero slope), exponential ($e^{kt}$ where $k\neq 0$), and logarithm functions aways have inverse functions. For power-law and sinusoid functions, there can be several (or many) different inverse functions. We'll get to this when we need to.  
 
