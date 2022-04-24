@@ -129,14 +129,15 @@ f2 <- makeFun(a + b*x + c*x^2 ~ x, a=-2, b=1, c=-1)
 P1 <- graph_with_boxes(f1, domain = c(-1.1,0.1), my_letters = c("C", "D"), 
                  intervals = tibble(x = c(-1, -.45), xend=c(-.55, 0)))
 P2 <- graph_with_boxes(f2, domain = c(-.3,1.4), my_letters = c("E", "F"),
-                 intervals = tibble(x = c(-.2, .55), xend=c(.45, 1.25)))
+                 intervals = tibble(x = c(-.2, .55), xend=c(.45, 1.25))) %>%
+  gf_lims(y=c(-2.6, -1.4))
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
 
 
 
 
-## The low-order polynomial with two inputs {#sec-low-order-two}
+## Polynomials with two inputs {#sec-low-order-two}
 
 For functions with two inputs, the low-order polynomial approximation looks like this:
 
@@ -172,14 +173,25 @@ show_poly2 <- function(seed=1, domain=list(x=c(-2, 2), y=c(-2, 2))) {
   list(P1 = contour_plot(f(x, y) ~ x + y, domain=domain),
   P2 = interactive_plot(f(x, y) ~ x + y, domain=domain))
 }
-
 Bowl <- makeFun(x + y - 1*x*y + x^2 + 2*y^2 ~ x & y)
-Pbowl <- contour_plot(Bowl(x, y) ~ x & y, domain(x=-3:3, y=-3:3), skip=0) %>%
+Pbowl <- contour_plot(Bowl(x, y) ~ x & y, domain(x=-3:3, y=-3:3)) %>%
   gf_refine(coord_fixed())
 
-Phill <- contour_plot(40-Bowl(x, y) ~ x & y, domain(x=-3:3, y=-3:3), skip=0) %>%
+Phill <- contour_plot(40-Bowl(x, y) ~ x & y, domain(x=-3:3, y=-3:3)) %>%
   gf_refine(coord_fixed()) 
 Saddle <- show_poly2(104)
+```
+
+```{r echo=FALSE}
+# function to strip the axes off a plot.
+strip_axes <- function(P) {
+  P %>%
+    gf_theme(panel.grid = element_blank(), 
+           axis.text.x = element_blank(),
+           axis.title.x = element_blank(),
+           axis.text.y = element_blank(),
+           axis.title.y = element_blank())
+}
 ```
 
 A second-order polynomial with two inputs can take on any one of three shapes: a bowl, a hilltop, or a saddle.
@@ -189,11 +201,13 @@ A second-order polynomial with two inputs can take on any one of three shapes: a
 #| fig-cap: "The three forms for a second-order polynomial with two inputs."
 #| out-width: "150%"
 #| column: page-inset-right
-Pa <- Pbowl %>% gf_labs(subtitle="Bowl")
-Pb <- Phill %>% gf_labs(subtitle="Hill")
+
+Pa <- Pbowl %>% gf_labs(subtitle="Bowl") %>% strip_axes()
+  
+Pb <- Phill %>% gf_labs(subtitle="Hill") %>% strip_axes()
 
 Pc <- Saddle$P1 %>%
-  gf_refine(coord_fixed()) %>% gf_labs(subtitle="Saddle")
+  gf_refine(coord_fixed()) %>% gf_labs(subtitle="Saddle") %>% strip_axes()
 gridExtra::grid.arrange(Pa, Pb, Pc, ncol=3)
 ```
 

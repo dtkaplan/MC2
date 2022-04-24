@@ -5,9 +5,9 @@
 
 Chapters @sec-parameters through @sec-fitting-by-feature introduced concepts and techniques for constructing functions. This is an important aspect of building models, but it is not the only one. Typically, a modeler, after constructing appropriate functions, will manipulate them in ways that provide the ***information*** required to answer questions that motivated the modeling work.
 
-This will introduce some of the operations and manipulations used to extract information from model functions. There are five such operations that you will see many times throughout this book. They are:
+This will introduce some of the operations and manipulations used to extract information from model functions.^[We use the phrase "extract information" to reflect the purpose of using the operations discussed in this chapter. You may be more familiar with the phrase "find a solution."] There are five such operations that you will see many times throughout this book. They are:
 
-1. Inversion: finding an input that produces a desired output
+1. Zero-finding: finding an input that produces the desired output
 2. Optimization: finding an input that produces the largest output
 3. Iteration: building a result step-by-step
 4. Differentiation
@@ -17,19 +17,19 @@ This chapter will introduce the first three of these. The remaining two---differ
 
 We will look at the three operations from two different perspectives: graphical and computational. Often, a graph can let you carry out the operation with sufficient precision for the purpose at hand. Graphs are relatively modern, coming into mainstream use only in the 1700s. Much of mathematics was developed before graphs were invented. One consequence of this is that function tasks that are easy using a graph might be very hard with the previous algebraic ways of implementing functions. 
 
-More refined work is done with a computer. We'll show you software that will let you direct the computer to do precise calculations. The computing algorithms used for inversion and optimization are often based on concepts from calculus which we have not yet encountered. The magic of software is the way it allows experts in a field to communicate with newbies so that people new to a field can use the operation in practice without necessarily developing a complete theoretical understanding of the algorithm. At this stage, our computational focus will be on how to set up the calculation and how to interpret the results. 
+More refined work is done with a computer. We'll show you software that will let you direct the computer to do precise calculations. The computing algorithms used for inversion and optimization are often based on concepts from calculus that we have not yet encountered. The magic of software is the way it allows experts in a field to communicate with newbies so that people new to a field can use the operation in practice without necessarily developing a complete theoretical understanding of the algorithm. At this stage, our computational focus will be on how to set up the calculation and how to interpret the results. 
 
-## Inversion
+## Zero finding
 
-A function is a mechanism for turning any given input into an output. ***Inversion*** is about going the other way: given an output value, find the corresponding input. As an example, consider the exponential function $e^x$. Given a specific input, say $x=2.135$ you can easily compute the corresponding output:
+A function is a mechanism for turning any given input into an output. ***Zero finding*** is about going the other way: given an output value, find the corresponding input. As an example, consider the exponential function $e^x$. Given a specific input, say $x=2.135$ you can easily compute the corresponding output:
 
 ```{r}
 exp(2.135)
 ```
 
-But suppose the information you have at hand is in the form of a output from the function, say $e^{x_0} = 4.93$. We don't (yet) know $x_0$ but, whatever it might be, we know that $e^{x_0}$ will produce the value 4.93.
+But suppose the information you have at hand is in the form of an output from the function, say $e^{x_0} = 4.93$. We don't (yet) know $x_0$ but, whatever it might be, we know that $e^{x_0}$ will produce the value 4.93.
 
-How do you find the specific input $x_0$ that will produce that output? The answer typically presented in high-school is to apply another function, $\ln()$, to the output:
+How do you find the specific input $x_0$ that will produce that output? The answer typically presented in high school is to apply another function, $\ln()$, to the output:
 
 ```{r}
 log(4.93)
@@ -41,16 +41,16 @@ To confirm that the result 1.595339 is correct, apply the exponential function t
 exp(1.595339)
 ```
 
-This process works because we happen to have a function at hand, the logarithm, that is perfectly set up to "undo" the action of the exponential function. In high-school, you learned a handful of function/inverse pairs: `exp()` and `log()` as you've just seen, `sin()` and `arcsin()`, square and square root, etc.
+This process works because we happen to have a function at hand, the logarithm, that is perfectly set up to "undo" the action of the exponential function. In high school, you learned a handful of function/inverse pairs: `exp()` and `log()` as you've just seen, `sin()` and `arcsin()`, square and square root, etc.
 
-Another situation that is usually addressed in high-school is inverting low-order polynomial functions. For instance, suppose your modeling function is $g(x) \equiv 1.7 - 0.85 x + 0.063 x^2$ and you seek the $x_0$ such that $g(x_0) = 3$. High school students are taught to approach such problems in a process using the quadratic formula. In order to apply the quadratic formula, you need to place the problem into a standard format, not $$1.7 - 0.85 x + 0.063 x^2 = 3$$ but 
+Another situation that is usually addressed in high school is inverting low-order polynomial functions. For instance, suppose your modeling function is $g(x) \equiv 1.7 - 0.85 x + 0.063 x^2$ and you seek the $x_0$ such that $g(x_0) = 3$. High school students are taught to approach such problems in a process using the quadratic formula. In order to apply the quadratic formula, you need to place the problem into a standard format, not $$1.7 - 0.85 x + 0.063 x^2 = 3$$ but 
 $$0.063\, x^2 - 0.85\, x - 1.4 = 0$$
 
 One reason that low-order polynomials are popular in modeling is that such operations are straightforward.
 
-If none of the high-school approaches are suited to your modeling function, as is often the case, you can still carry out the inverting operation.
+If none of the high-school approaches are suited to your modeling function, as is often the case, you can still carry out the zero-finding operation.
 
-In a modeling situation, however, you may have a function $h(x)$ that you constructed by linear combination and/or function multiplication and/or function composition. Faced with the need to find an $x_0$ such that $h(x_0) = 3$, you can use a graphical or a computational method called ***zero finding***.
+### Graphical zero-finding
 
 ```{r echo=FALSE}
 #| label: fig-zero-finding1
@@ -63,248 +63,258 @@ slice_plot(h(x) ~ x, domain(x=-4:4)) %>%
   gf_theme(scale_y_continuous(breaks=c(0,3,6,9,12)))
 ```
 
-The graphical process of zero-finding is straightforward. To illustrate, we'll work with the function $h(x)$ graphed in @fig-zero-finding1. And suppose the output for which we want to find a corresponding input is 3, that is, we want to find $x_0$ such that $h(x_0)=3$. 
+
+Suppose you may have a function $h(x)$ that you constructed by linear combination and/or function multiplication and/or function composition. To illustrate, we'll work with the function $h(x)$ graphed in @fig-zero-finding1. And suppose the output for which we want to find a corresponding input is 3, that is, we want to find $x_0$ such that $h(x_0)=3$. 
+
+
+The steps of the process are: 
+
+::: {.column-margin}
+The name "zero-finding" can be a little misleading. The objective is find $x_0$ such that $h(x_0) = b$. In this sense, "b-finding" would be a more appropriate name. Instead of chasing after honey as "b-finding" suggests, we reformat the problem into finding $x_0$ such that $h(x_0) - b = 0$. In other words, we look for zeros of the function $h(x) - b$.
+:::
 
 i. Graph the function $h(x)$ over a domain interval of interest.
 ii. Draw a horizontal line located at the value on the right-hand side of the equation $h(x_0) = 3$. (This is the $\color{magenta}{\text{magenta}}$ line in @fig-zero-finding1.)
 iii. Find the places, if any, where the horizontal line intersects the graph of the function. In @fig-zero-finding1, there are two such values: $x_0 = -3.5$ or $x_0 = 2.75$.
 
+::: {.practice data-latex=""}
+The graph shows a function $g(t)$. Find a value $t_0$ such that $g(t_0) = 5$.
 
-WHEN INTRODUCING Zeros() or argM(), we need to name the output so that we can use it in another part of the model. MODIFY THIS: We will also use subscripts and non-numeric superscripts with input names to identify specific, isolated input quantities that are significant in some way. So you'll see $x_0$ or $y^\star$. For instance, such notation will be used for an input value where the function output is zero.
-
-
-## Outline
-
-### Function as input
-
-These are operations that take a ***function as input***. Depending on the operation, the object returned might be a scalar, a data frame, or another function. We use a data frame when there might be more than one quantity produced as output.
-
-Argmax/min --- returns a data frame
-Solve/Invert/Zeros -- returns a data frame
-Slopefun --- returns a function
-D/antiD --- returns a function
-Integrate --- returns a quantity
-
-### Data frame as input
-
-Returns a function: spliner, fitModel
-
-
-## Inverting a function
-
-A function graph makes it easy to evaluate the ***function inverse***. For all the basic modeling functions we have a way to calculate numerically the output for any given input (in the function's domain). 
-
-You can easily evaluate a function for a given input from its graph. As you know, just put your finger at the horizontal coordinate for the input. Then move your finger upward to reach the point on the curve directly above that horizontal coordinate. You read off the value of the function at that input by reference to the scale on the vertical axis. 
-
-Often, working with a function goes another way: you know the output and you want to find a corresponding input. It's easy to do this with a graph. Pick the position on the vertical axis that represents the given input. Then trace horizontally to where the ink is. From there, trace vertically to read off the value of an input that would produce the given output.
-
-Mathematicians are careful to distinguish between functions where there is one and only one possible input that generates each given output, and functions where there can be more than one input that generates the same output. (Mathematicians use the word ***unique*** to mean "one and only one.") Functions with a one-to-one relationship between output and input are called "invertible."
-
-Invertible or not, it is a common procedure for working with functions to find *an* input corresponding to a specific, given output. In high-school algebra, this was called "solving for $x$." A special case of solving is finding the ***roots of a polynomial***. The name we give to the procedure is ***zero finding***, which correctly points out that we are trying to **find** an input.
-
-Very much in the spirit of naming common tasks, the process of turning an output from a function into the corresponding input is called ***solving***. In high-school mathematics, you may have heard the phrases "solve for $x$" or "find $x$." Generally what was mean can be expressed using functions this way: Given an output $g(x_0)$  find the input $x_0$ that would produce that output. 
-
-In computer programming, "solving" is sometimes called ***zero finding***. As is often the case, computer programming often involves re-arranging things to fit in a standard format. Here, the standard format is to find the input that corresponds to an output of *zero*. In other words, given only the output $A = g(x_0)$ and not $x_0$ itself, find a value for $x_0$ that satisfies  look for the input $x_0$ at which $g(x_0) - A = 0$. 
-
-## Function inverses
-
-This may sound like a familiar word problem from your high-school algebra course:
-
-> You are a facilities manager for a small town. The town contains
-approximately 400 miles of road that must be plowed following a significant snowfall. How many plows must be used in order to complete the job in one day if the plows can travel at approximately 7 miles per hour when engaged? --- [Source](https://www.ams.org/notices/201005/rtx100500608p.pdf)
-
-The task of answering such a question is often called ***solving*** a ***word problem***. 
-
-You don't need calculus to solve this problem, but insofar as the format is familiar to you, it might help to depict how it would be addressed as a modeling task and how to use the model created to guide the mathematical work of getting a numerical answer to the problem.
-
-**Modeling Phase**: The objective is to create a function that represents snow plowing and that will let us answer the question about how much plowing activity is needed. Here's a function that takes as input $x$ a number of plows and provides as output the number of miles that can be serviced in a day.
-$$\text{miles.plowed}(x) \equiv 7 \ \text{mph} \times 24 \ \text{hours-per-day}\times x\ \text{plows}$$
-In reality, "miles plowed" depends on the amount of snow, the safe speed limit of the plows, the number of rest breaks needed by the drivers, how far the snowplow terminus is from the road system, how many cars are parked on the road and the available number of tow trucks, and the day of the week and the time of day. (Remember, there might be other traffic on the road. Plowing at rush hour is bound to be slow! And the reduced visibility at night calls for extra care!) It seems that textbook "word problems" never mention such issues, having been written in a world where plowing snow is the same as doing simple arithmetic.
-
-Likely, we're going to have to use the ***modeling cycle*** to end up with a genuinely useful model. Still, we have to start somewhere, so let's start with $7 \times 24 \times x$.
-
-We can use this function to solve the problem: How many plows are needed to get the 400-miles of road serviced in 1 day? It's a matter of choosing a suitable method for applying the function to guide us to the answer.  
-
-One simple method, which sometimes is called ***guess and check*** is to propose some answers and see what happens. Being experts in snow plowing, we know that you can't have negative or fractional plows, so our guesses for $x$ will be integers. Let's do this systematically:
-
-Number of plows $x$ | Miles plowed in a day
---------------------|----------------------
-1 | $7 \times 24 \times 1 = 168$
-2 | $7 \times 24 \times 2 = 336$
-3 | $7 \times 24 \times 3 = 504$
-4 | $7 \times 24 \times 4 = 672$
-$\vdots$ | ... and so on.
-
-We really don't need all the scratch work crowding up the table, so let's streamline it, keeping the essentials:
-
-input $x$ | output $\text{miles.plowed}(x)$
-----------|----------
-1 | 168
-2 | 336
-3 | 504
-4 | 672
-
-The domain of the miles_plowed() function is $x = 0, 1, 2, 3, \ldots$, so our table covers only a bit of the domain.
-
-Our purpose in constructing miles_plowed() is not to figure out the output given the input, but to do the opposite: given the output, find the input. The information we have is in the form of the output: 400 miles. The mathematical operation of ***solving*** consists of looking up what we do know in the **output** column of the table, then reading off the corresponding **input** as our answer. Since 400 doesn't appear in the output column, we'll look for an interval that includes 400. Of course, that's the interval from 336 to 504. So the answer will be something bigger than $x=2$ but doesn't need to be any larger than $x=3$. You've been in the facilities management business for many years, so you know to choose the answer $x=3$.
-
-If you have a graph of a function, it can be easy to calculate what the input should be for a given output. Just reverse the finger action, looking up the output on the vertical axis, tracing horizontally to the function graph, then reading off the result from the input axis. 
-
-Now let's write the problem using math notation rather than a table. We're looking for a value of $x$ such that $$\text{miles.plowed}(x) = 400$$ This is an ***equation*** as opposed to a ***function definition***. We write equations with $=$ and definitions with $\equiv$. The point of writing equations is often to signal to us that the task is to "solve for $x$." 
-
-An algebraic solution relies on replacing miles_plowed($x$) with the function's formula and then re-arranging numbers and possibly other symbols until we have an equation of the form $x = \ldots$. Here, that's easy:
-
-$$7 \times 24 \times x = 400\ \ \implies\ \ x = 400/(7\times 24)$$ 
-
-Apply some arithmetic and we find $x = 2.381$. Apply some common sense and we translate this into "three plows."
-
-An industrious facilities manager might go further. "Today there is 400 miles of road. But next year there will be more, although I don't yet know the exact number. While I'm doing all this math work, I'll write up a memo with a formula so that next year, when I know how much road there will be, my assistant can find the answer with simple arithmetic."   
-
-You likely learned how to set up and solve the manager wants to put in her memo. The key is to replace 400 with a symbol standing for the number of miles of road. We'll use $M$. Then you do the re-arrangement with $M$ in place of 400.
-
-$$7 \times 24\, x = M\ \ \implies\ \ x = M/168$$ 
-
-All that remains is to give a more informative name in place of $x$ and to write it as a proper function: $n_{plows}(M) \equiv M/168$.
-
-This process of starting with a function like $\text{miles.plowed(x)}$ and transforming it into a function in a more convenient format for the task at hand $n_{plows}(M)$ is called ***inverting the function***.
-
-High-school algebra emphasizes techniques for inverting functions by moving symbols around. This is great when it can be done, but it's often impossible in real science and engineering problems. The ***guess and check*** method that was used in the snowplow mileage table is very simple. particularly when it's paired with a process for refining the guess after every check. ***Newton's method*** is one such method, it makes use of the idea of slope functions introduced in Block 2.
-
-Another common strategy for inverting functions that are beyond our own reach algebraically is to rely on a specialist to develop the inverse function, give it a name, write down a formula in mathematical notation or, sometimes more usefully, write a computer program that implements the inverse function's algorithm. With this strategy, all that's needed to invert a function is to know the name or formula of the function's inverse. Here's a table of such names and formulas, most of which is likely familiar to you. 
-
-function | inverse function
----------|------------------
-Exponential: $e^x$ | Logarithm ("natural"): $\ln(x)$
-Exponential: $2^x$ | Log base 2: $\log_2(x)$
-Exponential: $10^x$ | Log base 10: $\log_{10}(x)$.
-Power law: $x^2$  | Square root/power-law: $\sqrt{x} = x^{1/2}$
-Power law: $x^{-1}$ | Power law: $x^{-1}$
-Trig: $\sin(x)$  | Trig: $\arcsin(x)$
-Trig: $\tan(x)$  | Trig: $\arctan(x)$
-
-You can of course read this table either from left to right or from right to left. For instance, the inverse of $\ln(x)$ is $e^x$.
-
-As you know, for a function $g(x)$, the set of valid values of $x$ is called the ***domain*** of the function. The set of possible outputs from the function is called the ***range*** of the function. The inverse function to $g()$ has a domain which is the range of $g()$ and a range which is the domain of $g()$.
-
-Sometimes the notation $g^{-1}(x)$ is used for "the inverse function of $g()$. This is potentially confusing, since $g^{-1}(x)$ might reasonable be interpreted as $1/g(x)$ and, in general, those two things are not equal. 
-
-Straight-line (with non-zero slope), exponential ($e^{kt}$ where $k\neq 0$), and logarithm functions aways have inverse functions. For power-law and sinusoid functions, there can be several (or many) different inverse functions. We'll get to this when we need to.  
-
-There's an easy graphical test for whether there is a unique inverse function or not. Draw the graph, then see if any horizontal line touches the graph of the function in more than one place. If so, there is no unique inverse function.
-
-```{r echo=FALSE, warning=FALSE, fig.show="hold"}
-#| label: fig-Fun-3a2-1 
-#| out-width: "50%"
-Exp <- Zeros(exp(x) - 1.5 ~ x, domain(x=-2:2)) %>%
-  mutate(y = exp(x))
-Square <- Zeros(x^2 -1.75 ~ x, domain(x=-2:2)) %>%
-  mutate(y = x^2)
-Sinusoid <- Zeros(sin(2*pi*x/0.7) -0.5 ~ x, domain(x=-10:10)) %>%
-  rbind(Zeros(sin(2*pi*x/0.7) - 0.5 ~ x, domain(x=-2:-1.6))) %>%
-  mutate(y = sin(2*pi*x/0.7))
-slice_plot(exp(x) ~ x, domain(x=c(-2, 2))) %>%
-  gf_labs(title = "Exponential has unique inverse.") %>%
-  gf_point(y ~ x, data = Exp, color="orange3", size=4, alpha=0.25) %>%
-  gf_hline(yintercept=1.5, color="orange3")
-slice_plot(x^2 ~ x, domain(x=c(-2,2))) %>%
-  gf_labs(title = "Power law with even exponent: no unique inverse") %>%
-  gf_hline(yintercept=1.75, color="orange3") %>%
-  gf_point(y ~ x, data = Square, color="orange3", size=4, alpha=0.25)
-slice_plot(sin(2*pi*x/.7) ~ x, domain(x=c(-2,2)), npts=300) %>%
-  gf_labs(title = "Sinusoid: no unique inverse") %>%
-  gf_point(y ~ x, data = Sinusoid, color="orange3", size=4, alpha=0.25) %>%
-  gf_hline(yintercept=0.5, color="orange3")
+```{r echo=FALSE}
+#| column: margin
+g <- rfun(~ t, seed=84)
+slice_plot(-g(t+3)*cos(t) ~ t, domain(t=0:6)) %>%
+  gf_labs(y="g(t)")
 ```
 
------
+i. Draw a horizontal line at output level 5.
+ii. Find the t-value where the horizontal line intersects the function graph. There's only one such intersection and that's at about $t=1.2$. 
+
+Consequently, $t_0 = 1.2$, at least to the precision possible when reading a graph.
+
+:::
+
+The graphical approach to zero finding is limited by your ability to locate positions on the vertical and horizontal axis. If you need more precision than the graph provides, you have two options:
+
+1. Take a step-by-step approach. Use the graph to locate a rough value for the result. Then refine that answer by drawing another graph, zooming in on a small region around the result from the first step. You can ***iterate*** this process, repeatedly zooming in on the result you got from the previous step.
+
+2. Use software implementing a numerical zero-finding algorithm. Such software is available in many different computer languages and a variety of algorithms is available, each with its own merits and demerits.
+
+### Numerical zero finding
+
+In this book, we will use the R/mosaic `Zeros()` function. The first argument is a tilde expression and the second argument an interval of the domain over which to search.
+
+`Zeros()` is set up to find inputs where the function defined in the tilde expression produces zero as an output. But suppose you are dealing with a problem like $f(x) = 10$? You can modify the tilde expression so that it implements a slightly different function: $f(x) - 10$. If we can find $x_0$ such that $f(x_0) - 10 = 0$, that will also be the $x_0$ satisfying $f(x_0) = 10$.
+
+::: {.practice data-latex=""}
+The point of this example is to show how to use `Zeros()`, so we'll define a function $f(x)$ using `rfun()` from R/mosaic. This constructs a function by taking a linear combination of other functions selected at random. The argument `seed=579` determines which functions will be in the linear combination.
+
+```{r}
+f <- rfun( ~ x, seed=579)
+```
+
+We want to find the zeros of the function $f(x) - 10$ which corresponds to solving $f(x) = 10$.
+
+```{r}
+Zeros(f(x) - 10 ~ x, domain(x=-4:4))
+```
+The output produced by `Zeros()` is a data frame with one row for each of the $x_0$ found. Here, two values were found: $x_0 = -2.92$ and $x_0 = 0.0795$. The `.output` column reports $f(x_0)$ which should be zero. It's not always feasible to reach zero exactly, since computer arithmetic is not always exactly precise.
+
+Think about `Zeros()` as a way to refine answers you found graphically. So before using `Zeros()`, make the graph.
+```{r results="hide"}
+#| column: margin
+slice_plot(f(x) ~ x, domain(x=-4:4)) %>%
+  gf_hline(yintercept = ~ 10, color="magenta")
+```
+:::
+
+## Optimization
+
+Optimization problems consist of both a modeling phase and a solution phase.
+
+### Graphical optimization
+
+Look for local peaks, then read off the input that generates the value at the peak. 
+
+### Numerical optimization
+
+When it comes to functions, ***maximization*** is the process of finding an input to the function that produces a larger output than any of the other, nearby inputs.  
+
+To illustrate, @fig-show-peak1 shows a function with two peaks.
+
+```{r echo=FALSE}
+#| label: fig-show-peak1
+#| fig-cap: a function with two peaks
+f <- rfun(~ x, seed=7293)
+Peaks <- argM(f(x) ~ x, domain(x=-5:5))
+slice_plot(f(x) ~ x, domain(x=-5:5)) %>%
+  gf_vline(xintercept = ~ 0.173, color="blue", 
+           linetype="dotted") %>%
+  gf_vline(xintercept = ~ -3.29, color="green", 
+           linetype="dotted")
+```
+
+Just as you can see a mountain top from a distance, so you can see where the function takes on its peak values. Draw a vertical line through each of the peaks. The input value corresponding to each vertical line is called an ***argmax***, short for "the argument^[Also known as an ***input***.] at which the function reaches a local maximum value. 
+
+***Minimization*** refers to the same technique, but where the vertical lines are drawn at the deepest point in each "valley" of the function graph. An input value located in one of those valleys is called an ***argmin***.
+
+***Optimization*** is a general term that covers both maximization and minimization. 
+
+### Numerical optimization
+
+The R/mosaic `argM()` function a functions argmax and argmin over a given domain. It works in exactly the same way as `slice_plot()`, but rather than drawing a graphic it returns a data frame giving the argmax in one row and the argmin in another. For instance, the function shown in @fig-show-peak1 is $h()$, generated by `rfun()`:
+
+```{r}
+h <- rfun(~ x, seed=7293)
+argM(h(x) ~ x, domain(x=-5:5))
+```
+The `x` column holds the argmax and argmin, the `.output.` column gives the value of the function output for the input `x`. The `concavity` column tells whether the function's concavity at `x` is positive or negative. Near a peak, the concavity will be negative; near a valley, the concavity is positive. Consequently, you can see that the first row of the data frame corresponds to a local minimum and the second row is a local maximum.
+
+`argM()` is set up to look for a single argmax and a single argmin in the domain interval given as the second argument. In @fig-show-peak1 there are two local peaks and two local valleys. `argM()` gives only the largest of the peaks and the deepest of the valleys.
+
+
+
+## Iteration
+
+Many computations involve starting with a guess followed by a step-by-step process of refining the guess. A case in point is the process for calculating square roots. There isn't an operational formula for a function that takes a number as an input and produces the square root of that number as the output. When we write $\sqrt{\strut x}$ we aren't saying how to calculate the output, just describing the sort of output we are looking for.
+
+The function that is often used to calculate $\sqrt{x}$ is better():
+
+$$\text{better(guess)} = \frac{1}{2}\left( \text{guess} + \frac{x}{\text{guess}}\right)\ .$$
+
+It may not be at all clear why this formula is related to finding a square root. Let's put that matter off until the end of the section and concentrate our attention on how to use it.
+
+To start, let's define the function for the computer:
+
+```{r}
+better <- makeFun((guess + x/guess)/2 ~ guess)
+```
+
+Notice that $x$ is cast in the role of a ***parameter*** of the function rather than an input to the function. 
+
+Suppose we want to apply the square root function to the input 55, that is, calculate $\sqrt{\strut x=55}$. The value we should assign to $x$ is therefore 55.
+
+To calculate better(guess) we need not only $x=55$ but a value for the guess. What should be this value and what will we do with the quantity better(guess) when we've calculated it.
+
+Without explanation, we'll use guess = 1, regardless of the value of $x$. Calculating the output ...
+
+```{r}
+better(1, x=55)
+```
+
+Neither our guess 1 nor the output 28 are $\sqrt{\strut x=55}$. (Having long-ago memorized the squares of integers, we know $\sqrt{\strut x=55}$ will be somewhere between 7 and 8. Neither 1 nor 28 are in that interval.)
+
+The people---more than two thousand years ago---who invented the ideas behind the `better()` function were convinced that `better()` constructs a better guess for the answer we seek. It's not obvious why 28 should be a better guess than 1 for $\sqrt{\strut x=55}$ but, out of respect, let's accept their claim.
+
+This is where ***iteration*** comes in. Even if 28 is a better guess than 1, 28 is still not a good guess. But we can use `better()` to find something better than 28:
+
+```{r}
+better(28, x=55)
+```
+
+To ***iterate*** an action means to perform that action over and over again. ("Iterate" stems from the Latin word *iterum*, meaning "again.") A bird iterates its call, singing it over and over again. In mathematics, "iterate" has a twist. When we repeat the mathematical action, we will draw on the results of the previous angle rather than simply repeating the earlier calculation. 
+
+We'll continue our iteration of better().
+```{r}
+better(14.98214, x=55)
+better(9.326589, x=55)
+better(7.611854, x=55)
+better(7.418713, x=55)
+better(7.416199, x=55)
+```
+In the last step, the output of `better()` is practically identical to the input, so no reason to continue. We can confirm that the last output is a good guess for $\sqrt{\strut x=55}$:
+```{r}
+7.416198^2
+```
+
+
+### Graphical iteration
+
+```{r}
+ggcobweb <- function(tilde, domain, x0, n=5) {
+  myarrow = grid::arrow(ends="last", length=unit(.1, "cm"),
+                        type="closed")
+  f <- makeFun(tilde)
+  Seq <- Iterate(f, x0=1, n=n)
+  names(Seq) <- c("step", "xstart")
+  Seq <- Seq %>% 
+    mutate(xend=lead(xstart))
+  
+    
+    gf_abline(intercept = ~ 0, slope = 1, color="blue", linetype = "dotted") %>%
+    gf_refine(coord_fixed()) %>%
+    gf_segment(xstart + xend ~ xstart + xstart, data= Seq, color="magenta", arrow = myarrow, inherit=FALSE) %>%
+    gf_segment(xend+xend ~ xstart + xend, data = Seq, color="magenta", arrow = myarrow) %>%
+    slice_plot(f(x) ~ x, domain, npts=500)  %>%
+    gf_lims(y=range(unlist(domain))) 
+}
+```
+
+To iterate graphically, we graph the function to be iterated and mark the initial guess on the horizontal axis. For each iteration step, trace vertically from the current point to the function, then horizontally to the line of identity (blue dots). The result will be the starting point for the next guess.
+
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-cobweb-better
+#| column: page-inset-right
+#| out.width: "160%"
+#| fig-cap: "Three steps of iteration of `better()` starting with an initial guess of 1."
+Pa <- ggcobweb(better(guess, x=55) ~ guess, domain(x=0:30), x0=1, n=1) %>%
+  gf_labs(x="guess", y="better(guess, x=55)")
+Pb <- ggcobweb(better(guess, x=55) ~ guess, domain(x=0:30), x0=1, n=2) %>%
+  gf_labs(x="guess", y="")
+Pc <- ggcobweb(better(guess, x=55) ~ guess, domain(x=0:30), x0=1, n=3) %>%
+  gf_labs(x="guess", y="")
+gridExtra::grid.arrange(Pa, Pb, Pc, ncol=3)
+```
+
+### Numerical iteration
+
+Use the R/mosaic `Iterate()` function. The first argument is a tilde expression defining the function to be iterated. The second is the starting guess. The third is the number of iteration steps. For instance:
+
+```{r}
+Iterate(better(guess, x=55) ~ guess, x0=1, n=8)
+```
+
+The output produced by `Iterate()` is a data frame. The initial guess is in the row with $n=0$. Successive rows give the output, step by step, with each new iteration step.
+
+
+::: {.why data-latex=""}
+Where does better() come from?
+
+For calculating square roots, we used the function 
+$$\text{better}(y) = \frac{1}{2}\left( y + \frac{x}{y}\right)\ .$$
+Let's suppose you happened on a guess that is exactly right, that is $y = \sqrt{x}$. There's no way to improve on a guess that is exactly right, so the best better() can do is to return the guess unaltered. Indeed it does:
+$$\text{better}\left(y=\!\!\sqrt{\strut x}\ \right) = \frac{1}{2}\left( \sqrt{\strut x} + \frac{x}{\sqrt{x}} \right)\ = \frac{1}{2}\left(\sqrt{\strut x} + \sqrt{\strut x}\right) = \sqrt{\strut x}.$$
+
+Of course, the initial guess $y$ might be wrong. There are two ways to be wrong:
+
+1. The guess is too small, that is $y < \sqrt{\strut x}$.
+2. The guess is too big, that is $\sqrt{\strut x} < y$.
+
+The formula for better() is the average of the guess $y$ and another quantity $x/y$. If $y$ is too small, then $x/y$ must be too big. If $y$ is too big, then $x/y$ must be too small. 
+
+As guesses, the two quantities $y$ and $x/y$ are equivalent in the sense that $\text{better}(y) = \text{better}(x/y)$. The average of $y$ and $x/y$ will be closer to the true result than the worst of $y$ or $x/y$; the average will be a better guess.
+:::
+
+
+## Functions with multiple inputs
+
+DO I NEED THIS???
+
+
+SHOW A contour plot: find the zeros and extrema graphically. 
+
+We can't readily graph functions with three or more inputs. So zero finding or optimization with such functions requires other methods. The calculus concepts and tools we'll study in Block @sec-differentiation-part will provide the basis for these methods. 
+
+## Exercises
 
 <!-- the "What 3 words?" problem from Fall 2020
 `rrr insert_calcZ_exercise(10.2, "KELXI", "Exercises/Fun/invertible.Rmd")`
 -->
 
 
-
-## Solving graphically
-
-Most readers are familiar with the sort of high-school math problem where you are presented with an equation written in terms of $x$ and asked to "find $x$" or "find the solution." For instance, the problem might be 
-
-$$\text{Let}\ \ 3x - 2 = 7 x^2 .\ \ \  \text{Find} \ x .$$
-
-The above problem falls into one class of such tasks, the class of "finding roots of polynomials." Here's another problem in that same class:
-
-
-> *An investment club decided to buy
-$9000 worth of stock with each
-member paying an equal share. But
-two members left the club, and the
-remaining members had to pay $50
-more apiece. How many members
-are in the club?*^[This translates to an equation, where $x$ is the number of members: $$(x-2)(9000/x + 50) = 9000$$ [Source](https://www.ams.org/notices/201005/rtx100500608p.pdf)] 
-
-Let's pose the problem in terms of a function, money_raised$(x)$ where $x$ is the original number of members in the investment club. Originally, the members were each going to pay $9000/x$. But after the two people drop out, each of the remaining members has to pay $9000/x + 50$. Since there are $x-2$ remaining members, the total amount raised is $$\text{money.raised}(x) \equiv (x-2) \left(\frac{9000}{x} + 50\right)$$
-Figure \@ref(fig:money-raised) graphs $\text{money.raised}(x)$
-
-```{r money-raised}
-money_raised <- makeFun((x-2)*(9000/x + 50) ~ x)
-slice_plot(money_raised(x) ~ x, domain(x=c(10,25)))
-```
-The function tells us, for any number of members $x$, how much money will be raised. So what's $x$ for the club? The function doesn't tell us ... until we add in a new fact. The club raised $9000. So look up $9000 on the vertical axis, trace horizontally over to the graph, and read off the resulting input that generates an output of $9000.
-
-This inverse way of using functions---we know the output and we need to calculate the input---is very common. One reason is that sometimes it's relatively easy to construct a model that takes input $x$ to an output, but the problem at hand is to figure out from a value of the output what is the corresponding value of the input.
-
-::: {.intheworld  data-latex=""}
-
-Seismograms and electrocardiograms
-
-::: 
-
-
-Suppose that you have a function $f(x)$ and you also know the inverse of that function. We'll call the inverse $g(x)$ for this example, but a more typical notation is $f^{-1}(x)$ where the function name is $f^{-1}$.
-
-Composing a function and its inverse gives back the input: $f(g(x)) = x$ and $g(f(x)) = x$.
-
-As part of your high-school mathematics education, you learned the inverses to several functions. For instance, $e^x$ and $\ln(x)$ are inverses, meaning that $\ln(e^x) = x$ and $e^{\ln(x)} = x$. The identity function is its own inverse. The inverse of the square function is the square root: $\sqrt{x^2} = x$ and $(\sqrt{x})^2 = x$.
-
-It's helpful to keep in mind that if you have a function $f(x)$ there is some other function---although you may not know its form yet---that is the inverse to $f()$. 
-
-There are two caveats:
-
-i. Mathematicians will say that for functions like $\sin(x)$ or $\dnorm(x)$ which fail the horizontal line test the inverse does not exist. That's because mathematicians want the inverse to have a single, unique value, while functions like $\dnorm()$ have two inputs that generate any output in the function's range. $\sin()$ has an infinite number of inputs that generate any output in the function's range. 
-
-    But in practice, the problem is to find **some** input that will generate the known output. If there is more than one such input, we just have to choose one.
-    
-    We can even satisfy the mathematician's insistence that there be a unique inverse if we restrict the domain of the forward function to a region where it is monotonically increasing or monotonically decreasing. 
-    
-ii. There is always an algorithm to that can be applied to find a solution to any inverse problem. But this algorithm is rarely a simple formula. Not having a formula, we play a name game. For instance, the inverse of the square function is called the "square root," but there is no simple formula for finding the square root of a number. Similarly, the inverse to $\sin(x)$ is called $\arcsin(x)$, but there is no simple formula for $\arcsin()$.  Almost invariably we use such inverse functions not by doing arithmetic to calculate their output, but by using a calculator button or a software function that carries out the algorithm. 
-
-For now, it suffices that you can compute the inverse to any function (over some sub-domain where the function is monotonically increasing or decreasing) by graphing the function and then reading from the vertical axis to the horizontal.  As we encounter more concepts from calculus and computing, we'll develop additional methods for evaluating an inverse function without first having to construct that function.
-
-## Zero-finding
-
-***Zero-finding*** is the name of a process for finding a function input that produces a function output of zero. Usually, zero isn't a an output value of interest. (If the snow-plow manager asked her assistant to figure out how many plows are needed to cover 0 miles in one day, the assistant would wonder if someone has lost their mind.)
-
-However, any solving problem can be translated into a zero-finding problem. For example, if the problem is to solve $g(x) = M$, we can equally well state the problem as finding a zero of $h(x) \equiv g(x) - M$. 
-
-::: {.why  data-latex=""}
-Why would anyone want to do this?
-
-Often, mathematical algorithms in computer languages are written to accept a ***function*** as an input rather than an ***equation***. For instance the R/mosaic operator `findZeros()` takes as it's primary argument a tilde expression describing a function.
-:::
-
-For example, the investment-club problem given earlier in this chapter can be re-stated as a zero-finding problem.
-
-```{r}
-money_raised <- makeFun((x-2)*(9000/x + 50) ~ x)
-Zeros(money_raised(x) - 9000 ~ x, domain(x=-100:100))
-```
-
-It turns out that there are two zeros for `money_raised(x) - 9000$. Only one of them has any sensible interpretation as the number of investors in the club.
-
-
-## Exercises
-
-
 `r if (knitr::is_latex_output()) knitr::knit_exit()`
+
+`r insert_calcZ_exercise("XX.XX", "2svBa5", "/Users/kaplan/MC2/Modeling/Exercises/snail-pitch-knife.Rmd", skill="Graphical zero finding")`
 
 <!-- inverses -->
 `rr insert_calcZ_exercise("6.1", "9LB8hK", "Exercises/beech-lead-piano.Rmd")`
@@ -314,5 +324,7 @@ It turns out that there are two zeros for `money_raised(x) - 9000$. Only one of 
 
 `rr insert_calcZ_exercise("10.3", "1kZXxT", "Exercises/titmouse-throw-sofa.Rmd")`
 
-
+EXERCISE ON FINDING HOW LONG UNTIL radioactivity level decays to 1/100 of it's  current level. Write the function as 2^t^ and have them use log2() to calculate the result.
 `rr insert_calcZ_exercise("XX.XX", "9s6ntY", "snail-stand-plate.Rmd", skill = "functions have a unique output for each input")`
+
+Exercise: Finding zeros for functions of two variables.
