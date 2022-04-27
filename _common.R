@@ -117,4 +117,4 @@ Content subject to revision.
 
 # For gradescope output
 # askMC <- Znotes::askGS
-askMC <- Znotes::askPDF
+askMC <- function(...) Znotes::askPDF(..., show_answers=FALSE)
