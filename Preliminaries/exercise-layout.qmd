@@ -8,37 +8,29 @@ knitr::opts_knit$set(output.dir=".")
 
 Change nav-tabs to nav-pills to get more clearly identified labels.
 
-```{r}
-
-```
 
 ```{r}
 sandbox_link <- function() {"SANDBOX"}
+Exer_roster <- readr::read_csv("../exercise-roster.csv") %>%
+  mutate(block = paste0("../", block)) %>%
+  filter(status=="passed")
+```
 
-new_roster <- tibble::tribble(
- ~ chap, ~ numb, ~ fname,
-15, 7, "Exercises/pattern-book-zeros.Rmd",
-15, 7, "Exercises/lobster-ride-glasses.Rmd",
-15, 7, "Exercises/pattern-book-axis-crossing.Rmd",
-15, 7, "Exercises/cat-lend-futon.Rmd",
-15, 7, "Exercises/bear-lay-plant.Rmd",
-15, 7, "Exercises/pattern-book-domain.Rmd",
-15, 7, "Exercises/range-domain.Rmd",
-15, 7, "Exercises/pattern-book-range.Rmd",
+
+
+
+
+```{r results="asis", warning=FALSE, message=FALSE} 
+Znotes::format_exercises(
+  Exer_roster %>% filter(status=="passed"), 
+  askMC = function(...) Znotes::askMC(..., 
+                                      out_format = "PDF",
+                                      show_answers=FALSE)
 )
 ```
 
 
-
-## Exercises
-
-Experiments in laying out out the exercises.
-
 ::: {.panel-tabset}
-
-```{r results="asis"}
-format_exercises(new_roster) 
-```
 
 ## Yet another
 
@@ -47,11 +39,11 @@ Stuff for 3.1
 ::: 
 <!-- end of exercise tabset -->
 
-```{r results="asis", echo=FALSE, eval=FALSE } 
+```{rr results="asis", echo=FALSE, eval=FALSE } 
 add_exercise("Exercises/bird-wake-shoe.Rmd", 3)
 ```
 
-```{r results="asis", echo=FALSE, eval=FALSE }       
+```{rr results="asis", echo=FALSE, eval=FALSE }       
 add_exercise("Exercises/cat-lend-futon.Rmd", 4)
 ```
 
