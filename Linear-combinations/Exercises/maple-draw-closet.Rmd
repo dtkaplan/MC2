@@ -7,25 +7,30 @@ global_id: "zK7fQn"
 Construct a random 4-by-4 matrix named `A` whose columns are mutually orthogonal. Here's the process:
 
 i. Construct a vector with four elements that has random elements. A command to do so is
+
     ```{r}
     v1 <- cbind(rnorm(4))
     ```
     This will be the first column of the matrix.
 
 ii. Construct a new vector with random elements.
+
     ```{r}
     w <- cbind(rnorm(4))
     ```
     `w` will not be orthogonal to `v1` as you can confirm by calculating the dot product between `v1` and `w`. However, you can construct from the two vectors a new one that will be perpendicular to `v1`.
+    
     ```{r}
     v2 <- w - (w %onto% v1)
     ```
 iii. Take the mutually orthogonal vectors you already have and package them into a matrix `M`. Then construct a new random vector `w` and project it onto `M`.
+
     ```{r}
     M <- cbind(v1, v2)
     w <- cbind(rnorm(4))
     v3 <- w - (w %onto% M)
     ```
+    
     Continue the process of step (iii) until you have 4 mutually orthogonal vectors, and collect them into the matrix `A`.
     
 Use dot products to verify that `v1`, `v2`, `v3`, and `v4` are mutually orthogonal.
