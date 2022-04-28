@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.290">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MOSAIC Calculus - 32&nbsp; Statistical modeling and R2</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<link href="../Linear-combinations/B5-functions.html" rel="next">
+<link href="../Linear-combinations/B5-target-problem.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<style>
+.quarto-title-banner {
+  
+}
+</style>
+</head><body class="floating"><span class="math inline" style="display: none;">
+\(\newcommand{\line}{\text{line}}
+\newcommand{\hump}{\text{hump}}
+\newcommand{\sigmoid}{\text{sigmoid}}
+\newcommand{\recip}{\text{recip}}
+\newcommand{\diff}[1]{{\cal D}_#1}
+\newcommand{\pnorm}{\text{pnorm}}
+\newcommand{\dnorm}{\text{dnorm}}
+\let\origvec\vec
+\let\origmathit\mathit
+\let\orighat\hat
+\let\origbar\bar
+\newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+\newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+\newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+\newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+\newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+\newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+\newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+\newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+\newcommand{\modeledby}[2]{#1\!\sim\!#2}
+\newcommand{\CC}[1]{\color{#648fff}{#1}}
+\newcommand{\CE}[1]{\color{#785ef0}{#1}}
+\newcommand{\CA}[1]{\color{#dc267f}{#1}}
+\newcommand{\CB}[1]{\color{#fe6100}{#1}}
+\newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+</span>
+
+<script src="../site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">MOSAIC Calculus</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/dtkaplan/MC2/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/01-modeling-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">Modeling</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/01-parameters.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/02-assembling-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/03-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/05-low-order-polynomials.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/06-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/07-magnitudes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/08-dimensions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/09-modeling-cycle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling cycle [DRAFT]</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">Differentiation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/16-rate-of-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rate of change</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/17-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Change relationships</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/18-evanescent-h.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/19-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Computing derivatives</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/20-concavity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/21-cont-and-smooth.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/22-rules.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/23-optim.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/24-partial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/25-approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations [DRAFT]</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/26-taylor.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">Vectors and linear combinations</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-Vectors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-linear-combinations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-projection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-target-problem.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-stat-modeling.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">Accumulation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/27-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/28-visualizing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/29-integration.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/30-euler.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/31-symbolic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#how-good-a-model" id="toc-how-good-a-model" class="nav-link active" data-scroll-target="#how-good-a-model"> <span class="header-section-number">32.1</span> How good a model?</a></li>
+  <li><a href="#machine-learning" id="toc-machine-learning" class="nav-link" data-scroll-target="#machine-learning"> <span class="header-section-number">32.2</span> Machine learning</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">32.3</span> Exercises</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dtkaplan/MC2/edit/main/Linear-combinations/B5-stat-modeling.Rmd" class="toc-action">Edit this page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-stat-modeling" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></span></h1>
+</div>
+
+
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>So far, we’ve been looking at linear combinations from a distinctively mathematical point of view: vectors, collections of vectors (matrices), projection, angles and orthogonality. We’ve show a few applications of the techniques for working with linear combinations, but have always expressed those techniques using mathematical terminology. In this Chapter, we will take a detour to get a sense of the perspective and terminology of another field: statistics.</p>
+<p>In the quantitative world, including fields such as biology and genetics, the social sciences, business decision making, etc. there are far more people working with linear combinations with a statistical eye than there are people working with the mathematical form of notation. Statistics is a far wider field than linear combination, so this chapter is <strong>not</strong> an attempt to replace the need to study statistics and data science. The purpose is merely to show you how a mathematical process can be used as part of a broader framework to provide useful information to decision-makers.</p>
+<div class="takenote">
+<p>Since a statistics and data-science courses are part of a complete quantitative education, we want to point out from the beginning what you are likely to experience a traditional introductory statistics course and why that will seem largely disconnected from what you see here.</p>
+<p>Statistics did not start out as a branch of mathematics, although people trained as mathematicians played a central role in it’s development. The story is complicated, but a simplification faithful to that history is to see statistics as an extension of biology. Statistics emerged in the last couple of decades of the 1800s. Possibly the key motivation was to understand <strong><em>genetics</em></strong> and Darwinian evolution. Today we know much about DNA sequences, RNA, amino acids, proteins, and so on. But quantitative genetics started in complete ignorance of any physical mechanism for genetics. Instead, mathematical models were the basis for the theory of genetics, beginning with with Gregor Mendel’s work on heritable traits published in 1865.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>Perhaps coincidentally—or perhaps not—Charles Darwin (1809-1882) was a half-cousin of Francis Galton (1822-1911). Traditional introductory statistics is based, more or less, on the work Galton and his contemporaries, for instance Karl Pearson (1857-1936) and William Sealy Gosset (1876-1937). The terms that you encounter in introductory statistics—correlation coefficient, regression, chi-squared test, t-test—where in place by 1910. Ronald Fisher (1890-1962), also a geneticist, extended this work based in part on the mathematical ideas of projection. Fisher invented <strong><em>analysis of variance</em></strong> (ANOVA) and <strong><em>maximum likelihood estimation</em></strong> and is perhaps the “great man” of statistics. (See Section 35.004 for an introduction to likelihood. We’ll briefly touch on ANOVA in this chapter.) To his historical discredit, Fisher was a leader in eugenics. He was also a major obstacle, to the statistical acceptance of the dangers of smoking.</p>
+<p>Most of the many techniques covered in traditional introductory statistics are, in fact, manifestations of the application of a general technique: the target problem. They are not taught this way, partly out of hide-bound tradition and partly because the target problem has been covered, if at all, in the fourth or fifth semester of a traditional calculus sequence.</p>
+</div>
+<p>It often happens that a model is needed to help organize complex, multivariate data for purposes such as prediction. As a case in point, consider the data available in the <code>Body_fat</code> data frame, which consists of measurements of characteristics such as height, weight, chest circumference, and body fat on 252 men.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:right;"> bodyfat </th>
+   <th style="text-align:right;"> age </th>
+   <th style="text-align:right;"> weight </th>
+   <th style="text-align:right;"> height </th>
+   <th style="text-align:right;"> neck </th>
+   <th style="text-align:right;"> chest </th>
+   <th style="text-align:right;"> abdomen </th>
+   <th style="text-align:right;"> hip </th>
+   <th style="text-align:right;"> thigh </th>
+   <th style="text-align:right;"> knee </th>
+   <th style="text-align:right;"> ankle </th>
+   <th style="text-align:right;"> biceps </th>
+   <th style="text-align:right;"> forearm </th>
+   <th style="text-align:right;"> wrist </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 12.3 </td>
+   <td style="text-align:right;"> 23 </td>
+   <td style="text-align:right;"> 154.25 </td>
+   <td style="text-align:right;"> 67.75 </td>
+   <td style="text-align:right;"> 36.2 </td>
+   <td style="text-align:right;"> 93.1 </td>
+   <td style="text-align:right;"> 85.2 </td>
+   <td style="text-align:right;"> 94.5 </td>
+   <td style="text-align:right;"> 59.0 </td>
+   <td style="text-align:right;"> 37.3 </td>
+   <td style="text-align:right;"> 21.9 </td>
+   <td style="text-align:right;"> 32.0 </td>
+   <td style="text-align:right;"> 27.4 </td>
+   <td style="text-align:right;"> 17.1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 6.1 </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 173.25 </td>
+   <td style="text-align:right;"> 72.25 </td>
+   <td style="text-align:right;"> 38.5 </td>
+   <td style="text-align:right;"> 93.6 </td>
+   <td style="text-align:right;"> 83.0 </td>
+   <td style="text-align:right;"> 98.7 </td>
+   <td style="text-align:right;"> 58.7 </td>
+   <td style="text-align:right;"> 37.3 </td>
+   <td style="text-align:right;"> 23.4 </td>
+   <td style="text-align:right;"> 30.5 </td>
+   <td style="text-align:right;"> 28.9 </td>
+   <td style="text-align:right;"> 18.2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 25.3 </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 154.00 </td>
+   <td style="text-align:right;"> 66.25 </td>
+   <td style="text-align:right;"> 34.0 </td>
+   <td style="text-align:right;"> 95.8 </td>
+   <td style="text-align:right;"> 87.9 </td>
+   <td style="text-align:right;"> 99.2 </td>
+   <td style="text-align:right;"> 59.6 </td>
+   <td style="text-align:right;"> 38.9 </td>
+   <td style="text-align:right;"> 24.0 </td>
+   <td style="text-align:right;"> 28.8 </td>
+   <td style="text-align:right;"> 25.2 </td>
+   <td style="text-align:right;"> 16.6 </td>
+  </tr>
+  <tr><td colspan="14" align="center">... and so on ...</td></tr>
+  <tr>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 26.0 </td>
+   <td style="text-align:right;"> 72 </td>
+   <td style="text-align:right;"> 190.75 </td>
+   <td style="text-align:right;"> 70.5 </td>
+   <td style="text-align:right;"> 38.9 </td>
+   <td style="text-align:right;"> 108.3 </td>
+   <td style="text-align:right;"> 101.3 </td>
+   <td style="text-align:right;"> 97.8 </td>
+   <td style="text-align:right;"> 56.0 </td>
+   <td style="text-align:right;"> 41.6 </td>
+   <td style="text-align:right;"> 22.7 </td>
+   <td style="text-align:right;"> 30.5 </td>
+   <td style="text-align:right;"> 29.4 </td>
+   <td style="text-align:right;"> 19.8 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 31.9 </td>
+   <td style="text-align:right;"> 74 </td>
+   <td style="text-align:right;"> 207.50 </td>
+   <td style="text-align:right;"> 70.0 </td>
+   <td style="text-align:right;"> 40.8 </td>
+   <td style="text-align:right;"> 112.4 </td>
+   <td style="text-align:right;"> 108.5 </td>
+   <td style="text-align:right;"> 107.1 </td>
+   <td style="text-align:right;"> 59.3 </td>
+   <td style="text-align:right;"> 42.2 </td>
+   <td style="text-align:right;"> 24.6 </td>
+   <td style="text-align:right;"> 33.7 </td>
+   <td style="text-align:right;"> 30.0 </td>
+   <td style="text-align:right;"> 20.9 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>Body fat, the percentage of total body mass consisting of fat, is thought by some to be a good measure of general fitness. To what extent this theory is merely a reflection of general societal attitudes toward body shape is unknown.</p>
+<p>Whatever its actual utility, body fat is hard to measure directly; it involves submerging a person in water to measure total body volume, then calculating the persons mass density and converting this to a reading of body-mass percentage. For those who would like to see body fat used more broadly as a measure of health and fitness, this elaborate procedure stands in the way. And so they seek easier ways to estimate body fat along the lines of the <strong><em>Body Mass Index</em></strong> (BMI), which is a simple arithmetic combination of easily measured height and weight. (Note that BMI is also controversial as anything other than a rough description of body shape. In particular, the label “overweight,” officially <span class="math inline">\(25 \leq \text{BMI}\leq 30\)</span> has at best little connection to actual health.)</p>
+<p>How can we construct a model, based on the available data, of body fat as a function of the easy-to-measure characteristics such as height and weight? You can anticipate that this will be a matter of applying what we know about the target problem <span class="math display">\[\text{Given}\ \mathit{A}\  \text{and}\ \vec{b}\text{, solve } \mathit{A} \vec{x} = \vec{b}\ \text{for}\ \vec{x}\]</span>where <span class="math inline">\(\vec{b}\)</span> is the column of body-mass measurements and <span class="math inline">\(\mathit{A}\)</span> is the matrix of all the other columns in the data frame.</p>
+<p>In statistics, the target <span class="math inline">\(\vec{b}\)</span> is called the <strong><em>response variable</em></strong> and <span class="math inline">\(\mathit{A}\)</span> is the set of <strong><em>explanatory variables</em></strong>. You can also think of the response variable as the output of the model we will build and the explanatory variables as the inputs to that model.</p>
+<p>Although application of the target problem is an essential part of constructing a statistical model, it is far from the only part. For instance, statisticians find is useful to think about “how much” of the response variable is explained by the explanatory variables. Measuring this requires a definition for “how much.” In defining “how much,” statisticians focus not on how much <strong><em>variation</em></strong> there is among the values in the response variable. The standard way to measure this is with the <strong><em>variance</em></strong>, which was introduce in <a href="B5-Vectors.html#sec-vector-length">Section&nbsp;<span>28.4</span></a> and can be thought of as the average of pair-wise differences among the elements in <span class="math inline">\(\vec{b}\)</span>.</p>
+<p>In order to support this focus on the variance of <span class="math inline">\(\vec{b}\)</span>, statisticians typically augment <span class="math inline">\(\vec{A}\)</span> with a column of ones, which they call the <strong><em>intercept</em></strong>.</p>
+<p>To move forward, we’re going to extract the response variable from the data and construct <span class="math inline">\(\vec{A}\)</span>, adding in the vector of ones. We’ll show the vector/matrix commands for doing this, but you don’t have to remember them because statisticians have a more user-friendly interface to the calculations.</p>
+<div class="rmosaic">
+<p>We’re going to be constructing vectors and matrices from the columns of a data frame. You can do this with the R/mosaic function <code>df2matrix()</code> (the <code>df</code> stands for “data frame”). The final argument to <code>df2matrix()</code> is the name of the data frame. Previous arguments are the columns you want to insert in the matrix. We can make both <code>b</code> and <code>A</code> using <code>df2matrix()</code>. Note the <code>1</code> that is inserted as a column into <code>A</code>.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">df2matrix</span>(bodyfat, <span class="at">data =</span> Body_fat)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">df2matrix</span>(<span class="dv">1</span>, wrist, thigh, forearm, <span class="at">data =</span> Body_fat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You can also include interaction terms (e.g.&nbsp;<code>wrist*thigh</code>) or transformations (e.g.&nbsp;<code>log(forearm)</code>) as columns in the <code>A</code> matrix.</p>
+</div>
+<p>Once we have <code>b</code> and <code>A</code>, we find the coefficients on the linear model in the usual way, with <code>qr.solve()</code>.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">qr.solve</span>(A, b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Having applied <code>qr.solve()</code>, <span class="math inline">\(\vec{x}\)</span> now contains the coefficients on the “best” linear combination of the columns in <span class="math inline">\(\vec{A}\)</span>. One of the ways in which the R language is designed to support statistics, is that it keeps track of names of columns, so the elements of <span class="math inline">\(\vec{x}\)</span> are labelled with the name of the column the element applies to.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="do">##             bodyfat</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 1       -40.4700038</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="do">## wrist     0.2533051</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="do">## thigh     0.8181824</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="do">## forearm   0.2232146</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Based on the above, the model for body fat as a function of the explanatory variables is: <span class="math display">\[\text{body fat} = -40.5 + 0.253\, \mathtt{wrist} - 0.818\, \mathtt{thigh} - 0.223\, \mathtt{forearm}\ .\]</span> ::: {.Rmosaic data-latex=““} In invoking <code>qr.solve(A, b)</code> we have created a vector <code>x</code> containing the solution to the target problem. We can use that vector <code>x</code> in the usual ways, for example to construct the model vector (<code>A %*% x</code>) or the residual vector (<code>b - A %*% x</code>).</p>
+<p>Sometimes you will want to create a <strong>function</strong> that implements the linear combination described by <code>x</code>. For convenience, the R/mosaic <code>makeFun()</code> knows how to accept a vector input and create the corresponding function. For example:</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(x)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>f</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="do">## function (wrist, thigh, forearm) </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="do">## -40.4700037897818 * 1 + 0.253305146981963 * wrist + 0.818182409571164 * </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="do">##     thigh + 0.223214640718424 * forearm</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="do">## &lt;environment: 0x7f9dbf38d210&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>:::</p>
+<section id="how-good-a-model" class="level2" data-number="32.1">
+<h2 data-number="32.1" class="anchored" data-anchor-id="how-good-a-model"><span class="header-section-number">32.1</span> How good a model?</h2>
+<p>There are so many ways to construct a linear-combination model from a data frame—all the different combinations of columns plus possibly interaction terms and other transformations—that it’s natural to ask, “What’s the best model?”</p>
+<p>As always, “best” depends on the purpose for your model is to be used. This requires thought on the part of the modeler.</p>
+<p>But there is a far more limited way to address “best” that doesn’t require any substantial thought. Consequently—and perhaps unfortunately—this method is often used in practice. It’s called <strong><em>R-squared</em></strong> and usually written R<sup>2</sup>. There’s nothing wrong with the R<sup>2</sup> method, so long as the correct statistical interpretation is given it. We’ll mention it here without going into the statistics, just so that you will have seen the relevant names and the mathematics (but not statistics!) behind them.</p>
+<p>The basic question addressed by R<sup>2</sup> is: How much of the variation in the response variable <code>b</code> is accounted for by the columns of the matrix <code>A</code>.</p>
+<p>The standard way to measure the “amount of variation” in a variable is the <strong><em>variance</em></strong>. In R, you calculate that with</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(b)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="do">##          bodyfat</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="do">## bodyfat 70.03582</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><em>How good is the model?</em></li>
+<li><em>Could we make a better model?</em></li>
+</ul>
+<p>To answer these questions, we’ll have to develop a measure of how good the model is. And this depends on the purpose for which we’ll be using the model.</p>
+<p>We can also look at the variation in the model vector, <span class="math inline">\(\hat{b}\)</span>.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>bhat <span class="ot">&lt;-</span> A <span class="sc">%*%</span> x</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(bhat)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="do">##          bodyfat</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="do">## bodyfat 22.16637</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>R<sup>2</sup> is simply the ratio of these two variances:</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(bhat) <span class="sc">/</span> <span class="fu">var</span>(b)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="do">##           bodyfat</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="do">## bodyfat 0.3165004</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This result, 31.7%, is interpreted as the fraction of the variance in the response variable that is <strong><em>accounted for</em></strong> by the model. Near synonyms for “accounted for” is <strong><em>explained by</em></strong> or <strong><em>can be attributed to</em></strong>.</p>
+<p>In the same spirit, we can ask how much of the variance in the response variable is <strong><em>unexplained by</em></strong>, or <strong><em>unaccounted by</em></strong> the explanatory variables. To answer this, look at the size of the residual:</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(b <span class="sc">-</span> bhat) <span class="sc">/</span> <span class="fu">var</span>(b)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="do">##           bodyfat</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="do">## bodyfat 0.6834996</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice that the amount of variance explained, 68.3%, plus the amount remaining unexplained, 31.7%, add up to 100%. This is no accident. It is the reason why statisticians use the variance as a measure of variability.</p>
+</section>
+<section id="machine-learning" class="level2" data-number="32.2">
+<h2 data-number="32.2" class="anchored" data-anchor-id="machine-learning"><span class="header-section-number">32.2</span> Machine learning</h2>
+<p>If you pay attention to trends, you will know about advances in <strong><em>artificial intelligence</em></strong> and the many claims—some hype, some not—about how it will change <em>everything</em> from animal husbandry to warfare. Services such as Google Translate are based on artificial intelligence, as are many surveillance technologies. (Whether the surveillance is for good or ill is a serious matter.)</p>
+<p>Skills in artificial intelligence are currently a ticket to lucrative employment.</p>
+<p>Like so many things, “artificial intelligence” is a branding term. In fact, what all the excitement is about is not mostly artificial intelligence at all. The advances, by and large, have come over 50 years of development in a field called “statistical learning” or “machine learning,” depending on whether the perspective is from statistics or computer science.</p>
+<p>A major part of the mathematical foundation of statistical (or “machine”) learning is linear algebra. Many workers in “artificial intelligence” are struggling to catch up because they never took linear algebra in college or, if they did, they took a proof-oriented course that didn’t cover the elements of linear algebra that are directly applicable. We’re trying to do better in this course.</p>
+<p>So if you’re diligent, and continue your studies to take actual statistical/machine learning courses, you’ll find yourself at the top of the heap. Even <a href="https://xkcd.com/1838/">xkcd</a>, the beloved techno-comic, gets in on the act, as this cartoon reveals:</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="www/xkcd_machine_learning.png" class="img-fluid figure-img" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Look carefully below the paddle and you’ll see the Greek letter “lambda”, <span class="math inline">\(\lambda\)</span>. You’ll meet the linear algebra concept signified by <span class="math inline">\(\lambda\)</span>—eigenvalues and eigenvectors—in Block 6.</p>
+<div class="takenote">
+<p>We’ve been using the R/mosaic function <code>df2matrix()</code> to construct the <code>A</code> and <code>b</code> matrices used in linear model from data. This is mainly for convenience: we need a way to carry out the calculations that lets you see the <code>x</code> vector, and calculate the model vector and the residual in the way described in <a href="B5-target-problem.html">Section&nbsp;<span>31</span></a>.</p>
+<p>In practice, statistical modelers use other software. The most famous of these in R is the <code>lm()</code> family of functions. This does all the work of creating the <code>b</code> vector and the <code>A</code> matrix, QR solving, etc. We call it a “family” of functions because the output of <code>lm()</code> is not simply the vector of coefficients <code>x</code> but includes many other features that support statistical inference on the models created.</p>
+<p>In a statistics course using R, you are very likely to encounter <code>lm()</code>. You’ll never hear about <code>df2matrix()</code> outside of this book.</p>
+</div>
+</section>
+<section id="exercises" class="level2" data-number="32.3">
+<h2 data-number="32.3" class="anchored" data-anchor-id="exercises"><span class="header-section-number">32.3</span> Exercises</h2>
+
+
+</section>
+<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1" role="doc-endnote"><p>Amazingly, this work attracted little attention until after 1900, when Mendel’s laws were rediscovered by the botanists de Vries, Correns, and von Tschermak.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../Linear-combinations/B5-target-problem.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../Linear-combinations/B5-functions.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
