@@ -1,0 +1,143 @@
+---
+id: "pig-sit-fridge"
+created: "Wed Apr 27 18:52:55 2022"
+global_id: "yNWrj1"
+---
+
+
+MAKE THIS A PROJECT ON CONSTRUCTING the logarithm table.
+
+So far, we have the digit() function in a tabular form:   
+
+input | output
+----|-----------
+$\vdots$ | $\vdots$
+0.01 | -2
+0.1 | -1
+1   | 0
+10   | 1
+100 | 2
+1000 | 3
+10,000 | 4
+100,000 | 5
+1,000,000 | 6
+$\vdots$ | $\vdots$
+
+Here's the point-plot presentation of the table:
+
+```{r log-1st-try, echo=FALSE, fig.cap = "Connecting the data points for the digit function to make a continuous function."}
+L10 <- tibble::tribble(
+  ~ input, ~ output,
+  0.01, -2,
+  0.1, -1,
+  1, 0,
+  10, 1,
+  100, 2,
+  1000, 3,
+  10000, 4,
+  100000, 5,
+  1000000, 6
+) 
+ticks <- c(1,10,100,10000,50000,
+           100000,200000,500000,750000, 1000000)
+gf_point(output ~ input, data = L10) %>%
+  gf_labs(title = "The digit function") %>%
+  gf_refine(scale_x_sqrt(breaks=ticks, 
+                         labels=format(ticks, scientific=FALSE, big.mark=","))) %>%
+  gf_line()
+```
+We've imagined digits() to be a continuous function so we've connected the gaps with a straight line. Now we have a function that has an output for any input between 0.01 and 1,000,000, for instance, 500,000.
+
+The angles between consecutive line segments give the function plotted in Figure \@ref(fig:log-1st-try) an unnatural look. Still, it is a continuous function with an output for any input even if that input is not listed in the table.
+
+Starting around 1600, two (now famous) mathematicians, [John Napier](https://en.wikipedia.org/wiki/Henry_Briggs_(mathematician)) (1550-1617) and [Henry Briggs](https://en.wikipedia.org/wiki/Henry_Briggs_(mathematician)) (1561-1630) had an idea for filling in gaps in the table. They saw the pattern that for any of the numbers $a$ and $b$ in the input column of the table
+$$ \text{digit}(a \times b) = \text{digit}(a) + \text{digit}(b)$$
+This is true even when $a=b$. For instance, digit(10)=1 and digit(10$\times$ 10) = 2.
+
+Consider the question what is digit(316.2278)? That seems a odd question unless you realize that $316.2278 \times 316.2278 = 100,000$. Since digit(100000) = 5, it must be that digit(316.2278) = 5/2.
+
+Another question: what is digit(17.7828)? This seems crazy, until you notice that $17.7828^2 = 316.2278$. So digit(17.78279) = 5/4.
+
+For a couple of thousand years mathematicians have known how to compute the square root of any number to a high precision. By taking square roots and dividing by two, it's easy to fill in more rows in the digit()-function table. You get even more rows by noticing other simple patterns like $$\text{digit}(a/10) = \text{digit}(a) -1  \ \ \text{and} \ \ \ \text{digit}(10 a) = \text{digit}(a) + 1$$
+
+Here are some additional rows in the table
+
+input | output | Why?
+------|--------|------
+316.2278 | 2.5 | From $\sqrt{\strut100,000}$
+17.17828 | 1.25 | From $\sqrt{\strut 316.2278}$
+4.21696 | 0.625 | From $\sqrt{\strut 17.17828}$
+31.62278 | 1.5  | From 316.2278/10
+3.162279 | 0.5 | From 31.62278/10
+
+```{r echo=FALSE}
+# Just to compute the timing statement in the next paragraph.
+#remotes::install_github("collectivemedia/tictoc")
+#library(tictoc)
+#tic()
+start <- tibble::tibble(input = 10^{-5:6}, output = -5:6)
+for (k in 1:6) {
+  root <- start %>% 
+    mutate(input = sqrt(input), output = output/2)
+  root2 <- start %>%
+    mutate(input = sqrt(sqrt(input)), output = output/4)
+  root3 <- start %>%
+    mutate(input = sqrt(sqrt(sqrt(input))), output = output/8)
+  square <- start %>%
+    mutate(input = input^2, output = 2*output)
+  cube <- start %>%
+    mutate(input = input^3, output = 3*output)
+  tenths <- start %>%
+    mutate(input = input/10, output = output - 1)
+  tens <- start %>%
+    mutate(input = input*10, output = output + 1)
+  start <- rbind(start, root, root2, root3, square, cube, tenths, tens) %>% unique() %>% 
+    arrange(input)
+}
+#toc()
+```
+
+You can play this game for weeks. We asked the computer to play the game for about half a second and expanded the original digit() table to `r nrow(start %>% filter(output >= -2, output <= 6))` rows.
+
+@fig-expanded-log plots the expanded digits() function table.
+
+```{r echo=FALSE}
+#| label: fig-expanded-log
+#| fig-cap: "The digit function with more entries"
+ticks <- 1:10
+
+gf_point(output ~ input, 
+         data = start %>% filter(output <= 1, output >= 0)) %>%
+  gf_refine(scale_x_continuous(breaks=ticks)) %>%
+  gf_line()
+```
+
+Now we have a smooth function that plays by the digit rules of multiplication.
+
+Henry Briggs and his assistants did a similar calculation by hand. Their work was published in 1617 as a table. 
+
+```{r echo=FALSE}
+#| label: fig-briggs-first-page
+#| out-width: "100%"
+#| fig-cap: "Part of the first page of Henry Briggs table of logarithms"
+#| fig-align: "center"
+knitr::include_graphics("www/Briggs-starttable.png")
+```
+
+The table was called the *Chilias prima*, Latin for "First group of one thousand." True to its name, the table gives the output of digits() for the inputs 1, 2, 3, ..., 998, 999, 1000. For instance, as you can see from the top row of the right-most column, digits(67) = 1.82607480270082. 
+
+In everyday speech, 67 has two digits. The authors of *Chilias prima* sensibly didn't use the name "digit()" for the function. They chose something more abstract: "logarithm()". Nowadays, this function is named $\log_{10}()$. In R, the function is called `log10()`.   
+
+```{r}
+log10(67)
+```
+
+Our main use for $\log_{10}()$ (in R: `log10()`) will be to count digits in order to quickly compare the magnitude of numbers. The difference digits($x$) - digits($y$) tells how many factors of 10 separate the magnitude of the $x$ and $y$.
+
+Another important logarithmic/digit-counting function is $\log_2()$, written `log2()` in R. This counts how many ***binary digits** are in a number. For us, $\log_2(x)$ tells how many times we need to double, starting at 1, in order to reach $x$. For instance, $\log_2(67) = 6.06609$, which indicates that $67 = 2\times 2 \times 2 \times 2 \times 2 \times 2 \times 2^{0.06609}$
+
+$\log_2(x)$ and $\log_{10}(x)$ are proportional to one another. One way to think of this is that they both count "digits" but report the results in different units, much as you might report a temperature in either Celsius or Fahrenheit. For $\log_2(x)$ the units of output are in ***bits***. For $\log_{10}(x)$ the output is in ***decades***.
+
+A third version of the logarithm function is called the ***natural logarithm*** and is denoted $\ln()$ in math notation and simply `log()` in R. We'll need additional calculus concepts before we can understand what justifies calling $\ln()$ "natural."
+
+
