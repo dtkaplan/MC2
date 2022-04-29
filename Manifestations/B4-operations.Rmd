@@ -111,6 +111,7 @@ Construct the Newton-step function for finding zeros of the function $$f(x) \equ
 
 Since $\partial_x f(x) = 2 x - 1$, the custom-built Newton-step function will be:
 $$\text{solve-step}(z) = z - \frac{z^2 - z - 4}{2 z - 1}$$
+
 ```{r echo=FALSE}
 f <- makeFun(x^2 - x ~ x)
 solve_step <- function(z) {z - (z^2 - z - 4)/(2*z-1)}
@@ -119,14 +120,16 @@ solve_step <- function(z) {z - (z^2 - z - 4)/(2*z-1)}
 The algorithm requires a starting guess. We'll use $x_0 = 2$. After each application of `solve_step()`, we'll print out the refined value as well as the function output at that refined value.
 
 
-`r {x0 <- 2} |> oneline_block(width="30%", phrase="", inline=FALSE)`     <br>
+```{r}
+x0 <- 2 
 
-`r {x1 <- solve_step(x0)} |> oneline_block(width="30%", digits=8)`
-`r {f(x1)} |> oneline_block(width="20%", digits=8)`
-`r {x2 <- solve_step(x1)} |> oneline_block(width="30%", digits=8)`
-`r {f(x2)} |> oneline_block(width="20%", digits=8)`
-`r {x3 <- solve_step(x2)} |> oneline_block(width="30%", digits=8)`
-`r {f(x3)} |> oneline_block(width="20%", digits=8)`
+x1 <- solve_step(x0)
+f(x1)
+x2 <- solve_step(x1)
+f(x2)
+x3 <- solve_step(x2)
+f(x3)
+```
 
 The output  $f(x_3)$ is practically the desired $v=4$ so we have our result: $x^\star = 2.56155$! 
 
@@ -146,20 +149,25 @@ make_solve_step_fun <- function(tilde, v) {
 ```
 Let's test it out with this function:
 
-`r {f <- makeFun(x^2 - x ~ x)} |> oneline_block(width="70%", phrase="", inline=FALSE)` <br>
+```{r}
+f <- makeFun(x^2 - x ~ x)
+```
 
 Construct the take-a-step function:
 
-`r {take_step <- make_solve_step_fun(f(x) ~ x, v=4)} |> oneline_block(width="70%", inline=FALSE, phrase="")` <br>
+```{r} 
+take_step <- make_solve_step_fun(f(x) ~ x, v=4)
+```
 
 Take three steps starting at $x_0 = 3$:
 
-`r {x0 <- 3} |> oneline_block(width="50%", phrase="", inline=FALSE)` <br>
-
-`r {x1 <- take_step(x0)} |> oneline_block(width="50%")`
-`r {x2 <- take_step(x1)} |> oneline_block(width="50%")`
-`r {x3 <- take_step(x2)} |> oneline_block(width="50%")`
-`r {f(x3)} |> oneline_block(width="20%")`
+```{r} 
+x0 <- 3
+x1 <- take_step(x0)
+x2 <- take_step(x1)
+x3 <- take_step(x2)
+f(x3)
+```
 
 The Newton-step process is not guaranteed to work. By exploring cases where it fails, ***computational mathematicians***^[A traditional name for such a person is "numerical analyst."] have developed strategies for increasing the range of situations for which it works. Some of these strategies are incorporated in the R/mosaic function `Zeros()`.
 
@@ -170,7 +178,9 @@ The Newton-step process is not guaranteed to work. By exploring cases where it f
 Sometimes there will be multiple zeros on the specified domain. To handle such situations, `Zeros()` returns a data frame with two columns. The first gives input values that correspond to an output near zero. The second column, named `.output.` calculates the output (and will be near zero). 
 We'll illustrate by solving $x^3 = 6$ for $x$.
 
-`r {Zeros(x^3 - 6 ~ x, domain(x=c(1,6)))} |> oneline_block(width="60%")`
+```{r} 
+Zeros(x^3 - 6 ~ x, domain(x=c(1,6)))
+```
 
 :::
 
@@ -201,8 +211,9 @@ Use the R/mosaic `argM()` function to find argmaxes and argmins. Like other R/mo
 To illustrate, the following code creates a randomly shaped function (displayed in @fig-argm-ex1) and calls `argM()` to generate the argmaxes and argmins. 
 
 
-`r {f <- rfun(~ x, 3215)} |> oneline_block(inline=FALSE, phrase="")`
-
+```{r} 
+f <- rfun(~ x, 3215)
+```
 
 ```{r echo=FALSE}
 #| out-width: "50%"
@@ -214,7 +225,9 @@ slice_plot(f(x) ~ x, domain(x=-5:5)) %>%
            color="magenta", size=4, alpha=0.5) 
 ```
 
-`r {argM(f(x) ~ x, domain(x = -5:5))} |> oneline_block(width="50%")`
+```{r}
+argM(f(x) ~ x, domain(x = -5:5))
+```
 
 Notice that `argM()` identified both a local maximum and a local minimum, that is, one argmax and one argmin. Visually, it's easy to tell which one is which. In terms of the data frame returned by `argM()`, the sign of the concavity does the identification for you: positive concavity points to an argmin, negative concavity to an argmax. The name `argM()` refers to this versatility of finding both argmins and argmaxes.
 :::
@@ -275,18 +288,3 @@ For `Zeros()` and `argM()` the domain specifies where to search for the answer. 
 
 ## Exercises
 
-`r if (knitr::is_latex_output()) knitr::knit_exit()`
-
-`r if (knitr::is_latex_output()) knitr::knit_exit()`
-
-`r insert_calcZ_exercise("32.03", "THpUtP", "Exercises/aspen-dig-ship.Rmd")`
-
-`r insert_calcZ_exercise("32.05", "ZRYTU3", "Exercises/water-sink-ship.Rmd")`
-
-`r insert_calcZ_exercise("32.07", "36xJU8", "Exercises/fish-ring-door.Rmd")`
-
-`r insert_calcZ_exercise("32.09", "6bX0Zx", "Exercises/kid-rise-coat.Rmd")`
-
-`r insert_calcZ_exercise("32.11", "gCKs9N", "Exercises/birch-wake-linen.Rmd")`
-
-`r insert_calcZ_exercise("32.13", "JBw8oV", "Exercises/snake-get-ring.Rmd")`
