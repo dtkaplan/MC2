@@ -64,15 +64,15 @@ x_2 = x_1 + \frac{v-f(x_1)}{\partial_x f(x_1)}
 \end{equation}
 
 Each round of improvement---that is, "iteration"---calculates a new value $x_{i+1}$ from the previous $x_i$. The improvement can be encapsulated as a function, which we will call `solve_step()`:
-$$\text{solve_step}(z) \equiv z + \frac{v-f(z)}{\partial_x f(z)}\ .$$
+$$\text{solve-step}(z) \equiv z + \frac{v-f(z)}{\partial_x f(z)}\ .$$
 
 This particular form of solve_step() is called a ***Newton step***. The idea is to take successive steps, each refining the previous approximation, to get closer and closer (hopefully!) to the actual answer $x^\star$:
 
-$$x_1 = \text{solve_step}(x_0)\\
-x_2 = \text{solve_step}(x_1)\\
-x_3 = \text{solve_step}(x_2)\\
+$$x_1 = \text{solve-step}(x_0)\\
+x_2 = \text{solve-step}(x_1)\\
+x_3 = \text{solve-step}(x_2)\\
 \vdots\\
-x_{i+1} = \text{solve_step}(x_{i})\\\ \\
+x_{i+1} = \text{solve-step}(x_{i})\\\ \\
 \text{until eventually}\ \|f(x_{i+1}) - v\|\ \text{is practically zero.}$$
 
 
@@ -80,6 +80,7 @@ x_{i+1} = \text{solve_step}(x_{i})\\\ \\
 ```{r echo=FALSE, warning=FALSE}
 #| label: fig-newton-step
 #| fig-cap: "A Newton-step calculation seen graphically. The brown function is approximated as a straight-line function at the initial point $x_0$. The resulting $x_1$ is where that straight line crosses the value $v$ on the output scale. Here, $x_1$ is a little to the left of the actual place where $f()$ crosses $v$. The Newton step produced an improved guess, since $\\|x_1 - x^\\star\\|$ is smaller than $\\| x_0 - x^\\star\\|$."
+#| fig-cap-location: margin
 raw <- rfun(~ x, seed = 1933)
 x0=3.0
 ticks <- latex2exp::TeX(c(r'(x^*)', "x_0", "x_1"))
@@ -109,7 +110,7 @@ slice_plot(f(x) ~ x, domain(x=-2:5), color="brown", label_text="f(x)", label_vju
 Construct the Newton-step function for finding zeros of the function $$f(x) \equiv x^2 - x\ $$
 
 Since $\partial_x f(x) = 2 x - 1$, the custom-built Newton-step function will be:
-$$\text{solve_step}(z) = z - \frac{z^2 - z - 4}{2 z - 1}$$
+$$\text{solve-step}(z) = z - \frac{z^2 - z - 4}{2 z - 1}$$
 ```{r echo=FALSE}
 f <- makeFun(x^2 - x ~ x)
 solve_step <- function(z) {z - (z^2 - z - 4)/(2*z-1)}
@@ -203,7 +204,9 @@ To illustrate, the following code creates a randomly shaped function (displayed 
 `r {f <- rfun(~ x, 3215)} |> oneline_block(inline=FALSE, phrase="")`
 
 
-```{r echo=FALSE, out-width: "50%", fig-align: "center"}
+```{r echo=FALSE}
+#| out-width: "50%"
+#| fig-align: "center"
 Xstar <- argM(f(x) ~ x, domain(-5:5))
 slice_plot(f(x) ~ x, domain(x=-5:5)) %>%
   gf_labs(y = "f(x)") %>%

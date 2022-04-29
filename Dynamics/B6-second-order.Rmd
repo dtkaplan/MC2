@@ -53,7 +53,10 @@ A lot of the theory of second-order differential equations was developed in the 
 
 The importance of ballistics to Newton can be seen by a famous diagram he drew, shown in @fig-newton-ballistics. In the diagram, Newton traces the path of a ball shot horizontally from a cannon placed at the top of a mountain. 
 
-```{r newton-ballistics, echo=FALSE, fig-cap: "Newton's diagram showing ballistic motion under the force of gravity.", out-width: "60%"}
+```{r echo=FALSE}
+#| label: fig-newton-ballistics
+#| fig-cap: "Newton's diagram showing ballistic motion under the force of gravity." 
+#| fig-cap-location: margin
 knitr::include_graphics("www/Newton-cannon.png")
 ```
 
@@ -78,6 +81,7 @@ $$
 To illustrate, we'll solve this set of four first-order equations numerically. We need to specify the initial values for $x_0$, $y_0$, $u_0$ and $v_0$. We'll let the cannon be located at horizontal position $x_0 = 0$ and vertical position $y_0 = 100$ meters. The vertical velocity is, initially, zero, so $v_0 = 0$. And suppose the cannon produces an initial horizontal velocity of $u_0 = 250$ meters/sec. The constant $g$ is known to be 9.8 meters/sec^2^. 
 
 Here's the trajectory:
+
 ```{r results="hide"}
 traj <- integrateODE(
   dx ~ u, dy ~ v, du ~ 0, dv ~ -9.8, #dynamics
@@ -87,7 +91,10 @@ traj <- integrateODE(
 traj_plot(y(t) ~ x(t), traj)
 traj_plot(v(t) ~ u(t), traj)
 ```
-```{r cannon-shot-1, fig-cap: "Trajectory of the cannon ball shot with an initial horizontal velocity and no initial vertical velocity. The trajectory is plotted in slices of state space: position $(x, y)$ and velocity $(u, v)$. The time at which the ball reaches the points marked on the trajectory give the time."}
+
+```{r echo=FALSE}
+#| label: fig-cannon-shot-1
+#| fig-cap: "Trajectory of the cannon ball shot with an initial horizontal velocity and no initial vertical velocity. The trajectory is plotted in slices of state space: position $(x, y)$ and velocity $(u, v)$. The time at which the ball reaches the points marked on the trajectory give the time."
 P1 <- traj_plot(y(t) ~ x(t), traj) %>%
   gf_hline(yintercept=~0, color="brown") %>%
   gf_labs(subtitle="(x, y) position as a function of time")
@@ -144,8 +151,15 @@ Air resistance causes the cannon ball to travel a shorter horizontal distance an
 
 Consider the motion of a weight attached to a spring, as in @fig-spring-mass. We'll denote the vertical position of the mass by $y(t)$. Such a spring-mass system has a fixed point where the spring is stretched just enough to cancel out gravity and the velocity is zero. We'll measure $y$ relative to this fixed point. 
 
-```{r spring-mass1, echo=FALSE, fig.cap = "A spring-mass system in motion. [Source: Svjo](https://commons.wikimedia.org/wiki/File:Animated-mass-spring.gif) [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0) via Wikimedia Commons", out-width: "30%"}
-knitr::include_graphics("www/Animated-mass-spring.gif")
+```{r echo=FALSE}
+#| label: fig-spring-mass1
+#| fig.cap = "A spring-mass system in motion. [Source: Svjo](https://commons.wikimedia.org/wiki/File:Animated-mass-spring.gif) [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0) via Wikimedia Commons"
+#| column: margin
+if (knitr::is_html_output()) {
+  knitr::include_graphics("www/Animated-mass-spring.gif")
+} else {
+  knitr::include_graphics("www/Animated-mass-spring.png")
+}
 ```
 According to Hooke's Law, a stretched or compressed spring exerts a force that is proportional to the amount of extension or compression. With our measuring $y$ relative to the fixed point, the Hooke's Law force will be
 $$m\, \partial_{tt} y = - s\, y\ ,$$ where $m$ is the amount of mass and $s$ is the stiffness of the spring.
@@ -237,7 +251,10 @@ Notice that the real part of the result oscillates between negative and positive
 
 We can get a clearer picture by plotting $e^{i\omega t}$ over the domain $0 < t < 10$. As an example, in @fig-complex-exponential-plot we'll set $\omega = 2$. We need to be a little careful, since our plotting functions are not arranged to display complex numbers. But there is an easy workaround: plot the "real" and "imaginary" parts separately. The R operators `Re()` and `Im()` do this work.
 
-```{r complex-exponential-plot, echo=TRUE, fig-cap: "The real and imaginary parts of $e^{i \\omega t}$ plotted as a function of $t$."}
+```{r echo=TRUE}
+#| label: complex-exponential-plot
+#| fig-cap: "The real and imaginary parts of $e^{i \\omega t}$ plotted as a function of $t$."
+#| fig-cap-location: margin
 f <- makeFun(exp(1i * omega * t) ~ t, omega = 2)
 slice_plot(Re(f(t)) ~ t, 
            domain(t=0:10), color = "magenta") %>%
@@ -279,7 +296,10 @@ Result: an exponentially decaying sinusoid.
 
 To graph this function, we need to choose appropriate numerical values for $r$ and $b$. Let's set $r=1$. Since $r^2 < 4b$, we must have $\frac{1}{4} < b$: we'll choose $b = 6$ which meets this criterion. @fig-decay-sinusoid1 shows the solution to the differential equation:
 
-```{r decay-sinusoid1, echo=TRUE, fig-cap: "An exponentially decaying sinusoid arising from $r = 1$ and $b = 6$."}
+```{r}
+#| label: fig-decay-sinusoid1
+#| fig-cap: "An exponentially decaying sinusoid arising from $r = 1$ and $b = 6$."
+#| fig-cap-location: margin
 traj <- integrateODE(dv~ -r*v - b*y, dy ~ v, v=10, y=0, r=1, b=6, tdur=20)
 traj_plot(y(t) ~ t, traj)
 ```
@@ -288,7 +308,10 @@ This is the situation with a swinging door. You shove it to swing open, after wh
 
 In contrast, suppose the spring is weak compared to the damping such that $4b < r^2$. Now $\sqrt{\strut r^2 - 4b}$ is a positive number, not imaginary. What's more, since $b$ is positive, $\sqrt{\strut r^2 - 4 b} < r$.  This means that both eigenvalues are negative. We'll illustrate the situation with $r=1, b=0.2$:
 
-```{r overdamped1, echo=TRUE, fig-cap: "A heavily damped spring-mass system with  $r = 1$ and $b = 0.1$."}
+```{r echo=TRUE}
+#| label: fig-overdamped1
+#| fig-cap: "A heavily damped spring-mass system with  $r = 1$ and $b = 0.1$."
+#| fig-cap-location: margin
 traj2 <- integrateODE(dv~ -r*v - b*y, dy ~ v, v=10, y=0, r=1, b=0.1, tdur=20)
 traj_plot(y(t) ~ t, traj2) %>%
   gf_lims(y = c(0, NA))
@@ -297,7 +320,10 @@ The situation in @fig-overdamped1 is the sort of behavior one expects when givin
 
 Finally, consider the case where $r^2 - 4 b = 0$, a balance between resistance and springiness. In this case, both eigenvalues are $\lambda = -r/2$.
 
-```{r critically-damped, echo=TRUE, fig-cap: "A critically damped oscillation with $r=1$, $b=0.25$."}
+```{r echo=TRUE}
+#| label: fig-critically-damped
+#| fig-cap: "A critically damped oscillation with $r=1$, $b=0.25$."
+#| fig-cap-location: margin
 traj3 <- integrateODE(dv~ -r*v - b*y, dy ~ v, v=10, y=0, r=1, b=0.25, tdur=20)
 traj_plot(y(t) ~ t, traj3) %>%
   gf_lims(y = c(0, NA))
@@ -362,23 +388,4 @@ The nature of the gas pedal itself leads to a damping term in the dynamics, with
 - Z-DPT7M: For a linear differential equation in force-mass form, use the ansatz $e^{kt}$ to find the quadratic polynomial in $k$ ("characteristic equation") that describes the eigenvalues of the differential equation.
 
 - W-5ZT92: Construct and solve numerically a system of two first-order differential equations that represent a vertically rising or falling object in the presence of gravity and air resistance.
-
-
-`r insert_calcZ_exercise("54.05", "P4xpYP", "Exercises/pine-bring-window.Rmd", skill="T-ZO94U")`
-
-`r insert_calcZ_exercise("54.07", "Yn47ct", "Exercises/cat-sleep-door.Rmd", skill="W-5ZT92")`
-
-`r insert_calcZ_exercise("54.09", "iX26Ra", "Exercises/falcon-have-mattress.Rmd", skill="D-BRUPM")`
-
-`r insert_calcZ_exercise("54.11", "Pl64dp", "Exercises/deer-cost-door.Rmd", skill="WP-103-14")`
-
-`r insert_calcZ_exercise("54.13", "JsRKvA", "Exercises/chicken-make-room.Rmd", skill="D-BRUPM")`
-
-`r insert_calcZ_exercise("54.17", "CMBvRg", "Exercises/tiger-sharpen-fork.Rmd", skill="F-189B3")`
-
-`r insert_calcZ_exercise("54.19", "N9iexG", "Exercises/chicken-say-lamp.Rmd", skill="F-189B3")`
-
-`r insert_calcZ_exercise("54.23", "6OL44y", "Exercises/sheep-bend-sheet.Rmd", skill="WP-103-14 P-7PXE3")`
-
-`r insert_calcZ_exercise("54.25", "IVEjiX", "Exercises/falcon-shut-hamper.Rmd", skill="F-189B3")`
 

@@ -8,7 +8,10 @@ Let's return the rabbit/fox system as an example of flow. Since there are two st
 
 The flow itself is a ***vector field***. This is an assignment of a vector to each point of the state space. Graphically, we depict a flow field by selecting a grid of points in the state space, finding the flow vector for each grid point, and drawing those vectors positioned at their respective grid points.
 
-```{r rf-flow-2, echo=FALSE, fig-cap: "The flow field has a vector at each point in state space but we can draw only a few if the plot is to be legible. Zooming in on a region produces more detail."}
+```{r echo=FALSE}
+#| label: fig-rf-flow-2
+#| fig-cap: "The flow field has a vector at each point in state space but we can draw only a few if the plot is to be legible. Zooming in on a region produces more detail."
+#| fig-cap-location: margin
 # commands to make the individual plots in the figure
 # vectorfield_plot(0.66*r - 1.33*r*f ~ r & f,
 #                  -f + r*f ~ r & f,
@@ -39,7 +42,10 @@ The state space has coordinates $r$ and $f$, and since $r$ and $f$ are quantitie
 
 A ***fixed point*** of the dynamics is a point in the state space where the dynamical functions both evaluate to zero. It's convenient to mark fixed points as the intersection of zero contours of the dynamical functions. @fig-rf-nullclines shows these zero contours (red for rabbits, blue for foxes) laid on top of the flow field. Such zero contours of dynamical functions are called ***nullclines***. (The word means "zero slope". "Null" corresponds to zero and "cline" is the root of words like "incline" or "decline.")
 
-```{r rf-nullclines, echo=FALSE, fig-cap: "Flow field and nullclines for the rabbit/fox dynamics.", warning=FALSE, message=FALSE}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+#| label: fig-rf-nullclines
+#| fig-cap: "Flow field and nullclines for the rabbit/fox dynamics."
+#| fig-cap-location: margin
 contour_plot(dt_rabbit(r,f) ~ r & f, domain(r=0.2:2, f=0.05:1), 
              contours_at = 0, contour_color = "red",
              labels=FALSE) %>%
@@ -62,14 +68,20 @@ Very near the fixed point, dynamics are approximately linear. We'll return to a 
 
 On a nullcline of a dynamical variable $x$, the $x$-component of the flow must be zero. The flow will point to positive $x$ on one side of the nullcline and negative $x$ on the other. This is really nothing more than saying that on one side of a zero contour the function value is positive and on the other side negative. We'll indicate this on the following diagrams by shading the positive side of the nullcline with the same color as the nullcline itself. @fig-shaded-nullcline shows the nullclines of a linear system on separate plots. Notice that flow in the shaded side of the $x$ (red) nullcline the flow always has a positive component to the right. Similarly, in the shaded side of the $y$ (blue) nullcline, the flow always has a positive component to the right. 
 
-```{r shaded-nullcline, echo=FALSE, fig-cap: "The nullclines of a linear dynamical system near the fixed point. $x$ nullcline is red, $y$ nullcline is blue", fig.show="hold", out-width: "50%"}
-Znotes::show_abcd(.5, 1, 1, -.7, which="y", pow=.2)
-Znotes::show_abcd(.5, 1, 1, -.7, which="x", pow=.2)
+```{r echo=FALSE}
+#| label: fig-shaded-nullcline
+#| fig-cap: "The nullclines of a linear dynamical system near the fixed point. $x$ nullcline is red, $y$ nullcline is blue"
+pA <- Znotes::show_abcd(.5, 1, 1, -.7, which="y", pow=.2)
+pB <- Znotes::show_abcd(.5, 1, 1, -.7, which="x", pow=.2)
+gridExtra::grid.arrange(pA, pB, ncol=2)
 ```
 
 Placing both nullclines on the same plot divides the region near the fixed point into four parts. This is generic behavior. Unless the two nullclines are the same as each other, the two nullclines split the region into four quadrants.
 
-```{r four-parts, echo=FALSE, fig-cap: "Four quadrants of linear dynamics near the fixed point.", warning=FALSE, message=FALSE}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+#| label: fig-four-parts
+#| fig-cap: "Four quadrants of linear dynamics near the fixed point."
+#| fig-cap-location: margin
 Znotes::show_abcd(.5, 2, 3, -.7, pow=.2)
 ```
 We can identify the quadrants by their color---white, red, blue, purple. In each quadrant, the "compass direction" of all flow vectors point to one quadrant of the compass: white to the south-west, red to the south-east, blue to the north-west, and purple to the north-east. 
@@ -87,6 +99,13 @@ corresponds to the saddle flow seen in the previous flow field.
 
 There are, altogether, eight possible configurations:
 
+```{r echo=FALSE}
+knitr::include_graphics("www/eight-arrows.png")
+```
+
+[[See latex version below]]
+
+<!--
 $$\begin{array}{cccc}
 \text{saddle} & \text{saddle} & \text{saddle} & \text{saddle} \\
 \begin{array}{c|c}
@@ -130,15 +149,19 @@ $$\begin{array}{cccc}
    \color{gray}{\swarrow}& \color{blue}{\nwarrow} \\\hline
  \color{red}{\searrow}& \color{purple}{\nearrow}
 \end{array}\\
-\text{center} & \text{orbit} & \text{source} & \text{orbit}
+\text{sink} & \text{orbit} & \text{source} & \text{orbit}
 \end{array}
 $$
+-->
 
-***Saddles*** are unstable, although the trajectory might approach the fixed point at first. A ***source*** is unstable; any trajectory heads away from the fixed point. A ***center*** is stable; any trajectory heads toward the fixed point.
+***Saddles*** are unstable, although the trajectory might approach the fixed point at first. A ***source*** is unstable; any trajectory heads away from the fixed point. A ***sink*** is stable; any trajectory heads toward the fixed point.
 
 As for the orbits, one in a clockwise direction and the other counter-clockwise, we can't yet say from this simple theory whether they are stable or unstable. The orbit we have already met, the rabbit-fox dynamics, has counter-clockwise trajectories that form closed loops. This is called ***neutral stability***. 
 
-```{r rf-orbit, echo=FALSE, fig-cap: "The rabbit/fox system has orbits that are neutrally stable.", message=FALSE, warning=FALSE}
+```{r echo=FALSE,  message=FALSE, warning=FALSE} 
+#| label: fig-rf-orbit
+#| fig-cap: "The rabbit/fox system has orbits that are neutrally stable."
+#| fig-cap-location: margin
 traj1 <- integrateODE(dr ~ dt_rabbit(r, f), 
                       df ~ dt_fox(r,f), r=1.5, f=.25,
                       tdur=7.5
@@ -185,7 +208,10 @@ We'll use $u$ and $w$ as the dynamical variables in the linear approximation in 
 $$\partial_t u = \ \ w\\
 \partial_t w = - u$$
 
-```{r linearized-pendulum, echo=FALSE, fig-cap: "Flow field, nullclines, and trajectories of the pendulum (black) and the linearized pendulum ($\\color{magenta}{\\text{magenta}}) from three different initial conditions.", warning=FALSE, message=FALSE}
+```{r echo=FALSE, , warning=FALSE, message=FALSE}
+#| label: fig-linearized-pendulum
+#| fig-cap: "Flow field, nullclines, and trajectories of the pendulum (black) and the linearized pendulum ($\\color{magenta}{\\text{magenta}}) from three different initial conditions."
+#| fig-cap-location: margin
 tnl0 <- integrateODE(dtheta ~ v, dv ~ - sin(theta), theta=1, v = 0, tdur=6)
 tnl1 <- integrateODE(dtheta ~ v, dv ~ - sin(theta), theta=2, v = 0, tdur=6)
 tnl2 <- integrateODE(dtheta ~ v, dv ~ - sin(theta), theta=2.8, v = 0, tdur=6)
@@ -218,24 +244,3 @@ vectorfield_plot(v ~ theta & v, -sin(theta) ~ theta & v, domain(theta=-3:3, v=-2
 - N-CB2LE: Linearize a dynamical function of two state variables at a fixed point by constructing a first-order polynomial approximation in two variables.
 - N-SCL6M: From a graph of a flow field near a fixed point, identify the qualitative stability of the fixed point as a source, center, saddle, or spiral.
 
-
-
-
-
-`r insert_calcZ_exercise("50.05", "ePqij6", "Exercises/finch-show-hamper.Rmd", skill="N-SCL6M")`
-
-`r insert_calcZ_exercise("50.07", "3A3pMv", "Exercises/bee-wake-bottle.Rmd",skill="N-SCL6M")`
-
-`r insert_calcZ_exercise("50.09", "KzgT1c", "Exercises/crow-find-sofa.Rmd", skill="X-HGCV2")`
-
-<!-- identifying nullclines --> 
-`r insert_calcZ_exercise("50.11", "owE1WY", "Exercises/eagle-choose-mattress.Rmd",skill="X-HGCV2")`
-
-<!-- linearization of rabbit-fox system -->
-`r insert_calcZ_exercise("50.13", "3Ug3IH", "Exercises/cow-sharpen-table.Rmd", skill="N-CB2LE")`
-
-`r insert_calcZ_exercise("50.15", "s5x504", "Exercises/bear-give-futon.Rmd", skill="N-CB2LE")`
-
-<!-- optimization by gradient ascent -->
-
-`r insert_calcZ_exercise("50.17", "iRZfBY", "Exercises/walnut-tell-pot.Rmd")`

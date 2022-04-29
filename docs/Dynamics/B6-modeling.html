@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.290">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MOSAIC Calculus - 43&nbsp; Modeling dynamics</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<link href="../Dynamics/B6-equilibria.html" rel="next">
+<link href="../Dynamics/B6-flow-on-plane.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<style>
+.quarto-title-banner {
+  
+}
+</style>
+</head><body class="floating slimcontent"><span class="math inline" style="display: none;">
+\(\newcommand{\line}{\text{line}}
+\newcommand{\hump}{\text{hump}}
+\newcommand{\sigmoid}{\text{sigmoid}}
+\newcommand{\recip}{\text{recip}}
+\newcommand{\diff}[1]{{\cal D}_#1}
+\newcommand{\pnorm}{\text{pnorm}}
+\newcommand{\dnorm}{\text{dnorm}}
+\let\origvec\vec
+\let\origmathit\mathit
+\let\orighat\hat
+\let\origbar\bar
+\newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+\newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+\newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+\newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+\newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+\newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+\newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+\newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+\newcommand{\modeledby}[2]{#1\!\sim\!#2}
+\newcommand{\CC}[1]{\color{#648fff}{#1}}
+\newcommand{\CE}[1]{\color{#785ef0}{#1}}
+\newcommand{\CA}[1]{\color{#dc267f}{#1}}
+\newcommand{\CB}[1]{\color{#fe6100}{#1}}
+\newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+</span>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">MOSAIC Calculus</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/dtkaplan/MC2/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/01-modeling-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">Modeling</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/01-parameters.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/02-assembling-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/03-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/05-low-order-polynomials.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/06-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/07-magnitudes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/08-dimensions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/09-modeling-cycle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling cycle [DRAFT]</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">Differentiation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/16-rate-of-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rate of change</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/17-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Change relationships</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/18-evanescent-h.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/19-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Computing derivatives</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/20-concavity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/21-cont-and-smooth.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/22-rules.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/23-optim.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/24-partial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/25-approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations [DRAFT]</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/26-taylor.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">Vectors and linear combinations</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-Vectors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-linear-combinations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-projection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-target-problem.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-stat-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">Accumulation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/27-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/28-visualizing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/29-integration.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/30-euler.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/31-symbolic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">Dynamics</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-diff-eq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Differential equations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-solution.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Finding a “solution”</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-line.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Flows on the line</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-plane.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the plane</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-modeling.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-equilibria.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-eigen.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-second-order.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Force-balance equations</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">Manifestations</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-splines.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Data-driven functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">50</span>&nbsp; <span class="chapter-title">Probability and evidence</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-future-value.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">51</span>&nbsp; <span class="chapter-title">Present and future value</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-mechanics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">52</span>&nbsp; <span class="chapter-title">Mechanics</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#a-single-state-quantity" id="toc-a-single-state-quantity" class="nav-link active" data-scroll-target="#a-single-state-quantity"> <span class="header-section-number">43.1</span> A single state quantity</a></li>
+  <li><a href="#multiple-state-quantities" id="toc-multiple-state-quantities" class="nav-link" data-scroll-target="#multiple-state-quantities"> <span class="header-section-number">43.2</span> Multiple state quantities</a></li>
+  <li><a href="#classical-phase-plane-models" id="toc-classical-phase-plane-models" class="nav-link" data-scroll-target="#classical-phase-plane-models"> <span class="header-section-number">43.3</span> Classical phase-plane models</a></li>
+  <li><a href="#epidemic" id="toc-epidemic" class="nav-link" data-scroll-target="#epidemic"> <span class="header-section-number">43.4</span> Epidemic</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">43.5</span> Exercises</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dtkaplan/MC2/edit/main/Dynamics/B6-modeling.Rmd" class="toc-action">Edit this page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-modeling-dynamics" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></span></h1>
+</div>
+
+
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>It’s a truism that starting a painting with a blank canvas can be daunting: so much choice and so many possibilities can be disabling. The same is true when it comes to constructing a model of a new phenomenon. You’ll need to decide what are the essential features of the phenomena, how they are connected to one another and how they connect to the question you seek to answer with the model you will eventually build.</p>
+<p>For painters, there are numerous ways to confront the blank-canvas function. For instance, there are different types of paintings: landscapes, portraits, abstract, and so on. And there are different styles of painting: impressionist, rococo, cubist, art deco, and so on. I don’t think that painters would use this term, but I think of these aids to decision making as a <strong><em>framework</em></strong>, an organization of what you know to guide decision making.</p>
+<p>Three of the frameworks for modeling that we have worked with in this book might be called:</p>
+<ol type="i">
+<li><strong><em>Function shape</em></strong>. Possibilities are hump, sigmoidal, oscillatory, exponential, and so on. We’ve also worked with the low-order polynomial as a function-shape framework, which reduces the decision making to which terms to include in the polynomial.</li>
+<li><strong><em>Differential equations</em></strong>. Constructing a model as a differential equation enables the modeler to separate the accounting work of accumulation over time and focus on capturing the relationships that tell, at any instant in time, which way the change will go. In working with this framework, the modeler decides what will be the state variables. Then, the modeler turns to the function shape framework to describe how the state variables themselves determine in which direction the change of each goes.</li>
+<li><strong><em>Modeling cycle</em></strong>. Most people are taught that mathematics is about precision, exactitude, and a correct answer. In many settings, this is appropriate. But often the role of mathematics is to provide a language to express ideas about relationships and then to play out the consequences of those ideas. It’s not usually critical that the relationships are being <em>exactly</em> described; observing the calculated consequences from a given statement of the relationships can provide deeper understanding of the system being studied or reveal that the description of the relationships does not lead to realistic consequences and so is incomplete or wrong.</li>
+</ol>
+<div class="intheworld">
+<p>Given a choice between a numerical and a symbolic solution to <strong><em>the same problem</em></strong>, the symbolic solution is generally better: it’s exact and it can incorporate parameters symbolically.</p>
+<p>But don’t fetishize exact solutions. Often, exact solutions exist only for excessively simplified, approximate versions of the system you want to model. It can be reasonable to pay this cost for the purpose of developing a deeper understanding of your model, but in the end you will want a numerical solution to a more accurate model.</p>
+<blockquote class="blockquote">
+<p><em>“Far better an approximate answer to the right question, which is often vague, than an exact answer to the wrong question, which can always be made precise.”</em> – John Tukey (1915-2000)</p>
+</blockquote>
+</div>
+<section id="a-single-state-quantity" class="level2 page-columns page-full" data-number="43.1">
+<h2 data-number="43.1" class="anchored" data-anchor-id="a-single-state-quantity"><span class="header-section-number">43.1</span> A single state quantity</h2>
+<p>We’ll start with situations that can be modeled with a single state variable. Throughout our examples, we’ll call that state variable <span class="math inline">\(S\)</span>, so the differential equation describing how <span class="math inline">\(S\)</span> changes in time will always be <span class="math display">\[\partial_t S = f(S)\]</span>. The modeler chooses the shape of <span class="math inline">\(f()\)</span> depending on the situation being modeled.</p>
+<p>In principle, there is an infinite number of shapes for <span class="math inline">\(f(S)\)</span>. But many modeling settings involve behavior that is simple. We’ll work with function shapes where the dynamical function <span class="math inline">\(f(S)\)</span> is continuous and has one or two fixed points.</p>
+<div class="takenote">
+<p>If <span class="math inline">\(S\)</span> is observed to oscillate or to reverse the direction of change, then there must be at least one more state variable, that is, at least one more quantity that changes in time. A single first-order differential equation will not be able to model the situation.</p>
+<p>If there are no fixed points, then the only possible dynamics are continuous increase in <span class="math inline">\(S\)</span> or continuous decrease in <span class="math inline">\(S\)</span>. Often, the point of interest will be whether there is some other factor that changes increase to decrease or <em>vice versa</em>. Again, such situations should be modeled in the context of at least two state variables.</p>
+</div>
+<p><a href="#fig-four-S-funs">Figure&nbsp;<span>43.1</span></a> shows four generic dynamical function shapes where these is one fixed point. The location of the fixed point is, of course, the <span class="math inline">\(S_0\)</span> at which <span class="math inline">\(f(S_0)=0\)</span>, that is, the intersection of the function and the blue dashed line.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-four-S-funs" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="B6-modeling_files/figure-html/fig-four-S-funs-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 43.1: Four generic functions shapes with one state variable having one fixed point.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The fundamental distinction is between models with stable and models with unstable fixed points. When the situation being modeled has a steady equilibrium, only the stable shapes of <span class="math inline">\(f(S)\)</span> are relevant. A second distinction is between functions with a bounded shape and those with a linear shape. Use a linear shape when you are concerned only with the behavior near the fixed point. But when your model needs to account for behavior far from the fixed point, you need first to have a way to represent what is meant by “far from.” That is represented by the location of the shoulder of the curve relative to the fixed point.</p>
+<p>A setting for a <strong><em>linear stable model</em></strong> is the cooling or warming of an object to the ambient temperature. <span class="math inline">\(S\)</span> stands for the temperature of the object and the fixed point is the ambient temperature. This model often goes under the name <strong><em>Newton’s Law of Cooling</em></strong>. The prestige of the model name distracts from the fact that this is a very simple model. But in the real world there are likely to be complications that make Newton’s Law imprecise, unlike, say, Newton’s Second Law of Motion which is exact (at non-quantum and non-relativistic scales). For instance, a cup of hot water will cool faster than a cup of cold water. In hot water, evaporation from the surface speeds up the warming. When ice is involved, the rate of temperature change slows when melting or freezing is encountered.</p>
+<p>Another classic setting for a linear, stable model is <strong><em>radioactive decay</em></strong>. The rate at which the atoms in a mass of a radioactive isotope decay is a constant <span class="math inline">\(\alpha\)</span> that depends on the nuclear structure. A mass of <span class="math inline">\(n\)</span> atoms will produce <span class="math inline">\(\alpha n\)</span> individual decay events in a given time interval. But, since each decay event reduces <span class="math inline">\(n\)</span> by 1, the differential equation describing the number of radioactive atoms is <span class="math display">\[\partial_t n = - \alpha nt\]</span> which leads to exponential decay towards zero. Notice that only the <span class="math inline">\(0 \leq n\)</span> half of the state space is relevant, because the number of atoms can’t be negative.</p>
+<p>An example of a setting where the <strong><em>bounded stable model</em></strong> applies is one where <span class="math inline">\(S\)</span> stands for the amount of prey or food stock, and there is a constant population of predators who have a limited capacity for eating. Consider, for example, <span class="math inline">\(S\)</span> being the availability of acorns. There might be a fixed population of, say, oaks that produce acorns at a given rate. When predation is low, the acorns accumulate. But when there are a lot of acorns, predators might focus on that bountiful food source. Still, they can only eat so many acorns per day before they are full.</p>
+<div class="takenote">
+<p>Remember that in a differential equation <span class="math inline">\(\partial_t S = f(S)\)</span>, the input to <span class="math inline">\(f()\)</span> is has dimension <span class="math inline">\([S]\)</span>, while the output of <span class="math inline">\(f()\)</span> has a different dimension: <span class="math inline">\([S]/[t]\)</span>. Thus, in the oak/acorn example above, the output of <span class="math inline">\(f()\)</span> has a dimension corresponding to acorns per day, a <em>rate</em> of consumption. <span class="math inline">\(S\)</span> is acorns, the output of <span class="math inline">\(f(S)\)</span> is acorns per day.</p>
+</div>
+<p>The <strong><em>linear unstable model</em></strong> is often used to model population growth. The underlying idea, which might or might not correspond to reality, is that there is a set reproduction rate per member of the population. The differential equation is <span class="math display">\[\partial_t{S} = a S + c\]</span> with <span class="math inline">\(S\)</span> being the size of the population. The parameter <span class="math inline">\(c\)</span> captures immigration (<span class="math inline">\(0 &lt; c\)</span>) or emigration (<span class="math inline">\(c &lt; 0\)</span>). To be more detailed, the model can be written as summing a birth process and a death process: <span class="math display">\[\partial_t S = b S - d S + c\]</span> where <span class="math inline">\(b\)</span> is the birth rate and <span class="math inline">\(d\)</span> is the death rate. Of course, the detailed model collapses arithmetically to the <span class="math inline">\(a S + c\)</span> model, with <span class="math inline">\(a = b - d\)</span>. Still, elaborations on the birth or death processes may include the influence of changing factors. We’ll return to this idea in a bit.</p>
+<p>Take care to use the parameters <span class="math inline">\(a\)</span> and <span class="math inline">\(c\)</span> correctly. The output of <span class="math inline">\(f(S) = a S + c\)</span> must have dimension <span class="math inline">\([S]/[t]\)</span>, for instance organisms per hour might be appropriate for bacteria. Thus the individual terms <span class="math inline">\(aS\)</span> and <span class="math inline">\(c\)</span> must have dimenion <span class="math inline">\([S]/[t]\)</span>. Consequently, the parameter <span class="math inline">\(a\)</span> has dimension <span class="math inline">\(1/[t]\)</span> as in <em>per hour</em>. That might seem odd until you remember that <span class="math inline">\(a\)</span> is about the creation of new organisms, <span class="math inline">\([S]/t\)</span>, per existing organism. Thus the dimension of <span class="math inline">\(a\)</span> is <span class="math inline">\([S] / [S][t]\)</span> which works out to be simply <span class="math inline">\(1/[t]\)</span>.</p>
+<div class="example">
+<p><span class="math inline">\(\ \)</span></p>
+<p>Under ideal reproductive conditions, some bacteria can split in two every 20 minutes. What does this tell us about <span class="math inline">\(a\)</span>?</p>
+<p>It’s easy to get confused. For instance, a single bacterium that splits every 20 minutes will go from an initial population of <span class="math inline">\(S=1\)</span> at time <span class="math inline">\(t=0\)</span> to a population of <span class="math inline">\(S=2\)</span> at <span class="math inline">\(t=\frac{1}{3}\)</span> hour to <span class="math inline">\(S=4\)</span> at <span class="math inline">\(t=\frac{2}{3}\)</span> hour to <span class="math inline">\(S=8\)</span> at <span class="math inline">\(t=1\)</span> hour. This might make it seem that the reproduction rate is 8 per hour. But this calculation of the population size at hour 1 is redundant with the accumulation that will be accomplished in solving the differential equation.</p>
+<p>The correct way to calculate <span class="math inline">\(a\)</span> from the stated information that there is a split every 20 minutes works like this:</p>
+<ol type="i">
+<li><p>The dynamics are <span class="math inline">\(\partial_t S = a S\)</span>. Therefore the solution is <span class="math inline">\(S(t) = S_0 e^{a t}\)</span>.</p></li>
+<li><p>According to the given information about splitting, when the initial condition is that <span class="math inline">\(S(0) = 1\)</span>, <span class="math display">\[S(1/3) = S_0 e^{a/3} = e^{a/3} = 2\ .\]</span></p></li>
+<li><p>Working from <span class="math inline">\(e^{a/3} = 2\)</span> gives the parameter value we see: <span class="math inline">\(a = 3 \ln(2)\)</span>.</p></li>
+</ol>
+</div>
+<p>For bacteria, the linear unstable model may be realistic for short periods of time, or, more precisely, for as long as the population is small compared to the <strong><em>carrying capacity</em></strong>. (See Section @ref(nonlinear-on-line)/). In contrast, human and other animal populations often have an important age structure, which is just to say that neither a 6 nor a 60 year old person has the same reproduction rate as a 26 year old. Such an age structure calls for a dynamical state with multiple components.</p>
+<p>But if the environment is steady—no food shortages, no disease, economy unchanging, etc.—it can be reasonable to describe even age-structured populations as a <em>percentage growth per unit time</em>, e.g.&nbsp;percent per year. Realize that such a description is not only about the biology of reproduction, but summarizes the whole system of aging, death, and reproduction. This summary description may no longer be relevant when the system as a whole changes. An example of this in the human population is seen in countries where the number of births per woman has fallen substantially—by half or more—over the time of a generation. Such falls typically accompany a growth in economic wealth and the realization that more resources (e.g.&nbsp;education) needs to be provided to each offspring.</p>
+<div class="intheworld">
+<p>A situation where the linear unstable model is realistic involves nuclear decay. Previously, we’ve pointed out that radioactive decay of an isotope is well modeled by the linear stable model. This leads the number of atoms of the radioactive isotope to decay exponentially.</p>
+<p>But there is an important exception. Some radioactive isotopes are <strong><em>fissile</em></strong>, for instance uranium-233, uranium-235, plutonium-239, and plutonium-241. Fissile materials decay via two different mechanisms. One is each-atom-on-its-own decay that applies generally to radioactive isotopes. The other mechanism involves the decay of one atom triggering the decay of others.</p>
+<p>The means of triggering involves a sub-atomic particle called a neutron. The decay of a fissile atom releases one or more neutrons, depending on the nuclear structure. If one of these neutrons has the correct energy, and if they collide in the appropriate way with a second fissile atom, that second atom will itself undergo decay, leading to the release of more neutrons. Such a process is called a <strong><em>chain reaction</em></strong>.</p>
+<p>Typically, a fissile chain reaction takes place inside an engineered device called a <strong><em>reactor</em></strong>. A simple differential equation of a chain reaction can be constructed using the number of neutrons in the reactor, and is <span class="math display">\[\partial_t N = \alpha N\ .\]</span> As you’ve already seen, the solution to this is <span class="math inline">\(N(t) = A e^{\alpha t}\)</span>: exponential growth. The value of <span class="math inline">\(\alpha\)</span> is determined by the design of the device. If the device is small, then neutrons can escape from the device before triggering a reaction, so alpha is small. If there are non-fissile neutron absorbers in the device, neutrons are taken out of play so, again, alpha is small and can even be negative.</p>
+<p>In everyday terms, rapid exponential growth is called an <strong><em>explosion</em></strong>. Exponential growth can’t continue forever, and indeed a fissile bomb blows itself up, resulting in negative <span class="math inline">\(\alpha\)</span> as the fissile material is scattered.</p>
+<p>Control of a fission bomb requires a mechanism that changes <span class="math inline">\(\alpha\)</span> from negative (stable <span class="math inline">\(N\)</span>, so no explosion) to positive. This can be accomplished, for instance, by bringing together pieces of fissile material that by themselves has negative <span class="math inline">\(\alpha\)</span> into a <strong><em>critical mass</em></strong> where <span class="math inline">\(\alpha\)</span> positive.</p>
+<p>Non-explosive nuclear reactions, as in power plants, call for a kind of juggling act. The device can’t have negative <span class="math inline">\(\alpha\)</span> or the reaction would die out exponentially. It can’t have positive <span class="math inline">\(\alpha\)</span> or the reaction would become explosive.</p>
+<p>A power reactors is designed to keep <span class="math inline">\(\alpha\)</span> near zero. <strong><em>Near zero</em></strong> not at zero. The reactor design needs to allow <span class="math inline">\(0 &lt; \alpha\)</span> to start up the reaction, but trim this down to zero when the reactor is at the desired power. Typically, there is some combination of active and passive mechanisms to provide this capability. An active mechanism is the insertion of “control rods,” which absorb neutrons by reactor operators to make <span class="math inline">\(\alpha &lt; 0\)</span> when the power generation is higher than desired. Passive mechanisms can involve the transformation of reactor water into steam, which reduces the ability of neutrons to induce new fissile decays.</p>
+<p>Reactors can be very complicated, however. The explosion of the Soviet Union’s Chernobyl reactor in 1986 was caused by a chain of events that led to control rods being withdrawn beyond the design intentions. Due to the construction of the rods, reinserting the rods to dampen the run-away reaction caused the reaction to accelerate. Avoiding such disasters requires a combination of safety oriented design and proper training of the operators. Neither of these were a feature of the 1980s Soviet environment, where secretiveness interfered with proper training and economic motivations to produce were so strong as to encourage widespread cheating.</p>
+</div>
+<p>The <strong><em>bounded unstable model</em></strong> is a way to incorporate factors that interfere with sustained exponential growth. Exponential growth requires that the growth rate <span class="math inline">\(\partial_t S\)</span> increase as <span class="math inline">\(S\)</span> increases: a kind of positive feedback. In the bounded model, the growth rate becomes constant for large <span class="math inline">\(S\)</span>. A constant growth rate means that <span class="math inline">\(S\)</span> will grow steadily, that is <span class="math inline">\(\partial_t S = c\)</span> which has a solution that grows linear in time, as distinct from the exponential solution that results from <span class="math inline">\(\partial_t S = a S\)</span>.</p>
+<p>An application of the bounded unstable model is seen in the description of micro-organism growth given by <a href="https://en.wikipedia.org/wiki/Monod_equation">Jacques Monod</a> (1910-1976), a Nobel Prize winning biochemist. His idea was that the organisms are reproducing in a kind of sea that has a limited concentration of an essential nutrient, but very large amounts of the nutrient spread out over space. Even though the nutrient is begin consumed by the organisms, more nutrient diffuses in from far away to keep the concentration steady. At large population sizes, the growth rate is nutrient concentration limited, hence constant.</p>
+<p>In Chapter 14 we introduced the idea of a <strong><em>modeling cycle</em></strong>: taking an initial model, examining the consequence/predictions of that model, and then modifying the model to better correspond to observed reality or new mechanism.</p>
+<p>A case in point is the linear unstable model for population growth. The linear model is always appropriate near a fixed point. This is just a consequence of the calculus idea that any function can be approximated by a linear function over a small enough domain. In defining derivatives, the question was what constitutes “small enough.” So a linear dynamical function is a good starting point for dynamics near a fixed point. But, as we’ve seen, extending the linear model far from the fixed point leads to population explosion: exponential growth. This can be a valid idea for modeling a pathogen growing in a bowl of room-temperature chicken salad: the pathogen need not consume all the salad to become a threat, so in the domain of interest—human health—the linear model can do the job.</p>
+<p>But we observe generally that exponential growth does not continue indefinitely. The demographer Thomas Malthus (1766-1834) famously propounded a “principle of population” which held that it is in the nature of populations to growth exponentially until linally limited by famine or disease. He wrote, “[G]igantic inevitable famine stalks in the rear, and with one mighty blow levels the population with the [lack of] food of the world.”</p>
+<p>Malthus’s model is exponential growth that runs into a wall of limited food. Malthus saw human reproduction as the engine of the immense poverty and suffering of the lower classes in early industrial Britain. This became the basis of an important political dispute, two poles of which are “there’s no point helping the poor, because they create their own poverty,” and “the poverty is due to exploitation, not reproduction.”</p>
+<p>For us in calculus, there’s a middle road: Malthus’s mathematical model, the unstable linear model, is much too abrupt and narrow minded and can easily be made more realistic. Adding that realism removes the “one mighty blow” from the situation. Let’s add that realism now.</p>
+<p>Recall the earlier suggestion that the linear unstable model <span class="math inline">\(\partial_t S = a S + c\)</span> be broken into components: <span class="math display">\[\partial_t S = \underbrace{b S}_{\text{births}}
+- \underbrace{d S}_{\text{deaths}} + \underbrace{c}_{\text{immigration}}\ .\]</span></p>
+<p>Even in Malthus’s time, there were calls to alleviate poverty by encouraging people to leave for less crowded lands: emigration. In the dynamics, emigration corresponds to a negative value for <span class="math inline">\(c\)</span>.</p>
+<p>Making <span class="math inline">\(c\)</span> negative does not do the job on its own. Note that whatever the value of <span class="math inline">\(c\)</span>, the dynamics are unstable. Emigration at a constant rate changes the location of the fixed point, but since the dynamics are unstable, growth will still be unbounded. Suppose, however, that government policy sets an emigration goal not as a constant number of people per year but as a constant fraction, <span class="math inline">\(eS\)</span> of the population. Now the dynamics become <span class="math display">\[\partial_t S = b S - d S - e S\ .\]</span> These dynamics are stable or unstable depending on the value of <span class="math inline">\(b - (d+e)\)</span>. If that value is negative, the dynamics are stable, if positive, the dynamics are unstable. The situation resembles (mathematically) that of a nuclear power reactor: the control parameter <span class="math inline">\(e\)</span> has to be carefully manipulated to set the population at a fixed level.</p>
+<p>But there are other things that come into play. One of them is that the parameter setting the death rate, <span class="math inline">\(d\)</span>, need not be constant. From Malthus’s perspective, <span class="math inline">\(d\)</span> would change in episodes set by disease and starvation. In Malthus’s era, pandemics were common and wiped out a major fraction of the population in “one mighty blow.” Similarly, starvation plays out on a smaller time scale than reproduction and seems to cut through the population.</p>
+<p>But the death rate can also be a function of population <span class="math inline">\(S\)</span>. For instance, <span class="math inline">\(d = d_0 + d_1 S\)</span> corresponds to a death rate that increases gradually with population size. (The parameters <span class="math inline">\(d_0\)</span> and <span class="math inline">\(d_1\)</span> are positive.)</p>
+<p>Similarly, birth rate can depend on population, that is <span class="math inline">\(b = b_0 - b_1 S\)</span>. As the population gets larger, there’s less food and less space, and these changes can reduce the reproduction rate. (The parameters <span class="math inline">\(b_0\)</span> and <span class="math inline">\(b_1\)</span> are positive.)</p>
+<p>These models for <span class="math inline">\(d\)</span> and <span class="math inline">\(b\)</span> are simplistic. Why should they have a linear form? The answer is … calculus. Whatever are the functions <span class="math inline">\(b(S)\)</span> and <span class="math inline">\(d(S)\)</span>, they must be approximately linear over a small domain.</p>
+<p>Let’s plug in the refined models for birth and death rates into the population models. We get: <span class="math display">\[\partial_t S = (b_0 - b_1 S) S - (d_0 + d_1 S) S - e\ .\]</span> A little algebraic simplification reduces this to:</p>
+<p><span class="math display">\[\partial_t S = (b_0 - d_0) S - (b_1 + d_1) S^2 - e\]</span> Whatever are the size of the quantities <span class="math inline">\(b_0, b_1, d_0, d_1\)</span>, so long as they are positive, the dynamical function <span class="math inline">\(f(S)\)</span> will have <strong>two</strong> fixed points, one at small <span class="math inline">\(S\)</span> and the other at large <span class="math inline">\(S\)</span>. For small <span class="math inline">\(S\)</span>, the fixed point is unstable. The population will grow away from this fixed point. The fixed point at large <span class="math inline">\(S\)</span> will be <strong>stable</strong>, hence no population explosion.</p>
+<p>One of the major flaws with the Malthusian viewpoint is that it treated all the dynamical functions as linear, whereas in reality the functions can have a quadratic shape. The classical differential equation for limited population growth, <span class="math display">\[\partial_t S = a S (1-S/K)\ ,\]</span> was introduced by Pierre-François Verhulst in 1838, just four years after Malthus’s death.</p>
+<p>Another important flaw with Malthus’s model is that it failed to account for the transition from purely agricultural economies to economies that produced large amounts of other goods and services. It turns out as populations grow wealthier, their reproduction rates decrease. With wealth available in non-food terms—clothing, public health, education—reproduction rates can go down even without the “one mighty blow” of starvation and disease.</p>
+<p>The next section examines both of these factors—the introduction of multiple state variables and the ability to “soften” the explosive unstable linear dynamics with nonlinear corrections—in making subtle models of the behavior of systems.</p>
+</section>
+<section id="multiple-state-quantities" class="level2" data-number="43.2">
+<h2 data-number="43.2" class="anchored" data-anchor-id="multiple-state-quantities"><span class="header-section-number">43.2</span> Multiple state quantities</h2>
+<p>The previous section examined dynamics of a single state variable. Now we will consider the possibilities when there is a second state variables. It turns out that adding more state variables above two does not introduce many fundamentally new behaviors, so we’ll focus on dynamical systems with two variables. We’ll continue to use capital letters, like <span class="math inline">\(S\)</span>, to stand for the state variables. But with two (or more) state variables, we’ll need to give them different names so we can keep tract of what’s doing what to what. The parameters in the dynamical functions will, as has been our practice, be written as lower-case letters, such a, b, r, c, and so on.</p>
+<p>A starting observation is that for dynamics to be genuinely two-dimensional, the differential equations for the state variables need to be <strong><em>coupled</em></strong> to one another. For example, a dynamical system that nominally has two state variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> is:</p>
+<p><span class="math display">\[\partial_t X = f(X)\\
+\partial_t Y = g(Y)\ .\]</span></p>
+<p>The state variables here are not coupled, since the change in each variable depends only on the value of that variable and not on the other.</p>
+<p>Coupled state variables have dynamics that look like this:</p>
+<p><span class="math display">\[\partial_t X = f(X, Y)\\
+\partial_t Y = g(X, Y)\ .\]</span> The time evolution of each state variable depends on the other state variable.</p>
+<p>The most mathematically simple form of coupled dynamics is this:</p>
+<p><span class="math display">\[\partial_t R = a B\\
+\partial_t B = c R\ .\]</span></p>
+<p>What type of real-world setting might such a simple model correspond to? Surprisingly, even this simple model has important things to say about complex phenomena such as <strong><em>love</em></strong> and <strong><em>warfare</em></strong>.</p>
+<p>We’ll start with warfare, where the signs of the parameters are easy to determine. The model, called Lanchester’s Law, is <span class="math display">\[\partial_t R = - b B\\
+\partial_t B = -r R\]</span> with both parameters <span class="math inline">\(r\)</span> and <span class="math inline">\(b\)</span> taken to be positive.</p>
+<p>The state variables <span class="math inline">\(R\)</span> and <span class="math inline">\(B\)</span> stand for the size of the two armies in conflict: the Red army versus the Blue army. As the two armies meet in battle, the Blue army causes casualties in the Red army. These casualties reduce the size of the Red army. Similarly, the Red army causes casualties in the Blue army.</p>
+<p>The model describes the rate of reduction in the armies as being proportional to the size of the opposing army. But the two armies can be different in their efficiency of causing casualties, reflected by possibly different values of the <span class="math inline">\(r\)</span> and <span class="math inline">\(b\)</span> parameters.</p>
+<p>The dynamics are not exponential. Exponential decay of the army size would correspond to a model like <span class="math inline">\(\partial_t R = - r R\)</span>, an army fighting itself. But the Lanchester model has <span class="math inline">\(\partial_t R = - b B\)</span>.</p>
+<p>We’ll defer for a moment finding the trajectories of the state variables in the course of battle. (Hint: in the model, one army wipes out the other.) Instead, we’ll focus on a surprisingly rich implication of of such simple dynamics.</p>
+<p>Lanchester’s Law has a surprising consequence for measuring the overall strength of a force in a way that combines size (<span class="math inline">\(R\)</span> and <span class="math inline">\(B\)</span>) and effectiveness (<span class="math inline">\(r\)</span> and <span class="math inline">\(b\)</span>) and the implications that has for tactics.</p>
+<p>Lanchester proposed that the quantity <span class="math display">\[Q(R, B) \equiv rR^2 - b B^2\]</span> is a good way to characterize the dynamics. His reasoning was based on a fundamental idea from physics and chemistry: that quantities are <strong><em>conserved</em></strong>. In physics, examples of conserved quantities are energy, momentum, and angular momentum. In chemical reactions, the number of atoms of each species is conserved.</p>
+<p>It’s hard to say how Lanchester came up with the formula <span class="math inline">\(rR^2 - b B^2\)</span>: insight is hard to explain. But we can easily demonstrate that it is conserved, that is, the quantity doesn’t change in time regardless of how the battle proceeds. We’ll do this by showing <span class="math inline">\(\partial_t Q(R, B) = 0\)</span>.</p>
+<p><span class="math display">\[\partial_t Q(R, B) = \partial_t \left[\strut rR^2 - b B^2\right]\]</span> Applying the chain rule we find that <span class="math display">\[\partial_t r R^2 = 2 r R\, \partial_t R\ \ \ \ \text{and}\ \ \ \partial_t b B^2 = 2 b B\, \partial_t B\ .\]</span> Substituting in <span class="math inline">\(\partial_t R = - b B\)</span> and <span class="math inline">\(\partial_t B = - r R\)</span> gives <span class="math display">\[\partial_t Q(R, B) =  - 2 r b R B + 2 b r  B R = 0\ .\]</span> The conserved quantity <span class="math inline">\(Q(R, B)\)</span> describes an aspect of the battle that goes unchanged over the course of the battle. At any moment, it describes the match between the overall capability of the two armies. That the difference between the capabilities is conserved does not mean the individual capabilities are unchanged in battle. Those capabilities decrease as the army sizes, <span class="math inline">\(R\)</span> and <span class="math inline">\(B\)</span> are reduced. But at any instant in time, the capability of each army is proportional to the <strong>square of the army size</strong>. change The consequence, is that the capability of each army is, at all times,</p>
+<p>To illustrate, consider a battle between two armies of archers. The B-army archers are more skilled: they can fire 12 arrows per minute. The R-army archers can fire at only half the rate—6 arrows per minute. But the R army is twice the size of the B army.</p>
+<p>Are the armies equally matched? It may at first glance seem so, since both armies can fire at the same rate. For instance, if there are 1000 archers in the R army and 500 in the B army, both armies start out capable of firing 6000 arrows per minute. But Lanchester’s Law tells us that the R army is <strong>twice as capable</strong> as the B army: <span class="math inline">\(6 \times 1000^2\)</span> is twice as big as <span class="math inline">\(12 \times 500^2\)</span>.</p>
+<p>To see why the R army is superior, remember that each arrow can take out only one of the opposing archers. For each B arrow that’s on target, the firing rate of R is reduced by 6 arrows per minute. But for each R arrow that hits, the firing rate of B is reduced by 12 arrows per minute. The initial casualty rate for the two armies is the same, but B sees a twice as large reduction in its firing rate.</p>
+<div class="intheworld">
+<p>Frederick William Lanchester (1868-1946) was a British engineer, considered one of the greats of British automotive engineering. But that hardly does justice to him.</p>
+<p>While voyaging across the Atlantic to America, he became captivated by the gliding flight of herring gulls. This led to his development of his circulation theory of flight, a foundation of aerofoil theory. In 1906 he published <em>Aerial Flight</em> containing the first full theory of lift and drag. In <em>Aerodonetics</em> (1908) he developed his phugoid theory of aircraft stability, describing oscillations and stalls.</p>
+<p>In 1914, Lanchester wrote a book-length series of journal articles that were published in 1916 as <em>Aircraft in Warfare: the Dawn of the Fourth Arm</em>. Imagine trying to theorize about a form of conflict that had never been seen!</p>
+<blockquote class="blockquote">
+<p><em>The difficulty … is that in order to get the future into true perspective, it is necessary to be able to look forward along two parallel lines of development—i.e.&nbsp;to visualize the improvement of aircraft possible in the near future as a matter of engineering development, and simultaneously to form a live conception of what this improvement and evolution will open up in the potentialities of the machine as an instrument of war.</em> (p.3)</p>
+</blockquote>
+</div>
+<p>Mathematician Steven Strogatz proposed in the 1990s that similar equations might be used to describe how love between two people varies over time. Strogatz’s equations are usually written with state variables R and J, standing for Romeo and Juliet. Positive values represent love, negative values are hate. And best to think of the model as a cartoon, but a cartoon that captures some of the behavior seen in reality.</p>
+<p>To start, let’s consider a form of love that is really more like warfare:</p>
+<p><span class="math display">\[\partial_t R = -j J\\
+\partial_t J = - r R \ .\]</span> In this pathological relationship, the more Romeo loves Juliet, the faster Juliet’s love decreases toward hate. And <em>vice versa</em>.</p>
+<p>Imagine that, somehow, these two perverse people started out in love: <span class="math inline">\(R(t=0) &gt; 0\)</span> and <span class="math inline">\(J(t=0) &gt; 0\)</span>. As with Lanchester’s Law, both lovers fall increasingly out of love. Depending on the initial intensity of their love and whether or not <span class="math inline">\(jJ^2\)</span> is bigger than <span class="math inline">\(rR^2\)</span> (Lanchester’s conserved quantity), one of the parties will become indifferent, that is, a love level of 0 while the other’s love level is still positive. For the purpose of example, let’s suppose that Juliet is the first to reach indifference. But unlike the warring armies, the love quantity can become negative. As Juliet’s love becomes negative—remember, Romeo still has a positive level of love—then the true perversity of Romeo’s personality becomes apparent. Juliet’s increasing hostility causes Romeo’s love to grow. Without bound, because this is a linear dynamical function. The result is that Juliet’s hate increases even while Romeo’s love increases. But don’t blame Juliet. If Romeo had been the first to reach indifference, Juliet would suffer the unrequited love and Romeo would be villainously hateful.</p>
+<p>Strangely, if Romeo and Juliet started out mutually hating each other, their personalities would still lead to one having unbounded love for the other, who hates their partner without limit.</p>
+<p>A mathematically small change in the Romeo-Juliet dynamical system can lead to a profound change in the outcome. For instance, changing one sign, as in <span class="math display">\[\partial_t R = r J\\
+\partial_t J = - j J\ ,\]</span> produces, as we’ll see, a never-ending cycle of alternating love/hate.</p>
+<p>The two dynamical functions in the previous examples, <span class="math inline">\(-r R\)</span> and <span class="math inline">\(-j J\)</span> are low-order polynomials. A sensible human being might suggest that the constant term in the polynomials should be added, but the cold, analytic mind of the mathematician would see that this would only change the location of the fixed point and not its stability. That suggests that the next more complicated model to consider involves includes both variables in the dynamical function. Like this:</p>
+<p><span class="math display">\[\partial_t R = a R + b J\\
+\partial_t J = c R + d J\ ,\]</span> where the coefficients <span class="math inline">\(a, b, c, d\)</span> might be either positive or negative depending on the personality of the lovers. Analysis of this model will have to await the introduction of new mathematical tools in <a href="B6-eigen.html">Section&nbsp;<span>45</span></a>.</p>
+<p>Whether Strogatz’s love model is realistic or not, it does illustrate a basic idea of model building: start with simple dynamical functions, check out their consequences, then modify the dynamical functions. We’re going to do this now, with the modifications being purely mathematical along the lines of including different terms in low-order polynomial approximations and considering positive and negative coefficients. As you’ll see, the simple models correspond to a surprisingly wide range of behaviors.</p>
+</section>
+<section id="classical-phase-plane-models" class="level2" data-number="43.3">
+<h2 data-number="43.3" class="anchored" data-anchor-id="classical-phase-plane-models"><span class="header-section-number">43.3</span> Classical phase-plane models</h2>
+<p>We have been using the term <strong><em>state space</em></strong> to refer to the set of possible values for the state variables. When there is only one state variable, the state space corresponds to the number line, or perhaps just the positive half of the number line. When there are two state variables, the state space corresponds to the coordinate plane; any point in the plane is a legitimate state for the system.</p>
+<p>Historically, another term is used for the two-variable state space: the <strong><em>phase plane</em></strong>. This is just a matter of terminology, but it is so prevalent that you will occasionally see it mentioned. We don’t use it since dynamical systems can have a state space that is 1, 2, 3, or higher dimensional, but the phrase “phase plane” only works for 2-dimensional state spaces.</p>
+<p>In this section, we’ll look at some famous models that involve two state variables. Out of respect for history, we’ll call these “classical phase plane” models, but this is entirely equivalent to saying “classical dynamical models with two state variables.”</p>
+<p>Our purpose in studying these classical models is two-fold: to show how simple models can make it easier to draw out the consequences of the mechanisms that we think are at work in real-world systems; and to show you how modifications to purely linear models can produce dynamics that are realistic even away from fixed points.</p>
+<p>To start, let’s return to the Rabbit-Fox dynamics models. Classically this is called the <strong><em>predator-prey model</em></strong>. It’s also called the “Lotka-Volterra” model in honor of it’s inventors: American biophysicist <a href="https://en.wikipedia.org/wiki/Alfred_J._Lotka">Alfred Lotka</a> (1880-1949) and Italian mathematical physicist <a href="https://en.wikipedia.org/wiki/Vito_Volterra">Vito Volterra</a> (1860-1940).</p>
+<p>The two first-order differential equations in the Lotka-Volterra model are <span class="math display">\[\partial_t R = \alpha R - \beta F R\\
+\partial_t F = \delta F R - \gamma F\]</span> each of which contains a linear term (<span class="math inline">\(\alpha R\)</span> in the <span class="math inline">\(R\)</span> equation, <span class="math inline">\(\gamma F\)</span> in the F equation). Each equation also contains an <strong><em>interaction</em></strong> term. Here, the mathematical/statistical name for the product of two quantities corresponds nicely with the physical reality that the terms describe what happens to rabbits when they interact with a fox, and similarly what happens to foxes. The parameters <span class="math inline">\(\alpha, \beta, \gamma\)</span>, and <span class="math inline">\(\delta\)</span> can, mathematically, be either positive or negative, but they make sense in terms of rabbits and foxes only if all of them are positive. So the “interaction” is always negative for the rabbits and positive for the foxes.</p>
+<p>Rewriting the model provides a bit of insight: <span class="math display">\[\partial_t R \ = \underbrace{(\alpha - \beta F)}_{k_R} R\\
+\ \\
+\partial_t F = \ \underbrace{(-\gamma + \delta R)}_{k_F} F\ . \]</span> Think about the <span class="math inline">\(k_R\)</span> and <span class="math inline">\(k_F\)</span> terms as the reproduction rates. If the fox population were constant, then the rabbit dynamics would be exponential growth or decay, depending on the sign of <span class="math inline">\(k_R = \alpha - \beta F\)</span>. Similarly, if the rabbit population were constant, the fox dynamics would be exponential decay or growth, depending on the sign of <span class="math inline">\(k_F = -\gamma + \delta R\)</span>.</p>
+<p>The two equations are coupled so that the rabbit population alternating between growth and decay leads the fox population to so alternate, and <em>vice versa</em>.</p>
+</section>
+<section id="epidemic" class="level2 page-columns page-full" data-number="43.4">
+<h2 data-number="43.4" class="anchored" data-anchor-id="epidemic"><span class="header-section-number">43.4</span> Epidemic</h2>
+<p>In a communicable disease, such as COVID-19, the infectious agent is transmitted from an infective person to another person who is susceptible. The time course of an epidemic can be modeled simply with two state variables. We’ll let <span class="math inline">\(S(t)\)</span> be the number of susceptible people and <span class="math inline">\(I(t)\)</span> the number of infective people at any time <span class="math inline">\(t\)</span>.</p>
+<p>The dynamics of the <span class="math inline">\(S\)</span> variable can be simple: <span class="math inline">\(S\)</span> changes when an infective person meets (interacts with!) a susceptible person. That susceptible person, with some probability, becomes infective. So <span class="math display">\[\partial_t S = -\beta S I\ .\]</span> The dynamics of the <span class="math inline">\(I\)</span> variable are a just a little more complicated. First, every person who is converted from susceptible to infective becomes a new infective. This is the <span class="math inline">\(\beta S I\)</span> term in the following differential equation. Second, infectives gradually recover. This is often modeled as a simple <span class="math inline">\(-\alpha I\)</span> term.</p>
+<p><span class="math display">\[\partial_t I = \beta S I - \alpha I\]</span> This is famously called the <strong><em>SIR model</em></strong>, standing for the susceptible, infective, recovered chain of events.</p>
+<p>In the model, recovery means “no longer able to infect.” Thus, a person who has been isolated is considered “recovered,” whether or not they display symptoms of the disease.</p>
+<p>We usually think of recovery in terms of a time span, for instance taking a week to recover. But <span class="math inline">\(\alpha I\)</span> doesn’t work this way. To see why, consider the situation starting on the day that there are no more infective people, that is, <span class="math inline">\(S=0\)</span>. The dynamics from this day forward are simplified: <span class="math inline">\(\partial_t I = =\alpha I\)</span>.</p>
+<p>Of course, the solution to this simplified differential equation is <span class="math inline">\(I(t) = I_0 e^{-\alpha t}\)</span>; the size of the infective group gets smaller exponentially. <a href="#fig-recovery-pattern">Figure&nbsp;<span>43.2</span></a> compares what <span class="math inline">\(I(t)\)</span> would look like if it takes, say, one week to recover and what <span class="math inline">\(I(t)\)</span> looks like under the model’s <span class="math inline">\(\partial_t I = =\alpha I\)</span> dynamics.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-recovery-pattern" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="B6-modeling_files/figure-html/fig-recovery-pattern-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 43.2: Comparing <span class="math inline">\(I(t)\)</span> for the “takes a week to recover” model and the <span class="math inline">\(\partial_t I = -\alpha I\)</span> model.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>To show the dynamics of the SIR model, we need to propose numerical values for <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>. This is not a trivial matter if the goal is to match the dynamics to a particular disease and size of population. For our purposes here, we’ll imagine that <span class="math inline">\(S(0) = 0.999\)</span> and <span class="math inline">\(I(0) = 0.001\)</span>, which is to say we are looking at the <em>proportion</em> of the population that is susceptible or infective.</p>
+<p><a href="#fig-SIR-half-seventh">Figure&nbsp;<span>43.3</span></a> shows the flow field for <span class="math inline">\(\beta = 1/2\)</span> and <span class="math inline">\(\alpha = 1/7\)</span>.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-SIR-half-seventh" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="B6-modeling_files/figure-html/fig-SIR-half-seventh-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 43.3: SIR flow field for <span class="math inline">\(\beta=1/2, \alpha = 1/7\)</span>, and the trajectory for initial conditions <span class="math inline">\(S_0 = 0.999, I_0 = 0.001\)</span>.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="exercises" class="level2" data-number="43.5">
+<h2 data-number="43.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">43.5</span> Exercises</h2>
+<ul>
+<li><p>S-BOXLN: Identify and interpret mechanistically interaction terms in a two-state variable system.</p></li>
+<li><p>WP-205-61: Model and solve population growth problems using the natural and logistic growth models.</p></li>
+<li><p>L-CGDLK: Understand “coupling” and why oscillation requires that the dynamical functions in a two-state variable system must each take the other state variable as an input.</p></li>
+<li><p>X-LG744: Apply dynamics skills and concepts to develop a solution to a complex problem of an interdisciplinary nature.</p></li>
+<li><p>D-OFZHG: Draw the nullcline of a dynamical function using software.</p></li>
+<li><p>X-HGCV2: Find fixed points of a 2nd-order dynamical function by finding the intersection point(s) of the nullclines.</p></li>
+</ul>
+<!--
+EXERCISE: Nerve pulses 
+
+Action potential
+
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1366333/pdf/biophysj00662-0010.pdf
+
+Fitzhugh-Nagumo. $v$ is membrane potential, $w$ is accomodation and refractoriness.
+
+Domain: $-2.5 \leq v \leq 2.5$ and $-1 \leq w \leq 2$, params $I_{\rm {ext}}=0.5,a=0.8,b=0.7, \tau=12.5$
+
+$$\begin{array}{rcl}
+\partial_t {v} & = & v-\frac{v^3}{3} - w + RI_{\rm ext} 
+\\
+\tau \partial_t {w} & = & v+a-b w
+\end{array}
+$$
+-->
+
+
+</section>
+
+</main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../Dynamics/B6-flow-on-plane.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the plane</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../Dynamics/B6-equilibria.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

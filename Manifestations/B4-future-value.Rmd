@@ -1,5 +1,8 @@
 # Present and future value {#sec-future-value}
 
+```{r child="../starter.Rmd"}
+```
+
 Comparison is an important element of human decision making. Often, comparison amounts to translating each of the options at hand into a scalar score. (Recall that a ***scalar*** is just an ordinary quantity, e.g. 73 inches. As we get more deeply involved with ***vectors*** it will become more important to be perfectly clear when we are talking about a vector and when about a scalar. So we'll be using "scalar" a lot.) Scalars are easy to compare; the skill is taught in elementary school. Scalar comparison is completely objective. Putting aside the possibility of error, everyone will agree on which of two numbers is bigger. Importantly, comparison of scalars is ***transitive***, that is if $a > b$ and $b > c$ then it is impossible that $a \leq c$.
 
 The comparison of scalars can be extended to situations where the options available form a continuum and the score for each option $x$ is represented by a function, $f(x)$. As we saw in Chapters `r Chaps$optimization` and @sec-optimization-and-constraint selecting the highest scoring option is a matter of finding the argmax.
@@ -15,19 +18,19 @@ This chapter is about a very common situation where there are multiple attribute
 ::: {.intheworld data-latex=""}
 Consider the situation faced by an entrepreneur who is considering constructing an 8-rental-unit apartment building. The planning and construction process takes time and money. Let's assume that $3,000,000 will 
 be spent over three years to locate a suitable property, get the needed licenses and approvals, and build. For simplicity, we'll model that by a piecewise function $\text{construction}(t)$:
-$$\text{construction}(t) \equiv \left\{\begin{array}{c} 1,000,000\  \text{per year} & \text{for}\ 0 \leq t \leq 3\\0& \text{thereafter.} \end{array} \right.$$
+$$\text{construction}(t) \equiv \left\{\begin{array}{cc} 1,000,000\  \text{per year} & \text{for}\ 0 \leq t \leq 3\\0& \text{thereafter.} \end{array} \right.$$
 Suppose the planned rent will be $3000 per month per apartment. 
 That suggests $36,000 in rental income per apartment each year, 
 but typically there are vacancies or renters who fail to pay, so let's assume $32,000 per unit per year. For the 8-apartments, that's a total 
 rental income of $250,000 per year:
-$$\text{rental}(t) \equiv \left\{\begin{array}{c} 0  & \text{for}\ 0 \leq t \leq 3\\250,000\ \text{per year}& \text{thereafter.} \end{array} \right.$$
+$$\text{rental}(t) \equiv \left\{\begin{array}{cc} 0  & \text{for}\ 0 \leq t \leq 3\\250,000\ \text{per year}& \text{thereafter.} \end{array} \right.$$
 Maintenance is an additional expense. We'll put that as a increasing function of $t$, starting at $50,000 per year
 when the building is complete (at the end of year 3) and rising linearly to $200,000 per year at the end of the 30-year project:
-$$\text{maintenance}(t) \equiv \left\{\begin{array}{c} 0  & \text{for}\ 0 \leq t \leq 3\\33333 + 5556 t\ \ \text{per year}& \text{thereafter.} \end{array} \right.$$
+$$\text{maintenance}(t) \equiv \left\{\begin{array}{cc} 0  & \text{for}\ 0 \leq t \leq 3\\33333 + 5556 t\ \ \text{per year}& \text{thereafter.} \end{array} \right.$$
 
 Finally, assume that the business plan is to sell the building in year 30, at which point it is assumed to be worth $1,000,000:
 
-$$\text{sale}(t) \equiv \left\{\begin{array}{c} 1,000,000\ \text{per year}  & \text{for}\ 29 < t  < 30\\0 & \text{otherwise}\end{array}\right.$$
+$$\text{sale}(t) \equiv \left\{\begin{array}{cc} 1,000,000\ \text{per year}  & \text{for}\ 29 < t  < 30\\0 & \text{otherwise}\end{array}\right.$$
 The income stream stops for $30 < t$.
 
 Altogether, the income stream is $$\text{income}(t) = \text{sale}(t) + \text{rental}(t) - \text{construction}(t) - \text{maintenance}(t)\ .$$ Notice that construction and maintenance are considered as *negative income*. @fig-rental-graph1 shows a graph of $\text{income}(t)$. 
@@ -35,6 +38,7 @@ Altogether, the income stream is $$\text{income}(t) = \text{sale}(t) + \text{ren
 ```{r echo=FALSE, warning=FALSE}
 #| label: fig-rental-graph1
 #| fig-cap: "The income stream for an apartment-building project. Following convention, positive income is \"in the green\", and negative income is \"in the red\"."
+#| fig-cap-location: margin
 construction <- makeFun(ifelse(t < 3 & t > 0, 1e6, 0) ~ t)
 rental <- makeFun(ifelse(3 <= t & t < 30, 2.5e5, 0) ~ t)
 maintenance <- makeFun(ifelse(3 <= t & t < 30, 5e4 + 1.5e5*(t-3)/(30-3), 0) ~ t)
@@ -113,6 +117,7 @@ The entrepreneur goes to the bank with her business plan and financial forecasts
 ```{r echo=FALSE}
 #| label: fig-rental-graph2
 #| fig-cap: "Blue curve: The apartment project income stream discounted at 7% per year. Black curve: The undiscounted income stream."
+#| fig-cap-location: margin
 Rental1 %>%
   slice_plot(total(t)/(1.07^t) ~ t, color="blue", 
              size=2, domain(t=0:30), npts=500)
@@ -152,19 +157,6 @@ $442.09.
 
 
 ## Exercises
-
-`r insert_calcZ_exercise("36.02", "YMoHRB", "Exercises/sheep-toss-roof.Rmd")`
-
-`r insert_calcZ_exercise("36.04", "Dg7Qxv", "Exercises/pig-hurt-closet.Rmd")`
-
-
-
-`r insert_calcZ_exercise("36.06", "paP4qf", "Exercises/cat-teach-kayak.Rmd")` <!--Powerball-->
-
-`r insert_calcZ_exercise("36.08", "tm0XB4", "Exercises/octopus-toss-gloves.Rmd")` <!-- NPV of social security benefits -->
-
-
-`r insert_calcZ_exercise("36.10", "qgt0RV", "Exercises/kangaroo-find-magnet.Rmd")`
 
 
 

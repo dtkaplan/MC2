@@ -35,7 +35,7 @@ What about $A$? Evaluate the solution at $t=0$. This gives $x(0) = A e^{\lambda 
 
 We'll try the same approach with the two-state variable system, but we'll start with a special case where some of the parameters $a, b, c$, and $d$ are zero.
 
-$$\require{cancel}\text{Simplification:}\ \ \  \ \ \begin{array}{l}\partial_t x  = \cancel{ax}  +  b y\\\partial_t y =\ c x + \cancel{dy}\end{array}\ .$$
+$$\text{Simplification:}\ \ \  \ \ \begin{array}{l}\partial_t x  = \cancel{ax}  +  b y\\\partial_t y =\ c x + \cancel{dy}\end{array}\ .$$
 
 In the spirit of exponential ansatze, we might try $$x(t) \equiv C e^{\lambda_1 t} \ \ \text{and}\ \ \ y(t) \equiv D e^{\lambda_2 t}\ .$$
 
@@ -59,15 +59,18 @@ What are $A$ and $B$? That depends on the initial condition. Evaluate both sides
 At this point, you need to look back at the original system of equations. There are two state variables $x$ and $y$ and therefore we need to specify two components of the initial condition. If $x(0)$ is interpreted as the initial **position**, then following the example of the pendulum we can look to the **velocity** $\partial_t x$ as the second component of the initial condition. From $x(t)$ we can easily calculate the velocity:
 $$\partial_t x(t) = \lambda_1 A e^{\lambda_1 t} + \lambda_2 B e^{\lambda_2 t}\ .$$ Again, evaluate this at $t=0$ to get a second equation for the initial condition the pair 
 $$\begin{array}{c}\partial_t x(0)  =   \lambda_1 A  +  \lambda_2 B\\x(0)  = \ \ A \ \  + \ B\\\end{array}\ \ \ \ \implies\ \ \ \ 
- \left[\begin{array}{c}\lambda_1 \ \ \ \ \ \lambda_2\\1 \ \ \ \ \ \  1\end{array}\right] \left[\begin{array}{C}A\\ B\end{array}\right] = \left[\begin{array}{C}\partial_t x(0)\\ x(0)\end{array}\right] .$$
+ \left[\begin{array}{c}\lambda_1 \ \ \ \ \ \lambda_2\\1 \ \ \ \ \ \  1\end{array}\right] \left[\begin{array}{c}A\\ B\end{array}\right] = \left[\begin{array}{c}\partial_t x(0)\\ x(0)\end{array}\right] .$$
 From Block 5, we know how to solve such matrix equations. So, given the initial values $x(0)$ and $\partial_t x(0)$---position and velocity---we can find an exact, quantitative solution to the differential equation. 
 
 ::: {.example data-latex=""}
 $\ $
 
-Let's look at the flow field, some trajectories and their time series for the system $$\partial_t x = b y\\ \partial_t y = c x$$ for $b=1$ and $c=2$.
+@fig-bc-system shows the flow field, some trajectories and their time series for the system $$\partial_t x = b y\\ \partial_t y = c x$$ for $b=1$ and $c=2$.
 
-```{r bc-system, echo=FALSE, fig-cap: "Three trajectories from the system $$\\begin{array}{c}\\partial_t x = y\\\\\\partial_t y = 2 x\\end{array}$$"}
+```{r echo=FALSE}
+#| label: fig-bc-system
+#| fig-cap: "Three trajectories from the system $\\partial_t x = y$ & $\\partial_t y = 2 x$"
+#| fig-cap-location: margin
 t1 <- integrateODE(dx ~ y, dy ~ 2*x, x=-.8, y= 1, tdur=2)
 t2 <- integrateODE(dx ~ y, dy ~ 2*x, x=.70, y= -1, tdur=3.7)
 t3 <- integrateODE(dx ~ y, dy ~ 2*x, x=.72, y= -1, tdur=3.3)
@@ -80,7 +83,10 @@ vectorfield_plot(y ~ x & y, 2*x ~ x & y, domain(x=-1:1, y=-1:1)) %>%
 
 Each of these trajectories starts out by heading toward the fixed point at (0,0). Then, each turns and heads away toward $\pm \infty$ from the fixed point, 
 
-```{r bc-system-ts, echo=FALSE, fig-cap: "The time series $x(t)$ for the three different trajectories in Figure \\@ref(fig:bc-system)."}
+```{r echo=FALSE}
+#| label:  fig-bc-system-ts
+#| fig-cap: "The time series $x(t)$ for the three different trajectories in Figure \\@ref(fig:bc-system)."
+#| fig-cap-location: margin
 traj_plot(x(t) ~ t, t1, color="blue") %>%
 traj_plot(x(t) ~ t, t2, color="magenta") %>%
 traj_plot(x(t) ~ t, t3, color="black") 
@@ -122,16 +128,9 @@ $$\partial_{tt} x = a\, \partial_t x + b\, c\, x + b\, d\, \frac{\partial_t x - 
 Step 4: Use the ansatz $x(t) = e^{\lambda t}$. This produces
 $$\lambda^2 e^{\lambda t}= (a + d) \lambda e^{\lambda t}+ \left(\strut bc - ad\right)e^{\lambda t} \ \ \ \implies\ \ \ \lambda^2 = (a + d) \lambda + \left(\strut bc - ad\right)$$ which can be solved for $\lambda$:
 $$\lambda = \frac{1}{2}\left(a + d\right) \pm \frac{1}{2}\sqrt{\left(a - d\right)^2 - 4 b c}$$
-Again, the $\pm$ is the interesting bit here. There are two simple solutions that satisfy the differential equation: $x_1(t) = e^{\lambda_1 t}$ and $x_2(t) = e^{\lambda_2 t}$. In addition, any linear combination $A e^{\lambda_ t} + B e^{\lambda_2 t}$ of these simple solutions will satisfy the differential equations. Once we know $\lambda_1$ and $\lambda_2$, the situation is identical to the simplified version. Again, knowing the initial condition $x(0)$ and $\partial_t x(0)$ allows us to find the coefficients in the linear combination by solving the matrix equation $$\left[\begin{array}{c}\lambda_1 \ \ \  \lambda_2\\1 \ \ \ \ \ 1\end{array}\right] \left[\begin{array}{C}A\\ B\end{array}\right] = \left[\begin{array}{C}\partial_tx(0)\\  x(0)\end{array}\right] .$$
+Again, the $\pm$ is the interesting bit here. There are two simple solutions that satisfy the differential equation: $x_1(t) = e^{\lambda_1 t}$ and $x_2(t) = e^{\lambda_2 t}$. In addition, any linear combination $A e^{\lambda_ t} + B e^{\lambda_2 t}$ of these simple solutions will satisfy the differential equations. Once we know $\lambda_1$ and $\lambda_2$, the situation is identical to the simplified version. Again, knowing the initial condition $x(0)$ and $\partial_t x(0)$ allows us to find the coefficients in the linear combination by solving the matrix equation $$\left[\begin{array}{c}\lambda_1 \ \ \  \lambda_2\\1 \ \ \ \ \ 1\end{array}\right] \left[\begin{array}{c}A\\ B\end{array}\right] = \left[\begin{array}{c}\partial_tx(0)\\  x(0)\end{array}\right] .$$
 
 
 ## Exercises
 
 
-`r insert_calcZ_exercise("52.03", "adxrU4", "Exercises/fir-meet-shirt.Rmd", skill="WP-103-16 G-PVCX5")`
-
-`r insert_calcZ_exercise("52.05", "EQTdTB", "Exercises/zebra-jump-drawer.Rmd", skill="WP-103-16")`
-
-`r insert_calcZ_exercise("52.07", "O02eVU", "Exercises/owl-tear-fridge.Rmd", skill="X-PWNTT")`
-
-`r insert_calcZ_exercise("52.09", "teoLnD", "Exercises/boy-leave-ship.Rmd", skill="D-BRUPM")`
