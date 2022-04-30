@@ -1,9 +1,7 @@
 # Eigenvalues, eigenvectors {#sec-eigenvalues}
 
-```{r include=FALSE}
-book_file_name <- "block-6/eigenvalues.html"
+```{r child="../starter.Rmd"}
 ```
-
 
 In the previous chapters, you've seen how linear dynamics, when unstable, lead trajectories off to infinity. @sec-modeling-dynamics looked at some ways that nonlinearity can tame instability, as in the simple models of linear growth.
 
@@ -12,7 +10,7 @@ In this chapter, we return to linear dynamics to develop a *quantitative theory 
 ::: {.example data-latex=""}
 ***Cruise control*** is a feature of many modern automobiles. It enables a driver to set a desired speed for the car to follow automatically, thus reducing cognitive load on the driver.
 Early models of cruise control introduced in the 1970s (and still common in 2020) had an extremely simple logic. The speedometer constantly monitors the car's speed $v$. The driver sets a desired speed, which we'll call $v_0$. The cruise control actuator---the mechanism that works to maintain the speed at $v_0$ by, let's say, adjusting the throttle to increase or reduce speed as appropriate---is designed to produce a throttle input proportional to the deviation in actual speed $v$ from the set speed $v_0$.
-$$\text{throttle_input} = -a (v - v_0)\ .$$
+$$\text{throttle-input} = -a (v - v_0)\ .$$
 You can see that when $v = v_0$, the throttle input from the system is zero. When $v_0 < v$, as when starting to go downhill, the throttle input will be negative, reducing the speed. 
 
 A simple model is that the throttle input is proportional to $\partial_t\, v$: positive input increases speed, negative input decreases speed. The overall system is then described by a linear, first-order differential equation $$\partial_t\,v = -a(v-v_0)\ .$$ This equation has a fixed point at $v = v_0$ (as desired). To describe more simply the dynamics around the fixed point, we can define a new dynamical state $y=v - v_0$. Differentiating both sides with respect to time gives $\partial_t y = \partial_t v$, so we can re-write the original differential equation as $$\partial_t y = -a y$$ which has a solution $y(t) = A e^{-at}$ as we've seen before. For any positive coefficient $a$, the control system is stable: a deviation from $v_0$ will be followed by exponential decay back to $v_0$. 
@@ -58,8 +56,10 @@ traj <- integrateODE(dx ~ x + y, dy ~ 2*x, x=-1.1, y=2.1, tdur=2)
 traj_plot(y(t) ~ x(t), traj)
 ```
 
-```{r vec-example-1, echo=FALSE, fig-cap: "The trajectory calculated starting at (-1.1, 2.1). The graph is annotated with the vectors $\\vec{u_1}$ and $\\vec{u_2}$ and the flow field."}
-
+```{r echo=FALSE}
+#| label: vec-example-1
+#| fig-cap: "The trajectory calculated starting at (-1.1, 2.1). The graph is annotated with the vectors $\\vec{u_1}$ and $\\vec{u_2}$ and the flow field."
+#| fig-cap-location: margin
 traj_plot(y(t) ~ x(t), traj, inherit=FALSE, nt=2) %>%
   gf_segment(0 + -3 ~ 0 + 1, color="magenta", inherit=FALSE, arrow=arrow(ends="last", type="closed", length=unit(2, "mm"))) %>%
   gf_segment(0 + 0 ~ 0 + 1, color="blue", inherit=FALSE, arrow=arrow(ends="last",type="closed", length=unit(2, "mm"))) %>%
@@ -85,7 +85,10 @@ traj_u2 <- integrateODE(dx ~ x + y, dy ~ 2*x, x=1, y= 0, tdur=2)
 
 @fig-vec-example-2 shows these trajectories.
 
-```{r vec-example-2, echo=FALSE, fig-cap: "Trajectories from the initial conditions $\\color{magenta}{\\vec{u_1}}$ and $\\color{blue}{\\vec{u_2}}$."}
+```{r echo=FALSE}
+#| label: vec-example-2
+#| fig-cap: "Trajectories from the initial conditions $\\color{magenta}{\\vec{u_1}}$ and $\\color{blue}{\\vec{u_2}}$."
+#| fig-cap-location: margin
 traj_plot(y(t) ~ x(t), traj_u1, color="magenta", nt=1, domain=domain(t=0:1)) %>%
   traj_plot(y(t) ~ x(t), traj_u2, color="blue", nt=1, domain=domain(t=0:1)) %>%
   gf_segment(0 + -3 ~ 0 + 1, color="magenta", inherit=FALSE, arrow=arrow(ends="last", type="closed", length=unit(2, "mm"))) %>%
@@ -135,7 +138,10 @@ The calculation also produces ***eigenvalues***. Here that's $\lambda_1 = 2$ and
 
 We can see what's special about $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$ by plotting them along with the flow field, as in @fig-eigen-flow.
 
-```{r eigen-flow, echo=FALSE, fig-cap: "The eigenvectors for the $\\left[\\begin{array}{cc}1&1\\\\2&0\\end{array}\\right]$ plotted along with the flow."}
+```{r echo=FALSE}
+#| label: fig-eigen-flow
+#| fig-cap: "The eigenvectors for the $\\left[\\begin{array}{cc}1&1\\\\2&0\\end{array}\\right]$ plotted along with the flow."
+#| fig-cap-location: margin
   gf_segment(0 + 0.7072 ~ 0 + 0.7071, color="magenta", inherit=FALSE, arrow=arrow(ends="last", type="closed", length=unit(2, "mm"))) %>%
   gf_segment(0 + 0.8944 ~ 0 + -0.4472, color="blue", inherit=FALSE, arrow=arrow(ends="last",type="closed", length=unit(2, "mm"))) %>%
   flow_field(dx ~ x + y, dy ~ 2*x, domain = domain(x=-1:1, y=-1:1), color="black", npts=15) %>%
@@ -177,18 +183,4 @@ The scalar coefficients $m_1$ and $m_2$ can be found from the initial condition.
 - D-BRUPM: Calculate the eigenvalues of a 2x2 numerical matrix by hand, and larger matrices by computer.
 
 - WP-103-14: Explain the graphical/geometrical interpretation of an eigenvector and eigenvalue and how to compute each for a two-by-two matrix.
-
-`r insert_calcZ_exercise("53.XX", "uA9YI7", "Exercises/dog-rise-window.Rmd", skill="WP-103-14")`
-
-`r insert_calcZ_exercise("53.XX", "OwCtGH", "Exercises/child-buy-drawer.Rmd", skill="WP-103-14")`
-
-`r insert_calcZ_exercise("53.XX", "Rdc7vE", "Exercises/beech-ride-bowl.Rmd", skill="D-BRUPM")`
-
-`r insert_calcZ_exercise("53.XX", "CUfA2c", "Exercises/kangaroo-wear-knife.Rmd", skill="WP-103-16")`
-
-`r insert_calcZ_exercise("54.15", "xkQnvD", "Exercises/spider-hide-cotton.Rmd", skill="D-BRUPM X-DE4WK")`
-
-`r insert_calcZ_exercise("53.21", "PD3CiZ", "Exercises/panda-teach-door.Rmd", skill="WP-103-14")`
-
-`r insert_calcZ_exercise("53.23", "7rxfID", "wolf-tear-bowl.Rmd", skill="D-BRUPM WP-103-16")`
 

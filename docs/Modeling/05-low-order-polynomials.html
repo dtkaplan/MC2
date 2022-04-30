@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.290">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MOSAIC Calculus - 12&nbsp; Low-order polynomials</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<link href="../Modeling/06-operations.html" rel="next">
+<link href="../Modeling/04-fitting-by-eye.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<style>
+.quarto-title-banner {
+  
+}
+</style>
+</head><body class="floating slimcontent"><span class="math inline" style="display: none;">
+\(\newcommand{\line}{\text{line}}
+\newcommand{\hump}{\text{hump}}
+\newcommand{\sigmoid}{\text{sigmoid}}
+\newcommand{\recip}{\text{recip}}
+\newcommand{\diff}[1]{{\cal D}_#1}
+\newcommand{\pnorm}{\text{pnorm}}
+\newcommand{\dnorm}{\text{dnorm}}
+\let\origvec\vec
+\let\origmathit\mathit
+\let\orighat\hat
+\let\origbar\bar
+\newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+\newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+\newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+\newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+\newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+\newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+\newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+\newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+\newcommand{\modeledby}[2]{#1\!\sim\!#2}
+\newcommand{\CC}[1]{\color{#648fff}{#1}}
+\newcommand{\CE}[1]{\color{#785ef0}{#1}}
+\newcommand{\CA}[1]{\color{#dc267f}{#1}}
+\newcommand{\CB}[1]{\color{#fe6100}{#1}}
+\newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+</span>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">MOSAIC Calculus</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/dtkaplan/MC2/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/01-modeling-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">Modeling</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/01-parameters.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/02-assembling-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/03-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/05-low-order-polynomials.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/06-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/07-magnitudes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/08-dimensions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/09-modeling-cycle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling cycle [DRAFT]</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">Differentiation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/16-rate-of-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rate of change</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/17-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Change relationships</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/18-evanescent-h.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/19-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Computing derivatives</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/20-concavity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/21-cont-and-smooth.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/22-rules.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/23-optim.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/24-partial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/25-approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations [DRAFT]</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/26-taylor.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">Vectors and linear combinations</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-Vectors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-linear-combinations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-projection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-target-problem.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-stat-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">Accumulation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/27-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/28-visualizing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/29-integration.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/30-euler.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/31-symbolic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">Dynamics</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-diff-eq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Differential equations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-solution.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Finding a “solution”</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-line.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Flows on the line</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-plane.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the plane</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-equilibria.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-eigen.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-second-order.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Force-balance equations</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">Manifestations</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-splines.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Data-driven functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">50</span>&nbsp; <span class="chapter-title">Probability and evidence</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-future-value.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">51</span>&nbsp; <span class="chapter-title">Present and future value</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-mechanics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">52</span>&nbsp; <span class="chapter-title">Mechanics</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#polynomials" id="toc-polynomials" class="nav-link active" data-scroll-target="#polynomials"> <span class="header-section-number">12.1</span> Polynomials</a></li>
+  <li><a href="#low-order-polynomial-models" id="toc-low-order-polynomial-models" class="nav-link" data-scroll-target="#low-order-polynomial-models"> <span class="header-section-number">12.2</span> Low-order polynomial models</a></li>
+  <li><a href="#eight-simple-shapes" id="toc-eight-simple-shapes" class="nav-link" data-scroll-target="#eight-simple-shapes"> <span class="header-section-number">12.3</span> Eight simple shapes</a></li>
+  <li><a href="#sec-low-order-two" id="toc-sec-low-order-two" class="nav-link" data-scroll-target="#sec-low-order-two"> <span class="header-section-number">12.4</span> Polynomials with two inputs</a></li>
+  <li><a href="#theory-out-of-a-hat" id="toc-theory-out-of-a-hat" class="nav-link" data-scroll-target="#theory-out-of-a-hat"> <span class="header-section-number">12.5</span> Theory out of a hat</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">12.6</span> Exercises</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dtkaplan/MC2/edit/main/Modeling/05-low-order-polynomials.Rmd" class="toc-action">Edit this page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-low-order" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></span></h1>
+</div>
+
+
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>Chapter <a href="04-fitting-by-eye.html">Section&nbsp;<span>11</span></a> looked at the task of modifying a pattern-book function to display a desired pattern, focusing on patterns originating in graphs of data. The procedure involved identifying an appropriate pattern-book function, then using input and output scaling to stretch, flip, and lift that function so that it overlays, as much as possible, the desired pattern.</p>
+<p>In this chapter, we’ll take on a different strategy for constructing appropriately shaped functions using linear combinations of a handful of simple functions: the monomials.</p>
+<section id="polynomials" class="level2 page-columns page-full" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="polynomials"><span class="header-section-number">12.1</span> Polynomials</h2>
+<p>Recall that the monomials are the power-law functions with non-negative, integer exponents: <span class="math inline">\(x^0\)</span>, <span class="math inline">\(x^1\)</span>, <span class="math inline">\(x^2\)</span>, <span class="math inline">\(x^3\)</span>, and so on. The “and so on” refers to even higher integer exponents such as <span class="math inline">\(x^4\)</span> or <span class="math inline">\(x^{51}\)</span> or <span class="math inline">\(x^{213}\)</span>, to name but a few. The more common name for a linear combination of monomials is <strong><em>polynomial</em></strong>.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>The first two terms in the polynomial <span class="math inline">\(g(t)\)</span> could be written using exponents, like this: <span class="math display">\[ g(t) \equiv a_0 t^0 + a_1 t^1 + \cdots\]</span> In practice, nobody writes out explicitly the <span class="math inline">\(t^0\)</span> function. Instead, recognizing that <span class="math inline">\(t^0 = 1\)</span>, we write the first term simply as <span class="math inline">\(a_0\)</span>. Similarly, rather than writing <span class="math inline">\(t^1\)</span> in the second term, we write <span class="math inline">\(a_1 t\)</span>, without the exponent. This practice makes the formulas for polynomials more concise but at the cost of failing to remind the reader that all the functions in the linear combination are monomials.</p>
+</div></div><p>For instance, a fifth-order polynomial consists of a linear combination of monomials up to <strong><em>order</em></strong> 5. That is, up to <span class="math inline">\(x^5\)</span>. This will have six terms because we count the order of the monomials starting with 0. <span class="math display">\[g(t) \equiv a_0 + a_1 t + a_2 t^2 + a_3 t^3 + a_4 t^4 + a_5 t^5\ .\]</span></p>
+<p>The challenge in shaping a polynomial is to find the scalar multipliers—usually called <strong><em>coefficients</em></strong> when it comes to polynomials—that give us the shape we want. This might seem to be a daunting task, and it is for a human. But it can easily be handled using volumes of arithmetic, too much arithmetic for a human to take on but ideally suited for computing machines.</p>
+</section>
+<section id="low-order-polynomial-models" class="level2 page-columns page-full" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="low-order-polynomial-models"><span class="header-section-number">12.2</span> Low-order polynomial models</h2>
+<p>Polynomials in general can show a wide variety of snake-like patterns. A fifth-order polynomial can have up to four internal curves. A tenth-order polynomial can have 9 internal curves, and so. There is, however, rarely a need for generating functions with all those curves. Instead, a great deal of modeling work can be accomplished with just first-order polynomials (no internal curves) or second-order polynomials (one internal curve).</p>
+<p><span class="math display">\[\begin{eqnarray}
+\textbf{First-order: }\ \ \ \ \ &amp; f_1(t) \equiv b_0 + b_1 t\\
+\textbf{Second-order: }\ \ \ \ \ &amp; f_2(t) \equiv c_0 + c_1 t + c_2 t^2
+\end{eqnarray}\]</span></p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Note that we’re using different names for the coefficients in each of the polynomial examples. The only significance of this is a reminder that each of the coefficients can be any number at all and isn’t necessarily related to any of the other coefficients. In addition to the usual <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>, <span class="math inline">\(c\)</span>, we’ve used the Greek alpha, beta, and gamma, that is <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span>, and <span class="math inline">\(\gamma\)</span>. The subscript on the coefficient name indicates which term it belongs to. For instance, the coefficient on the <span class="math inline">\(y^2\)</span> term of the <span class="math inline">\(h_c\)</span> polynomial is named <span class="math inline">\(\gamma_{yy}\)</span> while the coefficient on the <span class="math inline">\(x y\)</span> term has the subscript <span class="math inline">\(_{xy}\)</span>. Always, the coefficients are constant quantities and not functions of <span class="math inline">\(x\)</span> or any other input.</p>
+<p>In high-school mathematics, polynomials are often written without subscript, for instance <span class="math inline">\(a x^2 + b x + c\)</span>. This can be fine when working with only one polynomial at a time, but in modeling we often need to compare multiple, related polynomials.</p>
+</div></div><p>You may prefer to think about a first-order polynomial as a straight-line function. Similarly, a second-order polynomial is also known as a “quadratic” or even a “parabola.” Nonetheless, it’s good to see them as polynomials distinguished by their order. This puts them into a general framework, all of which can be handled by the technology of linear combinations. And polynomials can also involve more than one input. For instance, here are three polynomial forms that involve inputs <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>:</p>
+<p><span class="math display">\[\begin{eqnarray}
+h_a(x, y) &amp;\equiv &amp; \alpha_0 + \alpha_x\, x + \alpha_y\, y\\
+h_b(x, y) &amp;\equiv &amp; \beta_0 + \beta_x\, x + \beta_y\, y + \beta_{xy}\, x y\\
+h_c(x, y) &amp;\equiv &amp; \gamma_0 + \gamma_x\, x + \gamma_y\, y + \gamma_{xy}\, x y + \gamma_{xx}\, x^2 + \gamma_{yy}\, y^2
+\end{eqnarray}\]</span></p>
+<p>The reason to work with first- and second-order polynomials is rooted in the experience of modelers. Second-order polynomials provide a useful amount of flexibility while remaining simple and avoiding pitfalls.</p>
+</section>
+<section id="eight-simple-shapes" class="level2 page-columns page-full" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="eight-simple-shapes"><span class="header-section-number">12.3</span> Eight simple shapes</h2>
+<p>An easy way to think about how to use low-order polynomials in modeling is to think about the shapes of their graphs. <a href="#fig-eight-simple-shapes">Figure&nbsp;<span>12.1</span></a> shows eight simple shapes for functions with a single input that occur often in modeling.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display column-page-inset-right">
+<div id="fig-eight-simple-shapes" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="05-low-order-polynomials_files/figure-html/fig-eight-simple-shapes-1.png" class="img-fluid figure-img" style="width:160.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 12.1: The <strong><em>eight simple shapes</em></strong> of functions with one input.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Recall that Chapter <a href="../Preliminaries/06-describing-functions.html">Section&nbsp;<span>6</span></a> introduced terms such as concavity, monotonicity, and slope for describing functions. To choose among these shapes, consider your modeling context:</p>
+<ul>
+<li>is the relationship positive (slopes up) or negative (slopes down)?</li>
+<li>is the relationship monotonic or not?</li>
+<li>is the relationship concave up, concave down, or neither?</li>
+</ul>
+<p>Each of the eight simple shapes corresponds to a particular set of answers to these equations. Consider these modeling contexts as examples:</p>
+<ul>
+<li><p>How many minutes can you run as a function of speed? Concave down and downward sloping: Shape (F). In everyday terms, you wear out faster if you run at high speed.</p></li>
+<li><p>How much fuel is consumed by an aircraft as a function of distance? For long flights, the function is concave up and positive sloping: Shape (D). In everyday terms: fuel use increases with distance, but the amount of fuel you have to carry also increases with distance. A heavy aircraft uses more fuel per mile.</p></li>
+<li><p>How far can you walk as a function of time? Steep-then-shallow and concave down: Shape (E). Your pace slows as you get tired.</p></li>
+<li><p>How does the stew taste as a function of saltiness? There’s a local maximum: Shape (H). The taste improves as the amount of salt increases … up to a point. Too much salt and the stew is unpalatable.</p></li>
+<li><p>The incidence of an out-of-control epidemic versus time is concave up, but shallow-then-steep. As the epidemic is brought under control, the decline is steep-then-shallow and concave up. Over the whole course of an epidemic, there is a maximum incidence. Experience shows that epidemics can have a phase where incidence reaches a local minimum: a decline as people practice social distancing followed by an increase as people become complacent.</p></li>
+<li><p>In micro-economic theory there are <strong><em>production functions</em></strong> that describe how much of a good is produced at any given price, and <strong><em>demand functions</em></strong> that describe how much of the good will be purchased as a function of price. As a rule, production increases with price and demand decreases with price.</p></li>
+<li><p>In the short term, production functions tend to be concave down, since it’s hard to squeeze increased production out of existing facilities. Production functions are Shape (E).</p>
+<ul>
+<li>For demand in the short term, functions will be concave up when there is some group of consumers who have no other choice than to buy the product. Downward sloping and concave up: Shape (C). In the long term, consumption functions can be concave down as consumers find alternatives to the high-priced good. For example, high prices of gasoline may, in the long term, prompt a switch to more efficient cars, hybrids, or electric vehicles. This will push demand down steeply.</li>
+</ul></li>
+</ul>
+<p>Remarkably, all the eight simple shapes can be generated by appropriate choices for the coefficients in a second-order polynomial: <span class="math inline">\(g(x) = a_0 + a_1 x + a_2 x^2\)</span>. So long as <span class="math inline">\(a_2 \neq 0\)</span>, the graph of the second-order polynomial will be a parabola.</p>
+<ul>
+<li>The parabola opens upward if <span class="math inline">\(0 &lt; a_2\)</span>. That’s the shape of a <strong><em>local minimum</em></strong>.</li>
+<li>The parabola opens downward if <span class="math inline">\(a_2 &lt; 0\)</span>. That’s the shape of a <strong><em>local maximum</em></strong></li>
+</ul>
+<p>Consider what happens if <span class="math inline">\(a_2 = 0\)</span>. The function becomes simply <span class="math inline">\(a_0 + a_1\, x\)</span>, the straight-line function.</p>
+<ul>
+<li>When <span class="math inline">\(0 &lt; a_1\)</span> the line slopes upward.</li>
+<li>When <span class="math inline">\(a_1 &lt; 0\)</span> the line slopes downward.</li>
+</ul>
+<p>To produce the steep-then-shallow or shallow-then-steep shapes, you also need to restrict the function domain to be on one side or another of the turning point of the parabola as shown in <a href="../Differentiation/25-approximation.html#fig-four-shapes">Figure&nbsp;<span>26.3</span></a>.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div id="fig-four-shapes" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="05-low-order-polynomials_files/figure-html/fig-four-shapes-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 12.2: Four of the <strong><em>eight simple shapes</em></strong> correspond to the sides of the parabola. The labels refer to the graphs in <a href="#fig-eight-simple-shapes">Figure&nbsp;<span>12.1</span></a>.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-low-order-two" class="level2 page-columns page-full" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="sec-low-order-two"><span class="header-section-number">12.4</span> Polynomials with two inputs</h2>
+<p>For functions with two inputs, the low-order polynomial approximation looks like this:</p>
+<p><span class="math display">\[g(x, y) \equiv a_0 + a_x x + a_y y + a_{xy} x y + a_{yy} y^2 + a_{xx} x^2\]</span></p>
+<p>It helps to have different names for the various terms. It’s not too bad to say something like, “the <span class="math inline">\(a_{xy}\)</span> term.” (Pronunciation: “a sub x y” or “a x y”) But the proper names are: <strong><em>linear terms</em></strong>, <strong><em>quadratic terms</em></strong>, and <strong><em>interaction term</em></strong>. And a shout out to <span class="math inline">\(a_0\)</span>, the <strong><em>constant term</em></strong>.</p>
+<p><span class="math display">\[g(x, y) \equiv a_0 + \underbrace{a_x x + a_y y}_\text{linear terms} \ \ \ +
+\underbrace{a_{xy} x y}_\text{interaction term} +\ \ \  \underbrace{a_{yy} y^2 + a_{xx} x^2}_\text{quadratic terms}\]</span></p>
+<p>The interaction term arises in models of phenomena such as the spread of epidemics, the population dynamics of predator and prey animals, and the rates of chemical reactions. In each of these situations, one thing is interacting with another: a predator killing a prey animal, an infective individual meeting a person susceptible to the disease, one chemical compound reacting with another.</p>
+<p>Under certain circumstances, modelers include one or both <strong><em>quadratic terms</em></strong>, as in <span class="math display">\[h_3(x, y) \equiv c_0 + c_x\, x + c_y\, y + c_{xy}\,x\, y + \underbrace{c_{yy}\, y^2}_\text{quadratic in y}\]</span> The skilled modeler can often deduce which terms to include from basic facts about the system being modeled. We’ll need some additional calculus concepts before we can explain this straightforwardly.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+
+</div>
+<p>A second-order polynomial with two inputs can take on any one of three shapes: a bowl, a hilltop, or a saddle.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display column-page-inset-right">
+<div id="fig-xy-poly-graph" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="05-low-order-polynomials_files/figure-html/fig-xy-poly-graph-1.png" class="img-fluid figure-img" style="width:150.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 12.3: The three forms for a second-order polynomial with two inputs.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Other shapes for modeling can be extracted from these three basic shapes. For example, the lower-right quadrant of the Saddle has the shape of seats in an amphitheater.</p>
+</section>
+<section id="theory-out-of-a-hat" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="theory-out-of-a-hat"><span class="header-section-number">12.5</span> Theory out of a hat</h2>
+<p>The start of Chapter <a href="04-fitting-by-eye.html">Section&nbsp;<span>11</span></a> introduced a little mystery. Newton introduced his Law of Cooling in the 17th century: The rate at which an object cools depends on the difference in temperature between the object and its ambient environment. But in the 17th century, there was no precise way to measure a rate of temperature change. So how did Newton do it?</p>
+<p>Even with primitive thermometers, one can confirm that a mug of hot water will cool and a glass of cold water will warm to room temperature and stay there. So Newton could deduce that the rate of temperature change is zero when the object’s temperature is the same as the environment. Similarly, it’s easy to observe with a primitive thermometer that a big difference in temperature between an object and its environment produces a rapid change in temperature, even if you can’t measure the rate precisely. So the rate of cooling is a function of the temperature difference <span class="math inline">\(\Delta T\)</span> between object and environment.</p>
+<p>What kind of function?</p>
+<p>Low-order polynomials to the rescue! The simplest model is that the rate of cooling will be <span class="math inline">\(a_0 + a_1 \Delta T\)</span>, a first-order polynomial. But we know that the rate of cooling is zero when <span class="math inline">\(\Delta T = 0\)</span>, implying that <span class="math inline">\(a_0=0\)</span>. All that’s left is the first-order term <span class="math inline">\(\Delta T\)</span>, which you can recognize as the proportional() function.</p>
+</section>
+<section id="exercises" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="exercises"><span class="header-section-number">12.6</span> Exercises</h2>
+<p>&lt;!– Drill</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part i</strong> In the polynomial <span class="math inline">\(a_0 + a_x x + a_y y + a_{xy} xy\)</span>, what is the term <span class="math inline">\(a_{xy}xy\)</span> called?</p>
+<p>Constant term Quadratic termInteraction term Linear term</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part ii</strong> In the polynomial <span class="math inline">\(a_0 + a_x x + a_y y + a_{xx} xx\)</span>, what is the coefficient on the interaction term?</p>
+<p><span class="math inline">\(a_0\)</span><span class="math inline">\(a_{xy}\)</span>0<span class="math inline">\(a_{xx}\)</span></p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part iii</strong> Imagine a second-order polynomial in three inputs: <span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span>, and <span class="math inline">\(z\)</span>, like this: <span class="math display">\[b_0 + b_x x + b_y y + b_z z + b_{xy} xy + b_{xz} xz + b_{xx} x^2 + b_{yy} y^2 + b_zz z^2\ .\]</span> All of the possible second-order (or less) terms are shown, except for one. Which term is missing?</p>
+<ol type="a">
+<li>the constant term</li>
+<li>the quadratic term in <span class="math inline">\(z\)</span></li>
+<li>the interaction between <span class="math inline">\(y\)</span> and <span class="math inline">\(z\)</span></li>
+<li>the linear term in <span class="math inline">\(y\)</span></li>
+</ol>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../Modeling/04-fitting-by-eye.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../Modeling/06-operations.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,7 +1,6 @@
 # Flows on the line {#sec-flow-on-line}
 
-```{r include=FALSE}
-book_file_name <- "block-6/flow-on-line.html"
+```{r child="../starter.Rmd"}
 ```
 
 The previous two chapters presented ideas relating to dynamical systems: state, state-space, dynamical function, flow, trajectory, "solution." Now we turn to the some of the phenomena seen in dynamical systems, starting in the simplest way possible: dynamical systems with a single state variable. We'll focus on ***fixed points*** and their ***stability***, which can be understood qualitatively (although you need to distinguish between a positive and a negative slope). Then we'll look at a technique we have encountered since Block 2: approximation of a function by a straight-line function. Such linear dynamics have a straightforward exponential "solution."
@@ -18,7 +17,10 @@ For ease of reference, we'll name the dynamical function for the rest of this se
 
 The flow itself appears as the example in @fig-phase-line-intro. The state space is the number line and the flow vectors are, as usual arrows that point from place to place in the state space.
 
-```{r phase-line-intro, echo=FALSE, fig-cap: "A one-dimensional state space shown with its flow vectors."}
+```{r echo=FALSE}
+#| label: fig-phase-line-intro
+#| fig-cap: "A one-dimensional state space shown with its flow vectors."
+#| fig-cap-location: margin
 raw <- rfun( ~ x, seed=920)
 Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-4:4),
                    nix_dyn=TRUE, narrows=25,
@@ -26,7 +28,10 @@ Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-4:4),
 ```
 Because the state space can be drawn without using the vertical coordinate of the page, we can use that vertical coordinate to show something else: the dynamical function, as in @fig-phase-line-intro2.
 
-```{r phase-line-intro2, echo=FALSE, fig-cap: "A one-dimensional state space shown with its flow vectors."}
+```{r echo=FALSE}
+#| label: fig-phase-line-intro2
+#| fig-cap: "A one-dimensional state space shown with its flow vectors."
+#| fig-cap-location: margin
 raw <- rfun( ~ x, seed=920)
 Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-4:4), 
                    nix_dyn=FALSE, 
@@ -40,7 +45,10 @@ Near a zero crossing of the dynamical function, the flow arrows are negligibly s
 
 We can see the dynamics near fixed points more closely by zooming in, as in @fig-phase-line-intro3 which shows two of the system's fixed points.
 
-```{r phase-line-intro3, echo=FALSE, fig-cap: "Zooming in on the flow for the system shown in Figure \\@ref(fig:phase-line-intro2)."}
+```{r echo=FALSE}
+#| label: fig-phase-line-intro3
+#| fig-cap: "Zooming in on the flow for the system shown in \\@fig-phase-line-intro2."
+#| fig-cap-location: margin
 raw <- rfun( ~ x, seed=920)
 Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-3.5:-1.25), 
                    nix_dyn=FALSE, 
@@ -51,16 +59,19 @@ Notice in @fig-phase-line-intro3 that the flow is slower the nearer the state is
 
 A calculus technique you will be familiar with from previous Blocks is zooming in a region that we want to examine in detail. 
 
-```{r phase-line-zoom1, echo=FALSE, fig-cap: "Zooming in closely on each of the fixed points seen in Figure \\@ref(fig:phase-line-intro3).", out-width: "50%", fig.show="keep"}
+```{r echo=FALSE}
+#| label: fig-phase-line-zoom1
+#| fig-cap: "Zooming in closely on each of the fixed points seen in \\@fig-phase-line-intro3."
 raw <- rfun( ~ x, seed=920)
-Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-3.07:-3.05), 
+pA <- Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-3.07:-3.05), 
                    nix_dyn=FALSE, 
                    narrows=15, 
                    transform=function(x) x^1.03) 
-Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-1.59:-1.58), 
+pB <- Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-1.59:-1.58), 
                    nix_dyn=FALSE, 
                    narrows=15, 
                    transform=function(x) x^1.03) 
+gridExtra::grid.arrange(pA, pB, ncol=2)
 ```
 
 The short pieces of the dynamical function shown in @fig-phase-line-zoom1, are, like short pieces of any continuous function: almost exactly straight lines. For the left fixed point, the dynamical function is $f(x) \approx -2.804 (x + 3.055)$ while for the right it is $f(x) \approx 5.065 (x + 1.586)$. In Section \@ref(symbolic-solutions-ODE) we found symbolically the solutions for dynamical functions in this form. 
@@ -74,19 +85,28 @@ How about also showing trajectories? Unfortunately, the two-dimensional extent o
 
 Major Austin Davis developed such a display, using ***time*** as the third dimension. In the movie below, the state space is shown as a horizontal line, as before. The vertical axis shows the dynamical function as in @fig-phase-line-intro2. The dynamical function is shown in another way: as the hue and intensity of color, which lets you focus on the activity in the state space. This activity is shown by the moving gray triangles. Each triangle is placed on the phase line to mark an initial condition, then moves right or left according to the dynamics.
 
+```{asis eval=knitr::is_html_output()}
 <video controls width="500">
     <source src="www/Stability-Animation.mp4"
             type="video/mp4">
 
     Sorry, your browser doesn't support mp4 videos.
 </video>
+```
+
+```{asis eval=knitr::is_latex_output()}
+Need to provide a link to movie for PDF output.
+```
 :::
 
 ## Generic behavior
 
 So long as two dynamical systems  have similar fixed points with the same stability, their trajectories will be much the same. For example, our model dynamical function might be  different in detail, as in @fig-phase-line-random, and still produce the same behavior.
 
-```{r phase-line-random, echo=FALSE, fig-cap: "The dynamical function shown in black is a distortion of $f(x)$ from the previous plots. Yet the flow field is practically identical and leads to the same outcomes as $f(x)$ for any initial condition."}
+```{r echo=FALSE}
+#| label: fig-phase-line-random
+#| fig-cap: "The dynamical function shown in black is a distortion of $f(x)$ from the previous plots. Yet the flow field is practically identical and leads to the same outcomes as $f(x)$ for any initial condition."
+#| fig-cap-location: margin
 Pts <- tibble::tibble(x=seq(-4,4,length=100),
                       y=rnorm(length(x))/2)
 raw <- rfun( ~ x, seed=920)
@@ -101,7 +121,10 @@ So long as two flows have similar fixed points with the same stability, their tr
 
 For example, @fig-many-trajs-1 shows a score of different time series following the solutions from a score of initial conditions. The long-term behaviors for all the time series is similar: they converge to one or another of the stable fixed points.
 
-```{r many-trajs-1, echo=FALSE, fig-cap: "Time series from the differential equation $\\partial_t x = f(x)$ starting at many initial conditions. The locations of the three fixed points are marked with horizontal lines. All the solutions convert to one or the other of the two stable fixed points in the system, and depart from the unstable fixed point."}
+```{r echo=FALSE}
+#| label: fig-many-trajs-1
+#| fig-cap: "Time series from the differential equation $\\partial_t x = f(x)$ starting at many initial conditions. The locations of the three fixed points are marked with horizontal lines. All the solutions convert to one or the other of the two stable fixed points in the system, and depart from the unstable fixed point."
+#| fig-cap-location: margin
 raw <- rfun( ~ x, seed=920)
 Pts <- tibble(
   x = seq(-4, 4, length=100),
@@ -224,48 +247,55 @@ This biomass production model corresponds to a sustainable system. Once the biom
 
 But biomass production is not the only thing going on in the pasture. The grazing animals---let's imagine they are cows---are consuming the grass. To start very simply, suppose that each cow consumes amount $C$ of biomass each day. If there are $H$ cows, the total consumption is $H C$ per day. This modifies the dynamics to a slightly new form $$\partial_t v = r \,v(1-\frac{v}{K}) - HC$$. The original, ungrazed dynamics are compared with the grazed dynamics in @fig-grazing-comparison.
 
-```{r grazing-comparison, echo=FALSE, fig-cap: "Comparing the pasture dynamics for different herd sizes.", out-width: "50%", fig.show="keep", warning=FALSE, message=FALSE}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+#| label: fig-grazing-comparison
+#| fig-cap: "Comparing the pasture dynamics for different herd sizes." #| fig-cap-location: margin
 r = .3; K=10; C=0.1; H=3
-Znotes::phase_line(r*x*(1-x/K) ~ x, 
+pA <- Znotes::phase_line(r*x*(1-x/K) ~ x, 
                    domain(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="Ungrazed pasture dynamics", x="",
           y = "Daily change in biomass") %>%
   gf_lims(y=c(-1,1))
-Znotes::phase_line(r*x*(1-x/K) -H*C~ x, 
+pB <- Znotes::phase_line(r*x*(1-x/K) -H*C~ x, 
                    domain(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="3 cows grazing", x="",
           y = "") %>%
   gf_lims(y=c(-1,1))
-Znotes::phase_line(r*x*(1-x/K) - 7*C~ x, 
+pC <- Znotes::phase_line(r*x*(1-x/K) - 7*C~ x, 
                    domain(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="7 cows grazing", x="v (biomass of vegetation)",
           y = "Daily change in biomass") %>%
   gf_lims(y=c(-1,1))
-Znotes::phase_line(r*x*(1-x/K) - 8*C~ x, 
+pD <- Znotes::phase_line(r*x*(1-x/K) - 8*C~ x, 
                    domain(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="8 cows grazing", x="v (biomass of vegetation)",
           y = "") %>%
   gf_lims(y=c(-1,1))
+gridExtra::grid.arrange(pA, pB, pC, pD, ncol=2)
 ```
 With grazing, the ***net*** growth of biomass is reduced due to the removal of the consumed biomass by the cows' consumption. For a moderate herd size, there is still a stable fixed point, but it is at a lower level of biomass than would be seen in the ungrazed field. But if the herd size is too large, the ecosystem completely collapses.
 
 This is an example of a tipping point or catastrophe. For moderate herd sizes, there remains a stable fixed point. A farmer might be tempted to add another cow to the pasture, and that's sustainable: there is still a stable fixed point. Indeed, the movement of the stable fixed point might not even be noticed.  But add even one cow too many and the fixed point entirely disappears. Still, herd management can fix the problem; take away the cow that tipped the pasture and the fixed point will return.
 
-::: {.mathintheworld data-latex=""}
+::: {.intheworld data-latex=""}
 We've often referred to the ***modeling cycle***, using the results of a model to suggest possible improvements in the model.
 
 Missing from the pasture model is a simple idea of how cows eat. If there is very little biomass, the cows can't continue to eat their fill. Will the reduction in consumption per cow preserve the stable fixed point?
 
 In his *Nature* article, May modeled the consumption rate by a single cow with the functional form $$C(v) \equiv \frac{\beta v^2}{v_0 - v^2}$$ which is graphed for $\beta=0.1$ and $v_0 = 3$ in @fig-cow-consumption
-```{r cow-consumption, fig-cap: "Consumption of vegetation by a single cow as a function of the amount available in the pasture."}
+
+```{r}
+#| label: fig-cow-consumption
+#| fig-cap: "Consumption of vegetation by a single cow as a function of the amount available in the pasture."
+#| fig-cap-location: margin
 consumption <- makeFun((beta*v^2/(v0^2 + v^2))~ v, beta=0.1, v0=1)
 slice_plot(consumption(v) ~ v, domain(v=0:10)) %>%
   gf_labs(y="Consumption (tons/day)", x="v: available biomass (tons)")
@@ -274,37 +304,41 @@ You can recognize this as a form of sigmoid. When the amount of vegetation is ve
 
 @fig-grazing-comparison2 modifies the pasture dynamics to incorporate this sigmoidal model of consumption.
 
-```{r grazing-comparison2, echo=FALSE, fig-cap: "Pasture dynamics for a sigmoidal consumption function.", out-width: "50%", fig.show="keep", warning=FALSE, message=FALSE}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+#| label: fig-grazing-comparison2
+#| fig-cap: "Pasture dynamics for a sigmoidal consumption function."
+#| fig-cap-location: margin
 consumption <- makeFun(0.1*v^2/(1+v^2) ~ v)
 r = .3; K=10; C=0.1; H=3
-Znotes::phase_line(r*x*(1-x/K) -3*consumption(x)~ x, 
+pA <- Znotes::phase_line(r*x*(1-x/K) -3*consumption(x)~ x, 
                    domain(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="3 cows grazing", x="",
           y = "Daily change in biomass") %>%
   gf_lims(y=c(-1,1))
-Znotes::phase_line(r*x*(1-x/K) -5*consumption(x)~ x, 
+pB <- Znotes::phase_line(r*x*(1-x/K) -5*consumption(x)~ x, 
                    domain(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="5 cows grazing", x="",
           y = "") %>%
   gf_lims(y=c(-1,0.5))
-Znotes::phase_line(r*x*(1-x/K) - 7*consumption(x)~ x, 
+pC <- Znotes::phase_line(r*x*(1-x/K) - 7*consumption(x)~ x, 
                    domain(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="7 cows grazing", x="v (biomass of vegetation)",
           y = "Daily change in biomass") %>%
   gf_lims(y=c(-1,0.5))
-Znotes::phase_line(r*x*(1-x/K) - 8*consumption(x)~ x, 
+pD <- Znotes::phase_line(r*x*(1-x/K) - 8*consumption(x)~ x, 
                    domain(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="8 cows grazing", x="v (biomass of vegetation)",
           y = "") %>%
   gf_lims(y=c(-1,0.5))
+gridExtra::grid.arrange(pA, pB, pC, pD, ncol=2)
 ```
 
 We can start the story with 3 cows in the pasture. Vegetation growth is more than sufficient to provide for these cows. You can see this from the stable fixed point at about 9 tons of biomass, which is more than enough to reach saturation of the sigmoidal consumption function. 
@@ -352,49 +386,3 @@ Avoiding such catastrophes is a major motivation for mathematical modeling.
 Still relevant ...
 
 - N-O88YI: From a trajectory drawn on a graph of a flow field, construct a plausible time-series plot
-
-`r insert_calcZ_exercise("49.01", "RdgPMo", "Exercises/maple-bring-plant.Rmd", skill="V-YGS71 J-YOLEG")`
-
-`r insert_calcZ_exercise("49.03", "aCMm4M", "Exercises/squirrel-break-tv.Rmd", skill="J-YOLEG")`
-
-`r insert_calcZ_exercise("49.05", "26PFIN", "Exercises/bird-meet-sheet.Rmd", skill="F-QSK86 V-YGS71")`
-
-`r insert_calcZ_exercise("49.07", "owYlop", "Exercises/finch-write-fridge.Rmd", skill="X-MO2V8")`
-
-`r insert_calcZ_exercise("49.09", "pgjnB1", "Exercises/giraffe-feel-blanket.Rmd", skill="X-DE4WK")`
-
-`r insert_calcZ_exercise("49.11", "kNlQjd", "Exercises/aspen-ride-knob.Rmd", skill="L-ZPTTA")`
-
-`r insert_calcZ_exercise("49.13", "a0w5RG", "Exercises/ape-stand-bowl.Rmd", skill="N-O88YI")`
-
-`r insert_calcZ_exercise("49.15", "EBO7nv", "Exercises/lamb-know-saucer.Rmd", skill="L-ZPDIJ")`
-
-`r insert_calcZ_exercise("49.17", "fFZUA5", "Exercises/doe-have-piano.Rmd", skill="L-ZPDIJ")`
-
-`r insert_calcZ_exercise("49.19", "136TO6", "Exercises/ash-look-sofa.Rmd", skill="J-YOLEG")`
-
-`r insert_calcZ_exercise("49.21", "cAKQiT", "Exercises/hamster-dive-window.Rmd", skill="L-ZPDIJ")`
-
-`r insert_calcZ_exercise("49.23", "L6hTUu", "Exercises/pine-win-oven.Rmd", skill="V-YGS71")`
-
-`r insert_calcZ_exercise("49.25", "61zaad", "Exercises/calf-dive-pot.Rmd", skill="J-YOLEG V-YGS71")`
-
-`r insert_calcZ_exercise("49.27", "qd50WJ", "Exercises/bird-grow-sheet.Rmd", skill="J-YOLEG V-YGS71")`
-
-`r insert_calcZ_exercise("49.29", "9qOKUM", "Exercises/spruce-fall-mug.Rmd")`
-
-<!-- draw a dynamical function -->
-`r insert_calcZ_exercise("49.31", "FUIt1Q", "Exercises/spider-find-book.Rmd")`
-
-`r insert_calcZ_exercise("49.33", "VCWRBs", "Exercises/seal-fly-socks.Rmd", skill="J-YOLEG")`
-
-<!-- road example which was removed from the chapter.
-
-`insert_calcZ_exercise("49.XX", "9aVYdV", "Exercises/dolphin-hang-dish.Rmd")`
---> 
-
-
-
-<!-- duplicates bird-grow-sheet 
-`insert_calcZ_exercise("49.XX", "oKNNim", "Exercises/lobster-go-lamp.Rmd", skill="J-YOLEG V-YGS71")`
--->

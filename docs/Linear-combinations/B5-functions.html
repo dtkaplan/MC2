@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.290">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MOSAIC Calculus - 33&nbsp; Functions as vectors</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<link href="../accumulation-part.html" rel="next">
+<link href="../Linear-combinations/B5-stat-modeling.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<style>
+.quarto-title-banner {
+  
+}
+</style>
+</head><body class="floating"><span class="math inline" style="display: none;">
+\(\newcommand{\line}{\text{line}}
+\newcommand{\hump}{\text{hump}}
+\newcommand{\sigmoid}{\text{sigmoid}}
+\newcommand{\recip}{\text{recip}}
+\newcommand{\diff}[1]{{\cal D}_#1}
+\newcommand{\pnorm}{\text{pnorm}}
+\newcommand{\dnorm}{\text{dnorm}}
+\let\origvec\vec
+\let\origmathit\mathit
+\let\orighat\hat
+\let\origbar\bar
+\newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+\newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+\newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+\newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+\newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+\newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+\newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+\newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+\newcommand{\modeledby}[2]{#1\!\sim\!#2}
+\newcommand{\CC}[1]{\color{#648fff}{#1}}
+\newcommand{\CE}[1]{\color{#785ef0}{#1}}
+\newcommand{\CA}[1]{\color{#dc267f}{#1}}
+\newcommand{\CB}[1]{\color{#fe6100}{#1}}
+\newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+</span>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">MOSAIC Calculus</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/dtkaplan/MC2/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/01-modeling-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">Modeling</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/01-parameters.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/02-assembling-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/03-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/05-low-order-polynomials.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/06-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/07-magnitudes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/08-dimensions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/09-modeling-cycle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling cycle [DRAFT]</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">Differentiation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/16-rate-of-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rate of change</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/17-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Change relationships</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/18-evanescent-h.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/19-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Computing derivatives</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/20-concavity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/21-cont-and-smooth.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/22-rules.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/23-optim.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/24-partial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/25-approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations [DRAFT]</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/26-taylor.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">Vectors and linear combinations</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-Vectors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-linear-combinations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-projection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-target-problem.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-stat-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-functions.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">Accumulation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/27-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/28-visualizing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/29-integration.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/30-euler.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/31-symbolic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">Dynamics</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-diff-eq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Differential equations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-solution.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Finding a “solution”</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-line.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Flows on the line</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-plane.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the plane</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-equilibria.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-eigen.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-second-order.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Force-balance equations</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">Manifestations</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-splines.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Data-driven functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">50</span>&nbsp; <span class="chapter-title">Probability and evidence</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-future-value.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">51</span>&nbsp; <span class="chapter-title">Present and future value</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-mechanics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">52</span>&nbsp; <span class="chapter-title">Mechanics</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#dot-product-for-functions" id="toc-dot-product-for-functions" class="nav-link active" data-scroll-target="#dot-product-for-functions"> <span class="header-section-number">33.1</span> Dot product for functions</a></li>
+  <li><a href="#sinusoids-as-vectors" id="toc-sinusoids-as-vectors" class="nav-link" data-scroll-target="#sinusoids-as-vectors"> <span class="header-section-number">33.2</span> Sinusoids as vectors</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">33.3</span> Exercises</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dtkaplan/MC2/edit/main/Linear-combinations/B5-functions.Rmd" class="toc-action">Edit this page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-functions-as-vectors" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></span></h1>
+</div>
+
+
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>Starting with <span class="quarto-unresolved-ref">?sec-vectors</span>, we have been working with the <strong><em>dot product</em></strong>, an operation that combines two vectors to produce a scalar. <span class="math display">\[\vec{b}\bullet\vec{a} \equiv
+\left[\begin{array}{c}b_1\\b_2\\\vdots\\b_n\end{array}\right] \bullet
+\left[\begin{array}{c}a_1\\a_2\\\vdots\\a_n\end{array}\right] \equiv b_1 a_1 + b_2 a_2 + \cdots b_n a_n\]</span> The dot product enables us to use arithmetic to calculate geometric properties of vectors, even in high dimensional spaces that are out of reach of a ruler or protractor. For instance</p>
+<ul>
+<li>length: <span class="math inline">\(\|\vec{a}\| = \sqrt{\strut\vec{a}\bullet\vec{a}}\)</span></li>
+<li>included angle: <span class="math display">\[\cos(\theta_{ab}) = \left[\vec{a}\bullet\vec{b}\right] / \left[\sqrt{\strut \strut\vec{a}\bullet\vec{a}}\sqrt{\strut \strut\vec{b}\bullet\vec{b}}\right]\]</span></li>
+<li>projection onto <span class="math inline">\(\vec{a}\)</span>: <span class="math display">\[\text{model vector:}\ \ \hat{b} = \left[\vec{b} \bullet \vec{a}\right] \,\vec{a} / {\len{a}^2} = \left[\vec{b} \bullet \vec{a} {\LARGE/} \vec{a} \bullet \vec{a}\right]\  \vec{a}.\]</span></li>
+</ul>
+<p>We used such operations to solve the <strong><em>target problem</em></strong>: finding the best approximation of a vector <span class="math inline">\(\vec{b}\)</span> as a linear combination of a set of vectors in a matrix <span class="math inline">\(\mathit{A}\)</span>.</p>
+<p>As early as Block 1, we constructed functions as a linear combination of other functions, for example: <span class="math display">\[g(t) \equiv A + B \sin\left(\frac{2 \pi}{P} t\right)\]</span> where <span class="math inline">\(A\)</span> is the scalar multiplier for the function <span class="math inline">\(\text{one}(t) \equiv 1\)</span> and <span class="math inline">\(B\)</span> the scalar multiplier for the sinusoid of period <span class="math inline">\(P\)</span>.</p>
+<p>We’re going to revisit the idea of linear combinations of functions using our new tools of length, included angle, and projection. To do this, we need to have a definition of the dot product suitable for application to functions.</p>
+<section id="dot-product-for-functions" class="level2" data-number="33.1">
+<h2 data-number="33.1" class="anchored" data-anchor-id="dot-product-for-functions"><span class="header-section-number">33.1</span> Dot product for functions</h2>
+<p>Given two functions, <span class="math inline">\(f(t)\)</span> and <span class="math inline">\(g(t)\)</span> defined over some domain <span class="math inline">\(D\)</span>, we’ll compute the dot product of the functions as a sum of the product of the two functions, that is: <span class="math display">\[f(t) \bullet g(t) \equiv \int_{D} f(t)\,g(t)\,dt\ .\]</span> ::: {.example data-latex=““} Suppose that our two functions are <span class="math inline">\(\text{one}(t) \equiv 1\)</span> and <span class="math inline">\(\text{identity}(t) \equiv t\)</span> on the domain <span class="math inline">\(0 \leq t \leq 1\)</span>. Find the length of each function and the included angle between them.</p>
+<ul>
+<li><p>Length: <span class="math inline">\(\|\text{one}(t)\| = \left[\int_0^1 1 \cdot 1\,dt\right]^{1/2} = \left[\ \strut t\left.{\large\strut}\right|_0^1\ \right]^{1/2} = 1\)</span></p></li>
+<li><p>Length: <span class="math inline">\(\|\text{identity}(t)\| = \left[\int_0^1 t \cdot t\,dt\right]^{1/2} = \left[\ \strut \frac{1}{2}t^2\left.{\large\strut}\right|_0^1\ \right]^{1/2} = \frac{1}{\sqrt{2}}\)</span></p></li>
+<li><p>Included angle: <span class="math display">\[\cos(\theta) = \frac{\text{one}(t) \bullet \text{identity}(t)}{\|\strut\text{one}(t)\| \, \|\text{identity}(t)\|}  =
+\sqrt{2}\ \int_0^1 t\, dt = \sqrt{\strut 2} \left.{\Large\strut}\frac{1}{2} t^2\right|_0^1 = \sqrt{\frac{1}{2}}\]</span> Since <span class="math inline">\(\cos(\theta) = \sqrt{1/2}\)</span>, the angle <span class="math inline">\(\theta\)</span> is 45 degrees. :::</p></li>
+</ul>
+<div class="example">
+<p>Project <span class="math inline">\(f(t) \equiv t^2\)</span> onto <span class="math inline">\(g(t) = \text{one}(t)\)</span> over the domain <span class="math inline">\(-1 \leq t \leq 1\)</span>.</p>
+<p>The projection of <span class="math inline">\(f(t)\)</span> onto <span class="math inline">\(g(t)\)</span> will be <span class="math display">\[\widehat{f(t)} = \frac{f(t) \bullet g(t)}{g(t) \bullet g(t)}\ g(t)\]</span></p>
+<ul>
+<li><p><span class="math inline">\(f(t) \bullet g(t) \equiv \int_{-1}^{1} t^2 dt = \frac{1}{3} \left.{\Large \strut}t^3\right|_{-1}^{1} = \frac{2}{3}\)</span></p></li>
+<li><p><span class="math inline">\(g(t) \bullet g(t) \equiv \int_{-1}^1 \ dt = 2\)</span></p></li>
+</ul>
+<p>Thus, <span class="math display">\[\widehat{f(t)} = \frac{1}{3} \text{one(t)} = \frac{1}{3}\ .\]</span></p>
+</div>
+<p>The left panel of <a href="#fig-fhat-and-resid">Figure&nbsp;<span>33.1</span></a> shows the functions <span class="math inline">\(f(t) \equiv t^2\)</span> and <span class="math inline">\(\color{magenta}{\widehat{f(t)} \equiv 1/3}\)</span> on the domain. The center panel shows the residual function, that is <span class="math inline">\(f(t) - \widehat{f(t)}\)</span>. The right panel gives the square of the length of the residual function, which is <span class="math inline">\(\int_{-1}^1 \left[f(t) - \widehat{f(t)}\right]^{1/2}\, dt\)</span> as indicated by the area shaded in <span class="math inline">\(\color{blue}{\text{blue}}\)</span>.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div id="fig-fhat-and-resid" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="B5-functions_files/figure-html/fig-fhat-and-resid-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 33.1: Projecting <span class="math inline">\(f(t) \equiv t^2\)</span> onto <span class="math inline">\(g(t) \equiv \text{one}(t)\)</span>.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="intheworld">
+<p>The table links to audio files recorded by a human speaker voicing various vowels. Play the sounds to convince yourself that they really are the vowels listed. (It may help to use the controls to slow down the playback.)</p>
+<pre><code>Vowel | Player
+------|-------
+"o" as in "stone" | &lt;audio controls&gt;&lt;source src = "https://linguistics.ucla.edu/people/hayes/103/Charts/VChart/o.wav" type = "audio/wav"&gt;&lt;/audio&gt;
+"e" as in "eel" | &lt;audio controls&gt;&lt;source src = "https://linguistics.ucla.edu/people/hayes/103/Charts/VChart/y.wav" type = "audio/wav"&gt;&lt;/audio&gt;</code></pre>
+<p>As you may know, the physical stimuli involved in sound are rapid oscillations in air pressure. Our standard model for oscillations is the sinusoid function, which is parameterized by its period and it’s amplitude. The period of a sound oscillation is short: between 0.3 and 10 milliseconds. The amplitude is small. To get a sense for how small, consider the change in air pressure when you take an elevator up 10 stories in a building. The pressure amplitude of sound at a conversational level of loudness corresponds to taking that elevator upward by 1 to 10 mm.</p>
+<p>The shapes of the “e” (as in “eel”) and “o” (as in “stone”) sound waves—in short, the <strong><em>waveforms</em></strong>—are drawn in <span class="quarto-unresolved-ref">?fig-sound-waves</span>.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B5-functions_files/figure-html/sound-waves-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">The waveforms of two vowel sounds. Only about five hundredths of a second is shown.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The function resembles none of our small set of pattern-book functions. It is more complicated, more detailed, more irregular than any of the basic modeling functions featured in this book.</p>
+<p>For many tasks it’s helpful to have a modeling approach that’s well suited to such detailed and irregular functions. For example, we might want to identify the speaker from a recording, or to play the recording slower or faster without changing the essence of the sound, or to tweak the function to have additional properties such as being exactly on tune while maintaining its individuality as a sound.</p>
+<p>A remarkable aspect of the waveforms in <span class="quarto-unresolved-ref">?fig-sound-waves</span> is their <strong><em>periodicity</em></strong>. The 0.05 sec graphics domain shown includes roughly seven repetitions of a basic waveform. That is, each cycle lasts about <span class="math inline">\(\frac{0.05 \text{s}}{7} \approx 7 \text{ms}\)</span>. what distinguishes the “e” waveform from the “o” waveform is the shape of the waveform that’s being repeated. The individual cycle of the “o” has three peaks of diminishing amplitude. The “e” cycle has two main peaks, high then low. It also has a very fast wiggle superimposed on the two peaks.</p>
+<p>An important strategy for modeling such complicated oscillations is to <strong><em>decompose</em></strong> (synonym: <strong><em>analyze</em></strong>) them into a linear combination of simpler parts.</p>
+</div>
+</section>
+<section id="sinusoids-as-vectors" class="level2 page-columns page-full" data-number="33.2">
+<h2 data-number="33.2" class="anchored" data-anchor-id="sinusoids-as-vectors"><span class="header-section-number">33.2</span> Sinusoids as vectors</h2>
+<p>The sinusoid is our fundamental model of periodic phenomena. To get started with using sinusoids as vectors, we’ll start with a simple setting: a single sinusoid of a specified frequency.</p>
+<p><a href="#fig-sinewave">Figure&nbsp;<span>33.2</span></a> shows three sinusoids all with the same frequency, but shifted somewhat in time:</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div id="fig-sinewave" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="B5-functions_files/figure-html/fig-sinewave-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 33.2: Three sinusoids with a frequency of <span class="math inline">\(\omega=3\)</span> cycles per second.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Since we have a dot product for functions, we can treat each of the three sinusoids as a vector. For instance, consider the length of waveforms A and B and the included angle between them.</p>
+<div class="column-page-inset-right">
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">## vector lengths </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>lengthA <span class="ot">&lt;-</span> <span class="fu">Integrate</span>(<span class="fu">waveA</span>(t) <span class="sc">*</span> <span class="fu">waveA</span>(t) <span class="sc">~</span> t, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>)) <span class="sc">%&gt;%</span> <span class="fu">sqrt</span>() </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>lengthA</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 0.7071068</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>lengthB <span class="ot">&lt;-</span> <span class="fu">Integrate</span>(<span class="fu">waveB</span>(t) <span class="sc">*</span> <span class="fu">waveB</span>(t) <span class="sc">~</span> t, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>)) <span class="sc">%&gt;%</span> <span class="fu">sqrt</span>()</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>lengthB</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 0.7071068</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>lengthC <span class="ot">&lt;-</span> <span class="fu">Integrate</span>(<span class="fu">waveC</span>(t) <span class="sc">*</span> <span class="fu">waveC</span>(t) <span class="sc">~</span> t, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>)) <span class="sc">%&gt;%</span> <span class="fu">sqrt</span>()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>lengthC</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 0.7071068</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="do">## dot products</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>dotAB   <span class="ot">&lt;-</span> <span class="fu">Integrate</span>(<span class="fu">waveA</span>(t) <span class="sc">*</span> <span class="fu">waveB</span>(t) <span class="sc">~</span> t, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>)) </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>dotAB</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] -3.984443e-18</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>dotAC   <span class="ot">&lt;-</span> <span class="fu">Integrate</span>(<span class="fu">waveA</span>(t) <span class="sc">*</span> <span class="fu">waveC</span>(t) <span class="sc">~</span> t, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>))</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>dotAC</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] -0.1545085</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>dotBC   <span class="ot">&lt;-</span> <span class="fu">Integrate</span>(<span class="fu">waveB</span>(t) <span class="sc">*</span> <span class="fu">waveC</span>(t) <span class="sc">~</span> t, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>))</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>dotBC</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] -0.4755283</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>The cosine of the included angle <span class="math inline">\(\theta\)</span> between functions A and B is calculated using the the dot product formula: <span class="math display">\[\cos(\theta) = \frac{A\bullet B}{\|A\|\, \|B\|}\]</span> or, computationally</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dotAB <span class="sc">/</span> (lengthA <span class="sc">*</span> lengthB)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] -7.968886e-18</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Since <span class="math inline">\(\cos(\theta) = 0\)</span>, wave A and B are orthogonal. Admittedly, there is no right angle to be perceived from the graph, but the mathematics of angles gives this result.</p>
+<p>The graphical presentation of orthogonality between waveforms A and B is easier to appreciate if we plot out the dot product itself: the integral of waveform A times waveform B. <a href="#fig-sin-cos-dot">Figure&nbsp;<span>33.3</span></a> shows this integral using colors, blue for positive and orange for negative. The integral is zero, since the positive (blue) areas exactly equal the negative (orange) areas.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div id="fig-sin-cos-dot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="B5-functions_files/figure-html/fig-sin-cos-dot-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 33.3: The dot product between waveforms A and B, graphically.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In contrast, waveform A is <strong>not</strong> orthogonal to waveform C, and similarly for waveform B. <span class="quarto-unresolved-ref">?fig-AC-BC</span> shows this graphically: the positive and negative areas in the two integrals do not cancel out to zero.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B5-functions_files/figure-html/AC-BC-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">The dot products between waveforms A and C (top panel) and between B and C (bottom panel).</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can project waveform C onto the 2-dimensional subspace spanned by A and B. Since waveforms A and B are orthogonal, This can be done simply by projecting C onto each of A and B one at a time. Here’s a calculation of the scalar multipliers for A and for B and the model vector (that is, the component of C in the A-B subspace):</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>A_coef <span class="ot">&lt;-</span> dotAC <span class="sc">/</span> lengthA<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>B_coef <span class="ot">&lt;-</span> dotBC <span class="sc">/</span> lengthB<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>mod_vec <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(A_coef<span class="sc">*</span><span class="fu">waveA</span>(t) <span class="sc">+</span> B_coef<span class="sc">*</span><span class="fu">waveB</span>(t) <span class="sc">~</span> t)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># length of mod_vec</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Integrate</span>(<span class="fu">mod_vec</span>(t)<span class="sc">*</span><span class="fu">mod_vec</span>(t) <span class="sc">~</span> t, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>)) <span class="sc">%&gt;%</span> <span class="fu">sqrt</span>()</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 0.7071068</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You can see that the length of the model vector is the same as the length of the vector being projected. This means that waveform C lies exactly in the subspace spanned by waveforms A and B.</p>
+<p>A time-shifted sinusoid of frequency <span class="math inline">\(\omega\)</span> can <em>always</em> be written as a linear combination of <span class="math inline">\(\sin(2\pi\omega t)\)</span> and <span class="math inline">\(\cos(2\pi\omega t)\)</span>. The coefficients of the linear combination tell us both the amplitude of the time-shifted sinusoid and the time shift.</p>
+<div class="example">
+<p>Consider the function <span class="math inline">\(g(t) \equiv 17.3 \sin(2*pi*5*(t-0.02)\)</span> on the domain <span class="math inline">\(0 \leq t \leq 1\)</span> seconds. The amplitude is 17.3. The time shift is 0.02 seconds. Let’s confirm this using the coefficients on the linear combination of sine and cosine of the same frequency.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fl">17.3</span> <span class="sc">*</span> <span class="fu">sin</span>(<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span><span class="dv">5</span><span class="sc">*</span>(t<span class="fl">-0.02</span>)) <span class="sc">~</span> t)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sin5 <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">sin</span>(<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span><span class="dv">5</span><span class="sc">*</span>t) <span class="sc">~</span> t)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>cos5 <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">cos</span>(<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span><span class="dv">5</span><span class="sc">*</span>t) <span class="sc">~</span> t)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>A_coef <span class="ot">&lt;-</span> <span class="fu">Integrate</span>(<span class="fu">g</span>(t) <span class="sc">*</span> <span class="fu">sin5</span>(t) <span class="sc">~</span> t, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>)) <span class="sc">/</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Integrate</span>(<span class="fu">sin5</span>(t) <span class="sc">*</span> <span class="fu">sin5</span>(t) <span class="sc">~</span> t, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>A_coef</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 13.99599</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>B_coef <span class="ot">&lt;-</span> <span class="fu">Integrate</span>(<span class="fu">g</span>(t)<span class="sc">*</span><span class="fu">cos5</span>(t) <span class="sc">~</span> t, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>)) <span class="sc">/</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Integrate</span>(<span class="fu">cos5</span>(t) <span class="sc">*</span> <span class="fu">cos5</span>(t) <span class="sc">~</span> t, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>))</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>B_coef</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] -10.16868</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The amplitude of <span class="math inline">\(g(t)\)</span> is the Pythagorean sum of the two coefficients: ::: {.cell layout-align=“center” fig.showtext=‘false’}</p>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(A_coef<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> B_coef<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 17.3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The time delay involves the ratio of the two coefficients:</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">atan2</span>(B_coef, A_coef) <span class="sc">/</span> (<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span><span class="dv">5</span>) </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] -0.02</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>For our purposes here, we’ll need only the Pythagorean sum and will ignore the time delay. :::</p>
+<p><span class="quarto-unresolved-ref">?fig-cello-seg</span> (top) shows the waveform of a note played on a cello. The note lasts about 1 second. The bottom panel zooms in on the waveform, showing 82 ms (that is, 0.082 s).</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B5-functions_files/figure-html/cello-seg-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Waveform recorded from a cello.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The whole note starts with a sharp “attack,” followed by a long period called a “sustain,” and ending with a “decay.” Within the sustain and decay, the waveform is remarkably repetitive, seen best in the bottom panel of the figure.</p>
+<p>If you count carefully in the bottom panel, you’ll see that the waveform completes 9 cycles in the 0.082 s graphical domain. This means that the period is 0.082 / 9 = 0.0091 s. The frequency <span class="math inline">\(\omega\)</span> is the reciprocal of this: 1/0.0091 = 109.76 Hz. That is, the cello is vibrating about 110 times per second.</p>
+<p>In modeling the cello waveform as a linear combination of sinusoids, the frequencies we use ought to respect the period of the cello vibration. <a href="#fig-cello-seg2">Figure&nbsp;<span>33.4</span></a> shows the original waveform as well as the projection of the waveform onto a sinusoid with a frequency of 109.76 Hz. The figure also shows the residual from the projection, which is simply the original waveform minus the projected version.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div id="fig-cello-seg2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="B5-functions_files/figure-html/fig-cello-seg2-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 33.4: Top: The cello waveform and its projection onto a sinusoid with frequency <span class="math inline">\(\omega = 109.76\)</span> Hz. Bottom: The residual from the projection.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The sinusoid with <span class="math inline">\(\omega = 109.76\)</span> is not the only one that will repeat every 0.0091 s. So will a sinusoid with frequency <span class="math inline">\(2\omega = 219.52\)</span>, one with frequency <span class="math inline">\(3\omega = 329.28\)</span> and so on. These multiples of <span class="math inline">\(\omega\)</span> are called the <strong><em>harmonics</em></strong> of that frequency. In <a href="#fig-cello-build-up">Figure&nbsp;<span>33.5</span></a> (top) the cello waveform is projected onto <span class="math inline">\(\omega\)</span> and its first harmonic <span class="math inline">\(2\omega\)</span>. In the middle panel, the projection is made onto <span class="math inline">\(\omega\)</span> and its first three harmonics. In the bottom panel, the projection is onto <span class="math inline">\(\omega\)</span> and its first eight harmonics.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div id="fig-cello-build-up" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="B5-functions_files/figure-html/fig-cello-build-up-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 33.5: <strong>?(caption)</strong></figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As the number of harmonics increases, the approximation gets better and better.</p>
+<p>Until now, all the plots of the cello waveform have been made in what’s called the <strong><em>time domain</em></strong>. That is, the horizontal axis of the plots has been <em>time</em>, as seems natural for a function of time.</p>
+<p>The decomposition into sinusoids offers another way of describing the cello waveform: the <strong><em>frequency domain</em></strong>. In the frequency domain, we report the amplitude and phase of the projection onto each frequency, plotting that versus frequency. <a href="#fig-cello-freq">Figure&nbsp;<span>33.6</span></a> shows the waveform in the frequency domain.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div id="fig-cello-freq" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="B5-functions_files/figure-html/fig-cello-freq-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 33.6: The frequency domain description of the cello waveform.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From the amplitude graph in <a href="#fig-cello-freq">Figure&nbsp;<span>33.6</span></a>, you can see that only a handful of frequencies account for almost all of the signal. Thus, the frequency domain representation is in many ways much more simple and compact than the time domain representation.</p>
+<p>The frequency domain description is an important tool in many fields. As you’ll see in Block 6, models of many kinds of systems, from the vibrations of buildings during an earthquake, aircraft wings in response to turbulence, and the bounce of a car moving over a rutted road have a very simple form when stated in the frequency domain. Each sinusoid in the input (earthquake shaking, air turbulence, rutted road) gets translated into the same frequency sinusoid in the output (building movement, wing bending, car bound): just the amplitude and phase of the sinusoid is altered.</p>
+<p>The construction of the frequency domain description from the waveform is called a <strong><em>Fourier Transform</em></strong>, one of the most important techiques in science.</p>
+<div class="intheworld">
+<p>An important tool in chemistry is <strong><em>molecular vibrational spectroscopy</em></strong> in which a sample of the material is illuminated by an infrared beam of light. The frequency of infrared light ranges from about <span class="math inline">\(300 \times 10^7\)</span> Hz to <span class="math inline">\(400 \times 10^{10}\)</span> Hz, about 30 million to 40 billion times faster than the cello frequency.</p>
+<p>Infrared light is well suited to trigger vibrations in the various bonds of a molecule. By measuring the light absorbed at each frequency, a frequency domain picture can be drawn of the molecules in the sample. This picture can be compared to a library of known molecules to identify the makeup of the sample.</p>
+<p>The analogous procedure for stringed musical instruments such as the cello or violin would be to rap on the instrument and record the hum of the vibrations induced. The Fourier transform of these vibrations effectively paint a picture of the tonal qualities of the instrument.</p>
+</div>
+</section>
+<section id="exercises" class="level2" data-number="33.3">
+<h2 data-number="33.3" class="anchored" data-anchor-id="exercises"><span class="header-section-number">33.3</span> Exercises</h2>
+
+
+</section>
+
+</main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../Linear-combinations/B5-stat-modeling.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../accumulation-part.html" class="pagination-link">
+        <span class="nav-page-text">Accumulation</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.290">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MOSAIC Calculus - 48&nbsp; Data-driven functions</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<link href="../Manifestations/B4-optimization.html" rel="next">
+<link href="../Manifestations/B4-operations.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<style>
+.quarto-title-banner {
+  
+}
+</style>
+</head><body class="floating slimcontent"><span class="math inline" style="display: none;">
+\(\newcommand{\line}{\text{line}}
+\newcommand{\hump}{\text{hump}}
+\newcommand{\sigmoid}{\text{sigmoid}}
+\newcommand{\recip}{\text{recip}}
+\newcommand{\diff}[1]{{\cal D}_#1}
+\newcommand{\pnorm}{\text{pnorm}}
+\newcommand{\dnorm}{\text{dnorm}}
+\let\origvec\vec
+\let\origmathit\mathit
+\let\orighat\hat
+\let\origbar\bar
+\newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+\newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+\newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+\newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+\newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+\newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+\newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+\newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+\newcommand{\modeledby}[2]{#1\!\sim\!#2}
+\newcommand{\CC}[1]{\color{#648fff}{#1}}
+\newcommand{\CE}[1]{\color{#785ef0}{#1}}
+\newcommand{\CA}[1]{\color{#dc267f}{#1}}
+\newcommand{\CB}[1]{\color{#fe6100}{#1}}
+\newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+</span>
+
+<script src="../site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Data-driven functions</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">MOSAIC Calculus</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/dtkaplan/MC2/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/01-modeling-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">Modeling</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/01-parameters.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/02-assembling-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/03-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/05-low-order-polynomials.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/06-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/07-magnitudes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/08-dimensions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/09-modeling-cycle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling cycle [DRAFT]</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">Differentiation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/16-rate-of-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rate of change</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/17-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Change relationships</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/18-evanescent-h.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/19-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Computing derivatives</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/20-concavity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/21-cont-and-smooth.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/22-rules.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/23-optim.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/24-partial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/25-approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations [DRAFT]</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/26-taylor.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">Vectors and linear combinations</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-Vectors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-linear-combinations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-projection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-target-problem.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-stat-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">Accumulation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/27-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/28-visualizing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/29-integration.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/30-euler.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/31-symbolic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">Dynamics</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-diff-eq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Differential equations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-solution.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Finding a “solution”</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-line.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Flows on the line</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-plane.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the plane</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-equilibria.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-eigen.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-second-order.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Force-balance equations</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">Manifestations</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-splines.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Data-driven functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">50</span>&nbsp; <span class="chapter-title">Probability and evidence</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-future-value.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">51</span>&nbsp; <span class="chapter-title">Present and future value</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-mechanics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">52</span>&nbsp; <span class="chapter-title">Mechanics</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#generating-smooth-motion" id="toc-generating-smooth-motion" class="nav-link active" data-scroll-target="#generating-smooth-motion"> <span class="header-section-number">48.1</span> Generating smooth motion</a></li>
+  <li><a href="#piecewise-but-smooth" id="toc-piecewise-but-smooth" class="nav-link" data-scroll-target="#piecewise-but-smooth"> <span class="header-section-number">48.2</span> Piecewise but smooth</a></li>
+  <li><a href="#sec-cubic-splines" id="toc-sec-cubic-splines" class="nav-link" data-scroll-target="#sec-cubic-splines"> <span class="header-section-number">48.3</span> C<sup>2</sup> smooth functions</a></li>
+  <li><a href="#bézier-splines" id="toc-bézier-splines" class="nav-link" data-scroll-target="#bézier-splines"> <span class="header-section-number">48.4</span> Bézier splines</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">48.5</span> Exercises</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dtkaplan/MC2/edit/main/Manifestations/B4-splines.Rmd" class="toc-action">Edit this page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-splines" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Data-driven functions</span></span></h1>
+</div>
+
+
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<!-- The app for drawing bezier curves is at http://www.mosaic-web.org/bezier-app.svg  There is a copy in the www/ subdirectory of this folder, but that needs to be copied to 
+www.mosaic-web.org/bezier-app.svg for the links to work. -->
+<p>As early as Chapter 3 of this book, we noted that a function can be described as a table where each row stands for one set of input values together with a corresponding output value. We did not, however, make much use of the table-as-function concept. Instead, we used data tables to motivate the choice of parameters, as in linear combinations of the basic modeling functions. We called this <strong><em>function fitting</em></strong>: constructing a function that stays <strong>near</strong> the data values. (We will say more about function fitting in Block 5 where we introduce new tools for treating functions as geometrical objects.)</p>
+<p>This chapter introduces yet another important method for constructing functions that match with data. What’s different here is that each data point will be a <strong>mandate</strong>; the function is required to go through each and every data point exactly.</p>
+<section id="generating-smooth-motion" class="level2 page-columns page-full" data-number="48.1">
+<h2 data-number="48.1" class="anchored" data-anchor-id="generating-smooth-motion"><span class="header-section-number">48.1</span> Generating smooth motion</h2>
+<p>As a motivating example, consider the programming of robotic arms as in the video:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/0L7Xk5_s3QQ?start=81" title="Robotic arms" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
+</iframe>
+<p>Since this isn’t a robots course, we’ll simplify. The arm has a resting position. When a car frame comes into place, the arm moves so that its welding electrodes are at a specific, known place in space near the car body. Then it moves in sequence to other places where a weld is required, perhaps passing through waypoints to avoid obstacles.</p>
+<p>The problem of converting the discrete list of weld and waypoints into a continuous signal for the actuator is an instance of a mathematical process called <strong>interpolation</strong>. In real robot arms, there are multiple joints that need to be controlled simultaneously. For our illustration, we’ll use a simple setup where the robot hand rolls along a set of rails in the y-direction and another x-rail running crosswise to the y direction.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="www/x-y-cnc.png" class="img-fluid figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div></div></div>
+<p>The task for our example robot will be to visit the points shown in <a href="#fig-robot-points">Figure&nbsp;<span>48.1</span></a> in order, taking 15 seconds to traverse the whole path.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-robot-points" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="B4-splines_files/figure-html/fig-robot-points-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 48.1: The waypoints on a path the robot hand is supposed to follow. All the action is taking place in roughly 1x1 meter area.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-robot-points">Figure&nbsp;<span>48.1</span></a> shows a continuous path in <span class="math inline">\((x,y)\)</span> coordinates together with discrete labels indicating <em>when</em> each waypoint is to be reached. Note that the path is not a function <span class="math inline">\(y(x)\)</span>. Mathematical functions are required to be <strong><em>single valued</em></strong>, meaning that for each value of the input (in the function domain) there can be only one, unique output value. The path in <a href="#fig-robot-points">Figure&nbsp;<span>48.1</span></a> often involves two or more different <span class="math inline">\(y\)</span> values for a single <span class="math inline">\(x\)</span> value. There is even a small domain of <span class="math inline">\(x\)</span> near <span class="math inline">\(x=900\)</span> where the path at any given <span class="math inline">\(x\)</span> crosses <em>six</em> different <span class="math inline">\(y\)</span>-values.</p>
+<p>Even so, functions can be a useful way of describing the <span class="math inline">\((x,y)\)</span> path. The key is the plural: function<strong>s</strong>. For the path in <a href="#fig-robot-points">Figure&nbsp;<span>48.1</span></a> we need <em>two</em> quantities varying with time in a coordinated way. One approach, familiar to navigators, is to specify direction of movement and velocity at each instant of time. Perhaps not as familiar, but more fundamental mathematically, is to specify <span class="math inline">\(x\)</span> as a function of time and, separately, <span class="math inline">\(y\)</span> as a function of time. Using this formalism, the trajectory of the robot arm will consist of two functions, <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span>. To build those functions, well start with the waypoints stored in the data frame <code>Zcalc::Robot.stations</code>.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<table class=" lightable-paper lightable-hover" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:right;"> t </th>
+   <th style="text-align:right;"> x </th>
+   <th style="text-align:right;"> y </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 496 </td>
+   <td style="text-align:right;"> 191 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 1037 </td>
+   <td style="text-align:right;"> 138 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 1251 </td>
+   <td style="text-align:right;"> 191 </td>
+  </tr>
+  <tr><td colspan="3" align="center">... and so on ...</td></tr>
+  <tr>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 928 </td>
+   <td style="text-align:right;"> 432 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 737 </td>
+   <td style="text-align:right;"> 240 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<p>GET THE TABLE HERE IN PDF mode</p>
+</div>
+<p>The <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> functions in this table aren’t complete enough to operate the robot. We need to provide the <span class="math inline">\(x,y\)</span>-location data in the form of two <strong>continuous</strong> functions of <span class="math inline">\(t\)</span> so that the robot, at any time <span class="math inline">\(t\)</span>, can look up where it is supposed to be, what its velocity should be, and how that velocity should be changing in time (acceleration).</p>
+<p>One strategy is to construct the functions as piecewise linear functions of <span class="math inline">\(t\)</span>, like this:</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div id="fig-piecewise-linear-path" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="B4-splines_files/figure-html/fig-piecewise-linear-path-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 48.2: Two functions <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> which describe the path shown in <a href="#fig-robot-points">Figure&nbsp;<span>48.1</span></a>.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It can be difficult at first glance to see the relationship between the <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> functions and the path shown in @ref(fig:robot-points). As an exercise, look specifically at the segment <span class="math inline">\(9 \leq t \leq 10\)</span>. In <a href="#fig-piecewise-linear-path">Figure&nbsp;<span>48.2</span></a>, this is the segment connecting points 9 and 10. In the path view, you can see that on this segment <span class="math inline">\(x\)</span> changes a lot while <span class="math inline">\(y\)</span> changes only a little. Correspondingly, in the function view (<a href="#fig-piecewise-linear-path">Figure&nbsp;<span>48.2</span></a>) <span class="math inline">\(\partial_t x(t)\)</span> is large in magnitude compared to <span class="math inline">\(\partial_t y(t)\)</span>.</p>
+<p>Each functions shown in @ref(fig:piecewise-linear-path) is an <strong><em>interpolating function</em></strong>. You’re entitled to think of the <span class="math inline">\(x(t)\)</span> function as connecting with lines the sequence of <span class="math inline">\(x\)</span> versus <span class="math inline">\(t\)</span> coordinates from the table and similarly for <span class="math inline">\(y(t)\)</span>. Each of the two functions is clearly continuous. But, based on your work in Blocks 1 through 3, you have a richer set of concepts for interpreting those two functions.</p>
+<p>For instance, let’s look at <span class="math inline">\(\partial_t y(t)\)</span>. Since <span class="math inline">\(y\)</span> is a position along the cross rail, <span class="math inline">\(\partial_t y(t)\)</span> is the velocity in that direction. <a href="#fig-y-velocity">Figure&nbsp;<span>48.3</span></a> shows the velocity versus time for both the <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> components of the movement.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-cho="false" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>labels <span class="ot">&lt;-</span> latex2exp<span class="sc">::</span><span class="fu">TeX</span>(<span class="fu">c</span>(<span class="st">'</span><span class="sc">\\</span><span class="st">partial_t x(t)  (mm/s)'</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">partial_t y(t)  (mm/s)"</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>dt_xl <span class="ot">&lt;-</span> <span class="fu">D</span>(<span class="fu">xl</span>(t) <span class="sc">~</span> t)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>dt_yl <span class="ot">&lt;-</span> <span class="fu">D</span>(<span class="fu">yl</span>(t) <span class="sc">~</span> t)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>P1 <span class="ot">&lt;-</span> <span class="fu">slice_plot</span>(<span class="fu">dt_xl</span>(t) <span class="sc">~</span> t, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>), <span class="at">npts=</span><span class="dv">901</span>, <span class="at">singularities =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">y=</span>labels[[<span class="dv">1</span>]], <span class="at">x=</span><span class="st">""</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>P2 <span class="ot">&lt;-</span> <span class="fu">slice_plot</span>(<span class="fu">dt_yl</span>(t) <span class="sc">~</span> t, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>), <span class="at">npts=</span><span class="dv">901</span>,, <span class="at">singularities =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">y=</span>labels[[<span class="dv">2</span>]], <span class="at">x=</span><span class="st">"t (sec)"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(P1, P2, <span class="at">nrow=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display page-columns page-full">
+<div id="fig-y-velocity" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="B4-splines_files/figure-html/fig-y-velocity-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 48.3: Velocity versus time time along the path defined by <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> as shown in Figure @ref(fig:piecewise-linear-path),</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The speed of the robot arm maxes out at about 600 mm-per-second. You can get a sense for this by moving your finger two feet in 1 second: a normal human speed of movement.</p>
+<p>Since the original <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> functions are piecewise linear, it makes sense that the derivatives with respect to time are piecewise constant. But the robot hand is a physical thing; it has to have a velocity at every instant in time. It can’t instantaneously have an undefined velocity.</p>
+<p>Think about what it is that causes the change from one velocity step to another. There’s a motor that’s spinning and changing its rate of spin, perhaps using a pulley and a belt to move the robot hand to the right position at any instant of time. Changing the velocity requires a <strong>force</strong> to create an acceleration. We can differentiate the velocity to see what the acceleration must be to create the simple piecewise linear function shown in <a href="#fig-piecewise-linear-path">Figure&nbsp;<span>48.2</span></a>.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div id="fig-x-acceleration" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="B4-splines_files/figure-html/fig-x-acceleration-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 48.4: <strong>?(caption)</strong></figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Mathematically, the second derivatives <span class="math inline">\(\partial_{tt} x(t)\)</span> and <span class="math inline">\(\partial_{tt} y(t)\)</span> do not exist, because <span class="math inline">\(\partial_{t} x(t)\)</span> and <span class="math inline">\(\partial_{t} y(t)\)</span> are discontinuous. There is no physical amount of force that will change the velocity in an instant.</p>
+<p>As an accommodation to the physical existence of the robot hand, we’ve softened the transition between consecutive velocity segments to allow it to take 0.2 seconds, ramping up from zero force 0.1 second before the hand reaches the station, to maximum force at the station, then back down to zero 0.1 second after the hand reaches the station. Consequently the actual motion is smoother and the maximum acceleration is about half that of gravity. <a href="#fig-ramp-force">Figure&nbsp;<span>48.5</span></a> shows the resulting trajectory which can be likened to that of a baseball player rounding a base.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-ramp-force" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="B4-splines_files/figure-html/fig-ramp-force-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 48.5: A smoothed x-trajectory near station 2. The position of the station is marked with a dot.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>A consequence of smoothing the trajectory is that the robot hand comes near, but doesn’t touch the station. It misses by about 2 mm. For many human tasks that might be good enough, but for precision manufacturing a miss by 2 mm is about 1000 times more than allowed.</p>
+<p>If you like working with practical problems, you might find a simple solution to the problem. For instance, we could have aimed the robot hand 2 mm further to the right than the actual station. In falling short by 2mm, the hand would miss the new target but cross right over the originally intended station.</p>
+<p>Solutions like this ae sometimes called <strong><em>ad hoc</em></strong>, meaning that they are so specifically tailored to one situation that they do not generalize well to slightly different problems. The next section introduces an approach that is much more general.</p>
+</section>
+<section id="piecewise-but-smooth" class="level2 page-columns page-full" data-number="48.2">
+<h2 data-number="48.2" class="anchored" data-anchor-id="piecewise-but-smooth"><span class="header-section-number">48.2</span> Piecewise but smooth</h2>
+<p>The approach we will take to smoothly connect the points on the path is based on ideas of derivatives and on the construction of low-order polynomials. In Block 2, we emphasized low-order polynomials up to the square term, and we’ll pick that up again here for demonstration purposes. For this example, we’ll construct only the <span class="math inline">\(y(t)\)</span> function. Constructing <span class="math inline">\(x(t)\)</span> would be done using the same procedure.</p>
+<p>Our task is to find a function <span class="math inline">\(y(t)\)</span> to interpolate discrete points such as those shown in <a href="#fig-quadratic-spline">Figure&nbsp;<span>48.6</span></a>. The discrete points are called <strong><em>knots</em></strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> in the language of interpolating functions. Each knot is a coordinate pair <span class="math inline">\((t_i, y(t_i))\)</span> shown as an orange dot in <a href="#fig-quadratic-spline">Figure&nbsp;<span>48.6</span></a>.</p>
+<p>The piecewise linear interpolating function is easily constructed and is shown as a dotted curve. As we saw in the previous section, such a function has a discontinuous first derivative. We would like something smoother, with a <strong>continuous</strong> first derivative. A curve such as the one we seek is shown as the multi-colored function.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-quadratic-spline" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="B4-splines_files/figure-html/fig-quadratic-spline-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 48.6: Two interpolating functions of the four discrete points (orange). One is piecewise linear (dotted curve), the other is piecewise quadratic (multi-color curve).</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The framework we will adopt for the smooth interpolating function is piecewise quadratic segments between adjacent knots. There are four knots, requiring three segments. We’ll call the segment <span class="math inline">\(p_1(y)\)</span> connecting the first knot to the second, with <span class="math inline">\(p_2(y)\)</span> connecting the second to the third knot and <span class="math inline">\(p_3(y)\)</span> connecting the third to the fourth knot. Each of those segments will be a second-order polynomial. To keep things organized, we’ll use coefficient names systematically:</p>
+<p><span class="math display">\[p_1(t) \equiv a_1 + b_1 \left[t - t_1\right] + c_1 \left[t - t_1\right]^2\\
+p_2(t) \equiv a_2 + b_2 \left[t - t_2\right] + c_2 \left[t - t_2\right]^2\\
+p_3(t) \equiv a_3 + b_3 \left[t - t_3\right] + c_3 \left[t - t_3\right]^2\\\]</span> The four knots are <span class="math display">\[\left[\begin{array}{c}\left(t_1, x_1\right)\\
+\left(t_2, y_2\right)\\
+\left(t_3, y_3\right)\\
+\left(t_4, y_4\right)\\
+\end{array}\right]\]</span> which you can think of as two columns of a data frame, one with the <span class="math inline">\(t\)</span>-coordinates of the knots and the other with the <span class="math inline">\(y\)</span>-coordinates. For the knots in <a href="#fig-quadratic-spline">Figure&nbsp;<span>48.6</span></a> the data table is</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<table class=" lightable-classic" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:right;"> t </th>
+   <th style="text-align:right;"> y </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 2.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 1.7 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>Constructing the interpolating function is a matter of making good choices for <span class="math inline">\(a_1,\)</span> <span class="math inline">\(a_2,\)</span> <span class="math inline">\(a_3,\)</span> <span class="math inline">\(b_1,\)</span> <span class="math inline">\(b_2,\)</span> <span class="math inline">\(b_3,\)</span> <span class="math inline">\(c_1,\)</span> <span class="math inline">\(c_2,\)</span> and <span class="math inline">\(c_3\)</span>.</p>
+<p>We require these things of each of the interpolating polynomials:</p>
+<ol type="1">
+<li>It passes exactly through the two knots marking the segment’s endpoints. That is <span class="math inline">\(p_1(t_1) = y_1\)</span> and <span class="math inline">\(p_1(t_2) = y_2 = p_2(t_2)\)</span> and <span class="math inline">\(p_2(t_3) = y_3 = p_3(t_3)\)</span> and, finally, <span class="math inline">\(p_3(t_4) = y_4\)</span>. Note that at the interior knots where two polynomials join, the left-hand polynomial and the right-hand polynomial should exactly match the function value and each other.</li>
+<li>The derivative (with respect to <span class="math inline">\(t\)</span>) should match where the segments join. That is, <span class="math inline">\(\partial_t p_1(t_1) = \partial_t p_2(t_2)\)</span> and <span class="math inline">\(\partial_t p_2(t_3) = \partial_t p_3(t_3)\)</span>. Thus, the function we want to build will be <span class="math inline">\(C^1\)</span>, that is, have a continuous first derivative.</li>
+</ol>
+<p>How to accomplish (1) and (2)?</p>
+<p>Notice first that because we wrote each of the polynomials in the style of Taylor polynomials, we can read the values of <span class="math inline">\(a_1\)</span>, <span class="math inline">\(a_2\)</span>, and <span class="math inline">\(a_3\)</span> directly from the data table: <span class="math display">\[p_1(t_1) = a_1 = y_1\\p_2(t_2) = a_2 = y_2\\p_3(t_3) = a_3 = y_3\\\]</span></p>
+<p>We can find other coefficients from the requirement that the right side of each segment pass through the knot on that side. This gives:</p>
+<p><span class="math display">\[p_1(t_2) = y_2 = a_1 + b_1 \left[t_2-t_1\right] + c_1\left[t_2-t_1\right]^2\\
+p_2(t_c) = y_3 = a_2 + b_2 \left[t_3-t_2\right] + c_2\left[t_3-t_2\right]^2\\
+p_3(t_c) = y_4 = a_3 + b_3 \left[t_4-t_3\right] + c_3\left[t_4-t_3\right]^2\]</span> (Notice that <span class="math inline">\(t_2 - t_1\)</span> and the like are simply numbers that can be computed from the known knot points.)</p>
+<p>Another two conditions are that the derivatives of the polynomials from either side of each interior knot point must match at the knot point. Finding the derivatives of the segments is a simple exercise:</p>
+<p><span class="math display">\[\partial_t p_1(t) = b_1 + 2 c_1 \left[t - t_1\right]\\
+\partial_t p_1(t) = b_2 + 2 c_2 \left[t - t_2\right]\\
+\partial_t p_1(t) = b_3 + 2 c_3 \left[t - t_3\right]\]</span> Matching these derivatives at the <span class="math inline">\(t_2\)</span> and <span class="math inline">\(t_3\)</span> knot points—the interior knots where two segments come together—gives two more equations: <span class="math display">\[
+\partial_t p_1(t_2) = b_1 + 2 c_1 \left[t_2 - t_1\right] = b_2 = \partial_t p_2(t_2)\\
+\partial_t p_2(t_3) = b_2 + 2 c_2 \left[t_3 - t_2\right] = b_3 = \partial_t p_3(t_3) \]</span> All together, we have <strong>five</strong> equations in <strong>six</strong> unknowns: <span class="math inline">\(b_1, b_2, b_3\)</span> and <span class="math inline">\(c_1, c_2, c_3\)</span>.</p>
+<p>Plugging in the specific values <span class="math inline">\(t_1\)</span> through <span class="math inline">\(t_4\)</span>, and <span class="math inline">\(x_1\)</span> through <span class="math inline">\(x_4\)</span> from the data table translates the equations for the polynomial values and derivatives gives this system of equations: <span class="math display">\[
+b_1 + c_1 = x_2 - x_1 = \ \ \ \ \ \ 2\\
+b_2 + c_2 = x_3 - x_2 = -1.5\\
+b_3 + c_3 = x_4 - x_3= \ \ 1.2\\
+b_1 + 2 c_1 - b_2 = 0\\
+b_2 + 2 c_2 - b_3 = 0\]</span></p>
+<p>This is not the place to go into the details of solving the five equations to find the six unknowns. (Block 5 introduces the mathematics of such things, which turns out to the same math used to find model parameters to “fit” data.) But there are some simple things to say about the task.</p>
+<p>First, you may recall being told in high-school mathematics that to find six unknowns you need six equations. We have only five equations to work with. But it is far from true that there is no solution for six unknowns with five equations. There are in fact an <em>infinite</em> number of solutions. (Again, Block 5 will show the mathematics behind this statement.) Essentially, all we need to do is make up a sixth equation to identify a particular one of the infinite number of solutions. It’s nice if this made-up equation reflects something interpretable about the curve.</p>
+<p>We’ll choose to have the sixth equation specify what the derivative of the interpolating function should be at the far right end of the graph. That right-most derivative value will be <span class="math display">\[\partial_t p_3(t_4) = b_3 + 2 c_3 \left[t_4 - t_3\right]\ .\]</span> We can set this value to anything we like. For instance, in <a href="#fig-quadratic-spline">Figure&nbsp;<span>48.6</span></a> the right-most derivative is set to zero; you can see this from the curve being flat at the right-most knot point.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-four-quads" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="B4-splines_files/figure-html/fig-four-quads-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 48.7: Four different <span class="math inline">\(C^1\)</span> piecewise quadratic functions that interpolate the knot points. The functions have different values of the derivative at the right end of the domain.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Keeping in mind the piecewise nature of the interpolating polynomial, it may seem surprising that changing the slope at <span class="math inline">\(t_4\)</span> leads to a change in value of the function almost everywhere. Yet the <strong>stiffness</strong> of the parabolic segments means that conditions in one segment have an impact on adjacent segments. In turn, the segments adjacent to these also change, a change that percolates down to every segment in turn.</p>
+<div class="rmosaic page-columns page-full">
+<p>Quadratic spline functions can be created with the R/mosaic <code>qspliner()</code> function. The second argument is a data frame giving the knot locations. The first argument is a tilde expression specifying the variables to use from the data frame.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>xfun <span class="ot">&lt;-</span> <span class="fu">qspliner</span>(x <span class="sc">~</span> t, <span class="at">data =</span> Zcalc<span class="sc">::</span>Robot.stations)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>yfun <span class="ot">&lt;-</span> <span class="fu">qspliner</span>(y <span class="sc">~</span> t, <span class="at">data =</span> Zcalc<span class="sc">::</span>Robot.stations)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+
+</div>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-qspline-x" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="B4-splines_files/figure-html/fig-qspline-x-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 48.8: A quadratic spline interpolation of the <span class="math inline">\(x\)</span>-coordinates of the robot-path knots. The data hardly speak for themselves, since the interpolationg function tends to alternate between concave up and concave down in adjacent segments between the knots.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>Putting together the <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> interpolating functions, each of which has that extremum between knot points, leads to an absurdly complicated path, as seen in <a href="#fig-quad-robot-points-quad">Figure&nbsp;<span>48.9</span></a>.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-quad-robot-points-quad" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="B4-splines_files/figure-html/fig-quad-robot-points-quad-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 48.9: Connecting the robot-path knots with a piecewise quadratic polynomial, constructed to be <span class="math inline">\(C^1\)</span>. The path is pretty perhaps, but absurd.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Quadratic splines are rarely used in practice. (A <strong><em>cubic spline</em></strong> provides helpful flexibility. See <a href="#sec-cubic-splines">Section&nbsp;<span>48.3</span></a>.) In <a href="#fig-qspline-x">Figure&nbsp;<span>48.8</span></a> you can see one of the reasons: the quadratic form is so <strong><em>stiff</em></strong> that the interpolating function tends to shift from concave up to concave down (or vice versa) at each knot point. This results in the interpolating function tending to have a local minimum or maximum <em>between</em> adjacent knots, even if the data themselves to not indicate such a structure.</p>
+</section>
+<section id="sec-cubic-splines" class="level2 page-columns page-full" data-number="48.3">
+<h2 data-number="48.3" class="anchored" data-anchor-id="sec-cubic-splines"><span class="header-section-number">48.3</span> C<sup>2</sup> smooth functions</h2>
+<p>In the previous section, we arranged the functions <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> composed from the piecewise quadratic segments to be <span class="math inline">\(C^1\)</span> smooth. (Recall that <span class="math inline">\(C^1\)</span> smooth means that the derivatives <span class="math inline">\(\partial_t x(t)\)</span> and <span class="math inline">\(\partial_t y(t)\)</span> are continuous.) We established this continuity by make sure that each segment has a value of the derivative at its end-point know that matches the derivative of the adjacent segment.</p>
+<p>To arrange <span class="math inline">\(C^2\)</span> continuity requires that the segment include a new parameter. Most commonly, this is done by moving from quadratic segments to <strong><em>cubic segments</em></strong>. This can be done by an approach similar to that of the previous section but somewhat more elaborate. Such a <span class="math inline">\(C^2\)</span> interpolating function is called a <strong><em>cubic spline</em></strong>. Cubic splines are very commonly encountered in applications requiring interpolation.</p>
+<p>With the ability to match piecewise cubic polynomials to a set of knots, we can easily construct the smooth path to connect the knots in @ref(fig:robot-points). <a href="#fig-smooth-robot-points">Figure&nbsp;<span>48.10</span></a> shows a <span class="math inline">\(C^2\)</span> path connecting the knots. The path is constructed by plotting simultaneously the output of two functions, <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span>, with the input <span class="math inline">\(t\)</span> on the domain <span class="math inline">\(1 \leq t \leq 16\)</span>.</p>
+<div class="rmosaic">
+<p>Cubic spline functions can be created with the R/mosaic <code>spliner()</code> function. The second argument is a data frame giving the knot locations. The first argument is a tilde expression specifying the variables to use from the data frame.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>xfun <span class="ot">&lt;-</span> <span class="fu">spliner</span>(x <span class="sc">~</span> t, <span class="at">data =</span> Zcalc<span class="sc">::</span>Robot.stations)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>yfun <span class="ot">&lt;-</span> <span class="fu">spliner</span>(y <span class="sc">~</span> t, <span class="at">data =</span> Zcalc<span class="sc">::</span>Robot.stations)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+
+</div>
+</div>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-smooth-robot-points" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="B4-splines_files/figure-html/fig-smooth-robot-points-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 48.10: Connecting the robot-path knots with a piecewise cubic polynomial, constructed to be <span class="math inline">\(C^2\)</span>. This is a much smoother path than produced by interpolation with quadratic polynomials.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-cubic-spline-x" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="B4-splines_files/figure-html/fig-cubic-spline-x-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 48.11: A cubic spline interpolation of the <span class="math inline">\(x\)</span>-coordinates of the robot-path knots. The cubic spline respects the monotonicity of consecutive knot points.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="intheworld">
+<p>We saw that using a line-segment interpolation produces discontinuity in the derivative of the function. Mathematically, discontinuity in the velocity can be thought of as an infinite acceleration, requiring an infinite force. In the physical world, accelerations must be finite. Even if a force is large, there is often slack in connections between components and the components are not perfectly rigid.</p>
+<p>The videos show motion of a robotic dog. In the left video, the motors in the robot are being asked to make a straight-line transition between waypoints. The result is vibration and a tremor-like movement. The right video shows the same robot, but with smoothly interpolated waypoints. This produces a gentle and vibration-free movement.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<table>
+<tbody><tr>
+<th>
+Without interpolation
+</th>
+<th>
+With interpolation
+</th>
+</tr>
+<tr>
+<td>
+<iframe width="400" height="225" src="https://www.youtubetrimmer.com/view/?v=SgJcj2Gd0Rc&amp;start=695&amp;end=719&amp;loop=0" title="Motion without interpolation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
+</iframe>
+</td>
+<td>
+<iframe width="400" height="225" src="https://www.youtubetrimmer.com/view/?v=SgJcj2Gd0Rc&amp;start=782&amp;end=800&amp;loop=0" title="Motion with interpolation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
+</iframe>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<p>WHAT SHOULD GO HERE IN PDF?</p>
+</div>
+<p><a href="https://www.youtube.com/watch?v=SgJcj2Gd0Rc">Link to entire video</a> by James Bruton.</p>
+</div>
+</section>
+<section id="bézier-splines" class="level2" data-number="48.4">
+<h2 data-number="48.4" class="anchored" data-anchor-id="bézier-splines"><span class="header-section-number">48.4</span> Bézier splines</h2>
+<p>The sort of interpolating functions described in the previous two sections were designed to be smooth at the <span class="math inline">\(C^1\)</span> level (quadratic spline) or the <span class="math inline">\(C^2\)</span> level (cubic spline). Such smoothness makes sense for, say, robotic motion where we want at all times to keep the force on each robot joint small.</p>
+<p>Not all path-related design problems require such smoothness. Indeed, in some settings, non-smoothness is called for. For instance, <span class="quarto-unresolved-ref">?fig-letter-e</span> shows the outline of a familiar shape ::: {.cell .column-margin layout-align=“center” fig.showtext=‘false’} ::: {.cell-output-display} <img src="www/bezier-e.png" id="fig-letter-e" class="img-fluid" data-fig-align="center" style="width:90.0%" alt="The outline of a letter in a computer font is often specified by a series of knot points (red dots). The path passes smoothly through some of the knot points, but has a discontinuous derivative at others."> ::: :::</p>
+<p>For both quadratic and the more commonly used cubic splines, matching the derivatives on either side of a knot is essential to constructing the function. For Bézier splines, each segment is mathematically independent from every other segment. It is up to the human designer of the curve to determine whether the curves derivative should be continuous or discontinuous at the knot point between two segments.</p>
+<p>The shape of a Bézier spline segment is established by four independent points. The first and last points determine the endpoints of the segment. Each endpoint is associated with a <strong><em>control point</em></strong> that sets the angle and “speed” with which the path leaves or enters the endpoint. You can interact with the graph in <a href="#fig-bezier-1">Figure&nbsp;<span>48.12</span></a> to develop an intuition.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<p align="center">
+<iframe width="540" height="540" src="http://www.mosaic-web.org/bezier-app.svg?a=0.3,0.2,0.5,0.5,0.8,0.4,0.9,0.7&amp;b=-100,-100,-100,-100&amp;c=-100,-100,-100,-100&amp;animate=0">
+</iframe>
+</p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<p>Link to the Bezier app for PDF version</p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div id="fig-bezier-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="www/tiny-blank.png" class="img-fluid figure-img" style="width:1.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 48.12: A single Bézier segment is defined by two endpoints and two control points. Drag the control points to see how the shape of the curve is defined by them.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The curve for a given segment is gratifyingly smooth. The real power of Bézier splines stems from how segments can be connected in various ways. <a href="#fig-bezier-2">Figure&nbsp;<span>48.13</span></a> shows two Bézier segments that have been initialized to have a smooth junction at endpoints 4 and 5. The smoothness is set by the corresponding control points (marked 3 and 6). So long as those four points (3, 4, 5, 6) are colinear and in order, the junction will be smooth. You can alter control points 2 and 7 in any way you like; the junction will remain smooth.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<p align="center">
+<iframe width="540" height="540" src="http://www.mosaic-web.org/bezier-app.svg?a=.2,.2,.3,.3,.4,.4,.5,.5&amp;b=.5,.5,.7,.7,.8,.5,.9,.9&amp;c=-100,-100,-100,-100&amp;animate=0">
+</iframe>
+</p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<p>WHAT TO PUT HERE FOR PDF version?</p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div id="fig-bezier-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="www/tiny-blank.png" class="img-fluid figure-img" style="width:1.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 48.13: Two Bézier segments can be arranged in to create a smooth or non-smooth junction between them.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Consider the path followed by a Bézier curve as it leaves one of the endpoints. <a href="#fig-bezier-2">Figure&nbsp;<span>48.13</span></a> has been initialized so that the tangent to the curve is horizontal at the right endpoint and almost vertical at the left endpoint. The further the control point is from the endpoint, the longer the Bézier curve will stay close to the tangent line. Another way to think of this is that the position of a control point has little impact on the shape of the curve near the opposite endpoint. You can observe this on the canvas by, say, moving control point 2 and observing the relatively little change near endpoint 4.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<p align="center">
+<iframe width="540" height="540" src="http://www.mosaic-web.org/bezier-app.svg?a=0.1,0.1,0.1,0.9,0.7,0.1,0.9,0.1&amp;b=-100,-100,-100,-100&amp;c=-100,-100,-100,-100&amp;animate=0">
+</iframe>
+</p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<p>Provide link to bezier app</p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div id="fig-bezier-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="www/tiny-blank.png" class="img-fluid figure-img" style="width:1.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 48.14: A Bézier curve leaves each endpoint in a direction that is tangent to the line drawn between the endpoint and its control point.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Algebraically, each Bézier segement is a pair of cubic functions, <span class="math inline">\(x(t)\)</span> for the x-coordinate and <span class="math inline">\(y(t)\)</span> for the y-coordinate. The input <span class="math inline">\(t\)</span> varies between 0 and 1 for each segment. The coordinate pair <span class="math inline">\(\left({\large\strut} x(0), y(0)\right)\)</span> is one endpoint of the curve, while <span class="math inline">\(\left({\large\strut} x(1), y(1)\right)\)</span>. Each intermediate value of <span class="math inline">\(t\)</span> corresponds to a point on the interior of the curve.</p>
+<p>The <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> functions have the same form, the difference between the functions being only the values of the end values (<span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_4\)</span> for the <span class="math inline">\(x(t)\)</span> function, and similarly <span class="math inline">\(y_1\)</span> and <span class="math inline">\(y_4\)</span> for the <span class="math inline">\(y(t)\)</span> function), as well as the control-point values (<span class="math inline">\(x_2\)</span> and <span class="math inline">\(x_3\)</span> for one function, <span class="math inline">\(y_2\)</span> and <span class="math inline">\(y_3\)</span> for the other.)</p>
+<p><span class="math display">\[x(t) = (1-t)^3\, x_1 + 3(1-t)^2 t\, x_2 + 3(1-t) t^2\, x_3 + t^3\, x_4\\\text{and}\\
+y(t) = (1-t)^3\, y_1 + 3(1-t)^2 t\, y_2 + 3(1-t) t^2\, y_3 + t^3\, y_4\]</span></p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+
+</div>
+<div class="intheworld">
+<p>Before the advent of digital design and manufacturing, smooth curves were described by clay or wooden models hand-crafted by skilled workers. Material was removed to conform to the models by machine tools directed by cams running over the models, by hand sanding and polishing, as shown in this video of propeller manufacture during World War II.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/BwU9quwgYRo?start=190" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
+</iframe>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<p>PROVIDE PDF VERSION OF VIDEO</p>
+</div>
+<p>Spline functions and digital actuators have largely replaced such analog models.</p>
+</div>
+</section>
+<section id="exercises" class="level2" data-number="48.5">
+<h2 data-number="48.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">48.5</span> Exercises</h2>
+
+
+</section>
+<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1" role="doc-endnote"><p>Called such possibly because the curves are tied together at each of the knots.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../Manifestations/B4-operations.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Operations on functions</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../Manifestations/B4-optimization.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

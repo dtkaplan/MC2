@@ -3,11 +3,6 @@
 ```{r child="../starter.Rmd"}
 ```
 
-```{r include=FALSE}
-book_file_name <- "block-6/diff-eq-intro.html"
-# Initialize skill file for the Block
-cat("link, exercise, hash, file, skill\n", file="Skill_list.csv")
-```
 
 ## Dynamical systems
 
@@ -31,11 +26,11 @@ $y(t) = \frac{P}{2\pi}\sin\left(\frac{2\pi}{P} t\right) + C$.)
 ::: {.takenote data-latex=""}
 It is **essential** that you train yourself to distinguish two very different statements
 
-i. anti-differentiation problems like $\partial_\color{blue}{t} y = g(\color{blue}{t})$, which has $t$ as **both** the with-respect-to variable and as the argument to the function $g()$.
+i. anti-differentiation problems like $\partial_{\color{blue}{t}} y = g(\color{blue}{t})$, which has $t$ as **both** the with-respect-to variable and as the argument to the function $g()$.
 
 and
 
-ii. dynamical systems like $$\partial_\color{blue}{t} \color{magenta}{y} = g(\color{magenta}{y})\ .$$
+ii. dynamical systems like $$\partial_{\color{blue}{t}} \color{magenta}{y} = g(\color{magenta}{y})\ .$$
 
 This is one place where Leibniz's notation for derivatives can be useful:
 $$\underbrace{\frac{d\color{magenta}{y}}{d\color{blue}{t}} = g(\color{blue}{t})}_{\text{as in antidifferentiation}}\ \ \ \text{versus}\ \ \ \underbrace{\frac{d\color{magenta}{y}}{d\color{blue}{t}} = g(\color{magenta}{y})}_{\text{dynamical system}}$$
@@ -52,7 +47,10 @@ $\ $
 
 Let's illustrate the idea of a dynamical system with a children's game: "Chutes and Ladders". Since hardly any children have studied calculus, the game isn't presented as differential equations, but as a simple board and the rules for the movement along the board.
 
-```{r echo=FALSE, out-width: "60%", fig-align: "center"}
+```{r echo=FALSE}
+#| label: fig-chutes-and-ladders
+#| out-width: "60%"
+#| fig-align: "center"
 knitr::include_graphics("www/Chutes-and-ladders.png")
 ```
 
@@ -118,7 +116,7 @@ For many decades, it was assumed that all dynamical systems produce either monot
 
 
 
-::: {.takenote data-latex="0"}
+::: {.column-margin}
 That calculus is the language of change can be seen in the words used in this section. For instance, *instantaneous*, *continuous*, and *monotonic* are all words introduced in Block 1 of this book. 
 :::
 
@@ -129,7 +127,10 @@ News reports of the COVID pandemic usually focus on the number of new cases each
 
 From a history of new-case counts over time (e.g. @fig-NYT-covid-history) you can see that the number of new cases waxes and wanes. Knowing that the number of cases today is, say, 100 thousand doesn't tell you what the number of cases *will be* in two weeks: 100 thousand is encountered both on the way up and on the way down.
 
-```{r NYT-covid-history, echo=FALSE, fig-cap: "COVID-19 new-case counts in the US over the first two years of the pandemic. [Source: [*New York Times*]](https://www.nytimes.com/interactive/2021/us/covid-cases.html)"}
+```{r echo=FALSE}
+#| label: fig-NYT-covid-history
+#| fig-cap: "COVID-19 new-case counts in the US over the first two years of the pandemic. [Source: [*New York Times*]](https://www.nytimes.com/interactive/2021/us/covid-cases.html)]"
+#| fig-cap-location: margin
 knitr::include_graphics("www/NYT-covid-report.png")
 ```
 :::
@@ -223,7 +224,10 @@ To make a plot, we need numerical values for all the parameters in those equatio
 
 The vector field corresponding to the dynamics is called a ***flow***, as if it were a pool of swirling water. @fig-rabbit-fox-vectors shows the flow of the rabbit/fox system.
 
-```{r rabbit-fox-vectors, echo=FALSE, fig-cap: "The dynamics of the rabbit/fox system shown as a vector field over the state space. The parameters have been set, for the purpose of illustration, to $\\alpha = 2/3$, $\\beta = 4/3$, $\\gamma = 1$, and $\\delta = 1$."}
+```{r echo=FALSE}
+#| label: fig-rabbit-fox-vectors
+#| fig-cap: "The dynamics of the rabbit/fox system shown as a vector field over the state space. The parameters have been set, for the purpose of illustration, to $\\alpha = 2/3$, $\\beta = 4/3$, $\\gamma = 1$, and $\\delta = 1$."
+#| fig-cap-location: margin
 vectorfield_plot(0.66*r - 1.33*r*f ~ r & f, 
                  1*f*r -1*f ~ r & f, 
                  domain(r=.1:2, f=0:1), npts=20, 
@@ -249,7 +253,9 @@ $$\partial_t \theta = v\\
 
 @fig-pendulum-in-air shows the flow field of the pendulum. Also shown is a trajectory and the two time series corresponding to that trajectory.
 
-```{r pendulum-in-air, echo=FALSE, fig-cap: "The flow field of a pendulum with air resistance. From the initial condition (marked by $\\color{red}{\\text{x}}$), a trajectory is sketched out for $0 \\leq t \\leq 20$. The individual components of that trajectory are graphed as time series.", fig.show="keep"}
+```{r echo=FALSE}
+#| label: fig-pendulum-in-air
+#| fig-cap: "The flow field of a pendulum with air resistance. From the initial condition (marked by $\\color{red}{\\text{x}}$), a trajectory is sketched out for $0 \\leq t \\leq 20$. The individual components of that trajectory are graphed as time series." 
 theta_exp <- latex2exp::TeX("$\\theta$")
 v_exp <- latex2exp::TeX("$v_\\theta$$")
 soln <- integrateODE(dtheta ~ v, dv ~ -sin(theta) - 0.1*2*sign(v)*v^2, theta = pi/4, v=+1, tdur=20)
@@ -289,7 +295,10 @@ Returning to the Chutes and Ladders game used as an example near the start of th
 
 The state in chutes and ladders is one of the hundred numbers 1, 2, $\ldots$, 100. This is a discrete state space. Therefore, we can describe the "flow" in a very concrete way: how each state is directly connected to another. @fig-chutes-flow shows these connections. There is no velocity involved because there is no infinitesimal movement of state. For instance, state 47 connects directly to state 26.
 
-```{r chutes-flow, echo=FALSE, fig-cap: "The \"flow\" connecting the discrete states in the dice-free Chutes and Ladders game. Source: Maj. Austin Davis"}
+```{r echo=FALSE}
+#| label: fig-chutes-flow
+#| fig-cap: "The \"flow\" connecting the discrete states in the dice-free Chutes and Ladders game. Source: Maj. Austin Davis"
+#| fig-cap-location: margin
 knitr::include_graphics("www/chutes-and-ladders-flow.png")
 ```
 In the no-dice game, the state follows the arrows. Looking carefully at @fig-chutes-flow, you can see that each state has a forward connection to at most one state. This is the hallmark of determinism.
@@ -308,7 +317,10 @@ Straightforward examination of the flow often tells you a lot about the big pict
 
 One fantastic illustration of the idea shows a building constructed in the form of an inside-out globe.  [Source](https://www.cabinetmagazine.org/issues/27/foer.php) At each of many points on the globe, there is a business. (You can see this most clearly in the foreground, which shows several boxes of workers.) `r mark(360)`
 
-```{r echo=FALSE, out-width: "70%", fig-align: "center", fig-cap: "An artist's depiction of the organization of calculations for weather forecasting by Richardson's system."}
+```{r echo=FALSE}
+#| label: fig-richardson-globe
+#| fig-cap: "An artist's depiction of the organization of calculations for weather forecasting by Richardson's system."
+#| fig-cap-location: margin
 knitr::include_graphics(("www/Richardson-globe.jpg"))
 ```
 
@@ -316,7 +328,7 @@ In each business there is a person who will report the current air pressure at t
 
 Some of the most important concepts in calculus relate to the process of collecting outputs from neighboring points and combining them: for instance finding the difference or the sum. To illustrate, here is the first set of equations from Richardson's *Weather forecasting ...* written in the notation of calculus: `r mark(370)`
 
-```{r echo=FALSE, out-width: "70%", fig-align: "center"}
+```{r echo=FALSE}
 knitr::include_graphics(("www/Richardson-equations.png"))
 ```
 
@@ -344,24 +356,4 @@ Calculus provides both the notation for describing the physics of climate and th
 4. M-P1ZSV: Distinguish between graphics of time series and trajectories by examination or construction of the graph's axes.
 5. N-O88YI: From a trajectory drawn on a graph of a flow field, construct a plausible time-series plot
 6. X-MO2V8: Understand these terms and describe the relationships among them in the context of dynamics: instantaneous state, state space, state variable, dynamical function, flow field, trajectory, time-series, differential equation, initial condition, solution
-
-
-`r insert_calcZ_exercise("47.01", "OojcwF", "Exercises/bear-blow-kayak.Rmd", skill="G-MC8XJ")`
-
-`r insert_calcZ_exercise("47.03", "frkSBa", "Exercises/rat-find-closet.Rmd", skill="D-93XWJ")`
-
-`r insert_calcZ_exercise("47.05", "wZsrpW", "Exercises/seaweed-jump-sofa.Rmd", skill="X-MO2V8 X-KZLDP")`
-
-`r insert_calcZ_exercise("47.07", "PZjVAc", "Exercises/fish-burn-fridge.Rmd", skill="D-93XWJ")`
-
-`r insert_calcZ_exercise("47.09", "9x2tYm", "Exercises/squirrel-tell-chair.Rmd", skill="X-KZLDP")`
-
-`r insert_calcZ_exercise("47.11", "34QnFG", "Exercises/cheetah-hit-chair.Rmd", skill="D-93XWJ")`
-
-`r insert_calcZ_exercise("47.13", "x4CiKv", "Exercises/ant-keep-screen.Rmd", skill="M-P1ZSV")`
-
-`r insert_calcZ_exercise("47.15", "gLXhdu", "Exercises/bird-trim-bulb.Rmd", skill="N-O88YI")`
-
-<!-- Greek letters -->
-`r insert_calcZ_exercise("47.17", "Amzsqx", "Exercises/sheep-chew-dish.Rmd", skill="A-JD4OX")`
 
