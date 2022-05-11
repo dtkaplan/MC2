@@ -3,107 +3,13 @@
 ```{r child="../starter.Rmd"}
 ```
 
+## Slopes and motion
 
-For our purposes, the ***definition of calculus*** is  
-
-> *The use of functions to model and explore continuous change*
-
-The agenda of this chapter is to give specific mathematical meaning to the phrase "continuous change."
-
-## Change and slope
-
-You have a solid, intuitive sense of what "change" means. In mathematics, especially the mathematics of functions, change has a straightforward meaning that you have already touched on in your previous math education.
-
-The word that encapsulates "change" in high-school math is ***slope***. For instance, you've undoubtedly had to calculate the slope of a straight line in a graph. You learned about "rise" and "run" and how they appear in a graph or formula. The slope is the ratio: rise over run. 
-
-Everyone has an intuitive sense of the slope of a road or of a hillside. You learned to apply this intuition to reading graphs and the slope of a line. We'll exploit the intuitive ability to read a landscape to introduce abstract mathematical ideas in a down-to-earth setting.
-
-Mathematical modelers learn to think of "slope" abstractly, not just as referring to the incline of a road. For instance, a country's population can change, as can the number of new cases of an epidemic disease, the temperature of a cup of coffee, or the distance from Earth of a spacecraft. A crucial part of learning calculus is generalizing and abstracting the mathematical concept of which "slope" is an example. 
-
-## Continuous change
-
-Most people are comfortable with the ideas of daily changes in temperature or monthly changes in credit card debt, quarterly changes in the unemployment rate, or annual changes in a child's height. Such things are easy to record in, say, a spreadsheet. For example, as I write this paragraph, the weather forecast for the next several days (in southeastern Colorado in mid-May) is
-
-Day | High | Low | Description
-----|------|-----|------------
-Thursday | 73 | 43 | sunny
-Friday   | 72 | 48 | windy
-Saturday | 66 | 48 | thunderstorms
-Sunday   | 68 | 43 | windy
-Monday   | 70 | 39 | sunny
-Tuesday  | 70 | 43 | sunny
-Wednesday| 66 | 45 | partly cloudy
-
-Such data is said to be ***discrete***. The day is listed, but not the time of day. The high temperature is forecast, but not the time of that high. The "description" is also discrete, using any one of several words---windy, sunny, etc.---to summarize the quality of the weather. 
-
-Calculus is about ***continuous change***. For instance, if the weather bureau provides a web interface that lets me enter the date and time to the nearest fraction of a second, they would be giving the means to track the change ***continuously***. Many physical processes are intrinsically continuous, for instance, the motion (change in position) of a spacecraft, the height of the tide,  or the stress on a tree as a function of wind velocity.
-
-Finding a language to describe continuous change---famously, the position of the moon or planets in their orbits, or the speed of a ball rolling down a ramp---was central to the emergence of what historians call the "Age of Enlightenment" or "modern scientific method." Isaac Newton, based on his work in the 1660s, published the first complete presentation of that language. As you might guess, the name of the language is "calculus."
-
-## Slope
-
-You already know pretty much everything there is to know about the straight-line function,
-
-- **Formula**: $f(x) \equiv a x + b$. The parameters $a$ and $b$ are the "slope" and "intercept" respectively. (More precisely, $b$ is the "y-intercept." But in statistics and modeling, it's just the "intercept.")
-- **Reading parameters from a graph**: You learned several ways to do this, which are all equivalent. Maybe the easiest is to read the y-intercept off the graph. That's $b$. Then choose some non-zero $x_0$ and read off from the graph the value of $f(x_1)$. The slope is simply $$\frac{f(x_0) - b}{x_0}$$
-
-    The ***y-intercept method*** is a special case of a more general method, the ***two-point method***, that you can use even if the y-intercept isn't shown on the graph. Pick two specific values of $x$, which we'll call $x_0$ and $x_1$. Evalate the function at these input values and compute the rise over run: $$\text{rise over run} \equiv \frac{f(x_1) - f(x_0)}{x_1 - x_0}$$
-The rise over run is the slope of the straight line.
-
-    The y-intercept method is the same as the two-point method with $x_1 = 0$.
-    
-- **Matching a straight-line function to data**: You might not have learned this formally, but the basic process is easy to imitate. The process is called ***line fitting*** or, in statistics and other fields, ***linear regression***.  
-
-
-
-## Average rate of change
-
-Since the slope is our standard way of representing a relationship of change, we will often use it to summarize a function. To illustrate, consider the exponential model we constructed to match the cooling-water data in Section @sec-fit-exponential:  
-
-```{r}
-water <- makeFun(60*exp(-0.0173*t) + 25 ~ t)
-```
-
-
+Consider a graph of the position of a car along a road as in @fig-stop-and-go.  Over the course of an hour, the car traveled about 25 miles. In other words, the ***average*** speed is 25 miles/hour: the *slope* of the tan-colored line segment. Given the traffic, sometimes the car was stopped (time C), sometimes crawling (time D) and sometimes much faster than average (time B).   
 
 ```{r echo=FALSE}
-#| label: fig-water-average
-#| fig-cap: "The exponential function that was previously matched to the cooling-water data. The slope of the straight line connecting two points on the function graph is the average rate of change during the interval."
-
-Pts <- tibble::tibble(
-  t = c(10,125),
-  y = water(t),
-  baselabel = c("t[0]", "t[1]"),
-  flabel = c("f(t[0])", "f(t[1])")
-)
-slice_plot(water(t) ~ t, domain(t = c(0,200))) %>%
-  gf_point(y ~ t, data = Pts, color="orange3", alpha=0.25, size=4) %>%
-  gf_line(y ~ t, data = Pts, color="orange3") %>%
-  gf_point(0 ~ t, data = Pts, color="dodgerblue", alpha=0.25, size=4) %>%
-  gf_lims(y=c(0,90)) %>%
-  gf_segment(0 + y ~ t+t, data=Pts, color="dodgerblue", linetype=2) %>%
-  gf_text(0 ~ t, data = Pts, label = ~baselabel, color="dodgerblue", nudge_x=7, parse=TRUE) %>%
-  gf_text(y ~ t, data = Pts, label = ~flabel, color="orange3", nudge_y=7, nudge_x=2, parse=TRUE)
-```
-
-During the interval $[t_0, t_1]$, the rate at which the water cools is higher at first and lower at the end. The ***average*** rate of change is a single number that summarizes the whole interval.
-
-For all except straight-line models, the average rate of change depends on the interval chosen.
-
-
-
-
-
-::: {.intheworld  data-latex=""}
-"Slope" is a natural metaphor when thinking of a function as a graph. But a more general way to describe the concept is the ***rate of change*** of the output with respect to the input. The change in the output from one end of the interval  is $f(x_1) - f(x_0)$, the change in the input is $x_1 - x_0$. If the input is time (in hours), and the output is the car's position (in miles), then the rate of change is *miles-per-hour*: the car's velocity.
-
-For a straight-line function---think of a car driving at constant speed on a highway---it doesn't matter what you choose for $x_1$ and $x_0$ (so long as they are not identical). But for other functions, the choice does matter.
-
-Imagine a graph of the position of a car along a road as in @fig-stop-and-go. Over the course of an hour, the car traveled about 25 miles. Thus, the ***average*** speed is 25 miles/hour: the *slope* of the tan line segment. Given the traffic, sometimes the car stopped (time C), sometimes crawling (time D), and sometimes much faster than average (time B).  
-
-```{r echo=FALSE}
-#| label: fig-stop-and-go
-#| fig-cap: "The position of an imaginary car over time (black curve). The average rate of change over various intervals is the slope of the straight-line segment connecting the start and end of the black curve in that interval."
+#| label: fig-stop-and-go2
+#| fig-cap: "The position of an imagined car over an hour of time. (black) The tan-colored line shows what the position would have been if the car had travelled steadily at the average speed for the hour."
 f <- rfun(~ t, seed=105, n=5)
 raw <- function(t) 
         f(t) - t - 30*dnorm(t, 0, 3) + 60*dnorm(t,7,1)
@@ -119,222 +25,204 @@ Pts <- tibble::tibble(
 Intervals <- tibble::tribble(
     ~t0, ~ t1, ~color,
     0, 1, "orange3",
-    .54, .65, "darkorange",
-    .19, .4, "green",
-    .4, .54, "magenta",
+    # .54, .65, "orange",
+    # .19, .4, "green",
+    # .4, .54, "brown",
 ) %>%
     mutate(y0=position(t0), y1=position(t1))
-slice_plot(position(t) ~ t, domain(t = c(0, 1)), size=2) %>%
-    gf_labs(y = "x(t): Position from start of trip (miles)",
+FigA <- slice_plot(position(t) ~ t, domain(t = c(0, 1)), size=2) %>%
+    gf_labs(y = "f(t): distance traveled (miles)",
             x = "Time since start (hours)") %>%
     gf_text(0 ~ t, data = Pts, label=~label, color="dodgerblue") %>%
     gf_segment(2 + y ~ t + t, data = Pts[-6,], color="dodgerblue") %>%
     gf_segment(y0 + y1 ~ t0 + t1, data = Intervals, color=~color, alpha=0.5, size=3) %>%
     gf_refine(scale_color_identity())
+FigA
 ```
 
-During the interval from B to C, the car was traveling relatively fast. The slope of the $\color{magenta}{\text{magenta}}$ segment connecting the position at times B and C is the ***average*** rate of change between times B and C. It's easy to see that the average rate of change from B to C is larger than the overall average from $t=0$ to $t=1$. 
-:::
+When driving, you are aware of the car's speed at any instant. You need only look at the speedometer to read off the value (in miles per hour). Speedometers don't show the average speed for the entire trip. The average speed is the slope of the tan-colored line in @fig-stop-and-go, 25 miles in one hour, usually stated 25 miles-per-hour. 
 
-::: {.example data-latex=""}
-What is the average rate of change in the car's position during the interval $t_B = 0.40$ to $t_C=0.54$?
+In terms of @fig-stop-and-go, the speedometer reading is the **slope** of $f(t)$ at the given instant. You can see from the Figure that at instant A the speed is very close to the average speed for the entire trip. At instant B the car is going faster; the slope is much steeper. On the other hand, at instant C the car is at a standstill; its position doesn't change at all. 
 
-The length of the interval is $t_C - t_B = 0.54-0.40=0.14$.
+A car's speedometer shows the speed at each moment---or ***instant***---of the trip. As you can see in @fig-stop-and-go, the speed varies and is sometimes less than the average speed, sometimes greater, and occasionally equal to the average speed over the trip.  
 
-Evaluating the function gives $x(t_C) = 18$ and $x(t_B) = 12.6$. 
-
-Rise is $x(t_C) - x(t_B) = 18 - 12.6 = 5.4$.
-
-Run is $t_C - t_B = 0.54-0.40=0.14$.
-
-The average rate of change during the interval is $5.4/0.14 = 38.6$ miles/hour.
-:::
-
-
-::: {.intheworld  data-latex=""}
-@fig-aver-tree shows a simplified model of the amount of usable wood harvestable from a typical tree in a managed forest of Ponderosa Pine. (You can see some actual forestry research models [here](https://www.fs.fed.us/rm/pubs/rmrs_gtr292/1992_milner.pdf).) 
+From a graph of $f(t)$, you can easily judge whether the instantaneous speed is faster or slower than the average speed. Better, however, if we simply record the speedometer reading and graph that, as in @fig-instant-speed. Read off the speed from the graph at any instant of time by reference to the vertical axis.
 
 ```{r echo=FALSE}
-#| label: fig-aver-tree
-#| fig-cap: "A model, somewhat realistic, of the amount of wood that can be harvested from a Ponderosa Pine as a function of years since planting to harvest."
-tree_volume <- makeFun(1000*pnorm(year, mean=15, sd=10)^3 ~ year)
-# do the deriv numerically to avoid bug in derivative
-# of normal function.
-tree_growth <- numD(tree_volume(year) ~ year)
-P <- slice_plot(tree_volume(year) ~ year, domain(year = c(0, 50))) %>%
-  gf_labs(y = "Usable wood product (board-feet)",
-          x = "Year after planting")
-P
-```
-
-You are writing a business plan for a proposed pine forest. Among other things, you have to forecast the revenue generated and when you will have saleable product.
-
-They say that "time is money." Every year you wait before harvest is another year that you don't have the money. On the other hand, every year you wait means more wood at the end. How to decide when to harvest?
-
-The tree continues to grow until year 50 when it seems to have reached an equilibrium: perhaps growth goes to zero, or rot balances growth. There's no point waiting until after year 50.
-
-At year 25, the tree is growing as fast as ever. You'll get about 600 board feet of lumber.^[A "board foot" is a volume, dimension L^3^. It is a square foot (L^2) times an inch (L).] Should you harvest at year 25? No! That the tree is growing so fast means that you will have a lot more wood in years 26, 27, etc. The time to harvest is when the growth is getting smaller so that it's not worth waiting an extra year.
-
-The quantity of interest is the average rate of growth from seedling to harvest. Harvesting at year 25 will give a total change of 600 board feet over 25 years, giving an average rate of change of $600 \div 25 = 24\ \text{board-feet-per-year}$. But if you wait until year 35, you'll have about 900 board feet, giving an average rate of change of $900 \div 35 = 25.7$ board-feet-per-year (L^3^ T^-1^).
-
-It's easy to construct a diagram that indicates whether year 35 is best for the harvest. Recall that our fundamental model of change is the straight-line function. So we're going to ***model the model*** of tree growth as a straight-line function. Like the model in @fig-aver-tree, our straight-line model will start with zero wood when planted. And to be faithful to @fig-aver-tree, we'll insist that the straight-line intersect or touch that curve at some point in the future. 
-
-@fig-aver-tree2 reiterates the @fig-aver-tree model of the tree but adds on to it several straight-line models that all give zero harvest-able wood at planting time. Each green line represents a scenario where harvest occurs at $t_1$, $t_2$, etc. From the perspective of representing the rate of growth per year from planting to harvest, the straight-line green models do not need to replicate the actual growth curve. The complexities of the curve are not relevant to the growth rate. All we need is the slope of a straight-line model connecting the output at planting time to the output at harvest time. In contrast, the $\color{magenta}{\text{magenta}}$ curve is not a suitable model because it doesn't match the situation at any harvest time; it doesn't touch the curve anywhere after planting!
-
-```{r echo=FALSE, warning=FALSE} 
-#| label: fig-aver-tree2
-#| fig-cap: "Modeling the tree-growth model with straight lines connecting planting time to various harvest times. The slope of each line is the average rate of growth for that planting time."
+#| label: fig-instant-speed
+#| fig-cap: "The ***instantaneous*** speed of the car whose position vs time is shown in @fig-stop-and-go2."
+f <- rfun(~ t, seed=105, n=5)
+raw <- function(t) 
+        f(t) - t - 30*dnorm(t, 0, 3) + 60*dnorm(t,7,1)
+speed <- function(t) {
+    pmax(4*raw(20*(t-.5)), 0)
+}
 Pts <- tibble::tibble(
-  harvest = c(15, 25, 31, 50),
-  amount = tree_volume(harvest),
-  label = as.expression(paste0("t[", 1:length(harvest), "]"))
+    t = c(0, 0.19, 0.4, 0.56, 0.65, 1),
+    y = speed(t) + 5,
+    label=c("", "A", "B", "C", "D", "")
 )
-P %>%
-  gf_text(0 ~ harvest, data = Pts, label = ~ label, parse=TRUE ) %>%
-  gf_segment(0 + amount ~ 0 + harvest, data = Pts, color="green") %>%
-  gf_point(amount ~ harvest, data = Pts, size=3, color="green", alpha=0.5) %>% 
-  gf_abline(intercept=0, slope=40, color="magenta") %>%
-  gf_segment(0 + amount ~ harvest + harvest, data = Pts, color="gray")
+FigB <- slice_plot(speed(t) ~ t, domain(t=c(0,1)), npts=500) %>%
+    gf_labs(y = "Instantaneous speed (miles/hour)", 
+           x = "Time since start of trip.") %>%
+    gf_text(2 ~ t, data = Pts, label=~label, color="dodgerblue") %>%
+    gf_segment(5 + y ~ t + t, data = Pts[-1,], color="dodgerblue")
+FigB
 ```
+The two graphs in Figures \@ref(fig:stop-and-go2) and \@ref(fig:instant-speed) show the same car trip. For each of the two graphs, the presentation of the data makes it easy to see some things and hard to see others. For instance, figuring out when the car is at a standstill is harder in the position-vs-time graph than in the speed-vs-time graph. 
 
-To maximize average lumber volume per year, choose a harvest time that produces the steepest possible green segment. From @fig-aver-tree2, that steepest line glances the growth curve near year 31 (shown as $t_3$ in the diagram). 
 
-It's best to find the argmax by creating a function that shows explicitly what one is trying to optimize. (In [Chapter -@sec-optim-and-shape] we'll use the name ***objective function*** to identify such function.)  Here, the objective function is $\text{ave.growth(year)} \equiv \text{volume(year)} / \text{year}$. See @fig-aver-tree3.
+## Visualizing the slope function {#sec-slope-fun-visualization}
 
+Look back at @fig-stop-and-go2 and @fig-instant-speed (which we reproduce here). We know the two functions are closely related---one is the position of the car and the other the speed. But it's hard to see the relationship at a glance. You have to go patiently back and forth between the two graphs, comparing a slope in one graph to an output value in the other graph.
 
 ```{r echo=FALSE}
-#| label: fig-aver-tree3
-#| fig-cap: "Graph of the average-growth function ave_growth(year), constructed by dividing volume(year) by year."
-slice_plot(tree_volume(year)/year ~ year, domain(year = c(2, 50))) %>%
-  gf_labs(y = "Annual growth (board-feet)",
-          x = "Year after planting")
-```
-The graph of ave_growth(year) makes it clear that the maximum average growth from planting to harvest will occur at about year 32.
-:::
-
-
-
-
-
-
-
-
-## Instantaneous rate of change {#sec-instantaneous-rate-of-change}
-
-The ***average rate of change*** is the slope of a line segment connecting two points on the graph of a function, the points $\left(\strut t_0, f(t_0)\right)$ and $\left(\strut t_1, f(t_1)\right)$. It reflects all the point-to-point changes in the value of the function over the interval $t_0$ to $t_1$ in the function's domain.
-
-It turns out to be helpful to consider the rate of change of a function at an individual point $t_0$ in the domain, rather than the interval between two points. This rate of change *at a point* is called the ***instantaneous rate of change***.
-In Block 2, we'll see that a good way to define an instantaneous rate of change at $t_0$ is as the average rate of change over the interval $t_0 \leq t \leq t_0 + h$ with the proviso that the interval length $h$ goes as close as it can to zero. Visually, this is the slope of the line that's tangent to the function's graph at the input value $t_0$ as in @fig-tangent-line-exp.  
-
-```{r echo=FALSE}
-#| label: fig-tangent-line-exp
-#| fig-cap: "A line tangent to the curve at a single point. The slope of this line is the instantaneous rate of change."
-Pt <- tibble::tibble(
-  t = 25,
-  y = water(t),
-  baselabel="t[0]",
-  flabel = "f(t[0])"
-)
-tangent <- makeFun(-0.71722*(t-25) + 63.7 ~ t)
-slice_plot(water(t) ~ t, domain(t=c(0, 65)), size=3, alpha=.25) %>%
-  gf_point(y ~ t, data=Pt, 
-           color="sienna", alpha = 0.25, size=4) %>%
-  gf_point(25 ~ t, data=Pt, 
-           color="tomato", alpha = 0.25, size=4) %>%
-  slice_plot(tangent(t) ~ t, color = "sienna", 
-             domain(t=c(0,65))) %>%
-  gf_text(y ~ t, data = Pt, label = ~ flabel, 
-          nudge_x = 3, color="sienna", parse=TRUE) %>%
-  gf_text(25 ~ t, data = Pt, label = ~ baselabel, 
-          nudge_x = 3, color="tomato", parse=TRUE) %>%
-  gf_segment(25 + y ~ t+t, data=Pt, color="tomato", linetype=2)
-```
-
-It's convenient to be able to find the slope of such a tangent line using just the definition $f(t)$, rather than having to draw a graph and eyeball the tangent. For now, let's approximate the slope of tangent line by the average rate of change over a small run from  $t_0$ to $t_0 + 0.1$:
-$$\text{slope of}\ f(t) \ \text{at}\ t_0 \approx\frac{f(t_0 + 0.1) - f(t_0)}{0.1} = \frac{\text{amount of rise}}{\text{length of run}}$$
-The $\approx$ symbol means "is approximately." For now, I want to put off the question of what "approximately" means. In modeling, whether the 0.1 gives a good enough approximation will depend on the function $f()$ and the context in which the slope is to be used. For instance, in drawing @fig-tangent-line-exp I needed to find the tangent line. Using 0.1 is entirely satisfactory in this setting, but it might not be in other settings.
-
-The notation "slope of $f(t)$ at $t=t_0$" is long-winded and awkward. If we were looking at the "value of $f(t)$ at $t_0$ we have at hand a much more concise notation: $f(t_0)$. But it doesn't work to write "slope of $f(t_0)$" because $f(t_0)$ is a **quantity** and not a **function**. Instead, let's make a concise notation for "slope of $f(t)$." Following tradition, we'll write ${\cal D}f(t)$. The name of this "slope of $f(t)$" function is ${\cal D}f()$: a two-letter name. When we want to say, "the (approximate) slope of the tangent line to $f(t)$ at $t_0$, we can write simply: $${\cal D}f(t_0)$$
-meaning, evaluate the "slope function of f()" at $t_0$.
-
-To formalize this, we'll define the ***slope function of f()*** as 
-$${\cal D}f(t) \equiv \frac{f(t + 0.1) - f(t)}{0.1}$$
-Let's look at the slope functions that correspond to some of pattern-book functions: $e^x$, $\sin(x)$, $x^{-1}$ and $\ln(x)$. We can define them easily enough in R:
-
-```{r}
-Dexp <- makeFun((exp(t+0.1) - exp(t))/0.1 ~ t)
-Dsin <- makeFun((sin(t+0.1) - sin(t))/0.1 ~ t)
-Dxm1 <- makeFun(((1/(t+0.1)) - (1/t))/0.1 ~ t)
-Dlog <- makeFun((log(t+0.1) - log(t))/0.1 ~ t)
-```
-
-
-```{r echo=FALSE, warning=FALSE}
-#| label: fig-compare-pattern-book-slopes
 #| out-width: "50%"
 #| fig-show: "hold"
-#| fig-cap: "Comparing the pattern-book function (blue) to its slope function (tan)"
-slice_plot(sin(x) ~ x, domain(x=c(-10,10)), color="dodgerblue") %>%
-  slice_plot(Dsin(x) ~ x, color="orange3", alpha=0.25, size=2) %>%
-  gf_labs(title="Sinusoid")
-slice_plot(exp(x) ~ x, domain(x=c(-2,2)), color="dodgerblue") %>%
-  slice_plot(Dexp(x) ~ x, color="orange3", alpha=0.25, size=2) %>%
-  gf_labs(title="Exponential function")
-slice_plot(log(x) ~ x, domain(x=c(0.1,5)), color="dodgerblue") %>%
-  slice_plot(Dlog(x) ~ x, color="orange3", alpha=0.25, size=2) %>%
-  gf_labs(title="Logarithm function") %>%
-  gf_lims(y=c(-2.5, 7.5))
-slice_plot(1/x ~ x, domain(x=c(0.1,5)), color="dodgerblue", npts=500) %>%
-  slice_plot(Dxm1(x) ~ x, color="orange3", alpha=0.25, size=2) %>%
-  gf_labs(title="Power law function (with p=-1)") %>%
-  gf_lims(y=c(-2.5, 7.5))
+FigA
+FigB
 ```
+
+We can make things easier by taking an unconventional approach to graphing the slope function. Rather than showing the slope as the vertical position on a graph, let's show the slope with an actual slope! Perhaps this non-standard visualization will give you a better way to understand slope functions. If so, good. The ultimate benefit of a way to show $\diff{x} f(x)$ and $f(x)$ in the same frame will come when we introduce the operation of ***anti-differentiation***. 
+
+Recall that the ***basic model of change*** in Calculus is the straight-line function $\line(x) \equiv a x + b$. The slope $a$ of $\line(x)$ tells how the output changes for a unit change in input. In differentiation, we  
+
+i. approximate the parent function $f(x)$ as a series of local line segments.
+ii. extract the **slope** of each line segment as the value of the slope function at each input $x$. 
+
+@fig-segment-approx shows the segment by segment approximation around each of several input values (marked in green).  The ***slope function visualization*** is constructed by throwing away the vertical offset of each of the line segments and plotting them horizontally adjacent to one another. 
+
+```{r echo=FALSE}
+#| label: fig-segment-approx
+#| fig-cap: "A function $f(x)$ shown along with the tangent line segment touching $f()$ at each of the green points. For the slope function visualization, the tangent line segments are moved down to the horizontal axis."
+Segs <- create_segments(sin(x) ~ x, domain(x=c(-.1,pi)), nsegs=10)
+gf_segment(yf + yfend ~ x + xend, data = Segs, 
+           color=~slope,size=2, alpha=.9) %>%
+    gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
+    slice_plot(sin(x) ~ x, color="black", domain(x=c(0, pi)),
+               alpha = 0.85, size=1, inherit=FALSE) %>%
+    gf_point(offset ~ start, size=1, color="green") %>%
+    gf_segment(y + yend ~ x + xend, data = Segs, 
+           color=~slope,size=1.3, lineend="round") %>%
+    gf_point(0 ~ start, size=1, color="green") %>% 
+  gf_labs(y = "f(x)")  
+    
+```
+You can see that the slopes are a function of $x$, that is, the slope changes with $x$. Because the function and its slope function are shown on the same graph in the same way, it's easy to verify that the slope as a function of $x$ corresponds to the behavior of the function itself.
+
+
+```{r eval=FALSE, echo=FALSE}
+#| label: fig-finer-slope
+## Leaving this figure out
+Segs <- create_segments(sin(x) ~ x, domain(x=c(-.1,pi)), nsegs=100)
+# gf_segment(yf + yfend ~ x + xend, data = Segs, 
+#            color=~slope,size=2, alpha=.9) %>%
+#     gf_refine(scale_color_continuous(type="gradient")) %>%
+#     slice_plot(sin(x) ~ x, color="orange3", domain(x=c(0, pi)),
+#                alpha = 0.5, size=1, inherit=FALSE) %>%
+#     gf_point(offset ~ start, size=1, color="green") %>%
+  gf_segment(y + yend ~ x + xend, data = Segs, 
+           color=~slope,size=0.3) %>%
+  gf_labs(y = "output") %>%
+    gf_refine(coord_fixed(ratio=5), 
+              scale_y_continuous(breaks=c(-0.01, 0.01)))  %>%
+    gf_refine(scale_color_viridis_c())
+    
+```
+
+
+@fig-slope-visualization-examples shows several examples of the slope function visualization.
+
+```{r echo=FALSE, fig.height=3, fig.width=7, fig.show="hold", out.width="100%"} 
+#| label: fig-slope-visualization-examples
+#| fig-cap: "Slope-function visualizations (left) of several pattern-book functions (right)."
+Segs <- create_segments(exp(x) ~ x, domain(x=c(-pi,pi)), nsegs=30)
+
+ggpubr::ggarrange(
+  slice_plot(exp(x) ~ x, domain(x=c(-pi, pi))) %>%
+    gf_labs(title="exp(x)"),
+gf_segment(y + yend ~ x + xend, data = Segs, 
+           color=~slope,size=1.3, lineend="round") %>%
+  gf_point(0 ~ start, size=1, color="green") %>%
+    gf_labs(title="exp(x) slope-function visualization")  %>%
+    gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
+  gf_theme(theme(legend.position = "none")), ncol = 2)
+Segs <- create_segments(log(x) ~ x, domain(x=c(.2,pi)), nsegs=30)
+ggpubr::ggarrange(
+  slice_plot(log(x) ~ x, domain(x=c(.2, pi))) %>%
+    gf_labs(title="log(x)"),
+gf_segment(y + yend ~ x + xend, data = Segs, 
+           color=~slope,size=1.3, lineend="round") %>%
+  gf_point(0 ~ start, size=1, color="green") %>%
+    gf_labs(title="log(x) slope-function visualization")  %>%
+    gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
+  gf_theme(theme(legend.position = "none")), ncol = 2)
+Segs <- create_segments(x^2 ~ x, domain(x=c(-pi,pi)), nsegs=30)
+ggpubr::ggarrange(
+  slice_plot(x^2 ~ x, domain(x=c(-pi, pi))) %>%
+    gf_labs(title=expression(x^2)),
+gf_segment(y + yend ~ x + xend, data = Segs, 
+           color=~slope,size=1.3, lineend="round") %>%
+  gf_point(0 ~ start, size=1, color="green") %>%
+    gf_labs(title=expression(paste("x^2 slope-function visualization")))  %>%
+    gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
+  gf_theme(theme(legend.position = "none")), ncol=2)
+Segs <- create_segments(2*x -4 ~ x, domain(x=c(-pi,pi)), nsegs=30)
+ggpubr::ggarrange(
+  slice_plot(2*x - 4 ~ x, domain(x=c(-pi, pi))) %>%
+    gf_labs(title="2x - 4"),
+gf_segment(y + yend ~ x + xend, data = Segs, 
+           color=~slope,size=1.3, lineend="round") %>%
+  gf_point(0 ~ start, size=1, color="green") %>%
+    gf_labs(title="line(x) = 2 x - 4 slope-function visualization") %>%
+    gf_lims(y=c(-1,1))  %>%
+    gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
+  gf_theme(theme(legend.position = "none")), ncol=2)
+```
+
+
+
+## Acceleration (rename to "Second increments"????)
+
+Having worked out a theory of slope functions, Newton was ready to express the laws of motion in continuous time. He did this by denoting position as $x(t)$. He defined velocity and force in terms of slope functions of position and the "quantity of matter," which we call "mass."  
+
+- Velocity is the slope function of position: $v(t) \equiv {\cal D}_t x(t)$.
+- Net force is the slope function of velocity times mass: $F(t) \equiv m {\cal D}_t v(t) = m {\cal D}_{tt} x(t)$ 
+
+To take mass out of the formulation, we give a name specifically to the slope function of velocity: ***acceleration***. 
+
+- Acceleration is the slope function of velocity: $a(t) \equiv {\cal D}_t v(t) = {\cal D}_{tt} x(t)$.
+
+Having defined acceleration, we can express net force as mass times acceleration. This is ***Newton's Second Law of Motion***.
 
 ::: {.why  data-latex=""}
-Why did you plot both the function and the slope function in the same graphics frame?  
-
-You caught us! It is usually illegitimate to plot a function and it's slope function on the same vertical axis. The reason: the dimension of the output of the two functions will be different. For instance, the output of a function position(t) might have units of "miles" (L), while the output of the slope function of position (that is, ${\cal D}$position(t)) would have units such as miles-per-hour. (L T^-1^). Perhaps you'll forgive the authors if they claim they wanted to emphasize the point by demonstrating it.
+We used **net force** as the quantity we related to mass and the slope function of velocity. There are different sources of forces that add up and can cancel out. Famously, Newton formulated the ***law of universal gravitation***, which ascribed the force between masses as proportional to the product of the two masses and inversely proportional to the square of the distance between them. But a mass on a table is subject to no net force, since the table pushes back (push = force) on the mass to cancel out the force due to gravity. "Net force" takes such cancellation into account. 
 :::
 
-::: {.takenote  data-latex=""}
-Here, we write the slope function of $f(t)$ as ${\cal D}f(t)$. That works for this chapter, which deals with functions with only one input. But in general, modeling functions have more than one input, for instance, $g(x, t)$. We extend the notation a little to work with slope functions with more than one input, placing a small subscript after ${\cal D}$ to indicate which input we are changing. Thus, there will be two slope functions for $g(x,t)$:
-$${\cal D}_{\color{blue}x} g(x, t) \equiv \frac{g({\color{blue}x + 0.1}, t) - g(x, t)}{0.1}$$
-and
-
-$${\cal D}_{\color{magenta}t} g(x, t) \equiv \frac{g(x, {\color{magenta}t + 0.1}) - g(x, t)}{0.1}$$
-The input named by the subscript is the ***with-respect-to input***.
-:::
-
-The idealization of the slope function involves replacing $h=0.1$ with something much smaller. What "much smaller" means has been a complicated issue in the history of calculus. Today, we write $h \rightarrow 0$ to signify the process of making $h$ smaller and smaller, but never zero. When $h$ has this "much smaller" value, we treat the interval $x$ to $x+h$ as simply "at point $x$." Thus, we have the ***instantaneous rate of change*** at $x$. For the pattern-book functions, $h=0.1$ or smaller gives a pretty good approximation to the instantaneous rate of change. Later, in Block 2, we'll see how to arrange $h$ so that it's "much smaller" for functions in general.
 
 
-::: {.intheworld  data-latex=""}
 
-In the previous section, we looked at the optimal time to harvest a tree to maximize the average rate of growth in usable lumber over the tree's life: 32 years. 
+## Dimension of a rate of change
 
-Let's return to the modeling phase of the wood-harvest problem with a new perspective. The real objective of tree farming is to maximize the **economic value** of the wood. One component of this calculation, not yet included in the model, is the economic principle of ***opportunity cost***. 
+The function named $\partial_t f(t)$ which is the derivative of $f(t)$ takes the same input as $f(t)$; the notation makes that pretty clear. Let's suppose that $t$ is time and so the dimension of the input is $[t] = \text{T}$.
 
-Opportunity cost takes into account when valuing an asset the other possible uses of that asset. For example, lumber companies constantly invest in planting new trees for future harvest. To do this, they borrow money and they pay interest on the borrowed money. They need to borrow because their existing assets are tied up in the form of wood. The opportunity cost of not harvesting a tree is the interest on the loan the company needs to take out to invest for the future.
+The outputs of the two functions, $\partial_t f(t)$ and $f(t)$ will not, in general, have the same dimension. Why not? Recall that a derivative is a special case of a slope function, the ***instantaneous slope function***. It's easy to calculate a slope function:
 
-Between years 30 and 32, there is hardly any change in the value of the average-rate-of-change function. It's increasing a little, but is it really worthwhile to wait? At year 30, you already have a valuable resource: wood that could be money in the bank. If the money were in the bank, you could invest it and earn more money *and* at the same time, get a new seedling in the ground to start its growth. So you're doing two things at once. Efficient!
+$${\cal D}_t f(t) \equiv \frac{f(t+h) - f(t)}{h}$$
+The dimension of the quantity $f(t+h) - f(t)$ must be the same as the dimension of $f(t)$; the subtraction wouldn't be possible otherwise. The dimension of $h$, similarly, must be the same as the dimension of $t$; the addition wouldn't make sense otherwise. 
 
-To find the best year for harvest from this point of view, you treat new growth as if it were bank interest on the existing amount of lumber. That interest rate is the ratio of the *instantaneous* rate of growth of new wood divided by the amount of existing wood. @fig-tree-interest shows this function.
+Whereas the dimension of the output $f(t)$ is simply $\left[f(t)\right]$, the dimension of the quotient $\frac{f(t+h) - f(t)}{h}$ will be different. The output of the derivative function $\partial_t f(t)$ will be $$\left[\partial_t f(t)\right] = \left[f(t)\right] / \left[t\right] .$$ 
 
-```{r echo=FALSE, warning=FALSE}
-#| label: fig-tree-interest
-#| fig-cap: "The instantaneous investment return from the tree is the instantaneous rate of change in wood volume divided by the wood volume itself. This falls over the age of the tree as the harvestable wood volume increases."
-slice_plot(100* tree_growth(year)/tree_volume(year) ~ year,
-           domain(year=c(10,50)), label_text="foo") %>%
-  gf_labs(y = "Growth relative to volume (%/year)") %>%
- # gf_refine(scale_y_log10()) %>%
-  slice_plot(5  ~ year, color="dodgerblue", label_text="5%", label_x=0.7) %>%
-  slice_plot(10 + 0*year ~ year, color="green", label_text="10%", label_x=0.6) %>%
-  slice_plot(2 + 0*year ~ year, color="orange3", label_text="2%", label_x=0.8)
-```
-Early in the tree's life, the growth is high compared to the volume of the tree. That's because the tree is small. As the years pass, the tree gets bigger. Although the rate of growth in terms of board feet increases through year 23, compared to the accumulated volume of lumber that growth rate is getting smaller.
+Suppose $x(t)$ is the position of a car as a function of time $t$. Position has dimension L. Time has dimension T. The function $\partial_t x(t)$ will have dimension L/T; that's what velocity is, for instance miles-per-hour.
 
-The best time to harvest is when the annual "interest rate" paid by the growing tree falls to the level of the next best available investment. Suppose that investment would pay 10% per year. Then harvest the tree when the function values falls below 10%. That happens at year 24. If the next best investment paid only 5% (blue horizontal line), the harvest at year 29. If the best alternative investment paid 2%, it would be worthwhile to harvest the tree still later.
-:::
+Another example: Imagine a function pressure() with input altitude i(in km) and output pressure (in kPa, "kiloPascal"^[Air pressure at sea level is about 100 kiloPascal.]).
+
+The derivative function, let's call it $\partial_\text{altitude} \text{pressure}()$, also takes an input in km, but produces an output in kPA per km: a rate.
+
+
+## Slope at a point
+
+Show the tangent line and it's slope
 
 
 ## Exercises
@@ -344,16 +232,7 @@ The best time to harvest is when the annual "interest rate" paid by the growing 
 
 `r Znotes:::MC_counter$reset(labels="roman")`
 
-```{r drill-Quiz-2-27, echo=FALSE, results='markup'}
-askMC(
-  prompt = r"(What is the instantaneous rate of change of this function when the input is $t=-3$?<br><img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/rev2/rev2-09.png" width="80%"><br>(Choose the closest answer.) )",
-r"(+0.5+)" = r"( )",
-  r"(1)" = r"( )",
-  r"(1.5)" = r"( )",
-  r"(2)" = r"( )",
-  random_answer_order=FALSE
-)
-```
+
 
 
 
