@@ -1,0 +1,114 @@
+
+This was removed from the rate of change chapter.
+
+
+## Visualizing the slope function {#sec-slope-fun-visualization}
+
+Look back at @fig-stop-and-go2 and @fig-instant-speed (which we reproduce here). We know the two functions are closely related---one is the position of the car and the other the speed. But it's hard to see the relationship at a glance. You have to go patiently back and forth between the two graphs, comparing a slope in one graph to an output value in the other graph.
+
+```{r echo=FALSE}
+#| out-width: "50%"
+#| fig-show: "hold"
+FigA
+FigB
+```
+
+We can make things easier by taking an unconventional approach to graphing the slope function. Rather than showing the slope as the vertical position on a graph, let's show the slope with an actual slope! Perhaps this non-standard visualization will give you a better way to understand slope functions. If so, good. The ultimate benefit of a way to show $\diff{x} f(x)$ and $f(x)$ in the same frame will come when we introduce the operation of ***anti-differentiation***. 
+
+Recall that the ***basic model of change*** in Calculus is the straight-line function $\line(x) \equiv a x + b$. The slope $a$ of $\line(x)$ tells how the output changes for a unit change in input. In differentiation, we  
+
+i. approximate the parent function $f(x)$ as a series of local line segments.
+ii. extract the **slope** of each line segment as the value of the slope function at each input $x$. 
+
+@fig-segment-approx shows the segment by segment approximation around each of several input values (marked in green).  The ***slope function visualization*** is constructed by throwing away the vertical offset of each of the line segments and plotting them horizontally adjacent to one another. 
+
+```{r echo=FALSE}
+#| label: fig-segment-approx
+#| fig-cap: "A function $f(x)$ shown along with the tangent line segment touching $f()$ at each of the green points. For the slope function visualization, the tangent line segments are moved down to the horizontal axis."
+Segs <- create_segments(sin(x) ~ x, domain(x=c(-.1,pi)), nsegs=10)
+gf_segment(yf + yfend ~ x + xend, data = Segs, 
+           color=~slope,size=2, alpha=.9) %>%
+    gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
+    slice_plot(sin(x) ~ x, color="black", domain(x=c(0, pi)),
+               alpha = 0.85, size=1, inherit=FALSE) %>%
+    gf_point(offset ~ start, size=1, color="green") %>%
+    gf_segment(y + yend ~ x + xend, data = Segs, 
+           color=~slope,size=1.3, lineend="round", inherit=FALSE) %>%
+    gf_point(0 ~ start, size=1, color="green", inherit=FALSE) %>% 
+  gf_labs(y = "f(x)")  %>%
+  slope_rose(x0=1, y0=.5, xradius=0.5, color="red", units="", slopes=seq(-1,1, by=.25), inherit=FALSE)
+    
+```
+You can see that the slopes are a function of $x$, that is, the slope changes with $x$. Because the function and its slope function are shown on the same graph in the same way, it's easy to verify that the slope as a function of $x$ corresponds to the behavior of the function itself.
+
+
+```{r eval=FALSE, echo=FALSE}
+#| label: fig-finer-slope
+## Leaving this figure out
+Segs <- create_segments(sin(x) ~ x, domain(x=c(-.1,pi)), nsegs=100)
+# gf_segment(yf + yfend ~ x + xend, data = Segs, 
+#            color=~slope,size=2, alpha=.9) %>%
+#     gf_refine(scale_color_continuous(type="gradient")) %>%
+#     slice_plot(sin(x) ~ x, color="orange3", domain(x=c(0, pi)),
+#                alpha = 0.5, size=1, inherit=FALSE) %>%
+#     gf_point(offset ~ start, size=1, color="green") %>%
+  gf_segment(y + yend ~ x + xend, data = Segs, 
+           color=~slope,size=0.3) %>%
+  gf_labs(y = "output") %>%
+    gf_refine(coord_fixed(ratio=5), 
+              scale_y_continuous(breaks=c(-0.01, 0.01)))  %>%
+    gf_refine(scale_color_viridis_c())
+    
+```
+
+
+@fig-slope-visualization-examples shows several examples of the slope function visualization.
+
+```{r echo=FALSE, fig.height=3, fig.width=7, fig.show="hold", out.width="100%"} 
+#| label: fig-slope-visualization-examples
+#| fig-cap: "Slope-function visualizations (left) of several pattern-book functions (right)."
+Segs <- create_segments(exp(x) ~ x, domain(x=c(-pi,pi)), nsegs=30)
+
+ggpubr::ggarrange(
+  slice_plot(exp(x) ~ x, domain(x=c(-pi, pi))) %>%
+    gf_labs(title="exp(x)"),
+gf_segment(y + yend ~ x + xend, data = Segs, 
+           color=~slope,size=1.3, lineend="round") %>%
+  gf_point(0 ~ start, size=1, color="green") %>%
+    gf_labs(title="exp(x) slope-function visualization")  %>%
+    gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
+  gf_theme(theme(legend.position = "none")), ncol = 2)
+Segs <- create_segments(log(x) ~ x, domain(x=c(.2,pi)), nsegs=30)
+ggpubr::ggarrange(
+  slice_plot(log(x) ~ x, domain(x=c(.2, pi))) %>%
+    gf_labs(title="log(x)"),
+gf_segment(y + yend ~ x + xend, data = Segs, 
+           color=~slope,size=1.3, lineend="round") %>%
+  gf_point(0 ~ start, size=1, color="green") %>%
+    gf_labs(title="log(x) slope-function visualization")  %>%
+    gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
+  gf_theme(theme(legend.position = "none")), ncol = 2)
+Segs <- create_segments(x^2 ~ x, domain(x=c(-pi,pi)), nsegs=30)
+ggpubr::ggarrange(
+  slice_plot(x^2 ~ x, domain(x=c(-pi, pi))) %>%
+    gf_labs(title=expression(x^2)),
+gf_segment(y + yend ~ x + xend, data = Segs, 
+           color=~slope,size=1.3, lineend="round") %>%
+  gf_point(0 ~ start, size=1, color="green") %>%
+    gf_labs(title=expression(paste("x^2 slope-function visualization")))  %>%
+    gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
+  gf_theme(theme(legend.position = "none")), ncol=2)
+Segs <- create_segments(2*x -4 ~ x, domain(x=c(-pi,pi)), nsegs=30)
+ggpubr::ggarrange(
+  slice_plot(2*x - 4 ~ x, domain(x=c(-pi, pi))) %>%
+    gf_labs(title="2x - 4"),
+gf_segment(y + yend ~ x + xend, data = Segs, 
+           color=~slope,size=1.3, lineend="round") %>%
+  gf_point(0 ~ start, size=1, color="green") %>%
+    gf_labs(title="line(x) = 2 x - 4 slope-function visualization") %>%
+    gf_lims(y=c(-1,1))  %>%
+    gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
+  gf_theme(theme(legend.position = "none")), ncol=2)
+```
+
+
