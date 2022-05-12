@@ -3,6 +3,99 @@
 ```{r child="../starter.Rmd"}
 ```
 
+This chapter shows you how to use the computer to construct the derivative of any function. As you will see, this is easy because the task of constructing derivatives is well suited to the computer. [There are functions where the derivative cannot be meaningfully defined. Examples are the absolute-value function or the Heaviside function which we introduced when discussing piecewise functions in Chapter @sec-piecewise-intro.  In Chapter @sec-cont-and-smooth we will consider the pathological cases and show you how to spot them at a glance.]{.aside} 
+
+We'll demonstrate two methods:
+
+1. ***Symbolic differentiation***, which transforms an algebraic formula for a function into a corresponding algebraic formula for the derivative.
+
+2. ***Finite-difference*** methods that use a "small"---but not evanescent---$h$.
+
+Later, in Chapter @sec-cont-and-smooth, you will learn the algorithms used by the computer in constructing a symbolic derivative. One reason for teaching you to do with paper and pencil the simpler sorts of problems that the computer does perfectly is similar to the reasons you learned basic arithmetic by hand even though a calculator can perform the task more reliably. Another reason to learn to carry out symbolic differentiation on your own is to enable you to follow textbook or classroom uses of formulas which often involve differentiation. 
+
+## Why differentiate?
+
+Before showing you the easy computer-based methods for constructing the derivative of a function, it's good to provide some motivation: Why is differentiation such a common operation in so many fields of study and application?
+
+A primary reason lies in the laws of physics. In its modern form, calculus was invented specifically to be able to describe precisely the nature of motion. Newton's second law relating force to acceleration is built on derivatives. If the position of a moving object as a function of time is $x(t)$, then the velocity is $v(t) \equiv \partial_t x(t)$ and the acceleration is $a(t) \equiv \partial_t v(t) = \partial_{tt} x(t)$. Derivatives are also central to the expression of more modern forms of physics such as quantum theory and general relativity.
+
+Many relationships encountered in the everyday or technical worlds are more understandable if framed in terms of derivatives. For instance,
+
+- Electrical power is the rate of change with respect to time of electrical energy.
+- Birth rate is one component of the rate of change with respect to time of population. (The others are the death rate and the rates immigration and emigration.)
+- Interest, as in bank interest or credit card interest, is the rate of change with respect to time of assets. 
+- Inflation is the rate of change with respect to time of prices.
+- Disease incidence is one component of the rate of change with respect to time of disease prevalence. (The other components are death or recovery from disease.)
+- Force is the rate of change with respect to position of energy.
+- Deficit (as in spending deficits) is the change with respect to time of debt.
+
+It's common to know something about one of these function-and-derivative pairs, but to need to translate this knowledge into the form of the other. Many modeling situations call for putting together different components of change to reveal how some other quantity of interest will change. For example, modeling the financial viability of retirement programs such as the US Social Security involves looking at the changing age structure of the population, the returns on investment, the changing cost of living, and so on. In Block @sec-dynamics-part, we'll use derivatives explicitly to construct models of systems, such as an outbreak of disease, with many changing parts.
+
+Derivatives also play an important role in design. They play an important role in the construction and representation of smooth curves, such as a robot's track or the body of a car. (See Chapter @sec-splines.) Control systems that work to stabilize the flight of a plane or regulate the speed and spacing of cars are based on derivatives. The notion of "stability" itself is defined in terms of derivatives. (See Chapter @sec-equilibria.) Algorithms for optimizing design choices also often make use of derivatives. (See Chapter @sec-optimization-and-constraint.)
+
+::: {.intheworld  data-latex=""}
+Economics as a field makes considerable use of concepts of calculus---particularly first and second derivatives, the subjects of this Block---although the names used are peculiar to economics, for instance, "elasticity", "marginal returns" and "diminishing marginal returns."
+
+The origins of modern economics, especially the theory of the free market, are attributed to a book published in 1776, *The Wealth of Nations*. The author, Adam Smith (1723-1790), lays out dozens of relationships between different quantities --- wages, labor, stock, interest, prices, profits, and coinage among others. Yet despite the invention of calculus a century before *Wealth of Nations*, the book does not make any use of calculus.
+
+Consider this characteristic statement in *Wealth of Nations*:
+
+>  *The market price of every particular commodity is regulated by the proportion between the quantity which is brought to market, and the demand of those who are willing to pay the natural price of the commodity.*
+
+Without calculus and the ideas of functions and their derivatives, Smith was not able to think about prices in a modern way where price is shaped by demand and supply. Instead, for Smith, there is a "natural price": a fixed quantity. Smith lived near the end of a centuries-long period of ***static*** economies. Transportation, agriculture, manufacture, population were all much as they had been for the past 500 years or longer. 
+
+
+```{r echo=FALSE}
+#| label: cournot-demand
+#| fig-cap: "Demand as a *function* of price, as first published by Antoine-Augustin Cournot in 1836."
+#| column: margin
+knitr::include_graphics("www/cournot-demand-curve.png")
+```
+
+
+It took the industrial revolution and nearly a century of intellectual development before economics was seen dynamically. In this dynamical view, supply and demand are not seen as mere quantities, but as ***functions*** of which price is the major input. The tradition in economics is to use the word "curve" instead of "function," giving us the phrases "supply curve" and "demand curve." Many students starting out in economics conceive of supply and demand as fixed quantities. Making the transition from quantity to function, that is, between a single amount and a relationship between amounts, is a core challenge to those learning economics. 
+
+:::
+
+
+
+
+## Symbolic differentiation
+
+The R/mosaic function `D()` takes a formula for a function and produces the derivative. It uses the same sort of tilde expression used by `makeFun()` or `contour_plot()` or the other R/mosaic tools.  For instance,
+
+```{r}
+D(t * sin(t) ~ t)
+```
+
+If you prefer, you can use `makeFun()` to define a function, then hand that function to `D()` for differentiation.
+
+```{r}
+myf <- makeFun(sqrt(y * pnorm(1 + x^2, mean=2, sd=3)) ~ x & y)
+dx_myf <- D(myf(x, y) ~ x, y=3)
+dx_myf
+```
+
+In the right side of the tilde expression handed off to `D()` names the with-respect-to input. This is similar to the tilde expressions used in plotting, which name the inputs that form the graphics domain. But it contrasts with the tilde expressions in `makeFun()`, where the right-hand side specifies the order in which you want the inputs to appear.
+
+::: {.example data-latex=""}
+Needless to say, `D()` knows the rules for the derivatives of the pattern-book functions introduced in Section @sec-d-pattern-book. For instance,
+
+```{r}
+D(sin(t) ~ t)
+D(log(x) ~ x)
+D(exp(x) ~ x)
+D(x^2 ~ x)
+```
+:::
+
+
+Exercise??? Define the derivative of a piecewise function by putting together the derivatives of the pieces.
+
+
+
+## Finite difference derivatives
+
 ${\cal D}_t$ is the "Finite-difference derivative" 
 
 
