@@ -42,7 +42,7 @@ Consider this characteristic statement in *Wealth of Nations*:
 
 >  *The market price of every particular commodity is regulated by the proportion between the quantity which is brought to market, and the demand of those who are willing to pay the natural price of the commodity.*
 
-Without calculus and the ideas of functions and their derivatives, Smith was not able to think about prices in a modern way where price is shaped by demand and supply. Instead, for Smith, there is a "natural price": a fixed quantity. Smith lived near the end of a centuries-long period of ***static*** economies. Transportation, agriculture, manufacture, population were all much as they had been for the past 500 years or longer. 
+Without calculus and the ideas of functions and their derivatives, Smith was not able to think about prices in a modern way where price is shaped by demand and supply. Instead, for Smith, each item has a "natural price": a fixed quantity that depends on the amount of labor used to produce the item. Nowadays, we understand that productivity changes as new methods of production and new inventions are introduced. But Smith lived near the end of a centuries-long period of ***static*** economies. Transportation, agriculture, manufacture, population were all much as they had been for the past 500 years or longer. James Watt's steam engine was introduced only in 1776 and it would be decades before it was adapted to the myriad uses of steam power that characterized the 19th century. The cotton gin (1793), labor-saving agricultural machines such as the McCormick reaper (1831), the assembly line (1901), and the many other innovations of industry all lay in the future when Smith was writing *Wealth of Nations*. 
 
 
 ```{r echo=FALSE}
@@ -53,7 +53,7 @@ knitr::include_graphics("www/cournot-demand-curve.png")
 ```
 
 
-It took the industrial revolution and nearly a century of intellectual development before economics was seen dynamically. In this dynamical view, supply and demand are not seen as mere quantities, but as ***functions*** of which price is the major input. The tradition in economics is to use the word "curve" instead of "function," giving us the phrases "supply curve" and "demand curve." Many students starting out in economics conceive of supply and demand as fixed quantities. Making the transition from quantity to function, that is, between a single amount and a relationship between amounts, is a core challenge to those learning economics. 
+It took the industrial revolution and nearly a century of intellectual development before economics had to and could embrace the rapid changes in the production process. In this dynamical view, supply and demand are not seen as mere quantities, but as ***functions*** of which price is the major input. The tradition in economics is to use the word "curve" instead of "function," giving us the phrases "supply curve" and "demand curve." Many students starting out in economics conceive of supply and demand as fixed quantities. Making the transition from quantity to function, that is, between a single amount and a relationship between amounts, is a core challenge to those learning economics. 
 
 :::
 
@@ -90,13 +90,57 @@ D(x^2 ~ x)
 :::
 
 
-Exercise??? Define the derivative of a piecewise function by putting together the derivatives of the pieces.
+## Finite-quotient derivatives
+
+Whenever you have a formula amenable to the construction of a symbolic derivative, that's what you should use. Finite-quotient derivatives are useful in those situation where you don't have such a formula. The calculation is simple but has a weakness that points out the advantages of the evanescent-$h$ approach.
+
+For a function $f(x)$ and a "small," non-zero number $h$, the finite-quotient approximates the derivative with this formula:
+
+$$\partial_x f(x) \approx \frac{f(x+h) - f(x-h)}{2h}\ .$$
+To demonstrate, let's construct the finite-quotient approximation to $\partial_x \sin(x)$. Since we already know the symbolic derivative---it is $\partial_x \sin(x) = \cos(x)$---there's no genuinely practical purpose for this demonstration. Still, it can serve to confirm the symbolic rule.
+
+We'll call the finite-quotient approximation `fq_sin()` and use `makeFun()` to construct it:
+
+```{r}
+fq_sin <- makeFun((sin(x+h)- sin(x-h))/(2*h) ~ x, h=0.01)
+```
+
+Notice that `fq_sin()` has a parameter, `h`. In the above line we have set a default value of `h = 0.01`. That may look to you like a "small" value for $h$ but, as we'll see, it is not enough to just to propose a small value, you need to confirm that it is genuinely small in the particular context in which it is being used.
+
+To confirm that `fq_sin()` is an approximation to the genuine $\partial_x \sin(x)$, we exploit our knowledge that $\partial_x \sin(x) = \cos(x)$. @fig-confirm-fq-sin plots out the difference between the the approximation and the genuine derivative.
+
+```{r}
+#| label: fig-confirm-fq-sin
+#| fig-cap: "Comparing `fq_sin()` to $\\partial_x \\sin(x)$ for two values of $h$."
+slice_plot(fq_sin(x, h=0.01) - cos(x) ~ x, domain(x=-10:10)) %>%
+  slice_plot(fq_sin(x, h=0.001) - cos(x) ~ x, color="magenta") %>%
+  gf_labs(y="Error from true value.")
+```
+
+You'll need to look carefully at the scale of the vertical axis in @fig-confirm-fq-sin to see what's happening. For $h=0.01$, `fq_sin()` is not exactly the same as `cos()`, but it is close, always being within $\pm$0.00017. For many purposes, this would be accurate enough. But not for all purposes. We can make the approximation better by using a smaller $h$. For instance, the $h=0.001$ version of `fq_sin()` is accurate to within $\pm$0.0000017.
+
+In practical use, one employs the finite-quotient method in those cases where one does *not already know* the exact derivative function. This would be the case, for example, if the function is a sound wave recorded in the form of an MP3 audio file.
+
+In such situations, a practical way to determine what is a small $h$ is to pick one based on your understanding of the situation. For example, much of what we perceive of sound involves mixtures of sinusoids with periods longer than one-two-thousandth of a second, so you might start with $h$ of 0.002 seconds. Use this guess about $h$ to construct a candidate finite-quotient approximation. Then, construct another candidate using a smaller `h`, say, 0.0002 seconds. If the two candidates are a close match to one another, then you have confirmed that your choice of $h$ is adequate.
+
+It's tempting to think that the approximation gets better and better as `h` is made smaller. But that's not true for computer calculations. The reason is that quantities on the computer have only a limited precision: about 15 digits. To illustrate, let's calculate a simple quantity, $(\sqrt{3})^2 - 3$. Mathematically, this quantity is exactly zero. But on the computer, it is small in magnitude, but not exactly zero:
+
+```{r}
+sqrt(3)^2 - 3
+```
+
+We can see this sort of loss of precision at work if we make `h` very small in the finite-quotient approximation to $\partial_x \sin(x)$. In @fig-too-small-h we are using `h = 0.000000000001`. The result is unsatisfactory.
+
+```{r}
+#| label: fig-too-small-h
+#| fig-cap: "In computer calculations, using too small an `h` leads to a loss of accuracy in the finite-quotient approximation."
+#| column: margin
+slice_plot(fq_sin(x, h=0.000000000001) - cos(x) ~ x, domain(x=-10:10)) %>%
+  slice_plot(fq_sin(x, h=0.0000000000001) - cos(x) ~ x, color="magenta") %>%
+  gf_labs(y="Error from true value.")
+```
 
 
-
-## Finite difference derivatives
-
-${\cal D}_t$ is the "Finite-difference derivative" 
 
 
 
@@ -152,13 +196,6 @@ We're calling R/mosaic `D()` an ***operator*** rather than a ***function***. The
 
 
 
-## A little bit of ...
-
-Recall that the local rate of change of a function  can be written as a ratio of rise-over-run:
-$$\partial_t f(t) \equiv \frac{f(t+h) - f(t)}{h}$$ 
-where $h$ is the length of the "run." The idea of the ***instantaneous rate of change*** is to make $h$ as small as possible. 
-
-In the very early days of calculus, the vanishing $h$ was described as "evanescent." (Dictionary definition: "tending to vanish like vapor."^[[Source](https://www.merriam-webster.com/dictionary/evanescent)]) 
 
 
 
@@ -466,30 +503,12 @@ But there is no divide-by-$h$ in sight, so we can resolve $\lim_{h\rightarrow 0}
 $$\partial_x x^3 = 3 x^2\ ,$$ consistent with the proposed rule. 
 
 
-### List of pattern-book rules {#sec-pattern-book-derivs}
-
-We'll save for later the derivation of the derivatives of the other pattern-book functions, but note that the gaussian function is **defined** to be the derivative of the sigmoidal function.
-
-Name | $f(x)$ | $\partial_x f(x)$   | demonstrated already
------|---------------|------------------
-exponential | $e^x$     | $e^x$ | yes
-logarithm (natural)  | $\ln(x)$  | $1/x$  | not yet
-sinusoid    | $\sin(x)$ | $\cos(x)$ | not yet
-square | $x^2$  | $2x$ | yes
-proportional | $x$   | $1$ | yes
-constant | 1  | 0 | yes
-reciprocal | $1/x$ or $x^{-1}$   | $-1/x^2$ | yes
-gaussian (hump)     |  $\dnorm(x)$           |  $-x\, \dnorm(x)$ | not yet
-sigmoid  |  $\pnorm(x)$            |  $\dnorm(x)$ | by definition
 
 
-```{r echo=FALSE}
-#| label: fig-pattern-deriv-diag
-#| fig-cap: "A diagram showing how differentiation connects the pattern-book functions to one another."
-knitr::include_graphics("www/pattern-derivs-diagram.png")
-```
+
 
 ## Exercises
+
 
 <!-- Drill
 
