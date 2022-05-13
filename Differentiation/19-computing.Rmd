@@ -140,10 +140,50 @@ slice_plot(fq_sin(x, h=0.000000000001) - cos(x) ~ x, domain(x=-10:10)) %>%
   gf_labs(y="Error from true value.")
 ```
 
+## Second and higher-order derivatives
 
+Many applications call for differentiating a derivative or even differentiating the derivative of a derivative. In English, such phrases are hard to read. They are much simpler using mathematical notation.
 
+- $f(x)$ a function
+- $\partial_x f(x)$ the derivative of $f(x)$ 
+- $\partial_x \partial_x f(x)$, the ***second derivative*** of $f(x)$, usually written even more concisely as $\partial_{xx}f f(x)$.
 
+There are third-order derivatives, fourth-order, and on up. These are not encountered as often as first- and second-order derivatives.
 
+To compute a second-order derivative $\partial_{xx} f(x)$, first differentiate $f(x)$ to produce $\partial_x f(x)$. Then, still using the techniques described earlier in this chapter, differentiate $\partial_x f(x)$. 
+
+There's a short-cut for constructing high-order derivatives using `D()` in a single step. On the right-hand side of the tilde expression, list the with-respect-to name repeatedly. For instance:
+
+- The second derivative $\partial_{xx} \sin(x)$:
+
+```{r}
+D(sin(x) ~ x & x)
+```
+
+- The third derivative $\partial_{xxx} \ln(x)$:
+
+```{r}
+D(log(x) ~ x & x & x)
+```
+
+::: {.example data-latex=""}
+Physics students learn a formula for the position of an object in free fall dropped from a height $x_0$ and at an initial velocity $v_0$:
+$$ x(t) \equiv -\frac{1}{2} g t^2 + v_0 t + x_0\ .$$
+The acceleration of the object is the second derivative $\partial_{tt} x(t)$. Use `D()` to find the object's acceleration.
+
+The second derivative of $x(t)$ with respect to $t$ is:
+
+```{r warning=FALSE}
+D(0.5*g*t^2 + v0*t + x0 ~ t & t)
+```
+
+The acceleration does not depend on $t$; it is the constant $g$. No wonder $g$ is called "gravitational acceleration."
+
+:::
+
+TURN THESE INTO EXERCISES
+
+BUT THINK WHERE TO PUT THE LIST OF DIFFERENTIATION NOTATIONS.
 
 ## Notations for differentiation
 
@@ -367,140 +407,6 @@ We used **net force** as the quantity we related to mass and the slope function 
 :::
 
 
-
-
-
-## Symbolic differentiation {#sec-symbolic-differentiation}
-
-Symbolic differentiation is the process of taking a formula and translating it to a new formula according to certain patterns or ***rules***. Each rule is ultimately derived from the definition of the slope function and the differencing operator. 
-
-As you recall, the ***differencing operator*** $\diff{x}$ turns a function into its slope function
-$$\diff{x} f(x) \equiv \frac{f(x+h) - f(x)}{h}$$
-
-### The line rule
-
-Let's look at one where we already know the result: The straight-line function $\line(x) \equiv a x + b$ has a slope function that is constant: $\diff{x}\line(x) = a$
-
-
-$$\diff{x}\line(x) = \frac{\line(x+h) - \line(x)}{h} = \frac{\left[\strut a (x+h) + b\right] - \left[\strut a x + b\right]}{h} = \frac{ah}{h} = a$$
-The derivative is the slope function with $h$ made as small as possible. It's tempting to think of this as $h = 0$, but that would imply dividing by zero in the differencing operator. 
-
-Being wary about the possibility of dividing by zero, mathematicians adopt a convention that indicates clearly that $h$ is to be small, but **not zero**. This convention is marked with the notation $\lim_{h \rightarrow 0}$, which means "as close as you can get to zero, but not zero exactly". 
-
-$$\partial_x \line(x) \equiv \lim_{h\rightarrow 0} \frac{\line(x+h) - \line(x)}{h} =\\
-\ \\
-= \lim_{h\rightarrow 0} \frac{a h}{h} = a$$
-
-This derivation is unarguably correct for any non-zero $h$. 
-
-This short derivation gives us a basic differentiation rule which we can divide into 3 special cases. 
-
-- **Line rule**: $\partial_x ax + b = a$
-    i. $\partial_x ax = a$. The function $ax$ is $\line(x)$ with $b=0$.
-    ii. $\partial_x b = 0$. The function $b$ is $\line(x)$ with $a=0$ and thus is the constant function.
-    iii. $\partial_x x = 1$. The function $x$ is $\line(x)$ with $a=1$ and $b=0$. 
-    
-Remember that $\partial_x f(x)$ is always a function no matter what kind of function $f(x)$ is. The functions associated with the line rule are all ***constant functions***, meaning the output doesn't depend on the input.
-
-### The square rule
-
-Only for the $\line()$ function and its three special cases is the derivative a constant function. And $\line()$ is the only function for which the $h$ in the differencing operator disappears on its own. For instance, consider the square function: $g(x) \equiv x^2$.  
-
-\begin{eqnarray}
-\partial_x [x^2] & = & \lim_{h\rightarrow 0}\frac{(x+h)^2 - x^2}{h}\\
-& = & \lim_{h\rightarrow 0}\frac{(x^2 + 2 x h + h^2) - x^2}{h}\\  
-& = & \lim_{h\rightarrow 0}\frac{2 x h + h^2}{h} \\
-& = &\lim_{h\rightarrow 0} [2x + h]\\
-\end{eqnarray}
-
-It's accepted that the limit of a sum is the sum of the limits, so ...
-$$\lim_{h\rightarrow 0} \left[\strut 2 x + h\right]= \lim_{h\rightarrow 0} 2x + \lim_{h\rightarrow 0}h$$
-The limit of something not involving $h$ is just that thing, giving  $$\lim_{h\rightarrow 0}2x = 2x\ .$$
-Finally, when an expression including $h$ doesn't involve division by $h$, we can remove the $\lim_{h\rightarrow 0}$ and just use $h=0$ instead, so $$\lim_{h\rightarrow 0} h = 0\ .$$
-
-Putting these together gives
-
-$$\partial_x [x^2] = 2x + \lim_{h\rightarrow 0}h = 2x$$
-
-
-We'll write this as another differentiation rule.
-
-- **Quadratic rule**: $\partial_x [x^2] = 2x$
-
-### The exponential rule
-
-
-Let's take on the exponential function $h(x) \equiv e^x$:
-
-$$\partial_x e^x = \lim_{h\rightarrow 0}\frac{e^{x+h} - e^x}{h} = e^x \lim_{h\rightarrow 0}\left[\frac{e^h - 1}{h}\right]$$
-At a glance, it can be hard to know what to make of $\lim_{h\rightarrow 0} (e^h-1)/h$. Setting $h=0$ in the denominator is perfectly legitimate and gives $e^0 - 1 = 0$. But that still leaves the $h$ in the numerator. Still, for any non-zero $h$, the division is legitimate, so let's see what happens as $h \rightarrow 0$:
-
-```{r}
-f <- makeFun((exp(h) - 1)/h ~ h)
-f(0.1)
-f(0.01)
-f(0.001)
-f(0.0001)
-f(0.0000001)
-f(0.0000000001)
-```
-
-Setting $h$ exactly to zero, however, won't work: it produces `NaN`.
-
-```{r}
-f(0)
-```
-
-Since $\lim_{h\rightarrow 0} (e^h-1)/h = 1$, we have
-
-* **Exponentiation rule**: $\partial_x e^x = e^x$
-
-### The reciprocal rule
-
-Still another example: the reciprocal function, written equivalently as $1/x$ or $x^{-1}$
-
-\begin{eqnarray}
-\partial x^{-1} & = &\lim_{h\rightarrow 0}\frac{\frac{1}{x+h} - \frac{1}{x}}{h} \\
-& = & \lim_{h\rightarrow 0} \frac{\frac{x - (x+h)}{x(x+h)}}{h}\\
-& = & \lim_{h\rightarrow 0}\frac{x - x+h}{x(x+h)h} = -\lim_{h\rightarrow 0}\frac{h}{x(x+h)h} \\
-& = & -\lim_{h\rightarrow 0}\frac{1}{x^2 + hx}
-\end{eqnarray}
-So long as $x \neq 0$, there is no divide-by-zero problem even when $h=0$, but let's see what the computer thinks:
-
-```{r}
-g <- makeFun(-1/(x^2 + h*x) ~ h, x=10)
-g(0.1)
-g(0.01)
-g(0.001)
-g(0.0001)
-g(0.0000001)
-g(0.0000000001)
-g(0)
-```
-
-Setting $h$ to zero in the last expression gives another differentiation rule:
-
-* **Reciprocal rule**: $\partial_x \frac{1}{x} = -\frac{1}{x^2}$
-
-### Power-law rule
-
-We don't yet have the tools needed to prove a formula for the derivative of power-law functions, but we already have some instances where we know the derivative:
-
-- $\partial_x x^2 = 2 x$
-- $\partial_x x^1 = 1$
-- $\partial_x x^0 = 0$
-
-A rule that fits all these examples is $$\partial_x x^p = p\, x^{p-1}\ .$$
-For instance, when $p=2$ the rule gives $$\partial_x x^2 = 2\, x^1 = 2 x$$ since $p-1$ will be 1$.
-
-It's not too hard to do the algebra to find the derivative of $x^3$. According to the proposed rule, the derivative should be $$\partial_x x^3 = 3 x^2\ .$$ Let's check this via the definition of the derivative:
-$$\partial_x x^3 = \lim_{h \rightarrow 0}\frac{(x+h)^3 - x^3}{h}$$
-Direct multiplication $(x+h)(x+h)(x+h)$ gives
-$$(x+h)^3 = x^3 + 3\, x^2 h + 3\, x h^2 + h^3$$
-Consequently, the limit definition amounts to:
-$$\partial_x x^3 = \lim_{h\rightarrow 0}\frac{3\, x^2 h + 3\, x h^2 + h^3}{h} = \lim_{h\rightarrow 0} \left[\strut 3\, x^2 + 3\,x h + h^2\right]$$
-But there is no divide-by-$h$ in sight, so we can resolve $\lim_{h\rightarrow 0}$ to $h=0$, giving
-$$\partial_x x^3 = 3 x^2\ ,$$ consistent with the proposed rule. 
 
 
 
