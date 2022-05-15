@@ -39,14 +39,16 @@ FigA2 <- FigA1 %>%
 
 ```{r echo=FALSE}
 #| label: fig-stop-and-go
-#| fig-cap: "The position of a car over an hour of time."
-#| column: page-inset-right
+#| fig-cap: "The position of an imagined car over an hour of time."
+#| fig-cap-location: margin
 FigA1
 ```
 
 At the end of the hour's journey, the car's position has changed by 25 miles from the start. The *rate of change* of the car's position is a ratio: the change in position divided by the change in time:
 $$\frac{25\ \text{miles}}{1\ \text{hour}}$$
 This is usually written simply "25 miles per hour," a more compact expression than the ratio but one that obscures that the quantity was produced by dividing change in position by change in time.
+
+
 
 ## Outputs versus rates of change
 
@@ -62,10 +64,10 @@ As you know, a quantity with dimension L/T is different in kind than a quantity 
 
 One way to see that velocity is a different kind of quantity than position or time is that you measure the quantities in different ways. You might measure position by noting the passage of a mile-marker along the side of the road. You can measure time by reference, say, to your level of boredom or by checking a clock or watch. You can sense velocity, on the other hand, by the level of noise in the car or the blurring of nearby objects along the road. 
 
-On a graph, you also measure in different ways changes in the intput to a function and the corresponding changes in output. As always, start by picking the endpoints of an interval in the domain of the function. As an example, @fig-stop-and-go-2 marks the endpoints of an interval with $\color{magenta}{magenta}$ dots. 
+On a graph, you also measure in different ways changes in the intput to a function and the corresponding changes in output. As always, start by picking the endpoints of an interval in the domain of the function. As an example, @fig-stop-and-go-b marks the endpoints of an interval with $\color{magenta}{magenta}$ dots. 
 
 ```{r echo=FALSE}
-#| label: fig-stop-and-go-2
+#| label: fig-stop-and-go-b
 #| column: margin
 #| fig-cap: "Measuring a change in input, a change in output, and the rate of change of a function over an interval."
 FigA2 <- FigA1 %>%
@@ -115,7 +117,7 @@ Over the interval marked, the average rate of change of the function is still an
 
 ## Slope at a point
 
-Once a slope scale is added, you can dispense with the laborious process shown in @fig-stop-and-go-2: marking an interval, drawing a rectangle, measuring the vertical change, measuring the horizontal change, finding their ratio. The slope scale lets you read off at a glance the rate of change. Simply pick a point in the domain, look at the slope of the function *at that point*, and compare to the slope scale.
+Once a slope scale is added, you can dispense with the laborious process shown in @fig-stop-and-go-b: marking an interval, drawing a rectangle, measuring the vertical change, measuring the horizontal change, finding their ratio. The slope scale lets you read off at a glance the rate of change. Simply pick a point in the domain, look at the slope of the function *at that point*, and compare to the slope scale.
 
 Perhaps you can see that formally defining an interval isn't an absolute necessity for defining a slope. Slope is something you can perceive directly from a graph, even if it's hard to quantify without a special scale.
 
@@ -177,11 +179,6 @@ slice_plot(speed(t) ~ t, domain(t=0:1)) %>%
   gf_labs(y="Slope of p(t) (miles per hour)", npts=300)
 ```
 
-
-
-
-
-
 ## Average rate of change {#sec-tree-harvest-example}
 
 In Chapter @sec-evanescent-h we will start working with the *instantaneous rate of change* of a function. That concept is so important to science and will be used so much in this book that you'll tend to forget there was any such thing as the "average rate of change" over an interval.
@@ -223,6 +220,7 @@ It's easy to construct a diagram that indicates whether year 35 is best for the 
 ```{r echo=FALSE, warning=FALSE} 
 #| label: fig-aver-tree2
 #| fig-cap: "Modeling the tree-growth model with straight lines connecting planting time to various harvest times. The slope of each line is the average rate of growth for that planting time."
+#| fig-cap-location: margin
 Pts <- tibble::tibble(
   harvest = c(15, 25, 31, 50),
   amount = tree_volume(harvest),
@@ -244,6 +242,7 @@ It's best to find the argmax by creating a function that shows explicitly what o
 ```{r echo=FALSE}
 #| label: fig-aver-tree3
 #| fig-cap: "Graph of the average-growth function ave_growth(year), constructed by dividing volume(year) by year."
+#| fig-cap-location: margin
 slice_plot(tree_volume(year)/year ~ year, domain(year = c(2, 50))) %>%
   gf_labs(y = "Annual growth (board-feet)",
           x = "Year after planting")
@@ -264,6 +263,10 @@ The outputs of the two functions, $\partial_t f(t)$ and $f(t)$ will not, in gene
 $${\cal D}_t f(t) \equiv \frac{f(t+h) - f(t)}{h}$$
 The dimension of the quantity $f(t+h) - f(t)$ must be the same as the dimension of $f(t)$; the subtraction wouldn't be possible otherwise. The dimension of $h$, similarly, must be the same as the dimension of $t$; the addition wouldn't make sense otherwise. 
 
+::: {.column-margin}
+Keep in mind that the dimension $[f(t+h) - f(t)]$ will be the same as $[f(t)]$, since the result of addition and subtraction will always have the same dimension as the quantities being combined.
+:::
+
 Whereas the dimension of the output $f(t)$ is simply $\left[f(t)\right]$, the dimension of the quotient $\frac{f(t+h) - f(t)}{h}$ will be different. The output of the derivative function $\partial_t f(t)$ will be $$\left[\partial_t f(t)\right] = \left[f(t)\right] / \left[t\right] .$$ 
 
 Suppose $x(t)$ is the position of a car as a function of time $t$. Position has dimension L. Time has dimension T. The function $\partial_t x(t)$ will have dimension L/T; that's what velocity is, for instance miles-per-hour.
@@ -277,17 +280,9 @@ The derivative function, let's call it $\partial_\text{altitude} \text{pressure}
 ## Exercises
 
 
-<!-- Drill
-
-`r Znotes:::MC_counter$reset(labels="roman")`
-
-
-
-
-
 ```{r drill-Quiz-2-28, echo=FALSE, results='markup'}
 askMC(
-  prompt = r"(What is the average rate of change of this function on the interval $-5 < t < 5?<br><img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/rev2/rev2-09.png" width="80%"><br>(Choose the closest answer.) )",
+  prompt = r"(What is the average rate of change of this function on the interval $-5 < t < 5$?https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/rev2/rev2-09.png(Choose the closest answer.) )",
 r"(+0.5+)" = r"(Rise is 5, run is 10.)",
   r"(1)" = r"( )",
   r"(1.5)" = r"( )",
@@ -300,7 +295,7 @@ r"(+0.5+)" = r"(Rise is 5, run is 10.)",
 
 ```{r drill-Quiz-2-29, echo=FALSE, results='markup'}
 askMC(
-  prompt = r"(Consider the average rate of change of this function on the interval $-2 < t < 2$. <br><img src="https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/rev2/rev2-09.png" width="80%"><br>Which of these statements best describes that average rate of change. )",
+  prompt = r"(Consider the average rate of change of this function on the interval $-2 < t < 2$. https://raw.githubusercontent.com/dtkaplan/Zdrill/main/inst/rev2/rev2-09.png" Which of these statements best describes that average rate of change. )",
 r"(very close to 1/2)" = r"( )",
   r"(+slightly less than 1+)" = r"( )",
   r"(slightly greater than 1)" = r"( )",
@@ -308,4 +303,6 @@ r"(very close to 1/2)" = r"( )",
   random_answer_order=FALSE
 )
 ```
+
+
 
