@@ -19,7 +19,7 @@ At the most simple level, building a model can be a short process:
 2. Choose a function type---e.g. exponential, sinusoidal, sigmoid---that you think would be a good match to the relationship.
 3. Find ***parameters*** that scales your function to be able to accept real-world inputs and generate real-world outputs.
 
-It's important to distinguish between two basic types of model:
+It is important to distinguish between two basic types of model:
 
 1. ***Empirical models*** which are rooted in ***observation*** and ***data***.
 2. ***Mechanistic models*** such as those created by applying fundamental laws of physics, chemistry, and such.
@@ -32,7 +32,7 @@ We are going to put off mechanistic models for a while, for two reasons. First, 
 
 ::: {.intheworld data-latex=""}
 
-You can see in Figure \@ref(fig:covid-exp2) that the exponential function plotted in $\color{blue}{\text{blue}}$ does not align perfectly with the day-by-day data. For instance, during the interval from March 8 to 21, the function output is consistently higher than the data suggest it should be. As part of the ***modeling cycle*** it's important to notice such discrepancies and try to understand them. In this case, it's likely that during the early days of the pandemic the number of reported deaths understated the actual number of COVID-related deaths. This happens because, in the early days of the pandemic, many deaths from COVID were mis-attributed to other causes.
+You can see in Figure \@ref(fig:covid-exp2) that the exponential function plotted in $\color{blue}{\text{blue}}$ does not align perfectly with the day-by-day data. For instance, during the interval from March 8 to 21, the function output is consistently higher than the data suggest it should be. As part of the ***modeling cycle*** it is important to notice such discrepancies and try to understand them. In this case, it is likely that during the early days of the pandemic the number of reported deaths understated the actual number of COVID-related deaths. This happens because, in the early days of the pandemic, many deaths from COVID were mis-attributed to other causes.
 ::: 
 
 ---------
@@ -47,10 +47,10 @@ Thus, modeling is a cyclic process of creating a model, assessing the model, and
 
 ## Example: Cooling water
 
-Looking back on the exponential fitted to the cooling water data in Section @sec-fit-exponential, it looks like our original estimate of the half-life is a bit too small; the data doesn't seem to decay at the rate implied by $k = -0.0277$. Perhaps we should try a somewhat slower decay, say $k = -0.2$ and see if that improves things.
+Looking back on the exponential fitted to the cooling water data in Section @sec-fit-exponential, it looks like our original estimate of the half-life is a bit too small; the data does not seem to decay at the rate implied by $k = -0.0277$. Perhaps we should try a somewhat slower decay, say $k = -0.2$ and see if that improves things.
 
 ::: {.scaffolding  data-latex=""}
-In the cooling water example, we're using only a subset of the data collected by Prof. Wagon. The next commands re-create that subset so that you can work with it. They also plot the data and an exponential model.  
+In the cooling water example, we are using only a subset of the data collected by Prof. Wagon. The next commands re-create that subset so that you can work with it. They also plot the data and an exponential model.  
 
 ```{r results="hide"}
 # reconstruct the sample
@@ -66,7 +66,7 @@ See if $k=-0.02$ provides a better fit to the model. (You can add another `slice
 :::
 
 
-Later in this course, we'll study ***optimization***. There are optimization techniques for directing the computer to refine the parameters to best match the data. Just to illustrate, here's what we get:
+Later in this course, we will study ***optimization***. There are optimization techniques for directing the computer to refine the parameters to best match the data. Just to illustrate, here is what we get:
 
 ```{r echo=FALSE}
 set.seed(101)
@@ -89,7 +89,7 @@ The refined parameters give a much better fit to the data than our original roug
 
 We had two rounds of the ***modeling cycle***. First, choice of an exponential model and a rough estimate of the parameters A, B, and $k$. Second, refinement of those parameters using the computer.
 
-Looking at the results of the second round, the experienced modeler can see some disturbing discrepancies. First, the estimated baseline appears to be too high. Related, the initial decay of the model function doesn't seem to be fast enough and the decay of the model function for large $t$ appears to be too slow. Prof. Stan Wagon noticed this. He used additional data to fill in the gaps for small $t$ and refined his model further by changing the basis functions in the linear combination. He hypothesized that there are at least two different cooling processes. First, the newly poured water raises the temperature of the mug itself. Since the water and mug are in direct contact, this is a fast process. Then, the complete water/mug unit comes slowly into equilibrium with the room temperature. 
+Looking at the results of the second round, the experienced modeler can see some disturbing discrepancies. First, the estimated baseline appears to be too high. Related, the initial decay of the model function does not seem to be fast enough and the decay of the model function for large $t$ appears to be too slow. Prof. Stan Wagon noticed this. He used additional data to fill in the gaps for small $t$ and refined his model further by changing the basis functions in the linear combination. He hypothesized that there are at least two different cooling processes. First, the newly poured water raises the temperature of the mug itself. Since the water and mug are in direct contact, this is a fast process. Then, the complete water/mug unit comes slowly into equilibrium with the room temperature. 
 
 
 The newly refined model was a even better match to the data. But nothing's perfect and Prof. Wagon saw an opportunity for additional refinement based on the idea that there is a third physical mechanism of cooling: evaporation from the surface of the hot water. Prof. Wagon's additional circuits of the modeling cycle were appropriate to his purpose, which was to develop a detailed understanding of the process of cooling. For other purposes, such as demonstrating the appropriateness of an exponential process or interpolating between the data points, earlier cycles might have sufficed.
@@ -152,11 +152,11 @@ gf_line(level ~ hour, data = Zcalc::RI_tide) %>%
   gf_labs(y="Water level (meters)", x="Time (hours)", title="Period 12.3 hours") %>%
   gf_lims(y =c(0, 2))
 ```
-We might call it quits with the model in Figure \@ref(fig:Fun-4-a-3-5). But once we have a pretty good model fit, it's easy to polish the parameter estimates, letting the computer do the tedious work of trying little tweaks to see if it can improve the fit.
+We might call it quits with the model in Figure \@ref(fig:Fun-4-a-3-5). But once we have a pretty good model fit, it is easy to polish the parameter estimates, letting the computer do the tedious work of trying little tweaks to see if it can improve the fit.
 
 The R/mosaic `fitModel()` can do this tweaking for us. As the following commands show, `fitModel()` takes a tilde expression as input. To the left  of the tilde goes the name of the function output in the data frame being used. The right side is a formula for the model, with names used for each parameter and using the names of inputs from the data frame. The second argument is the data frame. The third argument is used to convey an estimate for each parameter; that estimate should be pretty good if `fitModel()` is to be able to refine it.
 
-The output from `fitModel()` is a function, which we're naming `tide_mod()`. 
+The output from `fitModel()` is a function, which we are naming `tide_mod()`. 
 
 ```{r}
 tide_mod <-
@@ -188,7 +188,7 @@ Isaac Newton was the first to propose that the tides were caused by the gravitat
 
 This is the modeling cycle at work: Propose a model form (a sinusoid), adjust parameters to match what we know (the Providence tide record), compare the model to the data, observe discrepancies, propose a refined model. You can stop the model when it is giving you what you need. The period 12.56 hour model seems good enough to make a prediction of the tide level a few days ahead, and is certainly better than the "two tides a day" model. But our model is not yet able to implicate precisely the Moon's orbit in tidal oscillations.
 
-Discrepancies between a model and data play two roles: they help us decide if the model is fit for the purpose we have in mind and they can point the way to improved models. That the tidal data deviates from the steady amplitude of our model can be a clue for where to look next. It's not always obvious where this will lead.
+Discrepancies between a model and data play two roles: they help us decide if the model is fit for the purpose we have in mind and they can point the way to improved models. That the tidal data deviates from the steady amplitude of our model can be a clue for where to look next. It is not always obvious where this will lead.
 
 Historically, careful analysis of tides led to a highly detailed, highly accurate model: a linear combination of sinusoids with periods near a half-day 12.42 , 12.00, 12.66, and 11.97 hours as well components with periods that are about a day long 23.93, 25.82, 24.07, 26.87, and 24.00 hours. A tide-prediction model is constructed by finding the coefficients of the linear combination; these differ from locale to locale. There is no global model of tides, but rather a framework of linear combinations of sinusoids of different periods. What customizes the framework to the tides in a particular locale is the coefficients used in the linear combination.  
 
@@ -206,7 +206,7 @@ $C \sin(x +\phi) = A \sin(x) + B \cos(x)$ where $C^2 = A^2 + B^2$ and $\phi=\arc
 
 The data frame `SunsetLA` records the number of minutes after 4 pm until the sun sets in Los Angeles, CA  over a 4-year interval from January 2010 (month 1) through December 2013 (month 48). 
 
-<!-- (All times are already adjusted for daylight savings time. The book doesn't tell us whether the value for each month is an average over all days or for a particular day of the month.) -->
+<!-- (All times are already adjusted for daylight savings time. The book does not tell us whether the value for each month is an average over all days or for a particular day of the month.) -->
 
 Open a sandbox and make a plot of sunset time versus month.
 
@@ -216,7 +216,7 @@ gf_point(Minutes ~ Month, data = SunsetLA) %>%
   gf_line()
 ```
 
-We're using both `gf_point()` and `gf_line()`. With data that oscillates up and down, connecting the data points with lines makes it easier to see the pattern.
+We are using both `gf_point()` and `gf_line()`. With data that oscillates up and down, connecting the data points with lines makes it easier to see the pattern.
 :::
 
 ```{r dd-07-QA1, echo=FALSE}
@@ -225,7 +225,7 @@ askMC(
     "+40 to 190 minutes+" = "",
     "120 minutes" = "A range is an interval spanned by *two* numbers.",
     "40 to 180 minutes" = "The largest values are half a tick mark up from 180. Tick marks are spaced by 20 minutes.",
-    "0 to 48  months" = "That's the *domain*. The *range* is along the vertical axis."
+    "0 to 48  months" = "that is  the *domain*. The *range* is along the vertical axis."
 )
 ```
 
@@ -267,20 +267,20 @@ The domain for `slice_plot()` is inherited to that implied by the `SunsetLA` dat
 askMC(
   prompt = "Your `sunset()` function should be a pretty good match to the data except for one thing. What is that thing?",
     "The `sunset()` function has a completely different range than the data." = "This won't be the case if you have estimated $C$ and $A$ correctly.",
-    "The period of the `sunset()` function doesn't match the data." = "Did you use `sin(2*pi*Month/12)`? If so, the period should be right.",
+    "The period of the `sunset()` function does not match the data." = "Did you use `sin(2*pi*Month/12)`? If so, the period should be right.",
     "+There is a horizontal time shift between `sunset()` and the data.+",
   inline = FALSE
 )
 ```
 
-We're going to fix the problem with `sunset()` by defining a *time offset* to use as a reference. For a sine function, a suitable time offset is the value along  the horizontal axis when the phenomenon being modeled crosses $C$ with  a positive slope. There are 4 such points along the horizontal axis readily identifiable in the data. (They may not be at an integer value of `Month`.)
+We are going to fix the problem with `sunset()` by defining a *time offset* to use as a reference. For a sine function, a suitable time offset is the value along  the horizontal axis when the phenomenon being modeled crosses $C$ with  a positive slope. There are 4 such points along the horizontal axis readily identifiable in the data. (They may not be at an integer value of `Month`.)
 
 ```{r dd-07-QA4, echo=FALSE}
 askMC(
   prompt = "Which of these is a suitable value for the time offset?",
-    "0 months" = "That's not a time when the data suggest that $C$ is being crossed.",
-    "19 months" = "That's a maximum, not a crossing  of $C$.",
-    "21.5 months" = "That's a crossing of $C$, but not one with  a positive slope.",
+    "0 months" = "that is  not a time when the data suggest that $C$ is being crossed.",
+    "19 months" = "that is  a maximum, not a crossing  of $C$.",
+    "21.5 months" = "that is  a crossing of $C$, but not one with  a positive slope.",
     "+15.5 months+" = "This is a good rough value. Since  the  period is 12 months, you  could equally  well  have said the offset  is 3.5 months."
 )
 ```
@@ -289,7 +289,7 @@ In the original scaffolding, the value of `offset` was zero. Change that to matc
 
 Plot out the modified `sunset()` function and confirm that it is a much better match to the data than the original  (that is, the one  without the time offset). You can "tune" your function by tweaking the numerical values of the $A$, $C$, and $offset$  parameters until you  get a solid match.
 
-Alternatively, you can use `fitModel()` to do the tuning for you. Plug in your estimates (a.k.a. "guesses") for the parameters in place of the `___` in  the following. Then run the code. You'll  see your estimate  of  the function compared to the result of having  the computer refine your estimate. Chances are, the computer does a better job of stringing the function through the data.
+Alternatively, you can use `fitModel()` to do the tuning for you. Plug in your estimates (a.k.a. "guesses") for the parameters in place of the `___` in  the following. Then run the code. You will  see your estimate  of  the function compared to the result of having  the computer refine your estimate. Chances are, the computer does a better job of stringing the function through the data.
 
 ::: {.scaffolding  data-latex=""}
 ```{r eval=FALSE}

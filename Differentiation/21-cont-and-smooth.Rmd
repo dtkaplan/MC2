@@ -5,7 +5,7 @@
 
 You've seen how various properties of a function---whether it is monotonic, how it slopes, whether it is concave up or down (or not at all), curvature, etc.---can be related to the first and second derivatives of the function. 
 
-In this chapter, we'll elaborate on ***continuity***, one of the ideas introduced in Section @sec-word-descriptions, and use the concept of continuity to characterize functions in a new way: their ***smoothness***. 
+In this chapter, we will elaborate on ***continuity***, one of the ideas introduced in Section @sec-word-descriptions, and use the concept of continuity to characterize functions in a new way: their ***smoothness***. 
 
 ## Continuity
 
@@ -23,7 +23,7 @@ slice_plot(0 ~ x, domain(x = c(-10, 0)), size=2) %>%
   gf_lims(y = c(-0.5, 1.5))
 ```
 
-All of our basic modeling functions are continuous over their entire input domain.^[The domain of the function $1/x$ is the whole number line, except 0, where the positive and negative branches fail to meet up.] To illustrate ***discontinuity*** we'll consider piecewise functions, as introduced in Section @sec-fun-piecewise. The ***Heaviside function***, graphed in @fig-heaviside2 is discontinuous. 
+All of our basic modeling functions are continuous over their entire input domain.^[The domain of the function $1/x$ is the whole number line, except 0, where the positive and negative branches fail to meet up.] To illustrate ***discontinuity*** we will consider piecewise functions, as introduced in Section @sec-fun-piecewise. The ***Heaviside function***, graphed in @fig-heaviside2 is discontinuous. 
 
 
 Drawing the graph of the Heaviside function $H(x)$ involves lifting the pencil at $x=0$. 
@@ -41,7 +41,7 @@ slice_plot(ramp(x) ~ x, domain(x=-3:3), size=2, npts=1000) %>%
 
 Imagine that you were constructing a model of plant growth as a function of the amount of water (in cc) provided each day. The plant needs about 20 cc of water to thrive. Let's say that you use the Heaviside function for the model, say $H(W-20)$, where an output of 1 means the plant thrives and a output 0 means the plant does not. The model implies that if you provide 20.001 cc of water, the plant will thrive. But if you are stingy, and provide only 19.999 cc of water, the plant will die. In other words, a very small change in the input can lead to a large change in the output. 
 
-Common sense suggests that a change of 0.002 cc in the amount of water---that's a small fraction of a drop, 2 cubic millimeters of volume, is not going to lead to a qualitative change in output. So you might prefer to use a sigmoidal function as your model rather than a Heaviside function. 
+Common sense suggests that a change of 0.002 cc in the amount of water---that is  a small fraction of a drop, 2 cubic millimeters of volume, is not going to lead to a qualitative change in output. So you might prefer to use a sigmoidal function as your model rather than a Heaviside function. 
 
 On the other hand, sometimes a very small change in input does lead to a large change in output. For instance, a sensible model of the hardness of water as a function of temperature would include a discontinuity at $32^\circ$F, the temperature at which water turns to ice. 
 
@@ -57,7 +57,7 @@ Whenever the output of a function is a binary (yes-or-no) value, you can anticip
 
 Recall the logical path that led us to the idea of the derivative of a function. We started with the ***differencing operator***, which takes as input a function and a "small" value of $h$:
 $${\cal D}_x f(x) \equiv \frac{f(x+h) - f(x)}{h}$$
-Then, through algebraic manipulation and numerical experiments we found that, once $h$ is small enough, the graph of the slope function ${\cal D}_x f(x)$ does not depend on $h$. And so we defined a function $\partial_x f(x)$ where $h$ doesn't play a role, writing $\lim_{h\rightarrow 0}$ to remember our care to never  divide by zero.
+Then, through algebraic manipulation and numerical experiments we found that, once $h$ is small enough, the graph of the slope function ${\cal D}_x f(x)$ does not depend on $h$. And so we defined a function $\partial_x f(x)$ where $h$ does not play a role, writing $\lim_{h\rightarrow 0}$ to remember our care to never  divide by zero.
 $$\partial_x f(x) \equiv \lim_{h\rightarrow 0} \frac{f(x+h) - f(x)}{h}\ .$$
 Conveniently, we found that the derivatives of the pattern-book functions can be written in terms of the pattern-book functions *without making any reference to $h$*. For instance: 
 
@@ -85,7 +85,7 @@ slice_plot(DH01(x) ~ x, domain(x=-0.02:0.02),
 Differencing the Heaviside function produces very different functions depending on the value of $h$. The bump near $x=0$ gets taller and taller as $h$ gets smaller. Mathematicians would describe this situation as $$\lim_{h\rightarrow0}{\cal D}_x H(x=0) \equiv \lim_{h\rightarrow 0} \frac{H(0+h) - H(0)}{h}\ \ \ \text{does not exist}.$$ 
 Of course, for any given value of $h$, e.g. $h=0.000001$, the function ${\cal D}_x H(x)$ has a definite shape. But that shape keeps changing as $h \rightarrow 0$, so we can't point to any specific shape as the "limit as $h \rightarrow 0$."
 
-Since there is no convergence in the shape of ${\cal D}_x H(0)$ as $h$ gets smaller, it's fair to say that the Heaviside function does not have a derivative at $x=0$. But away from $x=0$, the Heaviside function has a perfectly sensible derivative: $\partial_x H(x) = 0$ for $x\neq 0$. But there is no derivative at $x=0$. 
+Since there is no convergence in the shape of ${\cal D}_x H(0)$ as $h$ gets smaller, it is fair to say that the Heaviside function does not have a derivative at $x=0$. But away from $x=0$, the Heaviside function has a perfectly sensible derivative: $\partial_x H(x) = 0$ for $x\neq 0$. But there is no derivative at $x=0$. 
 
 ## Smoothness
 
@@ -112,7 +112,7 @@ Mathematicians quantify the "smoothness" of a function by looking at the continu
 - $C^0$: the function $f()$ is continuous. Intuitively, this means that a graph of the function can be drawn without lifting the pencil from the paper.
 - $C^1$: the function $f()$ has a derivative over its entire domain *and* that derivative $\partial_x f(x)$ is continuous. (See @fig-c1-function for an example.)
 - $C^2$: the function $\partial_x f(x)$ has a derivative over its entire domain *and* that derivative is continuous. In other words, $\partial_{xx} f(x)$ exists and is continuous.
-- $C^n$: Like $C^2$, but we're talking about the $n$^th^-derivative of $f(x)$ existing and being continuous.
+- $C^n$: Like $C^2$, but we are talking about the $n$^th^-derivative of $f(x)$ existing and being continuous.
 - $C^\infty$: Usually when we denote a sequence with an infinite number of terms, we write down something like $C^0, C^1, C^2, \ldots$. It would be entirely valid to do this in talking about the $C^n$ sequence. But many of the mathematical functions we work with are *infinitely differentiable*, that is $C^\infty$.
 
 **Examples of $C^\infty$ functions**:
@@ -129,7 +129,7 @@ Mathematicians quantify the "smoothness" of a function by looking at the continu
 
 <!-- print rendering problem -->
 
-For engineering and design problems, smoothness means something substantially different than described by the mathematical concepts above. Later in the course we'll introduce ***cubic splines*** which are continuous functions defined by a finite set of coordinate pairs, as in a data frame. Each line of the data frame corresponds to a dot in a scatter plot, but in a cubic spline it is called a "knot point." The spline consists of cubic polynomials drawn between consecutive knot points. The domain is split at each of the knot points. Between any two adjacent knot points, the function is an ordinary cubic polynomial. At a knot point, the cubics on either side have been arranged to have their first and second derivatives match. Thus, the first two derivatives are continuous. The function is at least $C^2$. The second derivative of a cubic is a straight-line function, so the second derivative of a cubic spline is a series of straight-line functions connected at the knot points. The second derivative does not itself have a derivative at the knot points. So, a cubic spline cannot satisfy the requirements for being $C^3$; it is $C^2$. 
+For engineering and design problems, smoothness means something substantially different than described by the mathematical concepts above. Later in the course we will introduce ***cubic splines*** which are continuous functions defined by a finite set of coordinate pairs, as in a data frame. Each line of the data frame corresponds to a dot in a scatter plot, but in a cubic spline it is called a "knot point." The spline consists of cubic polynomials drawn between consecutive knot points. The domain is split at each of the knot points. Between any two adjacent knot points, the function is an ordinary cubic polynomial. At a knot point, the cubics on either side have been arranged to have their first and second derivatives match. Thus, the first two derivatives are continuous. The function is at least $C^2$. The second derivative of a cubic is a straight-line function, so the second derivative of a cubic spline is a series of straight-line functions connected at the knot points. The second derivative does not itself have a derivative at the knot points. So, a cubic spline cannot satisfy the requirements for being $C^3$; it is $C^2$. 
 
 ## Exercises
 

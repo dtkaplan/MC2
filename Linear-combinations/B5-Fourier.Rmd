@@ -32,7 +32,7 @@ Our objective in this Daily Digital  is merely  to de-mystify some of the most  
 
 ## Ocean Tides
 
-We're going to start to construct a simple theory of ocean tides. Let's start with some data, several days' tides in Providence, Rhode Island in 2010. The tide `level` is in meters.
+We are going to start to construct a simple theory of ocean tides. Let's start with some data, several days' tides in Providence, Rhode Island in 2010. The tide `level` is in meters.
 
 ```{r}
 gf_point(level ~ date_time, data = RI_tide)
@@ -42,9 +42,9 @@ Look at the graph and pull out some patterns, either regular or irregular.
 
 > Question: *Describe briefly some patterns that you see in the tide data.*
 
-Instead of using the `date_time` variable, we'll use `hour`, which is a simple numerical variable giving the time in hours since the start of April 2010 that the `level` measurement was made. The `hour` variable works better for making model functions.
+Instead of using the `date_time` variable, we will use `hour`, which is a simple numerical variable giving the time in hours since the start of April 2010 that the `level` measurement was made. The `hour` variable works better for making model functions.
 
-The next code box contains the basic commands you will be using. You'll see similar code boxes throughout this Daily Digital, each with some refinement in the development of the tide theory.
+The next code box contains the basic commands you will be using. You will see similar code boxes throughout this Daily Digital, each with some refinement in the development of the tide theory.
 
 ```{r}
 model <- makeFun(
@@ -96,7 +96,7 @@ askMC(
 
 ### The functions, continuously
 
-The `fourier_M()` function is designed to work with the `lm()` linear-combination model-making function.  But for *looking* at the functions, it's convenient to use `fourier_set()`. Instead of generating a set of numerical vectors, `fourier_set()` creates a set of functions that can be graphed in the usual way.  The following code box shows the first Fourier pair. `F_funs` is a function that takes two arguments: the first is the input value; the second is the index of the function -- equivalent to  the column number in the output of $fourier_M()$. So with `fourier_set()`,  we can easily  graph the functions corresponding  to the various columns of  `fourier_M()`. 
+The `fourier_M()` function is designed to work with the `lm()` linear-combination model-making function.  But for *looking* at the functions, it is convenient to use `fourier_set()`. Instead of generating a set of numerical vectors, `fourier_set()` creates a set of functions that can be graphed in the usual way.  The following code box shows the first Fourier pair. `F_funs` is a function that takes two arguments: the first is the input value; the second is the index of the function -- equivalent to  the column number in the output of $fourier_M()$. So with `fourier_set()`,  we can easily  graph the functions corresponding  to the various columns of  `fourier_M()`. 
 
 ```{r}
 F_funs <- fourier_set(1, left = 0, right = 24)
@@ -152,19 +152,19 @@ gf_point(level ~ hour, data = RI_tide, alpha = 0.05) %>%
   slice_plot(model(hour) ~ hour, color = "blue", npts = 500) 
 ```
 
-Perhaps you can see in the plot of the period 24-hour model a drift between the model and the actual tide data. There's a good reason for  that. 24 hours describes the period of the rotation  of  the Earth  with respect  to  the Sun.  But it is the Moon that is mostly responsible for tidal oscillations. The  length of the "day"  with respect to  the  Moon is a little longer: 24.83 hours.
+Perhaps you can see in the plot of the period 24-hour model a drift between the model and the actual tide data. There is a good reason for  that. 24 hours describes the period of the rotation  of  the Earth  with respect  to  the Sun.  But it is the Moon that is mostly responsible for tidal oscillations. The  length of the "day"  with respect to  the  Moon is a little longer: 24.83 hours.
 
 Change the `fperiod` argument in `fourier_M()` to 24.83 hours.
 
 > QUESTION: *Describe what in the graph shows that the `fperiod = 24.83` hour model is superior to the `fperiod = 24` hour model.*
 
-QUESTION: *Describe what in the tidal data the `fperiod = 24.83` hour model doesn't capture.*
+QUESTION: *Describe what in the tidal data the `fperiod = 24.83` hour model does not capture.*
 
 ## The Sun **and** the Moon
 
 While the Moon is the primary influence in shaping the  tides, the Sun also plays a role. The Sun's role is particularly evident  near hide and low tide.
 
-With the technique of linear combinations, it's easy enough to add in a solar periodicity to the tides. That's done in the next code box. You can  see that  the  model incorporates 4 pairs for the Moon period and another 4 pairs for the Sun period.
+With the technique of linear combinations, it is easy enough to add in a solar periodicity to the tides. that is  done in the next code box. You can  see that  the  model incorporates 4 pairs for the Moon period and another 4 pairs for the Sun period.
 
 ```{r}
 model <- makeFun(
@@ -175,7 +175,7 @@ gf_point(level ~ hour, data = RI_tide, alpha = 0.05) %>%
 ```
 Adding in the Sun's influence to that of the Moon improves the model a bit. But there are still clear deviations between the model and the data.
 
-It's tempting to  look for additional planets as the explanation for shortcomings of the Moon + Sun model. Let's show now that any such  planetary influences are trivial. We'll  do this  by incorporating in to the model a new  phenomenon. It turns out that the Moon's  and Sun's influences *interact*. This  is just to  say  that  the  Sun  can  have greater or lesser influence depending on  the  depth of the tide, which is primarily set by the Moon.  The interactions create new functions that look like the *product* of one sinusoidal with another, for instance,  $sin(2\pi 2 t/24.83) \times sin(2\pi 2 t/24)$,  which is the interaction of the first harmonic of the Moon's period with  the first harmonic of the Sun's period.
+It is tempting to  look for additional planets as the explanation for shortcomings of the Moon + Sun model. Let's show now that any such  planetary influences are trivial. We will  do this  by incorporating in to the model a new  phenomenon. It turns out that the Moon's  and Sun's influences *interact*. This  is just to  say  that  the  Sun  can  have greater or lesser influence depending on  the  depth of the tide, which is primarily set by the Moon.  The interactions create new functions that look like the *product* of one sinusoidal with another, for instance,  $sin(2\pi 2 t/24.83) \times sin(2\pi 2 t/24)$,  which is the interaction of the first harmonic of the Moon's period with  the first harmonic of the Sun's period.
 
 Interactions between model components are so important for modeling in general, that `lm()` has a special,  simple notation that means, "and include the interactions." Simply change the `+` in  the tilde expression for the model with  a `*`.  The effect will be to move from having 8 pairs of sines and cosines (four for the Moon and four for the Sun) to having 80 functions which can be combined linearly.
 

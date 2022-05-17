@@ -58,9 +58,9 @@ An essential part of all projects involving data is to prepare the data for anal
 
 The wrangling accomplished two things: averaging the data over 7-report windows and extracting a numerical "day number" from the `Date` of each report. 
 
-First, rather than working with the year:month:day format of `Date`, it's convenient to use a purely numerical quantity to represent time. So, we'll translate the  day when reports were issued into number of days from the initial report, presenting the result in the column `Days`. This makes the data-analysis programming easier, since all our mathematical software knows how to handle numbers, but not necessarily calendar dates.
+First, rather than working with the year:month:day format of `Date`, it is convenient to use a purely numerical quantity to represent time. So, we will translate the  day when reports were issued into number of days from the initial report, presenting the result in the column `Days`. This makes the data-analysis programming easier, since all our mathematical software knows how to handle numbers, but not necessarily calendar dates.
 
-Second, we're going to **smooth** the number of cases and the number of deaths. We did this by averaging each day's number-of-cases and number-of deaths over several report. As you can see in the data, the interval between reports is not constant. Some reports occur just one day after the previous report; sometimes there is a week between reports. The widely spaced reports tend to have much higher cases and deaths than reports that come every day. This is for the simple reason that each report gives the number of new cases and deaths since the previous report; there's more time for the numbers to accumulate when there is a wide spacing between reports. The data reflect not just the process of the Ebola epidemic, but also the way the data were collected and reported, which is not directly of interest to us.  To reduce this report-to-report fluctuation, we'll average the number of new cases in each report with the three reports before and three reports after: a ***moving average*** over seven reports.
+Second, we are going to **smooth** the number of cases and the number of deaths. We did this by averaging each day's number-of-cases and number-of deaths over several report. As you can see in the data, the interval between reports is not constant. Some reports occur just one day after the previous report; sometimes there is a week between reports. The widely spaced reports tend to have much higher cases and deaths than reports that come every day. This is for the simple reason that each report gives the number of new cases and deaths since the previous report; there is more time for the numbers to accumulate when there is a wide spacing between reports. The data reflect not just the process of the Ebola epidemic, but also the way the data were collected and reported, which is not directly of interest to us.  To reduce this report-to-report fluctuation, we will average the number of new cases in each report with the three reports before and three reports after: a ***moving average*** over seven reports.
 
 The result of our wrangling---the dataframe `EbolaGuinea`---includes three new columns:
 
@@ -76,9 +76,9 @@ In your Sandbox, use `gf_point()` to plot the smoothed data in `EbolaGuinea` to 
 
 It is well known that the infection rate during an outbreak follows a Gaussian pattern when the population interacts consistently.  Ebola initially spreads exponentially as people pass the virus to one another.  As people are exposed to the virus, there are fewer and fewer people who are still susceptible. The result is that the rate of exponential growth slows and, when the fraction of the population that is susceptible becomes small, the epidemic slows down and the number of new cases decays exponentially. Overall, the pattern of new cases day-by-day looks like a gaussian: zero cases per day before the outputbreak, exponential growth at first after the virus is introduced to the population, leveling out for a time, and exponential decay back to zero new cases.
 
-The graph of `G7Rcases` versus `Days` looks only vaguely like a gaussian hump. One possible explanation is that the data summarize more than one outbreak, as the virus spreads from one region to another. We'll treat each individual output as a gaussian and try to figure out how many of them make up the whole data. The individual outbreaks will be modelled as a gaussian function with it's own center and width. The center for each gaussian corresponds to the peak of the hypothesized outbreak in one particular region.
+The graph of `G7Rcases` versus `Days` looks only vaguely like a gaussian hump. One possible explanation is that the data summarize more than one outbreak, as the virus spreads from one region to another. We will treat each individual output as a gaussian and try to figure out how many of them make up the whole data. The individual outbreaks will be modelled as a gaussian function with it is own center and width. The center for each gaussian corresponds to the peak of the hypothesized outbreak in one particular region.
 
-We'll combine the several gaussians in a linear combination. The scalar multiplying each gaussian is related to the size of the population exposed in each outbreak.
+We will combine the several gaussians in a linear combination. The scalar multiplying each gaussian is related to the size of the population exposed in each outbreak.
 
 Here is an R/mosaic definition of a linear combination of two gaussian outbreaks.
 
@@ -94,7 +94,7 @@ Note that selecting `A` sets the amplitude for both Gaussians, i.e. `A` and `1âˆ
 
 To see how these Gaussians work together, start with the following values: `A = 0.5`, `m1 = 150`, `sd1 = 50`, `m2 = 350`, `sd2 = 50`. Do not change the 15800 number which reflects the overall size of the whole outbreak, as opposed to the relative size of the hypothesized individual outbreaks: `A` and `1-A`. 
 
-Use `gf_point()`, the pipe operator `%>%`, and `slice_plot()` to overlay your model on top of the data.  Discrepancies between the model and the data can lead you to improve the model by adjusting the parameters. It's to be expected that you will need several cycles of such parameter adjustments until you find a model that seems to agree with the data in a satisfactory way.  to you Guinea cases along with your model.
+Use `gf_point()`, the pipe operator `%>%`, and `slice_plot()` to overlay your model on top of the data.  Discrepancies between the model and the data can lead you to improve the model by adjusting the parameters. It is to be expected that you will need several cycles of such parameter adjustments until you find a model that seems to agree with the data in a satisfactory way.  to you Guinea cases along with your model.
 
 Once you have adjusted your model to match the data as closely as you can, write down the parameters you used in your report, as well as the graph comparing the data to your final model.
 
@@ -114,13 +114,13 @@ The R function `cumsum()` calculates the cumulative sum on a column of data. You
 
 There are many computer systems for data wrangling. You may have heard of one called Structured Query Language (SQL) which is a required skill listed in many job listings and a multi-billion dollar component of the economy. We will use a system called `dplyr` specially designed for the R language. In the `dplyr` system, the function `mutate()` is used to create a new column in a data frame by carrying out calculations on the existing columns.
 
-Here is an R/dplyr command to generate the running total of cases. (We're using `Gcases` instead of the smoothed `G7Rcases` because the cumulative summing will do the smoothing for us.)
+Here is an R/dplyr command to generate the running total of cases. (we are using `Gcases` instead of the smoothed `G7Rcases` because the cumulative summing will do the smoothing for us.)
 
 ```{r eval=FALSE}
 EbolaGuinea <- EbolaGuinea %>% mutate(GcasesTotal = cumsum(Gcases)) 
 ```
  
-It's worthwhile to parse that command carefully. The part to the right of `<-` is an instruction for taking the `EbolaGuinea` data frame and adding a new column. The new column will be called `GcasesTotal`. The values in the new column will be generated by applying `cumsum()` to the `Gcases` column. Altogether, the right-hand side of the statement creates a *new* data frame that includes the new column. The left-hand side of the statement stores this new data frame under a name. For convenience, we're using `EbolaGuinea` as that name. Effectively, the command as a whole, including the name assignment `EbolaGuinea <-` can be seen as **updating** the data frame with the new column.
+It is worthwhile to parse that command carefully. The part to the right of `<-` is an instruction for taking the `EbolaGuinea` data frame and adding a new column. The new column will be called `GcasesTotal`. The values in the new column will be generated by applying `cumsum()` to the `Gcases` column. Altogether, the right-hand side of the statement creates a *new* data frame that includes the new column. The left-hand side of the statement stores this new data frame under a name. For convenience, we are using `EbolaGuinea` as that name. Effectively, the command as a whole, including the name assignment `EbolaGuinea <-` can be seen as **updating** the data frame with the new column.
 
 You can verify that the new column is in place by showing the first several lines of the updated data frame:
 ```{r eval=FALSE}
@@ -129,13 +129,13 @@ head(EbolaGuinea)
 
 Use `gf_point()` to plot `GCasesTotal` versus `Days`. The graph will show how the number of cases accumulated over time to to the overall total for the epidemic as a whole.   
 
-> **Question 5**: Consider which of the functions we have studied could be fitted to represent the `GCasesTotal` versus `Days` curve in your graph? It's likely that none of the functions we have studied fits the data particularly well, but one of them will be better than the others.
+> **Question 5**: Consider which of the functions we have studied could be fitted to represent the `GCasesTotal` versus `Days` curve in your graph? it is likely that none of the functions we have studied fits the data particularly well, but one of them will be better than the others.
 
 We haven't forgotten that you already created a model of the new cases by a linear combination of gaussian functions. What we want to do now is translate your model for the number of new cases each day into a model of the cumulative number of cases to date. In other words, we want to perform the same action that `cumsum()` does, but applied to your model rather than data.
 
 To do this, you will replace the gaussian `dnorm()` function in your model with the sigmoidal `pnorm()`. No other changes are needed. This works because the gaussian and sigmoid functions are related to one another in just the same way as `cumsum()` relates the `GCases` column to the `GCasesTotal` column.
 
-Remember that the Gaussian and sigmoid functions are related to one another.  The sigmoid is the accumulation of the Gaussian, i.e. it is the cumulative sum of the Gaussian.  We will use this relationship to improve your double Gaussian model. 
+Remember that the Gaussian and sigmoid functions are related to one another.  The sigmoid is the accumulation of the Gaussian, i.e. It is the cumulative sum of the Gaussian.  We will use this relationship to improve your double Gaussian model. 
 
 Create a new function in your sandbox called `my_mod_cumulative()`. Plot this new function over the `GCasesTotal` versus `Dates` data. As before, you can do this with `gf_point()`, the pipe operator `%>%`, and `slice_plot()`.
 
@@ -167,7 +167,7 @@ This activity will apply some of the concepts and techniques you're learning to 
 
 As you can imagine, the answer is already known and you could look it up. The point of our reconstructing what is already known is to see the totality of a modeling project, even if it is a very simple one.
 
-In  textbooks and in-class demonstrations, students are often shown complete, flawless models. In  reality, model construction   is a matter of trial  and  error. Whoops! We're supposed  to  say "modeling cycle." That phrase doesn't  suggest anything about "error." But in  reality, modelers make mistakes, operate under misconceptions, collect erroneous data, misunderstand the purpose of building a model, and make all sorts of mistakes. To cope with this  unhappy situation, good modelers are constantly checking and testing their models for inconsistencies.
+In  textbooks and in-class demonstrations, students are often shown complete, flawless models. In  reality, model construction   is a matter of trial  and  error. Whoops! we are supposed  to  say "modeling cycle." That phrase does not  suggest anything about "error." But in  reality, modelers make mistakes, operate under misconceptions, collect erroneous data, misunderstand the purpose of building a model, and make all sorts of mistakes. To cope with this  unhappy situation, good modelers are constantly checking and testing their models for inconsistencies.
 
 To  start, you should  have
 
@@ -228,7 +228,7 @@ Similarly, the mass of the Earth is given as
 
 $$M_e  = 5.972 Ã— 10^{24} kg$$
 
-These reported facts seem plausible, but it's a good practice to check. Toward that end, check
+These reported facts seem plausible, but it is a good practice to check. Toward that end, check
 
 1. The dimension  and  units of $A_2(v, r)$ are consistent.
 2. The value  of $A_2$ at the Earth's surface  is consistent with  the  famous value 9.8  m/s$^2$.

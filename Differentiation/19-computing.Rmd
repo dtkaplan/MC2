@@ -3,21 +3,25 @@
 ```{r child="../starter.Rmd"}
 ```
 
-This chapter shows you how to use the computer to construct the derivative of any function. As you will see, this is easy because the task of constructing derivatives is well suited to the computer. [There are functions where the derivative cannot be meaningfully defined. Examples are the absolute-value function or the Heaviside function which we introduced when discussing piecewise functions in Chapter @sec-piecewise-intro.  In Chapter @sec-cont-and-smooth we will consider the pathological cases and show you how to spot them at a glance.]{.aside} 
+This chapter showshow to use the computer to construct the derivative of any function. This is easy because the task of constructing derivatives is well suited to the computer. [There are functions where the derivative cannot be meaningfully defined. Examples are the absolute-value function or the Heaviside function which we introduced when discussing piecewise functions in Chapter @sec-piecewise-intro.  In Chapter @sec-cont-and-smooth we will consider the pathological cases and show you how to spot them at a glance.]{.aside} 
 
-We'll demonstrate two methods:
+We will demonstrate two methods:
 
 1. ***Symbolic differentiation***, which transforms an algebraic formula for a function into a corresponding algebraic formula for the derivative.
 
 2. ***Finite-difference*** methods that use a "small"---but not evanescent---$h$.
 
-Later, in Chapter @sec-cont-and-smooth, you will learn the algorithms used by the computer in constructing a symbolic derivative. One reason for teaching you to do with paper and pencil the simpler sorts of problems that the computer does perfectly is similar to the reasons you learned basic arithmetic by hand even though a calculator can perform the task more reliably. Another reason to learn to carry out symbolic differentiation on your own is to enable you to follow textbook or classroom uses of formulas which often involve differentiation. 
+Chapter @sec-prod-comp-rules covers the algorithms used by the computer to construct symbolic derivatives. One reason for teaching you to do with paper and pencil the simpler sorts of problems that the computer does perfectly is analogous to why you learned basic arithmetic by hand even though a calculator can perform the task more reliably. Another reason to learn to carry out symbolic differentiation on your own is to enable you to follow textbook or classroom demonstrations of formulas which often come from solve a differentiation problem. 
 
 ## Why differentiate?
 
-Before showing you the easy computer-based methods for constructing the derivative of a function, it's good to provide some motivation: Why is differentiation such a common operation in so many fields of study and application?
+Before showing the easy computer-based methods for constructing the derivative of a function, it is good to provide some motivation: Why is differentiation so frequently in so many fields of study and application?
 
-A primary reason lies in the laws of physics. In its modern form, calculus was invented specifically to be able to describe precisely the nature of motion. Newton's second law relating force to acceleration is built on derivatives. If the position of a moving object as a function of time is $x(t)$, then the velocity is $v(t) \equiv \partial_t x(t)$ and the acceleration is $a(t) \equiv \partial_t v(t) = \partial_{tt} x(t)$. Derivatives are also central to the expression of more modern forms of physics such as quantum theory and general relativity.
+A primary reason lies in the laws of physics. Newton's Second Law of Motion reads:
+
+> *"The change of motion of an object is proportional to the force impressed; and is made in the direction of the straight line in which the force is impressed."*
+
+Newton defined used position $x(t)$ as the basis for velocity $v(t) = \partial_t x(t)$. "Change in motion," which we call "acceleration," is in turn the derivative $\partial v(t)$.  Derivatives are also central to the expression of more modern forms of physics such as quantum theory and general relativity.
 
 Many relationships encountered in the everyday or technical worlds are more understandable if framed in terms of derivatives. For instance,
 
@@ -29,20 +33,20 @@ Many relationships encountered in the everyday or technical worlds are more unde
 - Force is the rate of change with respect to position of energy.
 - Deficit (as in spending deficits) is the change with respect to time of debt.
 
-It's common to know something about one of these function-and-derivative pairs, but to need to translate this knowledge into the form of the other. Many modeling situations call for putting together different components of change to reveal how some other quantity of interest will change. For example, modeling the financial viability of retirement programs such as the US Social Security involves looking at the changing age structure of the population, the returns on investment, the changing cost of living, and so on. In Block @sec-dynamics-part, we'll use derivatives explicitly to construct models of systems, such as an outbreak of disease, with many changing parts.
+Often, we know one member in such function-and-derivative pairs, but to need to calculate the other. Many modeling situations call for putting together different components of change to reveal how some other quantity of interest will change. For example, modeling the financial viability of retirement programs such as the US Social Security involves looking at the changing age structure of the population, the returns on investment, the changing cost of living, and so on. In Block @sec-dynamics-part, we will use derivatives explicitly to construct models of systems, such as an outbreak of disease, with many changing parts.
 
-Derivatives also play an important role in design. They play an important role in the construction and representation of smooth curves, such as a robot's track or the body of a car. (See Chapter @sec-splines.) Control systems that work to stabilize the flight of a plane or regulate the speed and spacing of cars are based on derivatives. The notion of "stability" itself is defined in terms of derivatives. (See Chapter @sec-equilibria.) Algorithms for optimizing design choices also often make use of derivatives. (See Chapter @sec-optimization-and-constraint.)
+Derivatives also play an important role in design. They play an important role in the construction and representation of smooth curves, such as a robot's track or the body of a car. (See Chapter @sec-splines.) Control systems that work to stabilize a airplane's flight or regulate the speed and spacing of cars are based on derivatives. The notion of "stability" itself is defined in terms of derivatives. (See Chapter @sec-equilibria.) Algorithms for optimizing design choices also often make use of derivatives. (See Chapter @sec-optimization-and-constraint.)
 
 ::: {.intheworld  data-latex=""}
 Economics as a field makes considerable use of concepts of calculus---particularly first and second derivatives, the subjects of this Block---although the names used are peculiar to economics, for instance, "elasticity", "marginal returns" and "diminishing marginal returns."
 
-The origins of modern economics, especially the theory of the free market, are attributed to a book published in 1776, *The Wealth of Nations*. The author, Adam Smith (1723-1790), lays out dozens of relationships between different quantities --- wages, labor, stock, interest, prices, profits, and coinage among others. Yet despite the invention of calculus a century before *Wealth of Nations*, the book does not make any use of calculus.
+The origins of modern economics, especially the theory of the free market, are attributed to a book published in 1776, *The Wealth of Nations*. The author, Adam Smith (1723-1790), lays out dozens of relationships between different quantities --- wages, labor, stock, interest, prices, profits, and coinage among others. Yet despite the invention of calculus a century before *Wealth of Nations*, the book uses no calculus.
 
 Consider this characteristic statement in *Wealth of Nations*:
 
 >  *The market price of every particular commodity is regulated by the proportion between the quantity which is brought to market, and the demand of those who are willing to pay the natural price of the commodity.*
 
-Without calculus and the ideas of functions and their derivatives, Smith was not able to think about prices in a modern way where price is shaped by demand and supply. Instead, for Smith, each item has a "natural price": a fixed quantity that depends on the amount of labor used to produce the item. Nowadays, we understand that productivity changes as new methods of production and new inventions are introduced. But Smith lived near the end of a centuries-long period of ***static*** economies. Transportation, agriculture, manufacture, population were all much as they had been for the past 500 years or longer. James Watt's steam engine was introduced only in 1776 and it would be decades before it was adapted to the myriad uses of steam power that characterized the 19th century. The cotton gin (1793), labor-saving agricultural machines such as the McCormick reaper (1831), the assembly line (1901), and the many other innovations of industry all lay in the future when Smith was writing *Wealth of Nations*. 
+Without calculus and the ideas of functions and their derivatives, Smith was not able to think about prices in a modern way where price is shaped by demand and supply. Instead, for Smith, each item has a "natural price": a fixed quantity that depends on the amount of labor used to produce the item. Nowadays, we understand that productivity changes as new methods of production and new inventions are introduced. But Smith lived near the end of a centuries-long period of ***static*** economies. Transportation, agriculture, manufacture, and population size were all much as they had been for the past 500 years or longer. James Watt's steam engine was introduced only in 1776 and it would be decades before being adapted to the myriad uses of steam power characteristic of the 19th century. The cotton gin (1793), labor-saving agricultural machines such as the McCormick reaper (1831), the assembly line (1901), and the many other innovations of industry all lay in the future when Smith was writing *Wealth of Nations*. 
 
 
 ```{r echo=FALSE}
@@ -53,7 +57,7 @@ knitr::include_graphics("www/cournot-demand-curve.png")
 ```
 
 
-It took the industrial revolution and nearly a century of intellectual development before economics had to and could embrace the rapid changes in the production process. In this dynamical view, supply and demand are not seen as mere quantities, but as ***functions*** of which price is the major input. The tradition in economics is to use the word "curve" instead of "function," giving us the phrases "supply curve" and "demand curve." Many students starting out in economics conceive of supply and demand as fixed quantities. Making the transition from quantity to function, that is, between a single amount and a relationship between amounts, is a core challenge to those learning economics. 
+It took the industrial revolution and nearly a century of intellectual development before economics had to and could embrace the rapid changes in the production process. In this dynamical view, supply and demand are not mere quantities, but ***functions*** of which price is the primary input. The tradition in economics is to use the word "curve" instead of "function," giving us the phrases "supply curve" and "demand curve." Making the transition from quantity to function, that is, between a single amount and a relationship between amounts, is a core challenge to those learning economics. 
 
 :::
 
@@ -90,24 +94,24 @@ D(x^2 ~ x)
 :::
 
 
-## Finite-quotient derivatives
+## Finite-difference derivatives
 
-Whenever you have a formula amenable to the construction of a symbolic derivative, that's what you should use. Finite-quotient derivatives are useful in those situation where you don't have such a formula. The calculation is simple but has a weakness that points out the advantages of the evanescent-$h$ approach.
+Whenever you have a formula amenable to the construction of a symbolic derivative, that is  what you should use. Finite-difference derivatives are useful in those situation where you don't have such a formula. The calculation is simple but has a weakness that points out the advantages of the evanescent-$h$ approach.
 
-For a function $f(x)$ and a "small," non-zero number $h$, the finite-quotient approximates the derivative with this formula:
+For a function $f(x)$ and a "small," non-zero number $h$, the finite-difference approximates the derivative with this formula:
 
 $$\partial_x f(x) \approx \frac{f(x+h) - f(x-h)}{2h}\ .$$
-To demonstrate, let's construct the finite-quotient approximation to $\partial_x \sin(x)$. Since we already know the symbolic derivative---it is $\partial_x \sin(x) = \cos(x)$---there's no genuinely practical purpose for this demonstration. Still, it can serve to confirm the symbolic rule.
+To demonstrate, let's construct the finite-difference approximation to $\partial_x \sin(x)$. Since we already know the symbolic derivative---it is $\partial_x \sin(x) = \cos(x)$---there is no genuinely practical purpose for this demonstration. Still, it can serve to confirm the symbolic rule.
 
-We'll call the finite-quotient approximation `fq_sin()` and use `makeFun()` to construct it:
+We will call the finite-difference approximation `fq_sin()` and use `makeFun()` to construct it:
 
 ```{r}
 fq_sin <- makeFun((sin(x+h)- sin(x-h))/(2*h) ~ x, h=0.01)
 ```
 
-Notice that `fq_sin()` has a parameter, `h`. In the above line we have set a default value of `h = 0.01`. That may look to you like a "small" value for $h$ but, as we'll see, it is not enough to just to propose a small value, you need to confirm that it is genuinely small in the particular context in which it is being used.
+Notice that `fq_sin()` has a parameter, `h` whose default value is being set to `0.01`. Whether 0.01 is "small" or not depends on the context. Operationally, we define "small" to be a value that gives practically the same result even if it is made smaller by a factor of 2 or 10.
 
-To confirm that `fq_sin()` is an approximation to the genuine $\partial_x \sin(x)$, we exploit our knowledge that $\partial_x \sin(x) = \cos(x)$. @fig-confirm-fq-sin plots out the difference between the the approximation and the genuine derivative.
+As a demonstration that `fq_sin()` with $h=0.01$ approximates the genuine $\partial_x \sin(x)$, we exploit our knowledge that $\partial_x \sin(x) = \cos(x)$. @fig-confirm-fq-sin plots out the difference between the the $h=0.01$ approximation and the genuine derivative.
 
 ```{r}
 #| label: fig-confirm-fq-sin
@@ -117,23 +121,23 @@ slice_plot(fq_sin(x, h=0.01) - cos(x) ~ x, domain(x=-10:10)) %>%
   gf_labs(y="Error from true value.")
 ```
 
-You'll need to look carefully at the scale of the vertical axis in @fig-confirm-fq-sin to see what's happening. For $h=0.01$, `fq_sin()` is not exactly the same as `cos()`, but it is close, always being within $\pm$0.00017. For many purposes, this would be accurate enough. But not for all purposes. We can make the approximation better by using a smaller $h$. For instance, the $h=0.001$ version of `fq_sin()` is accurate to within $\pm$0.0000017.
+You will need to look carefully at the vertical axis scale in @fig-confirm-fq-sin to see what's happening. For $h=0.01$, `fq_sin()` is not exactly the same as `cos()`, but it is close, always being within $\pm$0.00017. For many purposes, this would be accurate enough. But not for all purposes. We can make the approximation better by using a smaller $h$. For instance, the $h=0.001$ version of `fq_sin()` is accurate to within $\pm$0.0000017.
 
-In practical use, one employs the finite-quotient method in those cases where one does *not already know* the exact derivative function. This would be the case, for example, if the function is a sound wave recorded in the form of an MP3 audio file.
+In practical use, one employs the finite-difference method in those cases where one does *not already know* the exact derivative function. This would be the case, for example, if the function is a sound wave recorded in the form of an MP3 audio file.
 
-In such situations, a practical way to determine what is a small $h$ is to pick one based on your understanding of the situation. For example, much of what we perceive of sound involves mixtures of sinusoids with periods longer than one-two-thousandth of a second, so you might start with $h$ of 0.002 seconds. Use this guess about $h$ to construct a candidate finite-quotient approximation. Then, construct another candidate using a smaller `h`, say, 0.0002 seconds. If the two candidates are a close match to one another, then you have confirmed that your choice of $h$ is adequate.
+In such situations, a practical way to determine what is a small $h$ is to pick one based on your understanding of the situation. For example, much of what we perceive of sound involves mixtures of sinusoids with periods longer than one-two-thousandth of a second, so you might start with $h$ of 0.002 seconds. Use this guess about $h$ to construct a candidate finite-difference approximation. Then, construct another candidate using a smaller `h`, say, 0.0002 seconds. If the two candidates are a close match to one another, then you have confirmed that your choice of $h$ is adequate.
 
-It's tempting to think that the approximation gets better and better as `h` is made smaller. But that's not true for computer calculations. The reason is that quantities on the computer have only a limited precision: about 15 digits. To illustrate, let's calculate a simple quantity, $(\sqrt{3})^2 - 3$. Mathematically, this quantity is exactly zero. But on the computer, it is small in magnitude, but not exactly zero:
+It is tempting to think that the approximation gets better and better as `h` is made even smaller. But that is not necessarily true for computer calculations. The reason is that quantities on the computer have only a limited precision: about 15 digits. To illustrate, let's calculate a simple quantity, $(\sqrt{3})^2 - 3$. Mathematically, this quantity is exactly zero. On the computer, however it is not quite zero:
 
 ```{r}
 sqrt(3)^2 - 3
 ```
 
-We can see this sort of loss of precision at work if we make `h` very small in the finite-quotient approximation to $\partial_x \sin(x)$. In @fig-too-small-h we are using `h = 0.000000000001`. The result is unsatisfactory.
+We can see this loss of precision at work if we make `h` very small in the finite-difference approximation to $\partial_x \sin(x)$. In @fig-too-small-h we are using `h = 0.000000000001`. The result is unsatisfactory.
 
 ```{r}
 #| label: fig-too-small-h
-#| fig-cap: "In computer calculations, using too small an `h` leads to a loss of accuracy in the finite-quotient approximation."
+#| fig-cap: "In computer calculations, using too small an `h` leads to a loss of accuracy in the finite-difference approximation."
 #| fig-cap-location: margin
 slice_plot(  fq_sin(x, h=0.000000000001) - cos(x) ~ x, 
            domain(x=-10:10)) %>%
@@ -150,11 +154,11 @@ Many applications call for differentiating a derivative or even differentiating 
 - $\partial_x f(x)$ the derivative of $f(x)$ 
 - $\partial_x \partial_x f(x)$, the ***second derivative*** of $f(x)$, usually written even more concisely as $\partial_{xx}f f(x)$.
 
-There are third-order derivatives, fourth-order, and on up. These are not encountered as often as first- and second-order derivatives.
+There are third-order derivatives, fourth-order, and on up, although they are not often used.
 
 To compute a second-order derivative $\partial_{xx} f(x)$, first differentiate $f(x)$ to produce $\partial_x f(x)$. Then, still using the techniques described earlier in this chapter, differentiate $\partial_x f(x)$. 
 
-There's a short-cut for constructing high-order derivatives using `D()` in a single step. On the right-hand side of the tilde expression, list the with-respect-to name repeatedly. For instance:
+There is a shortcut for constructing high-order derivatives using `D()` in a single step. On the right-hand side of the tilde expression, list the with-respect-to name repeatedly. For instance:
 
 - The second derivative $\partial_{xx} \sin(x)$:
 
@@ -294,10 +298,10 @@ r"($2 x$)" = r"(As per the power-law rule for differentiation.)",
 ```{r drill-Pattern-book-derivs-8, echo=FALSE, results='markup'}
 askMC(
   prompt = r"(What is $\partial_t \sin(x)$   )",
-r"($\cos(x)$)" = r"(Tricked you! We asked about the partial with respect to $t$, not the partial with respect to $x$. There's no $t$ in $\sin(x)$. So far as $t$ is concerned, $\sin(x)$ is a constant.)",
+r"($\cos(x)$)" = r"(Tricked you! We asked about the partial with respect to $t$, not the partial with respect to $x$. There is no $t$ in $\sin(x)$. So far as $t$ is concerned, $\sin(x)$ is a constant.)",
   r"(+0+)" = r"( )",
-  r"($-\sin(x)$)" = r"(Tricked you! We asked about the partial with respect to $t$, not the partial with respect to $x$. There's no $t$ in $\sin(x)$. So far as $t$ is concerned, $\sin(x)$ is a constant.)",
-  r"($-\cos(x)$)" = r"(Tricked you! We asked about the partial with respect to $t$, not the partial with respect to $x$. There's no $t$ in $\sin(x)$. So far as $t$ is concerned, $\sin(x)$ is a constant.)",
+  r"($-\sin(x)$)" = r"(Tricked you! We asked about the partial with respect to $t$, not the partial with respect to $x$. There is no $t$ in $\sin(x)$. So far as $t$ is concerned, $\sin(x)$ is a constant.)",
+  r"($-\cos(x)$)" = r"(Tricked you! We asked about the partial with respect to $t$, not the partial with respect to $x$. There is no $t$ in $\sin(x)$. So far as $t$ is concerned, $\sin(x)$ is a constant.)",
   random_answer_order=TRUE
 )
 ```
@@ -320,8 +324,8 @@ askMC(
 ```{r drill-Pattern-book-derivs-10, echo=FALSE, results='markup'}
 askMC(
   prompt = r"(If $f(x)$ is discontinuous at $x=5$, can it possibly be **smooth** at $x=6$?  )",
-r"(+Yes+)" = r"(Discontinuity of a function at one input doesn't tell you what the function is doing at another input.)",
-  r"(No)" = r"(We told you something about $f(x)$ at $x=5$. Just knowing that doesn't tell you about $f(x)$ at other inputs.)",
+r"(+Yes+)" = r"(Discontinuity of a function at one input does not tell you what the function is doing at another input.)",
+  r"(No)" = r"(We told you something about $f(x)$ at $x=5$. Just knowing that does not tell you about $f(x)$ at other inputs.)",
   random_answer_order=TRUE
 )
 ```
@@ -358,7 +362,7 @@ r"(+$\lim_{h \rightarrow 0} \frac{g(t + h) - g(t)}{h}$+)" = r"( )",
 askMC(
   prompt = r"(Which of these is a reasonable definition of a derivative?   )",
 r"(+A derivative is a function whose value tells, for any input, the instantaneous rate of change of the function from which it was derived.+)" = r"( )",
-  r"(A derivative is the slope of a function.)" = r"(For functions that aren't straight lines, it doesn't mean anything to speak of "the slope" because the slope varies from place to place. Always remember that the derivative of a function is another **function**.)",
+  r"(A derivative is the slope of a function.)" = r"(For functions that aren't straight lines, it does not mean anything to speak of "the slope" because the slope varies from place to place. Always remember that the derivative of a function is another **function**.)",
   r"(A derivative is a function whose value tells, for any input, the instantaneous change of the function from which it was derived.)" = r"(Not a bad start but a crucial word was left out. It should say, "the instantaneous **rate** of change". "Instantaneous" and "rate" go hand in hand.)",
   random_answer_order=TRUE
 )
@@ -372,7 +376,7 @@ askMC(
 r"(Reciprocal)" = r"(The reciprocal is the derivative of the logarithm.)",
   r"(Zero)" = r"(Zero is the derivative of the constant function.)",
   r"(One)" = r"(The constant function 1 is the derivative of the identity function $x$.)",
-  r"(+Sigmoid+)" = r"(There is some function whose derivative is the sigmoid, but it's not a function that we've discussed and it's not much (or ever!?) used in modeling.)",
+  r"(+Sigmoid+)" = r"(There is some function whose derivative is the sigmoid, but it is not a function that we've discussed and it is not much (or ever!?) used in modeling.)",
   random_answer_order=TRUE
 )
 ```

@@ -9,7 +9,7 @@ In this chapter, we return to linear dynamics to develop a *quantitative theory 
 
 ::: {.example data-latex=""}
 ***Cruise control*** is a feature of many modern automobiles. It enables a driver to set a desired speed for the car to follow automatically, thus reducing cognitive load on the driver.
-Early models of cruise control introduced in the 1970s (and still common in 2020) had an extremely simple logic. The speedometer constantly monitors the car's speed $v$. The driver sets a desired speed, which we'll call $v_0$. The cruise control actuator---the mechanism that works to maintain the speed at $v_0$ by, let's say, adjusting the throttle to increase or reduce speed as appropriate---is designed to produce a throttle input proportional to the deviation in actual speed $v$ from the set speed $v_0$.
+Early models of cruise control introduced in the 1970s (and still common in 2020) had an extremely simple logic. The speedometer constantly monitors the car's speed $v$. The driver sets a desired speed, which we will call $v_0$. The cruise control actuator---the mechanism that works to maintain the speed at $v_0$ by, let's say, adjusting the throttle to increase or reduce speed as appropriate---is designed to produce a throttle input proportional to the deviation in actual speed $v$ from the set speed $v_0$.
 $$\text{throttle-input} = -a (v - v_0)\ .$$
 You can see that when $v = v_0$, the throttle input from the system is zero. When $v_0 < v$, as when starting to go downhill, the throttle input will be negative, reducing the speed. 
 
@@ -20,7 +20,7 @@ $$\partial_t x = -(v - v_f) \ \ \implies\ \ \partial_{tt} x = - \partial_t v = -
 To solve this system, define $y \equiv x - x_0$. This implies $\partial_{tt} y = \partial_{tt} x$, so the equation describing the control system becomes $$\partial_{tt} y = - b y\ .$$
 The solution to this is $y(t) = A \sin\left(\sqrt{b} \ t\right)$ as you can confirm by substitution. 
 
-Result: The simple car-following control system oscillates. That's not a very good experience for the driver! By constructing a theory of stability, we may be able to figure out a re-design that will cause the oscillations to go away. 
+Result: The simple car-following control system oscillates. that is  not a very good experience for the driver! By constructing a theory of stability, we may be able to figure out a re-design that will cause the oscillations to go away. 
 :::
 
 ## Vector solutions to linear differential equations
@@ -29,7 +29,7 @@ The form in which we have been writing linear differential equations in two stat
 $$\partial_t x = a x + b y\\
 \partial_t y = c x + d y$$
 
-A key part of constructing a theory of stability is finding a set of mathematical ideas that enable us to view dynamics in a simpler way. The idea we will introduce here is thinking about the state and trajectory of a differential equation in terms of ***vectors***. We'll work here with systems with a two-variable dynamical state, but the results apply just as well to higher dimensional states. That's important in applied work, where the systems being modeled are complicated with many state components. 
+A key part of constructing a theory of stability is finding a set of mathematical ideas that enable us to view dynamics in a simpler way. The idea we will introduce here is thinking about the state and trajectory of a differential equation in terms of ***vectors***. We will work here with systems with a two-variable dynamical state, but the results apply just as well to higher dimensional states. that is  important in applied work, where the systems being modeled are complicated with many state components. 
 
 We can re-write the linear differential equation using vector and matrix notation. Suppose that we collect the $x$ and $y$ components of the state into a vector, $$\vec{w(t)} =\left[\begin{array}{c}x(t)\\y(t)\end{array}\right]\ .$$ The differential equation, in terms of $\vec{w(t)}$ is 
 $$\partial_t \vec{w(t)} = \left[\begin{array}{cc}a&b\\c&d\end{array}\right] \vec{w(t)}\ .$$
@@ -42,14 +42,14 @@ For the moment, we won't worry about how best to choose $\vec{u_1}$ and $\vec{u_
 ::: {.example data-latex=""}
 $\ $
 
-As a running example, we'll work with the pair of first-order differential equations
+As a running example, we will work with the pair of first-order differential equations
 $$\partial_t x = x + y\\
 \partial_t y = 2 x \ \ \ \ $$
 which, in vector/matrix form are
 $$\partial_t \vec{w(t)} = \left[\begin{array}{cc}1&1\\2&0\end{array}\right] \vec{w(t)}\ .$$
 Imagine that we choose, arbitrarily, $$\vec{u_1} = \color{magenta}{\left[\begin{array}{r}1\\-3\end{array}\right]}\ \ \ \text{and}\ \ \ \vec{u_2} = \color{blue}{\left[\begin{array}{r}1.0\\0\end{array}\right]}\ .$$
 
-For the example, we'll calculate a trajectory starting at the initial condition $\vec{w(0)} = \left[\begin{array}{r}-1.1\\ 2.1\end{array}\right]$:
+For the example, we will calculate a trajectory starting at the initial condition $\vec{w(0)} = \left[\begin{array}{r}-1.1\\ 2.1\end{array}\right]$:
 
 ```{r results="hide"}
 traj <- integrateODE(dx ~ x + y, dy ~ 2*x, x=-1.1, y=2.1, tdur=2)
@@ -67,7 +67,7 @@ traj_plot(y(t) ~ x(t), traj, inherit=FALSE, nt=2) %>%
   gf_refine(coord_fixed())
 ```
 The initial condition (marked "0" in @fig-vec-example-1) is, like any other point in the state space, a linear combination of $\vec{u_1}$ and $\vec{u_2}$. We can find the scalar coefficients of the linear combination using any of the methods presented in Block 5, for instance the telescope method. 
-We'll illustrate with `qr.solve()`:
+We will illustrate with `qr.solve()`:
 ```{r}
 M <- cbind(rbind(1,-3), rbind(1,0))
 w0 <- rbind(-1.1, 2.1)
@@ -111,9 +111,9 @@ The same will be true in general, that is, for the matrix $\left[\begin{array}{c
 
 In the previous section, we saw that the solution to any linear differential equation starting at any initial condition can be written as a linear combination $m_1 \vec{u_1(t)} + m_2 \vec{u_2(t)}$, where $\vec{u_1(t)}$ is the solution starting at an initial condition $\vec{u_1}$ and $\vec{u_2(t)}$ is the solution starting at $\vec{u_2}$. It does not matter how $\vec{u_1}$ and $\vec{u_2}$ are chosen, so long as they are not colinear, that is, so long as they span the state space.
 
-In this section, we'll demonstrate that there is a particular way of selecting $\vec{u_1}$ and $\vec{u_2}$ that makes the solutions $\vec{u_1(t)}$ and $\vec{u_2(t)}$ have a very simple, purely exponential format. The vectors to be chosen are the ***eigenvectors*** of the matrix $\left[\begin{array}{cc}a&b\\c&d\end{array}\right]$. We'll call these eigenvectors $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$. (This use of the Greek letter $\Lambda$ (capital "lambda") and it's lower-case version $\lambda$, is conventional in mathematics, physics, and engineering. So it's worth learning to identify the letters.) 
+In this section, we will demonstrate that there is a particular way of selecting $\vec{u_1}$ and $\vec{u_2}$ that makes the solutions $\vec{u_1(t)}$ and $\vec{u_2(t)}$ have a very simple, purely exponential format. The vectors to be chosen are the ***eigenvectors*** of the matrix $\left[\begin{array}{cc}a&b\\c&d\end{array}\right]$. We will call these eigenvectors $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$. (This use of the Greek letter $\Lambda$ (capital "lambda") and it is lower-case version $\lambda$, is conventional in mathematics, physics, and engineering. So it is worth learning to identify the letters.) 
 
-Our task in this section is to show how to compute the eigenvectors $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$ and that the solutions $\vec{\Lambda_1(t)}$ and $\vec{\Lambda_2(t)}$ are in fact simple exponentials. In Chapter @sec-second-order-de we'll derive the formula for the eigenvectors. Here, we'll use the R function `eigen()` to do the calculations for us.
+Our task in this section is to show how to compute the eigenvectors $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$ and that the solutions $\vec{\Lambda_1(t)}$ and $\vec{\Lambda_2(t)}$ are in fact simple exponentials. In Chapter @sec-second-order-de we will derive the formula for the eigenvectors. Here, we will use the R function `eigen()` to do the calculations for us.
 
 ::: {.example data-latex=""}
 $\ $
@@ -128,12 +128,12 @@ Carrying out the eigenvector calculation is straightforward:
 M <- cbind(rbind(1,2), rbind(1,0))
 eigen(M)
 ```
-The eigenvectors are the two columns of the matrix labeled `vectors` returned by the calculation. Here, that's 
+The eigenvectors are the two columns of the matrix labeled `vectors` returned by the calculation. Here, that is  
 $$\vec{\Lambda_1} = \left[\begin{array}{r}0.7071\\0.7071\end{array}\right]
 \ \ \ \text{and}\ \ \ \ 
 \vec{\Lambda_2} = \left[\begin{array}{r}-0.4472\\0.8944\end{array}\right]\ .$$
 
-The calculation also produces ***eigenvalues***. Here that's $\lambda_1 = 2$ and $\lambda_2 = -1$.
+The calculation also produces ***eigenvalues***. Here that is  $\lambda_1 = 2$ and $\lambda_2 = -1$.
 :::
 
 We can see what's special about $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$ by plotting them along with the flow field, as in @fig-eigen-flow.
@@ -153,7 +153,7 @@ The eigenvectors mark the directions where the flow is either directly toward th
 The consequence of this alignment of the flow with the eigenvectors is that the trajectory from any initial condition $m_1 \vec{\Lambda_1}$ will have the form $m_1(t) \vec{\Lambda_1}$ and similarly for an initial condition $m_2(t) \vec{\Lambda_2}$. 
 
 
-As we did in the previous section, let's calculate the trajectories $\color{magenta}{\vec{\Lambda_1(t)}}$ and $\color{blue}{\vec{\Lambda_2(t)}}$ starting at the two eigenvectors and plot out the $y(t)$ component of the solution. Since we're anticipating an exponential form for the function, we'll use semi-log axes, where an exponential will look like a straight line.
+As we did in the previous section, let's calculate the trajectories $\color{magenta}{\vec{\Lambda_1(t)}}$ and $\color{blue}{\vec{\Lambda_2(t)}}$ starting at the two eigenvectors and plot out the $y(t)$ component of the solution. Since we are anticipating an exponential form for the function, we will use semi-log axes, where an exponential will look like a straight line.
 
 ```{r eigen-time-series}
 traj_eigen1 <- integrateODE(dx ~ x + y, dy ~ 2*x, x=0.7071, y=0.7071)
@@ -171,7 +171,7 @@ To find $k_1$ and $k_2$, plug in $t=1$ to the solution:
 $$\color{magenta}{y_1(1) = 5.2248 = 0.7071 e^{k_1}} \implies k_1=2\\
 \color{blue}{y_2(1) = 0.3290 = 0.8944 e^{k_2}} \implies k_2 = -1$$
 
-Look back at the results from the `eigen(M)` calculation. These values for $k_1$ and $k_2$ are exactly the ***eigenvalues*** that were computed from the matrix `M`. In standard notation, rather than $k_1$ and $k_2$, the notation $\lambda_1 = k_1$ and $\lambda_2 = k_2$ is preferred. (Remember, $\lambda$ is the Greek letter "lambda" in it's lower-case form.)
+Look back at the results from the `eigen(M)` calculation. These values for $k_1$ and $k_2$ are exactly the ***eigenvalues*** that were computed from the matrix `M`. In standard notation, rather than $k_1$ and $k_2$, the notation $\lambda_1 = k_1$ and $\lambda_2 = k_2$ is preferred. (Remember, $\lambda$ is the Greek letter "lambda" in it is lower-case form.)
 Every solution to the differential equation has the form
 $$m_1\, e^{\lambda_1 t} \vec{\Lambda_1} + m_2\, e^{\lambda_2 t} \vec{\Lambda_2}\ .$$
 The scalar coefficients $m_1$ and $m_2$ can be found from the initial condition. The stability of the system depends only on $\lambda_1$ and $\lambda_2$. If either one of these is positive, then the system is unstable.

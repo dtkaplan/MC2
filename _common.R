@@ -26,7 +26,7 @@ ref_ex <- function(perm_name) {
   # This is not yet implemented but will be based on a program that searches through all the
   # insertion commands in the chapters and assembles a table with exercise number, perm name, word-name. This
   # function will read that table and replace <perm_name> with the exercise number.
-  res <- if (nchar(perm_name) < 10) { # It's a hash
+  res <- if (nchar(perm_name) < 10) { # it is a hash
       exercise_cross_reference %>% filter(hash==!!perm_name) %>% .$number
   } else {
     exercise_cross_reference %>% filter(wordname == !!perm_name) %>% .$number

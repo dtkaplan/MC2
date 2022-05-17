@@ -20,9 +20,9 @@ As a motivating example, consider the programming of robotic arms as in the vide
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/0L7Xk5_s3QQ?start=81" title="Robotic arms" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-Since this isn't a robots course, we'll simplify. The arm has a resting position. When a car frame comes into place, the arm moves so that its welding electrodes are at a specific, known place in space near the car body. Then it moves in sequence to other places where a weld is required, perhaps passing through waypoints to avoid obstacles.
+Since this isn't a robots course, we will simplify. The arm has a resting position. When a car frame comes into place, the arm moves so that its welding electrodes are at a specific, known place in space near the car body. Then it moves in sequence to other places where a weld is required, perhaps passing through waypoints to avoid obstacles.
 
-The problem of converting the discrete list of weld and waypoints into a continuous signal for the actuator is an instance of a mathematical process called **interpolation**. In real robot arms, there are multiple joints that need to be controlled simultaneously. For our illustration, we'll use a simple setup where the robot hand rolls along a set of rails in the y-direction and another x-rail running crosswise to the y direction.
+The problem of converting the discrete list of weld and waypoints into a continuous signal for the actuator is an instance of a mathematical process called **interpolation**. In real robot arms, there are multiple joints that need to be controlled simultaneously. For our illustration, we will use a simple setup where the robot hand rolls along a set of rails in the y-direction and another x-rail running crosswise to the y direction.
 
 ```{r echo=FALSE}
 #| column: margin
@@ -100,7 +100,7 @@ The speed of the robot arm maxes out at about 600 mm-per-second. You can get a s
 
 Since the original $x(t)$ and $y(t)$ functions are piecewise linear, it makes sense that the derivatives with respect to time are piecewise constant. But the robot hand is a physical thing; it has to have a velocity at every instant in time. It can't instantaneously have an undefined velocity. 
 
-Think about what it is that causes the change from one velocity step to another. There's a motor that's spinning and changing its rate of spin, perhaps using a pulley and a belt to move the robot hand to the right position at any instant of time. Changing the velocity requires a **force** to create an acceleration. We can differentiate the velocity to see what the acceleration must be to create the simple piecewise linear function shown in @fig-piecewise-linear-path.
+Think about what it is that causes the change from one velocity step to another. There is a motor that is  spinning and changing its rate of spin, perhaps using a pulley and a belt to move the robot hand to the right position at any instant of time. Changing the velocity requires a **force** to create an acceleration. We can differentiate the velocity to see what the acceleration must be to create the simple piecewise linear function shown in @fig-piecewise-linear-path.
 
 ```{r fig-x-acceleration, echo=FALSE}
 ddt_xl <- D(xl(t) ~ t & t, .hstep=0.1)
@@ -126,7 +126,7 @@ slice_plot(xx(t) + 500 ~ t, domain(t=1.9:2.1)) %>%
   gf_labs(y="x(t) (mm)", x="t (sec)")
 ```
 
-A consequence of smoothing the trajectory is that the robot hand comes near, but doesn't  touch the station. It misses by about 2 mm. For many human tasks that might be good enough, but for precision manufacturing a miss by 2 mm is about 1000 times more than allowed.
+A consequence of smoothing the trajectory is that the robot hand comes near, but does not  touch the station. It misses by about 2 mm. For many human tasks that might be good enough, but for precision manufacturing a miss by 2 mm is about 1000 times more than allowed.
 
 If you like working with practical problems, you might find a simple solution to the problem. For instance, we could have aimed the robot hand 2 mm further to the right than the actual station. In falling short by 2mm, the hand would miss the new target but cross right over the originally intended station. 
 
@@ -134,7 +134,7 @@ Solutions like this ae sometimes called ***ad hoc***, meaning that they are so s
 
 ## Piecewise but smooth
 
-The approach we will take to smoothly connect the points on the path is based on ideas of derivatives and on the construction of low-order polynomials.  In Block 2, we emphasized low-order polynomials up to the square term, and we'll pick that up again here for demonstration purposes. For this example, we'll construct only the $y(t)$ function. Constructing $x(t)$ would be done using the same procedure.
+The approach we will take to smoothly connect the points on the path is based on ideas of derivatives and on the construction of low-order polynomials.  In Block 2, we emphasized low-order polynomials up to the square term, and we will pick that up again here for demonstration purposes. For this example, we will construct only the $y(t)$ function. Constructing $x(t)$ would be done using the same procedure.
 
 Our task is to find a function $y(t)$ to interpolate discrete points such as those shown in @fig-quadratic-spline. The discrete points are called ***knots***^[Called such possibly because the curves are tied together at each of the knots.] in the language of interpolating functions. Each knot is a coordinate pair $(t_i, y(t_i))$ shown as an orange dot in @fig-quadratic-spline.
 
@@ -161,7 +161,7 @@ gf_point(y ~ t, data = Pts,
   slice_plot(f(t) ~ t, domain(t=3:4), color="blue")
 ```
 
-The framework we will adopt for the smooth interpolating function is piecewise quadratic segments between adjacent knots. There are four knots, requiring three segments. We'll call the segment $p_1(y)$ connecting the first knot to the second, with $p_2(y)$ connecting the second to the third knot and $p_3(y)$ connecting the third to the fourth knot. Each of those segments will be a second-order polynomial. To keep things organized, we'll use coefficient names systematically:
+The framework we will adopt for the smooth interpolating function is piecewise quadratic segments between adjacent knots. There are four knots, requiring three segments. We will call the segment $p_1(y)$ connecting the first knot to the second, with $p_2(y)$ connecting the second to the third knot and $p_3(y)$ connecting the third to the fourth knot. Each of those segments will be a second-order polynomial. To keep things organized, we will use coefficient names systematically:
 
 $$p_1(t) \equiv a_1 + b_1 \left[t - t_1\right] + c_1 \left[t - t_1\right]^2\\
 p_2(t) \equiv a_2 + b_2 \left[t - t_2\right] + c_2 \left[t - t_2\right]^2\\
@@ -219,9 +219,9 @@ b_2 + 2 c_2 - b_3 = 0$$
 This is not the place to go into the details of solving the five equations to find the six unknowns. (Block 5 introduces the mathematics of such things, which turns out to the same math used to find model parameters to "fit" data.)
 But there are some simple things to say about the task. 
 
-First, you may recall being told in high-school mathematics that to find six unknowns you need six equations. We have only five equations to work with. But it is far from true that there is no solution for six unknowns with five equations. There are in fact an *infinite* number of solutions. (Again, Block 5 will show the mathematics behind this statement.) Essentially, all we need to do is make up a sixth equation to identify a particular one of the infinite number of solutions. It's nice if this made-up equation reflects something interpretable about the curve. 
+First, you may recall being told in high-school mathematics that to find six unknowns you need six equations. We have only five equations to work with. But it is far from true that there is no solution for six unknowns with five equations. There are in fact an *infinite* number of solutions. (Again, Block 5 will show the mathematics behind this statement.) Essentially, all we need to do is make up a sixth equation to identify a particular one of the infinite number of solutions. It is nice if this made-up equation reflects something interpretable about the curve. 
 
-We'll choose to have the sixth equation specify what the derivative of the interpolating function should be at the far right end of the graph. That right-most derivative value will be $$\partial_t p_3(t_4) = b_3 + 2 c_3 \left[t_4 - t_3\right]\ .$$
+We will choose to have the sixth equation specify what the derivative of the interpolating function should be at the far right end of the graph. That right-most derivative value will be $$\partial_t p_3(t_4) = b_3 + 2 c_3 \left[t_4 - t_3\right]\ .$$
 We can set this value to anything we like. For instance, in @fig-quadratic-spline the right-most derivative is set to zero; you can see this from the curve being flat at the right-most knot point.
 
 

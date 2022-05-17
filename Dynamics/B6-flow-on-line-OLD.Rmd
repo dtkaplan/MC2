@@ -2,13 +2,13 @@
 
 The first chapter of this Block introduced a **framework** for modeling dynamics in continuous time: a dynamical state variables and dynamical functions giving the instantaneous change of each state variable as a function of the values of the state variables at that instant. The second chapter covered several methods of extracting a **solution** from the model, that is, a function of time for each of the state variables that is consistent with the differential equations. We looked at the solution in two ways: a **trajectory** in state space or a **time-series** graph.
 
-Ultimately, our goal is to make models of real-world systems. These models can enhance our understanding of the mechanisms active in the real world. The models can also make predictions of various sorts. But you are not yet in a position to know what "various sorts" of predictions can mean or to see how to construct a dynamical model. To get you there, you'll need to learn about some general features of dynamical systems that allow us to think about them at a high level.
+Ultimately, our goal is to make models of real-world systems. These models can enhance our understanding of the mechanisms active in the real world. The models can also make predictions of various sorts. But you are not yet in a position to know what "various sorts" of predictions can mean or to see how to construct a dynamical model. To get you there, you will need to learn about some general features of dynamical systems that allow us to think about them at a high level.
 
 We start with the simplest sort of dynamical system: first-order systems, that is, ones with a single state variable. With a single variable, the state space is one-dimensional: the number line.
 
 ## The rules of the road
 
-A physical analogy to give a better intuition about dynamics in a one-dimensional state space. We'll imagine that the state space is represented by a road, the instantaneous state being the location of a car along that road. 
+A physical analogy to give a better intuition about dynamics in a one-dimensional state space. We will imagine that the state space is represented by a road, the instantaneous state being the location of a car along that road. 
 
 On a real road, the motion of the car is set by the driver using 
 the accelerator and brakes and constrained by other traffic and road conditions. In our state-space road, the velocity of the car is strictly dictated by an authoritarian government law: no exceptions. When the dictated speed is zero, the car will stand still and cannot start moving again. Ultimately, depending on the shape of the law, the car will head off to infinity or come to an eternal standstill. Two different cars can never collide on this road: if the cars are close together, they must be traveling at similar velocities. Cars can't pass one another in different directions. Passing requires that the two cars have opposite velocities: one positive and one negative.  If the mandated velocity at a point along the road is positive, every car that comes to that point must have the same positive velocity as it passes that point in the road.
@@ -78,18 +78,18 @@ Znotes::phase_line(speed(x) ~ x, domain(x=8:10), nix_dyn=FALSE,
   gf_point(0 ~ 9.05, color="magenta", size=1)
 ```
 
-It's an interesting philosophical question what happens to a car starting exactly on the fixed point. Since the velocity vector there has zero length, the car must stand still. But if the car happens to move one jot away from the fixed point, it will start to speed up and move away from the fixed point.
+It is an interesting philosophical question what happens to a car starting exactly on the fixed point. Since the velocity vector there has zero length, the car must stand still. But if the car happens to move one jot away from the fixed point, it will start to speed up and move away from the fixed point.
 
 The ideas of ***fixed points*** and their ***stability*** provides a much more concise description of the dynamical system: "There are stable fixed points near mile 4 and mile 13, as well as an unstable fixed point near mile 9."
 
-It's worth pointing out a consequence of the mathematics of continuous functions: if a system with a continuous dynamical function has a region of state space with two different fixed points, there must be an unstable fixed point in between them. 
+It is worth pointing out a consequence of the mathematics of continuous functions: if a system with a continuous dynamical function has a region of state space with two different fixed points, there must be an unstable fixed point in between them. 
 
 ## Linearization
 
 "Stable" and "unstable" provide a useful *qualitative* indication of the dynamics near a fixed point. An approximate *quantitative* solution can also be found.
 
 Recall that any continuous function can be approximated locally by a low-order polynomial. For a function $g(x)$ with only one input,  "locally"  means "near $x^\star$," and  the polynomial will be $$g(x) \approx a + b \left[x-x^\star\right] + c \left[x-x^\star\right]^2 + \cdots$$
-The coefficients $a, b, c, \cdots$ can be calculated from the value of the function and it's derivatives **at** $x^\star$:
+The coefficients $a, b, c, \cdots$ can be calculated from the value of the function and its derivatives **at** $x^\star$:
 $$a =  g(x^\star)\ \ \ \  b = \partial_x g(x^\star) \ \ \ \ c= \frac{1}{2} \partial_{xx} g(x^\star)\ \ \ \text{and so on.}$$
 When $x^\star$ is a fixed point of the dynamics, then $g(x^\star) = 0$ so the approximating polynomial is
 $$g(x) \approx b \left[x-x^\star\right] + c \left[x-x^\star\right]^2 + \cdots$$
@@ -114,7 +114,7 @@ The stability of the fixed point is simply a matter of whether the exponential f
 \partial_x g(x_0) < 0 \ \ \ \ \implies\ \ \ \ \ \ \text{stable}$$
 
 ::: {.takenote data-latex=""}
-It's critical to distinguish carefully between $x^\star$, which is the location of the fixed point being examined, and $x_0$, which is the initial condition of the state, that is, $x(t=0)$.
+It is critical to distinguish carefully between $x^\star$, which is the location of the fixed point being examined, and $x_0$, which is the initial condition of the state, that is, $x(t=0)$.
 :::
 
 ::: {.example data-latex=""}
@@ -136,7 +136,7 @@ Step iii) Translate the state variable into $y = V - V^\star$. The dynamics in t
 Step iv) $A$ is the initial condition in terms of $y$. This will be $y_0 = V_0 - V^\star$. Since we stated that $V_0 = 0$ (no savings at the start), $y_0 = -V^\star$ and the solution is $$y(t) = -V^\star e^{bt} = \frac{M}{r} e^{rt}\ .$$
 
 Step v) Translate the solution in step (iv) back into terms of $V(t)$. Since $y(t) = V(t) - V^\star$, this will be $V(t) = y(t) + V^\star$ or, $$V(t) = \frac{M}{r} e^{r t} + V^\star = \frac{M}{r} \left[ e^{r t} - 1\right]\ .$$
-To get an idea of this retirement plan, that is, $r=3\%$ and $M=12000$ dollars-per-year, let's see how much you'll have after 30 years and 40 years.
+To get an idea of this retirement plan, that is, $r=3\%$ and $M=12000$ dollars-per-year, let's see how much you will have after 30 years and 40 years.
 ```{r}
 V <- makeFun((M/r)*(exp(r*t)-1) ~ t, r=0.03, M=12000)
 V(30)
@@ -168,19 +168,19 @@ For the system in Figure \@ref(fig:logistic-phase-line), a  initial condition $x
 ::: {.intheworld data-latex=""}
 We have been using the differential equation $\partial_t x(1-x)$ as a mathematical equation, but the form has important applications in population modeling and ecology. When parameterized, the model becomes
 $$\partial_t x = h(x) \equiv r x \left(1 - \frac{x}{K}\right)$$
-For $x \ll K$, the dynamics are approximately $\partial_t x = rx$, which is the recipe for ***exponential growth***. Such growth is often seen in small populations. But "small" compared to what? To answer that, look at the situation for $x \approx K$. In this domain, the growth will be much smaller, because $(1 - x/K) \approx 0$. There's a fixed point at $x^\star = K$, and for $K < x$ the time derivative of $x$ is negative. 
+For $x \ll K$, the dynamics are approximately $\partial_t x = rx$, which is the recipe for ***exponential growth***. Such growth is often seen in small populations. But "small" compared to what? To answer that, look at the situation for $x \approx K$. In this domain, the growth will be much smaller, because $(1 - x/K) \approx 0$. There is a fixed point at $x^\star = K$, and for $K < x$ the time derivative of $x$ is negative. 
 
 In ecology, the population size that can just barely sustain itself without growth or decay is called the ***carrying capacity***. Putting these different behaviors together, $\partial_t x = h(x)$ is a model of growth of a population when the environment has a finite carrying capacity. The pattern of change in such an environment is called ***logistic growth***, but might as well be called "sigmoidal growth." (The function $f(x) = \frac{e^t}{1 + e^t}$ is called the "logistic function.")
 
-In this problem, we're going to build a somewhat more complicated model of an ecosystem, based on the logistic growth model for grass. 
+In this problem, we are going to build a somewhat more complicated model of an ecosystem, based on the logistic growth model for grass. 
 
-To turn a field of growing grass into an eco**system**, we're going to add grazing cows to the field. A grazing cow has an impact on a field. To simplify, consider a single cow. She eats until she's full, then takes time off to chew the cud with other cows and ruminate on the day's events. But, if grass is very scarce, she may not be able to consume all that she would otherwise eat. She'll be a hungry, ill-fed cow. 
+To turn a field of growing grass into an eco**system**, we are going to add grazing cows to the field. A grazing cow has an impact on a field. To simplify, consider a single cow. She eats until she's full, then takes time off to chew the cud with other cows and ruminate on the day's events. But, if grass is very scarce, she may not be able to consume all that she would otherwise eat. She'll be a hungry, ill-fed cow. 
 
-When building a model, start by thinking what you want to use the model for. Imagine that we're interested in *sustainability*, that is, whether the cow/grass ecosystem is stable. And, since cows are raised for a purpose, we'd like to use the model to find out whether the cow would be well fed and how things would change if another cow were added to the field. Sustainability is a question about dynamics. Here, the system would be sustainable if the field produces more grass in a day than the cow (and her herd-mates if any) consumes consumes in a day.
+When building a model, start by thinking what you want to use the model for. Imagine that we are interested in *sustainability*, that is, whether the cow/grass ecosystem is stable. And, since cows are raised for a purpose, we'd like to use the model to find out whether the cow would be well fed and how things would change if another cow were added to the field. Sustainability is a question about dynamics. Here, the system would be sustainable if the field produces more grass in a day than the cow (and her herd-mates if any) consumes consumes in a day.
 
-We'll model a cow's consumption as a sigmoidal function consumption(v) of the amount of grass (v -- for "vegetation") available. Like this:
+We will model a cow's consumption as a sigmoidal function consumption(v) of the amount of grass (v -- for "vegetation") available. Like this:
 
-```{r cow-consumption, echo=FALSE, height=3, fig-cap: "The amount of vegetation consumed by a cow in a day depends on the amount of vegetation available. At very low levels of vegetation ($v < 1/2$ ton), it's hard to find more to eat, so a slight increase in vegetation doesn't increase consumption by much."}
+```{r cow-consumption, echo=FALSE, height=3, fig-cap: "The amount of vegetation consumed by a cow in a day depends on the amount of vegetation available. At very low levels of vegetation ($v < 1/2$ ton), it is hard to find more to eat, so a slight increase in vegetation does not increase consumption by much."}
 consumption <- makeFun((beta*v^2/(v0^2 + v^2))~ v, beta=0.1, v0=3)
 slice_plot(consumption(v) ~ v, domain(v=c(0,15))) %>%
   gf_labs(y="Consumption (tons/day)", x="v: available biomass (tons)",
@@ -188,13 +188,13 @@ slice_plot(consumption(v) ~ v, domain(v=c(0,15))) %>%
 ```
 The overall system is roughly analogous to the rabbit/fox model where we had rabbits as the food and foxes as the consumers. In the rabbit/fox system, we had one differential equation for the growth in the rabbit population density and another for the foxes. The rabbit dynamics consisted of two parts, the natural growth rate in the absence of foxes and the rate at which rabbits are taken by the foxes: $\partial_t r = 0.66\, r - 1.33\, r f$.
 
-We'll model the dynamics of grass in much the same way. In the absence of cows the grass grows in an environment with a limited carrying capacity. (Carrying capacity reflects limits to the amount of water and the amount of sunlight and space.) Taking the carrying capacity of the field as 25 tons of biomass, we'll set the model for $v(t)$ to be 
+We will model the dynamics of grass in much the same way. In the absence of cows the grass grows in an environment with a limited carrying capacity. (Carrying capacity reflects limits to the amount of water and the amount of sunlight and space.) Taking the carrying capacity of the field as 25 tons of biomass, we will set the model for $v(t)$ to be 
 $$ \partial_t v =  \frac{v}{3} \left(1-\frac{v}{25}\right)\ .$$
 
 
-We now have two models for two different components of the ecosystem: the growth of vegetation and the daily consumption by a cow. It's time to put those components together into the overall model. But do we have everything we need?
+We now have two models for two different components of the ecosystem: the growth of vegetation and the daily consumption by a cow. It is time to put those components together into the overall model. But do we have everything we need?
 
-There are potentially two state variables, the amount of vegetation and the number of cows.  To be analogous to that situation, we would need a model for the number of cows in the field. However, the context for the model suggests some changes here. First, the number of cows $n$ in the field is not set by the cow's natural reproduction, it's set by the farmer's decision. As well, at 9 months, a cow's gestation period is long relative to the potential changes in the amount of vegetation. (In contrast, rabbits have a gestation period of 1 month and foxes 2 months.)
+There are potentially two state variables, the amount of vegetation and the number of cows.  To be analogous to that situation, we would need a model for the number of cows in the field. However, the context for the model suggests some changes here. First, the number of cows $n$ in the field is not set by the cow's natural reproduction, it is set by the farmer's decision. As well, at 9 months, a cow's gestation period is long relative to the potential changes in the amount of vegetation. (In contrast, rabbits have a gestation period of 1 month and foxes 2 months.)
 
 
 The cow's consumption is one part of the dynamics. If there were no grass growing, the dynamics would be $$\partial_t G(v) = - H \times \text{consumption}(v)$$ where $H$ is the number of cows in the herd. 

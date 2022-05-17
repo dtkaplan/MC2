@@ -3,7 +3,7 @@
 ```{r child="../starter.Rmd"}
 ```
 
-For more than three centuries, there has been a standard calculus model of an everyday phenomenon: a hot object such as a cup of coffee cooling off to room temperature. The model, called ***Newton's Law of Cooling***, posits that the rate of cooling is proportional to the *difference* between the object's temperature and the ambient temperature. The technology for measuring temperature  (@fig-early-thermometers) was rudimentary in Newton's era, raising the question of how Newton formulated a quantitative theory of cooling. (We'll return to this question in Chapter @sec-low-order.)
+For more than three centuries, there has been a standard calculus model of an everyday phenomenon: a hot object such as a cup of coffee cooling off to room temperature. The model, called ***Newton's Law of Cooling***, posits that the rate of cooling is proportional to the *difference* between the object's temperature and the ambient temperature. The technology for measuring temperature  (@fig-early-thermometers) was rudimentary in Newton's era, raising the question of how Newton formulated a quantitative theory of cooling. (we will return to this question in Chapter @sec-low-order.)
 
 ```{r echo=FALSE}
 #| label: fig-early-thermometers
@@ -22,7 +22,7 @@ gf_point(temp ~ time, data=CoolingWater ) %>%
   gf_labs(x = "Time (minutes)", y="Temperature (deg. C)")
 ```
 
-This chapter is about ***fitting***, finding parameters that will align the functions with the data such as in @fig-stans-data. In this chapter,  we'll work the the exponential, sinusoid, and gaussian functions. In Chapter @sec-magnitude we'll consider the power-law and logarithm functions.
+This chapter is about ***fitting***, finding parameters that will align the functions with the data such as in @fig-stans-data. In this chapter,  we will work the the exponential, sinusoid, and gaussian functions. In Chapter @sec-magnitude we will consider the power-law and logarithm functions.
 
 ::: {#tbl-three-fitted-shapes .column-margin}
 
@@ -34,7 +34,7 @@ Gaussian | Sinusoid | Exponential
 Function shapes for this chapter
 :::
 
-In every instance, the first step, before finding parameters, is to determine that the pattern shown in the data is a reasonable match to the shape of the function you are considering. Here's a reminder of the shapes of the functions we'll be fitting to data in this chapter. If the shapes don't match, there's little point in looking for the parameters to fit the data!
+In every instance, the first step, before finding parameters, is to determine that the pattern shown in the data is a reasonable match to the shape of the function you are considering. Here's a reminder of the shapes of the functions we will be fitting to data in this chapter. If the shapes don't match, there is little point in looking for the parameters to fit the data!
 
 
 
@@ -65,7 +65,7 @@ knitr::include_graphics("www/bird-cones.png")
 
 Creating the false-color pictures on the computer requires a mathematical model of the sensitivities of each type of cone. The graph of each sensitivity function resembles a Gaussian function.
 
-The Gaussian has two parameters: the "mean" and the "sd" (short for standard deviation). It's straightforward to estimate values of the parameters from a graph, as in @fig-gauss-param-estimates. 
+The Gaussian has two parameters: the "mean" and the "sd" (short for standard deviation). It is straightforward to estimate values of the parameters from a graph, as in @fig-gauss-param-estimates. 
 
 ```{r echo=FALSE}
 #| label: fig-gauss-param-estimates
@@ -86,7 +86,7 @@ The parameter "mean" is the location of the peak. The standard deviation is, rou
 
 ## Sinusoid
 
-We'll use three parameters for fitting a sinusoid to data: 
+We will use three parameters for fitting a sinusoid to data: 
 $$A \sin\left(\frac{2\pi}{P}\right) + B$$ 
 where 
 
@@ -137,7 +137,7 @@ The parameter $B$, again called the "baseline," is the location of the horizonta
 
 ### Estimating A
 
-The parameter $A$ can be estimated by finding the value of the data curve at $t=0$. In Figure @fig-exp-water-k that's just under 100 deg C. From that, subtract off the baseline you estimated earlier: ($B = 25$ deg C). The amplitude parameter $A$ is the *difference* between these two: $A = 99 - 25 = 74$ deg C.
+The parameter $A$ can be estimated by finding the value of the data curve at $t=0$. In Figure @fig-exp-water-k that is  just under 100 deg C. From that, subtract off the baseline you estimated earlier: ($B = 25$ deg C). The amplitude parameter $A$ is the *difference* between these two: $A = 99 - 25 = 74$ deg C.
 
 ### Estimating k
 
@@ -173,18 +173,18 @@ c. Measure the vertical distance from the baseline at the convenient place. In @
 
 d. Calculate half of the value from (c). In @fig-exp-water-k this is $36/2=18$ deg C. But you can just as well do the calculation visually, by marking half the distance from the baseline at the convenient place.
 
-e. Scan horizontally along the graph to find an input where the vertical distance from the data curve to the baseline is the value from (d). In @fig-exp-water-k that half-the-vertical-distance input is at about $t=65$. Then calculate the horizontal distance between the two vertical lines. In @fig-exp-water-k that's $65 - 25 = 40$ minutes. This is the doubling time. Or, you might prefer to call it the "half-life" since the water temperature is decaying over time.
+e. Scan horizontally along the graph to find an input where the vertical distance from the data curve to the baseline is the value from (d). In @fig-exp-water-k that half-the-vertical-distance input is at about $t=65$. Then calculate the horizontal distance between the two vertical lines. In @fig-exp-water-k that is  $65 - 25 = 40$ minutes. This is the doubling time. Or, you might prefer to call it the "half-life" since the water temperature is decaying over time.
 
 f. Calculate the magnitude $\|k\|$ as $\ln(2)$ divided by the doubling time from (e). That doubling time is 40 minutes, so $\|k\|= \ln(2) / 40 = 0.0173$.  We already know that the sign of $k$ is negative since the pattern shown by the data is exponential decay toward the baseline. So, $k=-0.0173$.
 
 ## Graphics layers
 
-When fitting a function to data, it's wise to plot out the resulting function *on top of* the data. This involves making graphics with two ***layers***, as described in Chapter @sec-data-and-data-graphics. As a reminder, here's an example comparing the cooling-water data to the exponential function we fitted in Section @sec-exponential-water.
+When fitting a function to data, it is wise to plot out the resulting function *on top of* the data. This involves making graphics with two ***layers***, as described in Chapter @sec-data-and-data-graphics. As a reminder, here is an example comparing the cooling-water data to the exponential function we fitted in Section @sec-exponential-water.
 
 The fitted function we found was
 $$T_{water}(t) \equiv 74 \exp(-0.0173 t) + 25$$ where $T$ stands for "temperature."
 
-To compare $T_{water}()$ to the data, we'll first plot out the data with `gf_point()`, then add a slice plot of the function. We'll also show a few bells and whistles of plotting: labels, colors, and such. 
+To compare $T_{water}()$ to the data, we will first plot out the data with `gf_point()`, then add a slice plot of the function. We will also show a few bells and whistles of plotting: labels, colors, and such. 
 
 ```{r echo=TRUE}
 #| label: fig-water-function-compare
@@ -196,9 +196,9 @@ gf_point(temp ~ time, data=CoolingWater, alpha=0.5 ) %>%
   gf_labs(x = "Time (minutes)", y="Temperature (deg. C)")
 ```
 
-The `slice_plot()` command inherited the domain interval from the `gf_point()` command. This happens only when the name of the input used in `slice_plot()` is the same as that in `gf_point()`. (It's `time` in both.) You can add additional data or function layers by extending the pipeline.
+The `slice_plot()` command inherited the domain interval from the `gf_point()` command. This happens only when the name of the input used in `slice_plot()` is the same as that in `gf_point()`. (it is `time` in both.) You can add additional data or function layers by extending the pipeline.
 
-By the way, the fitted exponential function is far from a perfect match to the data. We'll return to this mismatch in Chapter @sec-modeling-cycle when we explore the ***modeling cycle***.
+By the way, the fitted exponential function is far from a perfect match to the data. We will return to this mismatch in Chapter @sec-modeling-cycle when we explore the ***modeling cycle***.
 
 ## Fitting other pattern-book functions
 
@@ -212,11 +212,11 @@ const | prop | square | recip | gaussian | sigmoid | sinusoid | exp | ln
 Shapes of the pattern-book functions
 :::
 
-In Blocks @sec-differentiation-part and @sec-accumulation-part, you'll see how the Gaussian and the sigmoid are intimately related to one another. Once you see that relationship, it will be much easier to understand how to fit a sigmoid to data.
+In Blocks @sec-differentiation-part and @sec-accumulation-part, you will see how the Gaussian and the sigmoid are intimately related to one another. Once you see that relationship, it will be much easier to understand how to fit a sigmoid to data.
 
-The remaining five pattern-book functions, the ones we haven't discussed in terms of fitting, are the logarithm and the four power-law functions included in the pattern-book set. In Chapter @sec-magnitude we'll introduce a technique for estimating from data the exponent of a single power-law function. 
+The remaining five pattern-book functions, the ones we haven't discussed in terms of fitting, are the logarithm and the four power-law functions included in the pattern-book set. In Chapter @sec-magnitude we will introduce a technique for estimating from data the exponent of a single power-law function. 
 
-In high school, you may have done exercises where you estimated the parameters of straight-line functions and other polynomials from graphs of those functions. In professional practice, such estimations are done with an entirely different and completely automated method called ***regression***. We'll introduce regression briefly in Chapter @sec-modeling-cycle. However, the subject is so important that all of Block @sec-vectors-linear-combinations is devoted to it and its background.
+In high school, you may have done exercises where you estimated the parameters of straight-line functions and other polynomials from graphs of those functions. In professional practice, such estimations are done with an entirely different and completely automated method called ***regression***. We will introduce regression briefly in Chapter @sec-modeling-cycle. However, the subject is so important that all of Block @sec-vectors-linear-combinations is devoted to it and its background.
 
 
 
@@ -289,7 +289,7 @@ askMC(
 r"(+doubling time+)" = r"( )",
   r"(half-life)" = r"( )",
   r"(about the same)" = r"( )",
-  r"(they aren't exponential, so the concept of half-life/doubling-time doesn't apply.)" = r"( )",
+  r"(they aren't exponential, so the concept of half-life/doubling-time does not apply.)" = r"( )",
   random_answer_order=FALSE
 )
 ```
@@ -298,9 +298,9 @@ r"(+doubling time+)" = r"( )",
 ```{r drill-M04-8, echo=FALSE, results='markup'}
 askMC(
   prompt = r"(In this book, what is meant by the word "**variable**"? )",
-r"(It's the same as input.)" = r"(Use **input** rather than variable! Even if you're used to calling quantities like $x$ and $y$ variables, it's a confusing practice since it can mean so many different things. In calculus, in this course, we'll try to be strict about using the words **input** and **output**)",
-  r"(It's the same as output.)" = r"( )",
-  r"(+A column in a data table.+)" = r"(This is the use in statistics and data science. In calculus, we'll try to avoid confusing by using **input** and **output** instead.)",
+r"(it is the same as input.)" = r"(Use **input** rather than variable! Even if you're used to calling quantities like $x$ and $y$ variables, it is a confusing practice since it can mean so many different things. In calculus, in this course, we will try to be strict about using the words **input** and **output**)",
+  r"(it is the same as output.)" = r"( )",
+  r"(+A column in a data table.+)" = r"(This is the use in statistics and data science. In calculus, we will try to avoid confusing by using **input** and **output** instead.)",
   random_answer_order=TRUE
 )
 ```

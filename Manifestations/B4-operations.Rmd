@@ -15,7 +15,7 @@ $$\text{Given}\ x^2 - 4 x + 3  = 0, \ \ \text{find x.}$$ or, equivalently, $$\te
 
 "Solve for $x$" is an example of a ***mathematical task***. We undertake such tasks to extract useful information from a mathematical object. For instance, textbook "word problems" involve two phases: i) a modeling phase where you translate a verbal description of a situation---often involving paddling canoes across a flowing river---into a matching mathematical form and ii) having constructed a suitable mathematical form, you apply some mathematical task to the form to reveal the answer you seek.
 
-In this chapter, we're going to look at a small list of mathematical tasks, calling them ***operations on functions***.  These operations, combined in various ways, enable you to extract relevant information from the functions you build in your models. A simple important part of this introduction is to give a ***name*** to each task. That way, confronted with a mathematical problem, you will be able to look down the short mental menu of opertions to decide which ones are applicable to your circumstance. Even better, once each operation has a name, you can tell a computer to do it for you.
+In this chapter, we are going to look at a small list of mathematical tasks, calling them ***operations on functions***.  These operations, combined in various ways, enable you to extract relevant information from the functions you build in your models. A simple important part of this introduction is to give a ***name*** to each task. That way, confronted with a mathematical problem, you will be able to look down the short mental menu of opertions to decide which ones are applicable to your circumstance. Even better, once each operation has a name, you can tell a computer to do it for you.
 
 Here are four <a name="common-tasks">common mathematical tasks</a> that you've already encountered in Blocks 1 through 3 of this book:
 
@@ -27,7 +27,7 @@ Here are four <a name="common-tasks">common mathematical tasks</a> that you've a
 In this chapter, we focus on the following operations on functions that you may not yet have mastered. 
 
 5. Given a function and an output value from the function, find values for an input (or inputs) which will generate that output value. This is the ***solving*** task. A closely related task is ***zero-finding***, which is to find an input that will cause the function to produce the output zero.
-6. Given a function and an interval of the domain, find an input value that will produce an output value that's higher than would be produced for nearby inputs. As you might recognize, this is called finding an ***argmax***. The problem of finding an ***argmin*** is the same kind of problem, and can be solved by finding the argmax of the negative of the function.
+6. Given a function and an interval of the domain, find an input value that will produce an output value that is  higher than would be produced for nearby inputs. As you might recognize, this is called finding an ***argmax***. The problem of finding an ***argmin*** is the same kind of problem, and can be solved by finding the argmax of the negative of the function.
 7. Given a function and an input value, ***iterate*** the function to produce a new input that will be better than the original for some purpose. 
 
 These seven tasks allow you to perform the mathematical work of extracting useful information from a model. Human judgement and creativity is needed to construct the model. And judgement and experience is needed to figure out which tasks to perform and in what order. But carrying out the tasks does not require judgement, experience, or creativity. Performing the tasks requires only an algorithm and the tools to step through the algorithm. Computers are excellent for this; you just have to give them the function and whatever additional input is required (e.g. the name of a with-respect-to input), and then tell the computer which task it is to perform.
@@ -49,7 +49,7 @@ One algorithm for the operation involves approximating the function $f(x)$ with 
 $$a x^\star + b - v = 0 \ \ \implies \ \ \ x^\star = \frac{b-v}{a}$$
 You saw in Block 2 how to construct the straight-line approximation to a function $f()$ in a region of interest near $x_0$ by evaluating the function and its derivative at $x_0$.  In other words, $$\widehat{f}(x) \equiv f(x_0) + \partial_x f(x_0) \left[\strut x - x_0 \right]\ .$$ 
 
-Because $\widehat{f}(x)$ is a straight-line function, it's easy to find an input $x_1$ that will generate exactly the desired output value $v$. In other words, to solve  $\widehat{f}(x_1) = v$ for $x_1$.
+Because $\widehat{f}(x)$ is a straight-line function, it is easy to find an input $x_1$ that will generate exactly the desired output value $v$. In other words, to solve  $\widehat{f}(x_1) = v$ for $x_1$.
 
 \begin{equation}
 x_1 = x_0 + \frac{v-f(x_0)}{\partial_x f(x_0)}
@@ -117,7 +117,7 @@ f <- makeFun(x^2 - x ~ x)
 solve_step <- function(z) {z - (z^2 - z - 4)/(2*z-1)}
 ```
 
-The algorithm requires a starting guess. We'll use $x_0 = 2$. After each application of `solve_step()`, we'll print out the refined value as well as the function output at that refined value.
+The algorithm requires a starting guess. We will use $x_0 = 2$. After each application of `solve_step()`, we will print out the refined value as well as the function output at that refined value.
 
 
 ```{r}
@@ -176,7 +176,7 @@ The Newton-step process is not guaranteed to work. By exploring cases where it f
 `Zeros()` takes two arguments: a function and a domain. The function is specified, as with other R/mosaic operators such as `D()`, `slice_plot()`, etc., as a tilde expression. `Zeros()` searches the domain for an input which makes the value of the function zero. If, instead, you want to find an input that makes the function value some other value, say $f(x^\star) = v$, you construct an intermediate expression `f(x) - v ~ x`. Finding the zero of the intermediate function corresponds to finding $f(x^star) = v$. 
 
 Sometimes there will be multiple zeros on the specified domain. To handle such situations, `Zeros()` returns a data frame with two columns. The first gives input values that correspond to an output near zero. The second column, named `.output.` calculates the output (and will be near zero). 
-We'll illustrate by solving $x^3 = 6$ for $x$.
+We will illustrate by solving $x^3 = 6$ for $x$.
 
 ```{r} 
 Zeros(x^3 - 6 ~ x, domain(x=c(1,6)))
@@ -190,7 +190,7 @@ Zeros(x^3 - 6 ~ x, domain(x=c(1,6)))
 
 The task of finding the input value that corresponds to a local maximum  is called ***argmax finding***. We don't need to know the value of the local maximum to solve this problem. Instead, we designate a locale by specifying an initial guess $x_0$ for the argmax. For argmax finding of an objective function $f(x)$, we seek a $x^\star$ such that $f(x^\star) > f(x_0)$.  
 
-To accomplish this, we'll approximate $f(x)$ with a low-order polynomial, as we so often do. We'll call the approximation $\widehat{f(x)}$. In the solving task, the approximation was with a first-order polynomial. But first-order polynomials---that is, straight-line functions---don't have a local argmax. We need to use a second-order polynomial. Easy enough: construct the second-order ***Taylor polynomial*** around $x_0$:
+To accomplish this, we will approximate $f(x)$ with a low-order polynomial, as we so often do. We will call the approximation $\widehat{f(x)}$. In the solving task, the approximation was with a first-order polynomial. But first-order polynomials---that is, straight-line functions---don't have a local argmax. We need to use a second-order polynomial. Easy enough: construct the second-order ***Taylor polynomial*** around $x_0$:
 
 $$\widehat{f}(x) \equiv f(x_0) + f'(x_0) \left[x - x_0\right] + \frac{1}{2} f''(x_0) \left[x-x_0\right]^2$$
 Remember that $f(x_0)$, $f'(x_0)$ and $f''(x_0)$ are all fixed quantities; the output of the functions for the specific input $x_0$.
@@ -201,7 +201,7 @@ $$\partial_x \widehat{f(x)} = f'(x_0) \underbrace{\partial_x\left[x - x_0\right]
 $$
 
 This gives  $$f'(x_0) + f''(x_0) \left[x - x_0\right] = 0\ .$$
-We'll solve this equation for $x$ and, having in mind the iterative process of the previous section, call the result $x_1$
+We will solve this equation for $x$ and, having in mind the iterative process of the previous section, call the result $x_1$
 $$x_1 = x_0 - \frac{f'(x_0)}{f''(x_0)}\ .$$
 In other words, our new guess $x_1$ will be a step away from the old guess $x_0$, with the step being $-f'(x_0) / f''(x_0)$. This also is called a Newton step. What's different from the Newton step of the previous section is that the function whose zeros are being sought is not $f(x)$ but $f'(x)$.
 
@@ -229,7 +229,7 @@ slice_plot(f(x) ~ x, domain(x=-5:5)) %>%
 argM(f(x) ~ x, domain(x = -5:5))
 ```
 
-Notice that `argM()` identified both a local maximum and a local minimum, that is, one argmax and one argmin. Visually, it's easy to tell which one is which. In terms of the data frame returned by `argM()`, the sign of the concavity does the identification for you: positive concavity points to an argmin, negative concavity to an argmax. The name `argM()` refers to this versatility of finding both argmins and argmaxes.
+Notice that `argM()` identified both a local maximum and a local minimum, that is, one argmax and one argmin. Visually, it is easy to tell which one is which. In terms of the data frame returned by `argM()`, the sign of the concavity does the identification for you: positive concavity points to an argmin, negative concavity to an argmax. The name `argM()` refers to this versatility of finding both argmins and argmaxes.
 :::
 
 
@@ -237,7 +237,7 @@ Notice that `argM()` identified both a local maximum and a local minimum, that i
 
 In everyday language, to ***iterate*** means simply to repeat: to do something over and over again. In mathematics and in computing, "iterate" has a more specific meaning: to repeatedly perform an operation, each time taking the output from the previous round as the input to the current round.
 
-For our purposes, it suffices to define iteration in terms of the use of a function $g(x)$. The function must be such that the output of the function can be used as an input to the function; the output must be the same kind of thing as the input. The iteration starts with a specific value for the input. We'll call this value $x_0$. Iteration then means simply to compose the function with itself starting with $x_0$ as the initial input. Here, for instance, is a four-step iteration:
+For our purposes, it suffices to define iteration in terms of the use of a function $g(x)$. The function must be such that the output of the function can be used as an input to the function; the output must be the same kind of thing as the input. The iteration starts with a specific value for the input. We will call this value $x_0$. Iteration then means simply to compose the function with itself starting with $x_0$ as the initial input. Here, for instance, is a four-step iteration:
 $$g(g(g(g(x_0))))$$
 Or, you might choose to iterate for ten steps:
 $$g(g(g(g(g(g(g(g(g(g(x_0))))))))))$$
@@ -248,7 +248,7 @@ Iteration is the mathematical engine behind many function operations. You've alr
 ::: {.rmosaic data-latex=""}
 The R/mosaic function `Iterate()` provides a very simple way to see the results of iteration. Typically when iteration is used as part of a function operation, the software has been written specifically for that task and includes logic about when to stop or start over or handle a variety of troublesome cases. The function `Iterate()` is provided in R/mosaic just for demonstration purposes.
 
-`Iterate()` takes arguments specifying the function to be iterated (as a tilde expression), the starting $x_0$, and the number $n$ of steps to take. To illustrate, we'll iterate a famous function called the ***logistic map***: $f(x) \equiv \mu x (1-x)$. Depending on the value of the parameter $\mu$, the iterates can show different patterns.
+`Iterate()` takes arguments specifying the function to be iterated (as a tilde expression), the starting $x_0$, and the number $n$ of steps to take. To illustrate, we will iterate a famous function called the ***logistic map***: $f(x) \equiv \mu x (1-x)$. Depending on the value of the parameter $\mu$, the iterates can show different patterns.
 
 Eventually reaching a ***fixed point***:
 ```{r}
