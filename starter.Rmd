@@ -7,7 +7,7 @@ library(gridExtra) # for arranging plots.
 library(kableExtra)
 
 # theme the plots to match the document
-thematic_rmd() #(bg="#8F8F8C", fg=NA, accent=NA)
+thematic_rmd(bg="#8F8F8C", fg=NA, accent=NA)
 ggplot2::theme_set(theme_bw(base_size = 16))
 
 
@@ -135,11 +135,12 @@ insert_exercises <- function(block_name, chap_name) {
            chapter==chap_name) %>%
     arrange(number)
   format <- ifelse(knitr::is_html_output(), "Markdown", "PDF")
-  question_formatter <- function(...) { 
-    Znotes::askMC(..., 
+  question_formatter <- function(...) {
+    Znotes::MC_simple_format(...,
                   out_format = format,
-                  show_answers=FALSE)
+                  show_feedback=FALSE)
   }
+  
   # do the work
   Znotes::format_exercises(
     Chap_roster, 

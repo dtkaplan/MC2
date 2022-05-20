@@ -5,8 +5,6 @@ global_id: "sUmMZv"
 skill: "slice through 4-dimensional space"
 ---
 
-TURN THIS INTO AN EXERCISE that requires drawing contour graphs and interpreting them. 
-
 
 A triangle consists of three connected line segments: the sides. It has other properties that are related to the sides and each other, for example, the angles between sides, the perimeter, or the area enclosed by the triangle. 
 
@@ -17,6 +15,38 @@ $$A(a,b,c) \equiv \frac{1}{4}\sqrt{\strut 4a^2b^2-(a^2+b^2-c^2)^2}\ .$$
 
 We cannot readily plot out this function because there are three inputs and one output, and it is unnatural to draw a 4-dimensional space. But we can draw a **slice** through the 4-dimensional space.
 
-Let's do that by setting, say, $a=1$ and looking at the area as a function of the lengths of sides $b$ and $c$.
+Let's do that by setting, say, $a=3$ and looking at the area as a function of the lengths of sides $b$ and $c$.
+
+```{r echo=FALSE, warning=FALSE}
+A <- makeFun(sqrt(4*a^2*b^2 - (a^2+b^2-c^2)^2)/4 ~ a & b & c)
+contour_plot(A(3, b, c) ~ b & c, domain(b=0:5, c=1:6)) %>%
+  gf_labs(subtitle="a=3")
+```
+
+```{r shmt-1, echo=FALSE}
+askMC(
+  prompt="Not all of the graphics frame is shaded. These are values of $b$ and $c$ for which the formula involves a negative quantity in the square root. Thinking about the nature of triangles, why the negative in the square root?",
+  "Sides $a$ and $b$ are reversed.",
+  "$c$ can never be more than $b$.",
+  "$c$ can never be more than $a+b$.",
+  "$c$ can never be more than $a+b$ or less than $b-a$.",
+  "+$c$ can never be more than $a+b$ nor less than $b-a$, nor less than $a-b$.+",
+  random_answer_order=FALSE
+)
+```
 
 Another slice might set $a = b$, in which case we would be showing the areas of isosceles triangles.
+
+```{r shmt-2, echo=FALSE}
+askMC(
+  prompt="Draw a contour plot of the area of the triangle when $a=b$. Referring to your graph, what's the area of the isosceles triangle with $a=b=4$?",
+  5,6,"+7+", 8, 9, 
+  random_answer_order=FALSE
+)
+```
+
+
+```{r echo=FALSE, eval=FALSE}
+contour_plot(A(b, b, c) ~ b & c, domain(b=0:5, c=1:6)) %>%
+  gf_labs(subtitle="a=b")
+```
