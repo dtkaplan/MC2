@@ -32,7 +32,7 @@ We are going to put off mechanistic models for a while, for two reasons. First, 
 
 ::: {.intheworld data-latex=""}
 
-You can see in Figure \@ref(fig:covid-exp2) that the exponential function plotted in $\color{blue}{\text{blue}}$ does not align perfectly with the day-by-day data. For instance, during the interval from March 8 to 21, the function output is consistently higher than the data suggest it should be. As part of the ***modeling cycle*** it is important to notice such discrepancies and try to understand them. In this case, it is likely that during the early days of the pandemic the number of reported deaths understated the actual number of COVID-related deaths. This happens because, in the early days of the pandemic, many deaths from COVID were mis-attributed to other causes.
+You can see in @fig-covid-exp2 that the exponential function plotted in $\color{blue}{\text{blue}}$ does not align perfectly with the day-by-day data. For instance, during the interval from March 8 to 21, the function output is consistently higher than the data suggest it should be. As part of the ***modeling cycle*** it is important to notice such discrepancies and try to understand them. In this case, it is likely that during the early days of the pandemic the number of reported deaths understated the actual number of COVID-related deaths. This happens because, in the early days of the pandemic, many deaths from COVID were mis-attributed to other causes.
 ::: 
 
 ---------
@@ -116,7 +116,7 @@ In Section @sec-fit-periodic we looked at a sinusoid model of tide levels in Rho
 
 $${\color{blue}{\text{tide}(t)} \equiv 1.05 + 0.55 \sin(2\pi (t - t_0)/11)}$$
 
-The new parameter, $t_0$, should be set to be the time of a positive-going crossing of the baseline. Looking at the tide data (black) plotted in Figure \@ref(fig:Fun-4-a-3-4) we can pick out  such a crossing at about time = 17. Happily, changing the phase does not itself necessitate re-estimating the other parameters: baseline, amplitude, period. This model, incorporating the phase, has been graphed in $\color{blue}{\text{blue}}$.
+The new parameter, $t_0$, should be set to be the time of a positive-going crossing of the baseline. Looking at the tide data (black) plotted in @fig-Fun-4-a-3-4 we can pick out  such a crossing at about time = 17. Happily, changing the phase does not itself necessitate re-estimating the other parameters: baseline, amplitude, period. This model, incorporating the phase, has been graphed in $\color{blue}{\text{blue}}$.
 
 ```{r echo=FALSE, fig.show="hold"}
 #| label: fig-Fun-4-a-3-4
@@ -136,9 +136,9 @@ gf_line(level ~ hour,
   gf_lims(y =c(0, 2))
 ```
 
-For some modeling purposes, such as prediction of future tides, the phase information is essential. For others, say, description of the amplitude of the tides, not. But getting the phase roughly right can help point out other problems. For instance, in the left panel of Figure \@ref(fig:Fun-4-a-3-4) the blue model is roughly aligned with the data. Not at all so in the right panel. What leads to the discrepancy is a bad estimate for the period. 13 hours is roughly right, but over a five-day period the error accumulates until, in the right panel, the model has a trough where the data peak, and *vice versa*. 
+For some modeling purposes, such as prediction of future tides, the phase information is essential. For others, say, description of the amplitude of the tides, not. But getting the phase roughly right can help point out other problems. For instance, in the left panel of @fig-Fun-4-a-3-4 the blue model is roughly aligned with the data. Not at all so in the right panel. What leads to the discrepancy is a bad estimate for the period. 13 hours is roughly right, but over a five-day period the error accumulates until, in the right panel, the model has a trough where the data peak, and *vice versa*. 
 
-Although the blue sinusoid is not perfect, having it for comparison suggests that the previously estimated period of 13 hours is too long. We can shorten the period gradually in our model until we find something that better matches the data. For example: Figure \@ref(fig:Fun-4-a-3-5) shows that a period of 12.3 hours is a good match to the data. 
+Although the blue sinusoid is not perfect, having it for comparison suggests that the previously estimated period of 13 hours is too long. We can shorten the period gradually in our model until we find something that better matches the data. For example: @fig-Fun-4-a-3-5 shows that a period of 12.3 hours is a good match to the data. 
 
 With this refinement the model is
 $${\color{green}{\text{tide}(t)} \equiv 1.05 + 0.55 \sin(2\pi (t - 17)/12.3)}$$
@@ -152,7 +152,7 @@ gf_line(level ~ hour, data = Zcalc::RI_tide) %>%
   gf_labs(y="Water level (meters)", x="Time (hours)", title="Period 12.3 hours") %>%
   gf_lims(y =c(0, 2))
 ```
-We might call it quits with the model in Figure \@ref(fig:Fun-4-a-3-5). But once we have a pretty good model fit, it is easy to polish the parameter estimates, letting the computer do the tedious work of trying little tweaks to see if it can improve the fit.
+We might call it quits with the model in @fig-Fun-4-a-3-5. But once we have a pretty good model fit, it is easy to polish the parameter estimates, letting the computer do the tedious work of trying little tweaks to see if it can improve the fit.
 
 The R/mosaic `fitModel()` can do this tweaking for us. As the following commands show, `fitModel()` takes a tilde expression as input. To the left  of the tilde goes the name of the function output in the data frame being used. The right side is a formula for the model, with names used for each parameter and using the names of inputs from the data frame. The second argument is the data frame. The third argument is used to convey an estimate for each parameter; that estimate should be pretty good if `fitModel()` is to be able to refine it.
 
@@ -169,7 +169,7 @@ coef(tide_mod)
 The command `coef(tide_mod)` displays the parameters found by `fitModel()` which will be an improvement---perhaps a big improvement, perhaps not---on our original estimates.
 
 
-These new parameters differ only slightly from the ones shown in Figure \@ref(fig:Fun-4-a-3-5), but the match to the data with the new coefficients is discernably better, even by eye.
+These new parameters differ only slightly from the ones shown in @fig-Fun-4-a-3-5, but the match to the data with the new coefficients is discernably better, even by eye.
 
 ```{r echo=FALSE}
 #| label: fig-Fun-4-a-3-6

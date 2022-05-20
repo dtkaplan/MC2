@@ -122,3 +122,30 @@ Content subject to revision.
 # askMC <- Znotes::askGS
 askMC <- Znotes::askPDF
 ```
+
+```{r for-exercises, echo=FALSE, message=FALSE, warning=FALSE}
+Exer_roster <- 
+  readr::read_csv("exercise-roster.csv", show_col_types = FALSE) %>%
+  mutate(block = paste0("", block)) %>%
+  filter(status=="passed")
+
+insert_exercises <- function(block_name, chap_name) {
+  Chap_roster <- Exer_roster %>%  
+    filter(status=="passed",block==block_name,
+           chapter==chap_name) %>%
+    arrange(number)
+  format <- ifelse(knitr::is_html_output(), "Markdown", "PDF")
+  question_formatter <- function(...) { 
+    Znotes::askMC(..., 
+                  out_format = format,
+                  show_answers=FALSE)
+  }
+  # do the work
+  Znotes::format_exercises(
+    Chap_roster, 
+    askMC = question_formatter,
+    template = "#### Exercise {number} {{-}}\n{contents}\n\n"
+  )
+}
+```
+
