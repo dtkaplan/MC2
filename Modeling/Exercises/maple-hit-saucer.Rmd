@@ -2,16 +2,15 @@
 chapter: "Modeling Functions"
 author: "Danny Kaplan"
 date: 2020-07-17 
-tags: [COVID-19, semi-log axes, third]
+tags: [COVID-19, semi-log axes]
 id: maple-hit-saucer
 global-id: "j3xe"
+skill: "Gi-Fun-117a-exponential interdisciplinary"
 ---
 
 ```{r include = FALSE}
-
 library(mosaic)
 library(mosaicCalc)
-
 ```
 
 
@@ -21,14 +20,17 @@ The [COVID-19 Data Hub](https://covid19datahub.io/) is  a collaborative effort o
 
 Perhaps the simplest display is to show the number of cumulative cases (the `confirmed` variable) and deaths as a function of time. We will focus on the data up to June 30, 2020.
 
-The plot shows confirmed cases in blue and deaths in tan.
+Copy the R/mosaic commands below into your R console to produce a graph of confirmed cases in blue and deaths in tan.
+
 ```{r results="hide", warning=FALSE}
-gf_line(deaths ~ date, 
-        data = Covid_US %>% filter(date < as.Date("2020-06-30")), 
-        color = "orange3") %>%
+gf_line(
+  deaths ~ date, 
+  data = Covid_US %>% 
+    filter(date < as.Date("2020-06-30")), 
+  color = "orange3") %>%
   gf_line(confirmed ~ date, color = "blue")
 ```
-:::
+
 
 ```{r maple-hit-saucer-QA1, echo=FALSE}
 message1 <- "The number 1e6 means 1,000,000, that is, six zeros following the 1."
@@ -47,12 +49,14 @@ askMC(
 ```
 
 
-Here's the same graphic as above, but taking the *logarithm* (base 10) of the number of cases (that is, `confirmed`) and of the number of deaths. Since we are taking the logarithm of only the y-variable, this is called a "semi-log" plot. 
+This code makes the same graphic as above, but taking the *logarithm* (base 10) of the number of cases (that is, `confirmed`) and of the number of deaths. Since we are taking the logarithm of only the y-variable, this is called a "semi-log" plot. 
 
 ```{r results="hide", warning=FALSE}
-gf_point(log10(confirmed) ~ date, 
-         data = Covid_US %>% filter(date < as.Date("2020-06-30")), 
-         color = "dodgerblue") %>%
+gf_point(
+  log10(confirmed) ~ date, 
+  data = Covid_US %>% 
+    filter(date < as.Date("2020-06-30")), 
+  color = "dodgerblue") %>%
   gf_point(log10(deaths) ~ date, color = "orange3") 
 ```
 
