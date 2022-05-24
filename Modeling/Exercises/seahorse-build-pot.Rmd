@@ -2,21 +2,58 @@
 id: "seahorse-build-pot"
 created: "Tue Apr  5 18:00:03 2022"
 global_id: "FCXT1L"
-skill: "function composition"
+skill: "Co-Fun-113c"
 ---
 
+DAY LENGTH
 
-::: {.undercontruction}
-Turn this into a programming activity, where they need to introduce the function `deg2rad()`.
+
+See paper at <https://arxiv.org/pdf/1208.1043.pdf>
+
+NOT SURE ABOUT THE EQUATIONS IN THE FOLLOWING. 2/15 is the conversion of the angle-hour of sunrise into daylight length: multiply by 2 to take both morning and afternoon into account. 15 is in degrees per hour to convert the angle (in degrees) into hours. 
+
+::: {.example data-latex=""}
+Anyone who lives far from the equator is familiar with the annual cycle of short winter days and long summer days. The magnitude of this cycle is a function of ***latitude***: the further away from the equator the larger the winter-summer day-length difference. 
+
+A simple model accounts for the length of daylight (in hours) as a function of latitude $L$ and the declination angle $\delta$ of the sun. 
+
+$$\text{daylight}(L, \delta) \equiv {\small\frac{2}{15}} \arccos\left(-\tan(L)*\tan(\delta)\right)$$
+
+Composing day_length$(L, \delta)$ onto $\delta(doy)$ gives the length of daylight as a function of day of the year:
+$$\text{daylight}(L, doy) \equiv {\small\frac{2}{15}} \arccos\left(-\tan(L)*\tan(\delta(doy))\right)\ .$$
+Function composition enables us to transform a function that takes one kind of thing as input (declination in this example) and turn it into a function that takes another kind of thing as input (day of year).
+
+::: {.column-margin}
+The declination angle is the latitude of the point on the earth's surface pierced by an imagined line connecting the centers of the earth and the sun. This angle is a function of the "day of year" ($doy$) measured as 0 at midnight before January 1 and 365.25 at the midnight ending December 31.
+
+![](www/declination-angle.png)
+
+Declination angle as a function of day-of-year: 
+
+$\delta(doy) = 23.44 \sin\left({\small\frac{2\pi}{365.25}} (doy+9)\right)$
+
+The output has units in degrees.
+
+[Image source](https://www.researchgate.net/publication/298318962_Calculation_of_Optimum_Fixed_Tilt_Angle_of_PV_Panels_Depending_on_Solar_Angles_and_Comparison_of_the_Results_with_Experimental_Study_Conducted_in_Summer_in_Bilecik_Turkey?enrichId=rgreq-51488ef1a53e60fdea18a99d842428bf-XXX&enrichSource=Y292ZXJQYWdlOzI5ODMxODk2MjtBUzozMzk4NjIxMDU0MTE1OThAMTQ1ODA0MDg0ODkzMg%3D%3D&el=1_x_2&_esc=publicationCoverPdf)
 :::
 
-::: {.rmosaic data-latex=""}
+Composing day_length$(L, \delta)$ onto $\delta(doy)$ gives the length of daylight as a function of day of the year:
+$$\text{daylight}(L, doy) \equiv {\small\frac{2}{15}} \arccos\left(-\tan(L)*\tan(\delta(doy))\right)\ .$$
+Function composition enables us to transform a function that takes one kind of thing as input (declination in this example) and turn it into a function that takes another kind of thing as input (day of year).
+
+
+
+
+:::
+
+
+
 Composing functions is very common in computer programming. Consider these two functions
-:::
+
 
 A computer implementation must look different, since $L$ and $\delta$ are typically provided in degrees while the `tan()` and other trigonometric functions in most computer languages expect units of radians. The conversion is easy: $\text{deg2rad}(d) \equiv \frac{\pi}{180} d$. The conversion the other way is $\text{rad2deg}(r) \equiv \frac{180}{\pi} r$.
 
-to get the day-length formula to work in a computer, we can compose the $\tan()$ function with `deg2rad()`. The output of `acos()` is in radians, so we have to convert it back to degrees. Like this:
+To get the day-length formula to work in a computer, we can compose the $\tan()$ function with `deg2rad()`. The output of `acos()` is in radians, so we have to convert it back to degrees. Like this:
 
 ```{r}
 day_length <- makeFun(
@@ -43,3 +80,13 @@ slice_plot(
   )
 ```
 
+```{r day-length-cos, echo=FALSE, results="markup"}
+askMC(
+  "Using an R console, calculate the length of the day at latitude $39^\\circ$ on the longest day of the year, which is when the declination of the sun is $23.44^\\circ$. How long is it?",
+  "13.9 hours",
+  "+14.7 hours+",
+  "14.9 hours",
+  "15.1 hours",
+  random_answer_order = FALSE
+)
+```
