@@ -1,0 +1,36 @@
+---
+id: "seahorse-pay-plant"
+created: "Wed May 25 10:54:51 2022"
+global_id: "pI03fM"
+skill: "Co-Theory-605c"
+---
+
+
+Consider the function $$f(x)\equiv \sin(x-\frac{\pi}{6})$$ and its 3rd order Taylor polynomial approximation, $T(x)$. We will implement both in R/mosaic:
+
+```{r}
+f <- makeFun(sin(x-pi/6)~x)
+T <- makeFun(-.5+x*sqrt(3)/2+.25*x^2-x^3/(4*sqrt(3))~x)
+```
+
+In this exercise, we want to figure out the extent of the interval in which $T(x)$ is within $0.05$ of $f(x)$. We can do this by plotting $T(x)$ and also the two functions $f(x)+0.05$ and $f(x)-0.05$.
+
+
+```{r results="hide"}
+slice_plot(f(x)+.05~x,domain(x=-1:1))%>%
+  slice_plot(f(x)-.05~x)%>%
+  slice_plot(T(x)~x,color="red")
+```
+
+```{r sppz-1, echo=FALSE, results="markup"}
+askMC(
+  prompt = "Find the full interval of the domain of $x$ for which $f(x) - 0.05 < T(x) < f(x) + 0.05$. (Hint: you may need to modify the plotting commands.)",
+  "$x\\in(-1.1,1,1)$",
+  "+$x\\in(-1.1,1.5)$+",
+  "$x\\in(-1.5,1.1)$",
+  "$x\\in(-1.5,1.5)$",
+  random_answer_order=FALSE
+  )
+```
+
+
