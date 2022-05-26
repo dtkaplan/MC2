@@ -163,14 +163,14 @@ Znotes::phase_line(x*(1-x) ~ x, domain(x=-0.05:1.05), nix_dyn=FALSE) %>%
   gf_point(0 ~ 0, size=.1, color="blue") %>%
   gf_point(0 ~ 1, size=.1, color="blue") 
 ```
-For the system in Figure \@ref(fig:logistic-phase-line), a  initial condition $x_0 = 0.05$ or any other small positive number will produce a trajectory that moves slowly to the right at first, then faster, then slows down again for asymptotically approaching the fixed point at $x=1$. In a time series plot, $x(t)$ is a sigmoidal function.
+For the system in Figure \@ref(fig:logistic-phase-line), a  initial condition $x_0 = 0.05$ or any other small positive number will produce a trajectory that moves slowly to the right at first, then faster, then slows down again for asymptotically approaching the fixed point at $x=1$. In a time series plot, $x(t)$ is a sigmoid function.
 
 ::: {.intheworld data-latex=""}
 We have been using the differential equation $\partial_t x(1-x)$ as a mathematical equation, but the form has important applications in population modeling and ecology. When parameterized, the model becomes
 $$\partial_t x = h(x) \equiv r x \left(1 - \frac{x}{K}\right)$$
 For $x \ll K$, the dynamics are approximately $\partial_t x = rx$, which is the recipe for ***exponential growth***. Such growth is often seen in small populations. But "small" compared to what? To answer that, look at the situation for $x \approx K$. In this domain, the growth will be much smaller, because $(1 - x/K) \approx 0$. There is a fixed point at $x^\star = K$, and for $K < x$ the time derivative of $x$ is negative. 
 
-In ecology, the population size that can just barely sustain itself without growth or decay is called the ***carrying capacity***. Putting these different behaviors together, $\partial_t x = h(x)$ is a model of growth of a population when the environment has a finite carrying capacity. The pattern of change in such an environment is called ***logistic growth***, but might as well be called "sigmoidal growth." (The function $f(x) = \frac{e^t}{1 + e^t}$ is called the "logistic function.")
+In ecology, the population size that can just barely sustain itself without growth or decay is called the ***carrying capacity***. Putting these different behaviors together, $\partial_t x = h(x)$ is a model of growth of a population when the environment has a finite carrying capacity. The pattern of change in such an environment is called ***logistic growth***, but might as well be called "sigmoid growth." (The function $f(x) = \frac{e^t}{1 + e^t}$ is called the "logistic function.")
 
 In this problem, we are going to build a somewhat more complicated model of an ecosystem, based on the logistic growth model for grass. 
 
@@ -178,7 +178,7 @@ To turn a field of growing grass into an eco**system**, we are going to add graz
 
 When building a model, start by thinking what you want to use the model for. Imagine that we are interested in *sustainability*, that is, whether the cow/grass ecosystem is stable. And, since cows are raised for a purpose, we'd like to use the model to find out whether the cow would be well fed and how things would change if another cow were added to the field. Sustainability is a question about dynamics. Here, the system would be sustainable if the field produces more grass in a day than the cow (and her herd-mates if any) consumes consumes in a day.
 
-We will model a cow's consumption as a sigmoidal function consumption(v) of the amount of grass (v -- for "vegetation") available. Like this:
+We will model a cow's consumption as a sigmoid function consumption(v) of the amount of grass (v -- for "vegetation") available. Like this:
 
 ```{r cow-consumption, echo=FALSE, height=3, fig-cap: "The amount of vegetation consumed by a cow in a day depends on the amount of vegetation available. At very low levels of vegetation ($v < 1/2$ ton), it is hard to find more to eat, so a slight increase in vegetation does not increase consumption by much."}
 consumption <- makeFun((beta*v^2/(v0^2 + v^2))~ v, beta=0.1, v0=3)
