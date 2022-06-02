@@ -57,7 +57,7 @@ traj_plot(y(t) ~ x(t), traj)
 ```
 
 ```{r echo=FALSE}
-#| label: vec-example-1
+#| label: fig-vec-example-1
 #| fig-cap: "The trajectory calculated starting at (-1.1, 2.1). The graph is annotated with the vectors $\\vec{u_1}$ and $\\vec{u_2}$ and the flow field."
 #| fig-cap-location: margin
 traj_plot(y(t) ~ x(t), traj, inherit=FALSE, nt=2) %>%
@@ -66,8 +66,9 @@ traj_plot(y(t) ~ x(t), traj, inherit=FALSE, nt=2) %>%
   flow_field(dx ~ x + y, dy ~ 2*x, domain = domain(x=-2:2, y=-3:2), color="gray", npts=15) %>%
   gf_refine(coord_fixed())
 ```
-The initial condition (marked "0" in @fig-vec-example-1) is, like any other point in the state space, a linear combination of $\vec{u_1}$ and $\vec{u_2}$. We can find the scalar coefficients of the linear combination using any of the methods presented in Block 5, for instance the telescope method. 
+The initial condition (marked "0" in @fig-vec-example-1 is, like any other point in the state space, a linear combination of $\vec{u_1}$ and $\vec{u_2}$. We can find the scalar coefficients of the linear combination using any of the methods presented in Block 5, for instance the telescope method. 
 We will illustrate with `qr.solve()`:
+
 ```{r}
 M <- cbind(rbind(1,-3), rbind(1,0))
 w0 <- rbind(-1.1, 2.1)
@@ -86,7 +87,7 @@ traj_u2 <- integrateODE(dx ~ x + y, dy ~ 2*x, x=1, y= 0, tdur=2)
 @fig-vec-example-2 shows these trajectories.
 
 ```{r echo=FALSE}
-#| label: vec-example-2
+#| label: fig-vec-example-2
 #| fig-cap: "Trajectories from the initial conditions $\\color{magenta}{\\vec{u_1}}$ and $\\color{blue}{\\vec{u_2}}$."
 #| fig-cap-location: margin
 traj_plot(y(t) ~ x(t), traj_u1, color="magenta", nt=1, domain=domain(t=0:1)) %>%
@@ -178,9 +179,13 @@ The scalar coefficients $m_1$ and $m_2$ can be found from the initial condition.
 
 ## Exercises
 
+`r insert_exercises("Dynamics", "eigenvalues and eigenvectors")`
+
+<!--
 - WP-103-16: Using eigenvalues, eigenvectors, and vector decomposition, develop closed form solutions to initial value problems involving systems of linear equations.
 
 - D-BRUPM: Calculate the eigenvalues of a 2x2 numerical matrix by hand, and larger matrices by computer.
 
 - WP-103-14: Explain the graphical/geometrical interpretation of an eigenvector and eigenvalue and how to compute each for a two-by-two matrix.
+-->
 
