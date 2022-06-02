@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.9.80">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>MOSAIC Calculus - 34&nbsp; Change &amp; accumulation</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="../site_libs/quarto-nav/headroom.min.js"></script>
+  <script src="../site_libs/clipboard/clipboard.min.js"></script>
+  <meta name="quarto:offset" content="../">
+  <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+  <script src="../site_libs/quarto-search/fuse.min.js"></script>
+  <script src="../site_libs/quarto-search/quarto-search.js"></script>
+  <link href="../Accumulation/28-visualizing.html" rel="next">
+  <link href="../accumulation-part.html" rel="prev">
+  <script src="../site_libs/quarto-html/quarto.js"></script>
+  <script src="../site_libs/quarto-html/popper.min.js"></script>
+  <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="../site_libs/quarto-html/anchor.min.js"></script>
+  <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "sidebar",
+    "copy-button": false,
+    "collapse-after": 2,
+    "panel-placement": "start",
+    "type": "textbox",
+    "limit": 20,
+    "language": {
+      "search-no-results-text": "No results",
+      "search-matching-documents-text": "matching documents",
+      "search-copy-link-title": "Copy link to search",
+      "search-hide-matches-text": "Hide additional matches",
+      "search-more-match-text": "more match in this document",
+      "search-more-matches-text": "more matches in this document",
+      "search-clear-button-title": "Clear",
+      "search-detached-cancel-button-title": "Cancel",
+      "search-submit-button-title": "Submit"
+    }
+  }</script>
+  <script async="" src="https://hypothes.is/embed.js"></script>
+  </head><body class="floating slimcontent"><span class="math inline" style="display: none;">
+  \(\newcommand{\line}{\text{line}}
+  \newcommand{\hump}{\text{hump}}
+  \newcommand{\sigmoid}{\text{sigmoid}}
+  \newcommand{\recip}{\text{recip}}
+  \newcommand{\diff}[1]{{\cal D}_#1}
+  \newcommand{\pnorm}{\text{pnorm}}
+  \newcommand{\dnorm}{\text{dnorm}}
+  \let\origvec\vec
+  \let\origmathit\mathit
+  \let\orighat\hat
+  \let\origbar\bar
+  \newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+  \newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+  \newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+  \newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+  \newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+  \newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+  \newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+  \newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+  \newcommand{\modeledby}[2]{#1\!\sim\!#2}
+  \newcommand{\CC}[1]{\color{#648fff}{#1}}
+  \newcommand{\CE}[1]{\color{#785ef0}{#1}}
+  \newcommand{\CA}[1]{\color{#dc267f}{#1}}
+  \newcommand{\CB}[1]{\color{#fe6100}{#1}}
+  \newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+  </span>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></h1>
+      <button type="button" class="quarto-btn-toggle btn">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">MOSAIC Calculus</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/dtkaplan/MC2/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-preliminaries-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-preliminaries-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/01-modeling-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">Modeling</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-modeling-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-modeling-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/01-parameters.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/02-assembling-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/03-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/05-low-order-polynomials.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/06-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/07-magnitudes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/08-dimensions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/09-modeling-cycle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling cycle [DRAFT]</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/Modeling-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">Differentiation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-differentiation-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-differentiation-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/16-continuous-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Continuous change</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/17-rate-of-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rate of change</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/18-evanescent-h.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/19-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Constructing derivatives</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/20-concavity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/21-cont-and-smooth.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/22-rules.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/23-optim.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/24-partial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/25-approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations [DRAFT]</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/26-taylor.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/Differentiation-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">Vectors and linear combinations</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-linear-combinations-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-linear-combinations-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-Vectors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-linear-combinations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-projection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-target-problem.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-stat-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">Accumulation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-accumulation-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-accumulation-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/27-intro.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/28-visualizing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/29-integration.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/30-euler.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/31-symbolic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">Dynamics</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-dynamics-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-dynamics-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-diff-eq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Differential equations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-solution.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Finding a “solution”</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-line.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Flows on the line</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-plane.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the plane</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-equilibria.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-eigen.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-second-order.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Force-balance equations</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">Manifestations</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-manifestations-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-manifestations-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-splines.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Data-driven functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">50</span>&nbsp; <span class="chapter-title">Probability and evidence</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-future-value.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">51</span>&nbsp; <span class="chapter-title">Present and future value</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-mechanics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">52</span>&nbsp; <span class="chapter-title">Mechanics</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+<h2 id="toc-title">Table of contents</h2>
+<ul>
+<li><a href="#accumulation" class="nav-link active" data-scroll-target="#accumulation"> <span class="header-section-number">34.1</span> Accumulation</a></li>
+<li><a href="#notation-for-anti-differentiation" class="nav-link" data-scroll-target="#notation-for-anti-differentiation"> <span class="header-section-number">34.2</span> Notation for anti-differentiation</a></li>
+<li><a href="#rmosaic-notation" class="nav-link" data-scroll-target="#rmosaic-notation"> <span class="header-section-number">34.3</span> R/mosaic notation</a></li>
+<li><a href="#dimension-and-anti-differentiation" class="nav-link" data-scroll-target="#dimension-and-anti-differentiation"> <span class="header-section-number">34.4</span> Dimension and anti-differentiation</a></li>
+<li><a href="#sec-preliminary-terrors" class="nav-link" data-scroll-target="#sec-preliminary-terrors"> <span class="header-section-number">34.5</span> From <em>Calculus Made Easy</em></a></li>
+<li><a href="#exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">34.6</span> Exercises</a></li>
+</ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dtkaplan/MC2/edit/main/Accumulation/27-intro.Rmd" class="toc-action">Edit this page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+<header id="title-block-header">
+<h1 class="title display-7"><span id="sec-change-accumulation" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></span></h1>
+</header>
+
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+
+</div>
+<p>Every 10 years, starting in 1790, the US Census Bureau carries out a constitutionally mandated census: a count of the current population. The overall count as a function of year is shown in <a href="#fig-pop-graph">Figure&nbsp;<span>34.1</span></a>. [<a href="https://en.wikipedia.org/wiki/Demographic_history_of_the_United_States">Source</a>]</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+
+</div>
+<p>In the 230 years spanned by the census data, the US population has grown 100-fold, from about 4 million in 1790 to about 330,000,000 in 2020.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-pop-graph" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="27-intro_files/figure-html/fig-pop-graph-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 34.1: US population since 1790. Left: linear axes. Right: semi-log axes</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It is tempting to look for simple patterns in such data. Perhaps the US population has been growing exponentially. A semi-log plot of the same data suggests that the growth is only very roughly exponential. A truly exponential process would present as a curve with a constant derivative, but the derivative of the function in the graph is decreasing over the centuries.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+
+</div>
+<p>Insofar as the slope over the semi-log graph is informative, it amounts to this quantity: <span class="math display">\[\partial_t \ln(\text{pop}(t)) = \frac{\partial_t\, \text{pop}(t)}{\text{pop}}\]</span> This is the <em>per-capita</em> rate of growth, that is, the rate of change in the population divided by the population. Conventionally, this fraction is presented as a percentage: percentage growth in the population per year, as in <a href="#fig-pop-growth">Figure&nbsp;<span>34.2</span></a>.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-pop-growth" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="27-intro_files/figure-html/fig-pop-growth-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 34.2: Annual per capita growth rate of the US population (percent)</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The dots in the graph are a direct calculation from the census data. There is a lot of fluctuation, but an overall trend stands out: the population growth rate has been declining since the mid-to late 1800s. The deviations from the trend are telling and correspond to historical events. There is a relatively low growth rate seen from 1860 to 1870: that is the effect of the US Civil War. The Great depression is seen in the very low growth from 1930 to 1940. Baby Boom: look at the growth from 1950-1960. The bump from 1990 to 2000? Not coincidentally, the 1990 Immigration Act substantially increased the yearly rate of immigration.</p>
+<p>If the trend in the growth rate continues, the US will reach zero net growth about 2070, then continue with negative growth. Of course, negative growth is just decline. A simple prediction from <a href="#fig-pop-growth">Figure&nbsp;<span>34.2</span></a> is that the argmax of the US population—that is, the year that the growth rate reaches zero—will occur around 2070.</p>
+<p>How large will the population be when it reaches its maximum?</p>
+<p>In Block 2, we dealt with situations where we know the function <span class="math inline">\(f(t)\)</span> and want to find the rate of change <span class="math inline">\(\partial_t f(t)\)</span>. Here, we know the rate of change of the population and we need to figure out the population itself, in other words to figure out from a known <span class="math inline">\(\partial_t f(t)\)</span> what is the unknown function <span class="math inline">\(f(t)\)</span>.</p>
+<p>The process of figuring out <span class="math inline">\(f(t) \longrightarrow \partial_t f(t)\)</span> is, of course, called <strong><em>differentiation</em></strong>. The opposite process, <span class="math inline">\(\partial_t f(t) \longrightarrow f(t)\)</span> is called <strong><em>anti-differentiation</em></strong>.</p>
+<p>In this block we will explore the methods for calculating anti-derivatives and some of the settings in which anti-derivative problems arrive.</p>
+<div class="intheworld">
+<p>The predictions from the accumulate-population-growth model are shown as a <span class="math inline">\(\color{magenta}{\text{magenta}}\)</span> line in <a href="#fig-pop-prediction-bad">Figure&nbsp;<span>34.3</span></a>.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div id="fig-pop-prediction-bad" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="27-intro_files/figure-html/fig-pop-prediction-bad-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 34.3: Predicted US population based on the historical linear decline in per-capita growth.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>According to the accumulation model, the population peaks in 2075 at 390 million. We will be back down to the present population level in about 100 years.</p>
+<p>Professional demographers make much more sophisticated models using detailed data from many sources. The demographers at the US Census Bureau predict that the population will reach a maximum of 404 million in 2060, shown by the little blue dot in <a href="#fig-pop-prediction-bad">Figure&nbsp;<span>34.3</span></a>. that is not too different from what we got by analyzing just the raw census numbers.</p>
+</div>
+<section id="accumulation" class="level2" data-number="34.1">
+<h2 data-number="34.1" class="anchored" data-anchor-id="accumulation"><span class="header-section-number">34.1</span> Accumulation</h2>
+<p>Imagine a simple setting: water flowing out of a tap into a basin or tank. The amount of water in the basin will be measured in a unit of volume, say liters. Measurement of the <em>flow</em> <span class="math inline">\(f(t)\)</span> of water from the tap into the tank has different units, say liters per second. If volume <span class="math inline">\(V(t)\)</span> is the volume of water in the tank as a function of time, <span class="math inline">\(f(t)\)</span> at any instant is <span class="math inline">\(f(t) = \partial_t V(t)\)</span>.</p>
+<p>There is a relationship between the two functions <span class="math inline">\(f(t)\)</span> and <span class="math inline">\(V(t)\)</span>. With derivatives, we can give a good description of that relationship: <span class="math display">\[f(t) = \partial_t V(t)\]</span> This description will be informative if we have measured the volume of water in the basin as a function of time and want to deduce the rate of flow from the tap. Now suppose we have measured the flow <span class="math inline">\(f(t)\)</span> and want to figure out the volume. The volume at any instant is the past flow accumulated to that instant. As a matter of notation, we write this view of the relationship as <span class="math display">\[V(t) = \int f(t) dt,\]</span> which you can read as “volume is the accumulated flow.”</p>
+<p>Other examples of accumulation and change:</p>
+<ul>
+<li>velocity is the rate of change of position <em>with respect to time</em>. Likewise, position is the accumulation of velocity <em>over time</em>.</li>
+<li>force is the rate of energy <em>with respect to position</em>. Likewise energy is the accumulation of force <em>as position changes</em>.</li>
+<li>deficit is the rate of change of debt with respect to time. Likewise, debt is the accumulation of deficit over time.</li>
+</ul>
+</section>
+<section id="notation-for-anti-differentiation" class="level2" data-number="34.2">
+<h2 data-number="34.2" class="anchored" data-anchor-id="notation-for-anti-differentiation"><span class="header-section-number">34.2</span> Notation for anti-differentiation</h2>
+<p>For differentiation we are using the notation <span class="math inline">\(\partial_x\)</span> as in <span class="math inline">\(\partial_x f(x)\)</span>. Remember that the subscript on <span class="math inline">\(\partial\)</span> names the <strong><em>with-respect-to input</em></strong>. There are three pieces of information this notation:</p>
+<ol type="1">
+<li>The <span class="math inline">\(\color{magenta}{\partial}\)</span> symbol which identifies the operation as partial <strong><em>differentiation</em></strong>.</li>
+<li>The name of the with-respect-to input <span class="math inline">\(\partial_{\color{magenta}{x}}\)</span> written as a subscript to <span class="math inline">\(\partial\)</span>.</li>
+<li>The function to be differentiated, <span class="math inline">\(\partial_x \color{magenta}{f(x)}\)</span>.</li>
+</ol>
+<p>For <strong><em>anti-differentiation</em></strong>, our notation must also specify the three pieces of information. It might be tempting to use the same notation as differentiation but replace the <span class="math inline">\(\partial\)</span> symbol with something else, perhaps <span class="math inline">\(\eth\)</span> or <span class="math inline">\(\spadesuit\)</span> or <span class="math inline">\(\forall\)</span>, giving us something like <span class="math inline">\(\spadesuit_x f(x)\)</span>.</p>
+<p>Convention has something different in store. The notation for anti-differentiation is <span class="math display">\[\large \int f(x) dx\]</span> 1. The <span class="math inline">\(\color{magenta}{\int}\)</span> is the marker for anti-differentiation. 2. The name of the with-respect-to input is contained in the “dx” at the end of the notation: <span class="math inline">\(\int f(x) d\color{magenta}{x}\)</span> 3. The function being anti-differentiated is in the middle <span class="math inline">\(\int \color{magenta}{f(x)} dx\)</span>.</p>
+<p>For those starting out with anti-differentiation, the conventional notation can be confusing, especially the <span class="math inline">\(dx\)</span> part. It is easy confuse <span class="math inline">\(d\)</span> for a constant and <span class="math inline">\(x\)</span> for part of the function being anti-differentiated.</p>
+<p>Think of the <span class="math inline">\(\int\)</span> and the <span class="math inline">\(dx\)</span> as <strong>brackets</strong> around the function. You need both brackets for correct notation, the <span class="math inline">\(\int\)</span> and the <span class="math inline">\(dx\)</span> together telling you what operation to perform.</p>
+<p>Remember that just as <span class="math inline">\(\partial_x f(x)\)</span> is a function, so is <span class="math inline">\(\int f(x) dx\)</span>.</p>
+</section>
+<section id="rmosaic-notation" class="level2" data-number="34.3">
+<h2 data-number="34.3" class="anchored" data-anchor-id="rmosaic-notation"><span class="header-section-number">34.3</span> R/mosaic notation</h2>
+<p>Recall that the notation for differentiation in R/mosaic is <code>D(f(x) ~ x)</code>. The R/mosaic notation for anti-differentiation is very similar:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">D</span>(<span class="fu">f</span>(x) <span class="sc">~</span> x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This has the same three pieces of information as <span class="math inline">\(\partial_x f(x)\)</span></p>
+<ol type="1">
+<li><code>D()</code> signifies differentiation whereas <code>antiD()</code> signifies anti-differentiation.</li>
+<li><code>~ x</code> identifies the with-respect-to input.</li>
+<li><code>f(x) ~</code> is the function on which the operation is to be performed.</li>
+</ol>
+<p>Remember that just as <code>D(f(x) ~ x)</code> creates a new function out of <code>f(x) ~ x</code>, so does <code>antiD(f(x) ~ x)</code>.</p>
+</section>
+<section id="dimension-and-anti-differentiation" class="level2" data-number="34.4">
+<h2 data-number="34.4" class="anchored" data-anchor-id="dimension-and-anti-differentiation"><span class="header-section-number">34.4</span> Dimension and anti-differentiation</h2>
+<p>This entire block will be about anti-differentiation, its properties and its uses. You already know that anti-differentiation (as the name suggests) is the inverse of differentiation. There is one consequence of this that is helpful to keep in mind as we move on to other chapters. This being calculus, the functions that we construct and operate upon have inputs that are quantities and outputs that are also quantities. Every quantity has a dimension, as discussed in Chapter 16. When you are working with any quantity, you should be sure that you know its dimension and its units.</p>
+<p>The dimension of the input to a function does not by any means have to be the same as the dimension of the output. For instance, we have been using many functions where the input has dimension <strong>time</strong> and the output is position (dimension L) or velocity (dimension L/T) or acceleration (dimension L/T<span class="math inline">\(^2\)</span>).</p>
+<p>Imagine working with some function <span class="math inline">\(f(y)\)</span> that is relevant to some modeling project of interest to you. Returning to the bracket notation that we used in Chapter 16, the dimension of the input quantity will be [<span class="math inline">\(y\)</span>]. The dimension of the output quantity is [<span class="math inline">\(f(y)\)</span>]. (Remember from 16 that [<span class="math inline">\(y\)</span>] means “the dimension of quantity <span class="math inline">\(y\)</span>” and that [<span class="math inline">\(f(y)\)</span>] means “the dimension of the <em>output</em> from <span class="math inline">\(f(y)\)</span>.”)</p>
+<p>The function <span class="math inline">\(\partial_y f(y)\)</span> has the same input dimension <span class="math inline">\([y]\)</span> but the output will be <span class="math inline">\([f(y)] / [y]\)</span>. For example, suppose <span class="math inline">\(f(y)\)</span> is the mass of fuel in a rocket as a function of time <span class="math inline">\(y\)</span>. The output of <span class="math inline">\(f(y)\)</span> has dimension M. The input dimension <span class="math inline">\([y]\)</span> is T.</p>
+<p>The output of the function <span class="math inline">\(\partial_y f(y)\)</span> has dimension <span class="math inline">\([f(y)] / [y]\)</span>, which in this case will be M / T. (Less abstractly, if the fuel mass is given in kg, and time is measured in seconds, then <span class="math inline">\(\partial_y f(y)\)</span> will have units of kg-per-second.)</p>
+<p>How about the dimension of the anti-derivative <span class="math inline">\(F(y) = \int f(y) dy\)</span>? Since <span class="math inline">\(F(y)\)</span> is the anti-derivative of <span class="math inline">\(f(y)\)</span> (with respect to <span class="math inline">\(y\)</span>), we know that <span class="math inline">\(\partial_y F(y) = f(y)\)</span>. Taking the dimension of both sides <span class="math display">\[[\partial_y F(y)] = \frac{[F(y)]}{[y]} = \frac{[F(y)]}{\text{T}} = [f(y)] = \text{M}\]</span> Consequently, <span class="math inline">\([F(y)] = \text{M}\)</span>.</p>
+<p>To summarize:</p>
+<ul>
+<li>The dimension of derivative <span class="math inline">\(\partial_y f(y)\)</span> will be <span class="math inline">\([f(y)] / [y]\)</span>.</li>
+<li>The dimension of the anti-derivative <span class="math inline">\(\int f(y) dy\)</span> will be <span class="math inline">\([f(y)]\times [y]\)</span>.</li>
+</ul>
+<p>Or, more concisely:</p>
+<blockquote class="blockquote">
+<p>Differentiation is like division, anti-differentiation is like multiplication.</p>
+</blockquote>
+<p>Paying attention to the dimensions (and units!) of input and output can be a boon to the calculus student. Often students have some function <span class="math inline">\(f(y)\)</span> and they are wondering which of the several calculus operations they are supposed to do: differentiation, anti-differentiation, finding a maximum, finding an argmax or a zero. Start by figuring out the dimension of the quantity you want. From that, you can often figure out which operation is appropriate.</p>
+<p>To illustrate, imagine that you have constructed <span class="math inline">\(f(y)\)</span> for your task and you know, say, <span class="math display">\[[f(y)] = \text{M       and} \  \ \ \ \ [y] = \text{T}\ .\]</span> Look things up in the following table:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Dimension of result</th>
+<th>Calculus operation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>M / T</td>
+<td>differentiate</td>
+</tr>
+<tr class="even">
+<td>M T</td>
+<td>anti-differentiate</td>
+</tr>
+<tr class="odd">
+<td>M</td>
+<td>find max or min</td>
+</tr>
+<tr class="even">
+<td>T</td>
+<td>find argmax/argmin or a function zero</td>
+</tr>
+<tr class="odd">
+<td>M T<span class="math inline">\(^2\)</span></td>
+<td>anti-differentiate twice in succession</td>
+</tr>
+<tr class="even">
+<td>M / T<span class="math inline">\(^2\)</span></td>
+<td>differentiate twice in succession</td>
+</tr>
+</tbody>
+</table>
+<p>For example, suppose the output of the accelerometer on your rocket has dimension L / T<span class="math inline">\(^2\)</span>. You are trying to figure out from the accelerometer reading what is your altitude. Altitude has dimension L. Look up in the table to see that you want to anti-differentiate acceleration twice in succession.</p>
+</section>
+<section id="sec-preliminary-terrors" class="level2" data-number="34.5">
+<h2 data-number="34.5" class="anchored" data-anchor-id="sec-preliminary-terrors"><span class="header-section-number">34.5</span> From <em>Calculus Made Easy</em></h2>
+<p><a href="https://en.wikipedia.org/wiki/Calculus_Made_Easy"><em>Calculus Made Easy</em></a>, by Silvanus P. Thompson, is a classic, concise, and elegant textbook from 1910. It takes a common-sense approach, sometimes lampooning the traditional approach to teaching calculus.</p>
+<blockquote class="blockquote">
+<p><em>Some calculus-tricks are quite easy. Some are enormously difficult. The fools who write the textbooks of advanced mathematics—and they are mostly clever fools—seldom take the trouble to show you how easy the easy calculations are. On the contrary, they seem to desire to impress you with their tremendous cleverness by going about it in the most difficult way.</em> — From the preface</p>
+</blockquote>
+<p>Thompson’s first chapter starts with the notation of accumulation, which he calls “the preliminary terror.”</p>
+<div class="madeeasy">
+<p>The preliminary terror … can be abolished once for all by simply stating what is the meaning—in common-sense terms—of the two principal symbols that are used in calculating.</p>
+<p>These dreadful symbols are:</p>
+<ol type="1">
+<li><span class="math inline">\(\Large\  d\)</span> which merely means “a little bit of.”</li>
+</ol>
+<p>Thus <span class="math inline">\(dx\)</span> means a little bit of <span class="math inline">\(x\)</span>; or <span class="math inline">\(du\)</span> means a little bit of <span class="math inline">\(u\)</span>. Ordinary mathematicians think it more polite to say “an element of,” instead of “a little bit of.” Just as you please. But you will find that these little bits (or elements) may be considered to be indefinitely small.</p>
+<ol start="2" type="1">
+<li><span class="math inline">\(\ \ \large\int\)</span> which is merely a long <span class="math inline">\(S\)</span>, and may be called (if you like) “the sum of.”</li>
+</ol>
+<p>Thus <span class="math inline">\(\ \int dx\)</span> means the sum of all the little bits of <span class="math inline">\(x\)</span>; or <span class="math inline">\(\ \int dt\)</span> means the sum of all the little bits of <span class="math inline">\(t\)</span>. Ordinary mathematicians call this symbol “the integral of.” Now any fool can see that if <span class="math inline">\(x\)</span> is considered as made up of a lot of little bits, each of which is called <span class="math inline">\(dx\)</span>, if you add them all up together you get the sum of all the <span class="math inline">\(dx\)</span>’s, (which is the same thing as the whole of <span class="math inline">\(x\)</span>). The word “integral” simply means “the whole.” If you think of the duration of time for one hour, you may (if you like) think of it as cut up into <span class="math inline">\(3600\)</span> little bits called seconds. The whole of the <span class="math inline">\(3600\)</span> little bits added up together make one hour.</p>
+<p>When you see an expression that begins with this terrifying symbol, you will henceforth know that it is put there merely to give you instructions that you are now to perform the operation (if you can) of totaling up all the little bits that are indicated by the symbols that follow.</p>
+</div>
+<hr>
+<p>The next chapter shows what it means to “total up all the little bits” of a function.</p>
+</section>
+<section id="exercises" class="level2" data-number="34.6">
+<h2 data-number="34.6" class="anchored" data-anchor-id="exercises"><span class="header-section-number">34.6</span> Exercises</h2>
+<section id="exercise-34.01" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-34.01">Exercise 34.01</h4>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part A</strong> What is the name of the with-respect-to input in <span class="math inline">\(\int g(y) dy\)</span>?</p>
+<p>y dy x t</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part B</strong> What is the name of the with-respect-to input in <span class="math inline">\(\int g(t) dy\)</span></p>
+<p>y dy x t</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part C</strong> What is the name of the with-respect-to input in <span class="math inline">\(\int g(x, t) dt\)</span></p>
+<p>y dt x t</p>
+</div>
+</div>
+</section>
+<section id="exercise-34.02" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-34.02">Exercise 34.02</h4>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part A</strong> Which of the following functions is <span class="math inline">\(\int \left[a + bx \right] dx\)</span>? (Hint: Differentiate each of them until you find the one that matches <span class="math inline">\(a + bx\)</span>.)</p>
+<ol type="a">
+<li><span class="math inline">\(ax + \frac{1}{2}b x^2 + C\)</span></li>
+<li><span class="math inline">\(ax + 2 b x^2 + C\)</span></li>
+<li><span class="math inline">\(a + b x^2 + C\)</span></li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part B</strong> Which of the following functions is <span class="math inline">\(\int e^{-kx} dt\)</span>?</p>
+<p><span class="math inline">\(-e^{-kx}\,/\,k\)</span> <span class="math inline">\(- k e^{-k x}\)</span> <span class="math inline">\(e^{-kx}\,/\,k\)</span></p>
+</div>
+</div>
+</section>
+<section id="exercise-34.03" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-34.03">Exercise 34.03</h4>
+<p>Every function has an anti-derivative. But there are many functions, for example <span class="math inline">\(\dnorm()\)</span> where there is no formula for the anti-derivative. Even so, the R/mosaic <code>antiD()</code> operator will figure out what is the anti-derivative.</p>
+<p>For each of the following functions, use <code>makeFun()</code> to implement the function as <code>f()</code>. Then use <code>antiD()</code> to construct the anti-derivative of <code>f()</code> and give this the name <code>F()</code>. Finally, use <code>D()</code> to compute the derivative of <code>F()</code>. For instance:</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(x<span class="sc">*</span><span class="fu">dnorm</span>(x) <span class="sc">~</span> x)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>F <span class="ot">&lt;-</span> <span class="fu">antiD</span>(<span class="fu">f</span>(x) <span class="sc">~</span> x)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>dF <span class="ot">&lt;-</span> <span class="fu">D</span>(<span class="fu">F</span>(x) <span class="sc">~</span> x)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">f</span>(x) <span class="sc">~</span> x, <span class="fu">domain</span>(<span class="at">x=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_plot</span>(<span class="fu">dF</span>(x) <span class="sc">~</span> x, <span class="at">color=</span><span class="st">"blue"</span>, <span class="at">size=</span><span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="27-intro_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part A</strong> For the function <span class="math inline">\(f(x) \equiv \pnorm(x^2)\)</span>, what is <span class="math inline">\(F(5)\)</span>? (Pick the closest answer.)</p>
+<p>4 4.5 5 5.5 6 6.5</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part B</strong> For the function <span class="math inline">\(f(x) \equiv \sin(x) \ln(x^2)\)</span>, what is <span class="math inline">\(F(5)\)</span>? (Pick the closest answer.)</p>
+<p>-4 -3.5 -3 -2.5 -2</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part C</strong> For the function <span class="math inline">\(f(x) \equiv x^2 \pnorm(x)\)</span>, what is <span class="math inline">\(F(5)\)</span>? (Pick the closest answer.)</p>
+<p>35 37 39 41 43</p>
+</div>
+</div>
+</section>
+<section id="exercise-34.04" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-34.04">Exercise 34.04</h4>
+<p>In the population prediction model at the start of the chapter we want to find a function <span class="math inline">\(P(y)\)</span> that gives the population as a function of year <span class="math inline">\(y\)</span>. From the data, we plotted out <span class="math inline">\(\ln\left[P(y)\right]\)</span> and found a fairly smooth curve that was upward sloping and concave down. Next, we made a plot of the derivative with respect to year of that upward-sloping, concave-down curve and found the derivative to be well approximated by a straight-line function with a negative slope <span class="math inline">\(a - b y\)</span>. In other words, we found <span class="math display">\[\partial_y \ln(P(y)) = a - b\,y\]</span> We want to figure out <span class="math inline">\(P(y)\)</span> from this relationship.</p>
+<p><strong>Step 1</strong>: Anti-differentiate the functions on both sides of the equation. Anti-differentiation has the effect of cancelling out the <span class="math inline">\(\partial_y\)</span> from the left side of the equation. Anti-differentiating the right side means calculating <span class="math inline">\(\int \left[a - b\, y\right]\ dy\)</span>.</p>
+<p>Task 1: Confirm that <span class="math inline">\(\int \left[a - b\,y\right]dy = a y - \frac{1}{2} b y^2 + C\)</span>.</p>
+<p><strong>Step 2</strong>: From Step 1 we have translated the relationship between population and year into this form:</p>
+<p><span class="math display">\[\ln(P(y)) = a y - \frac{1}{2} b y^2 + C\]</span></p>
+<p>Task 2: Exponentiate both sides of the newly framed relationship to get <span class="math display">\[P(y) = \exp\left(a y - \frac{1}{2} b y^2 + C\right) = e^{ay -b y^2} e^C = A e^{ay -b y^2}\]</span> where <span class="math inline">\(A = e^C\)</span>.</p>
+<p><strong>Step 3</strong>: Let’s declare that <span class="math inline">\(y=0\)</span> means year 2020.</p>
+<p>Task 3: Find the census estimate of the population in 2020 and use that information to estimate the parameter <span class="math inline">\(A\)</span> in <span class="math inline">\(P(y) = A e^{ay-b y^2}\)</span>.</p>
+<p><strong>Step 4</strong>: The <em>per-capita</em> growth rate is <span class="math display">\[G(y) \equiv \frac{\partial_y P(y)}{P(y)} \approx \frac{\partial_y A e^{a y - b y^2}}{A e^{ay - b y^2}} = a - 2 b y\]</span> The data suggest that the current growth rate is about 1% per year, so <span class="math inline">\(G(0) = a = \approx 0.01\)</span>. We also know that the growth rate will be around zero in 2070 years time. Year 2070 corresponds to <span class="math inline">\(y=50\)</span>. Consequently, <span class="math inline">\(G(50) = 0.01 - 2\cdot 50\cdot b\approx 0\)</span>. You can easily solve this for <span class="math inline">\(b\)</span>.</p>
+<p>Task 4: You now have numerical estimates for the parameters <span class="math inline">\(A\)</span>, <span class="math inline">\(a\)</span>, and <span class="math inline">\(b\)</span> in the function <span class="math inline">\(P(y)\)</span>. Using these parameters, plot out <span class="math inline">\(P(y)\)</span> for the next 200 years. According to the prediction, what will be the population in year 2220?</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill in your estimates for A, a, and b.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>P <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(A<span class="sc">*</span><span class="fu">exp</span>(a<span class="sc">*</span>y <span class="sc">-</span> b<span class="sc">*</span>(y<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">~</span> y, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">a =</span> ____, <span class="at">b =</span> ____, <span class="at">A =</span> ____)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># y = 200 is year 2220.</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">P</span>(y) <span class="sc">~</span> y, <span class="fu">domain</span>(<span class="at">y=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">200</span>)))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># At y=200, the estimate is 50 M</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="exercise-34.05" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-34.05">Exercise 34.05</h4>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="27-intro_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The graph shows a function <span class="math inline">\(f(x)\)</span>. Like all functions, it has an anti-derivative. Here are several functions, <span class="math inline">\(F_1(x)\)</span> through <span class="math inline">\(F_4(x)\)</span>.</p>
+<p>One and only one is the anti-derivative of the function shown in the graph. Which one?</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>F1 <span class="ot">&lt;-</span> <span class="fu">rfun</span>(<span class="sc">~</span> x, <span class="at">seed =</span> <span class="dv">782</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>F2 <span class="ot">&lt;-</span> <span class="fu">rfun</span>(<span class="sc">~</span> x, <span class="at">seed =</span> <span class="dv">934</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>F3 <span class="ot">&lt;-</span> <span class="fu">rfun</span>(<span class="sc">~</span> x, <span class="at">seed =</span> <span class="dv">297</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>F4 <span class="ot">&lt;-</span> <span class="fu">rfun</span>(<span class="sc">~</span> x, <span class="at">seed =</span> <span class="dv">892</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>NOTE: <code>rfun()</code> is a program that generates functions, a different one for each <code>seed</code>. It has been used here to generate <code>F1()</code> through <code>F4()</code> for you to use. Once you run those four lines in your sandbox, you can use <code>slice_plot()</code> in the usual way to plot out any of the four functions over the domain <span class="math inline">\(-5 \leq x \leq 5\)</span>.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part A</strong> Confirming graphically that a candidate <span class="math inline">\(F_i(x)\)</span> is indeed the anti-derivative of <span class="math inline">\(f(x)\)</span> is hard because the two functions can have very different shapes. But there is a very simple operation you can apply to <span class="math inline">\(F_i(x)\)</span> to make the comparison trivial. What is this operation?</p>
+<ol type="a">
+<li>anti-differentiate <span class="math inline">\(F_i(x)\)</span></li>
+<li>differentiate <span class="math inline">\(F_i(x)\)</span></li>
+<li>compose <span class="math inline">\(f(x)\)</span> with itself</li>
+<li>multiply <span class="math inline">\(F_i(x)\)</span> times $f(x)</li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part B</strong> Which one of the functions is an anti-derivative of the function graphed above? (Hint: See the next problem.)</p>
+<p><code>F1()</code> <code>F2()</code> <code>F3()</code> <code>F4()</code></p>
+</div>
+</div>
+<p>Problem with Accumulation Exercises/frog-choose-coat.Rmd</p>
+</section>
+<section id="exercise-34.07" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-34.07">Exercise 34.07</h4>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part A</strong> What is the anti-derivative of Force with respect to distance?</p>
+<p>Acceleration Work/Energy Momentum Power</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part B</strong> What is the anti-derivative of Velocity with respect to time?</p>
+<p>Momentum Displacement Power Acceleration</p>
+</div>
+</div>
+
+
+</section>
+</section>
+</main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../accumulation-part.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Accumulation</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../Accumulation/28-visualizing.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+</body></html>

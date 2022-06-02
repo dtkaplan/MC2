@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.9.80">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>MOSAIC Calculus - 45&nbsp; Eigenvalues, eigenvectors</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="../site_libs/quarto-nav/headroom.min.js"></script>
+  <script src="../site_libs/clipboard/clipboard.min.js"></script>
+  <meta name="quarto:offset" content="../">
+  <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+  <script src="../site_libs/quarto-search/fuse.min.js"></script>
+  <script src="../site_libs/quarto-search/quarto-search.js"></script>
+  <link href="../Dynamics/B6-second-order.html" rel="next">
+  <link href="../Dynamics/B6-equilibria.html" rel="prev">
+  <script src="../site_libs/quarto-html/quarto.js"></script>
+  <script src="../site_libs/quarto-html/popper.min.js"></script>
+  <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="../site_libs/quarto-html/anchor.min.js"></script>
+  <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "sidebar",
+    "copy-button": false,
+    "collapse-after": 2,
+    "panel-placement": "start",
+    "type": "textbox",
+    "limit": 20,
+    "language": {
+      "search-no-results-text": "No results",
+      "search-matching-documents-text": "matching documents",
+      "search-copy-link-title": "Copy link to search",
+      "search-hide-matches-text": "Hide additional matches",
+      "search-more-match-text": "more match in this document",
+      "search-more-matches-text": "more matches in this document",
+      "search-clear-button-title": "Clear",
+      "search-detached-cancel-button-title": "Cancel",
+      "search-submit-button-title": "Submit"
+    }
+  }</script>
+  <script async="" src="https://hypothes.is/embed.js"></script>
+  </head><body class="floating slimcontent"><span class="math inline" style="display: none;">
+  \(\newcommand{\line}{\text{line}}
+  \newcommand{\hump}{\text{hump}}
+  \newcommand{\sigmoid}{\text{sigmoid}}
+  \newcommand{\recip}{\text{recip}}
+  \newcommand{\diff}[1]{{\cal D}_#1}
+  \newcommand{\pnorm}{\text{pnorm}}
+  \newcommand{\dnorm}{\text{dnorm}}
+  \let\origvec\vec
+  \let\origmathit\mathit
+  \let\orighat\hat
+  \let\origbar\bar
+  \newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+  \newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+  \newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+  \newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+  \newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+  \newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+  \newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+  \newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+  \newcommand{\modeledby}[2]{#1\!\sim\!#2}
+  \newcommand{\CC}[1]{\color{#648fff}{#1}}
+  \newcommand{\CE}[1]{\color{#785ef0}{#1}}
+  \newcommand{\CA}[1]{\color{#dc267f}{#1}}
+  \newcommand{\CB}[1]{\color{#fe6100}{#1}}
+  \newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+  </span>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></h1>
+      <button type="button" class="quarto-btn-toggle btn">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">MOSAIC Calculus</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/dtkaplan/MC2/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-preliminaries-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-preliminaries-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/01-modeling-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">Modeling</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-modeling-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-modeling-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/01-parameters.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/02-assembling-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/03-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/05-low-order-polynomials.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/06-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/07-magnitudes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/08-dimensions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/09-modeling-cycle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling cycle [DRAFT]</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/Modeling-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">Differentiation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-differentiation-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-differentiation-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/16-continuous-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Continuous change</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/17-rate-of-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rate of change</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/18-evanescent-h.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/19-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Constructing derivatives</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/20-concavity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/21-cont-and-smooth.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/22-rules.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/23-optim.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/24-partial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/25-approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations [DRAFT]</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/26-taylor.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/Differentiation-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">Vectors and linear combinations</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-linear-combinations-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-linear-combinations-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-Vectors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-linear-combinations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-projection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-target-problem.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-stat-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">Accumulation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-accumulation-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-accumulation-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/27-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/28-visualizing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/29-integration.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/30-euler.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/31-symbolic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">Dynamics</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-dynamics-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-dynamics-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-diff-eq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Differential equations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-solution.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Finding a “solution”</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-line.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Flows on the line</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-plane.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the plane</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-equilibria.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-eigen.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-second-order.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Force-balance equations</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">Manifestations</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-manifestations-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-manifestations-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-splines.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Data-driven functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">50</span>&nbsp; <span class="chapter-title">Probability and evidence</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-future-value.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">51</span>&nbsp; <span class="chapter-title">Present and future value</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-mechanics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">52</span>&nbsp; <span class="chapter-title">Mechanics</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+<h2 id="toc-title">Table of contents</h2>
+<ul>
+<li><a href="#vector-solutions-to-linear-differential-equations" class="nav-link active" data-scroll-target="#vector-solutions-to-linear-differential-equations"> <span class="header-section-number">45.1</span> Vector solutions to linear differential equations</a></li>
+<li><a href="#eigenvectors-and-eigenvalues" class="nav-link" data-scroll-target="#eigenvectors-and-eigenvalues"> <span class="header-section-number">45.2</span> Eigenvectors and eigenvalues</a></li>
+<li><a href="#exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">45.3</span> Exercises</a></li>
+</ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dtkaplan/MC2/edit/main/Dynamics/B6-eigen.Rmd" class="toc-action">Edit this page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+<header id="title-block-header">
+<h1 class="title display-7"><span id="sec-eigenvalues" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></span></h1>
+</header>
+
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+
+</div>
+<p>In the previous chapters, you’ve seen how linear dynamics, when unstable, lead trajectories off to infinity. Chapter <a href="B6-modeling.html">Section&nbsp;<span>43</span></a> looked at some ways that nonlinearity can tame instability, as in the simple models of linear growth.</p>
+<p>In this chapter, we return to linear dynamics to develop a <em>quantitative theory of stability</em>. Such theory is important in many engineering and design applications. For instance, a building exposed to earthquake risk can be economically designed to be strong specifically against the type of shaking produced by earthquakes. An electronic circuit can be designed to be sensitive to certain kinds of communication signals while still resisting noise or jamming.</p>
+<div class="example">
+<p><strong><em>Cruise control</em></strong> is a feature of many modern automobiles. It enables a driver to set a desired speed for the car to follow automatically, thus reducing cognitive load on the driver. Early models of cruise control introduced in the 1970s (and still common in 2020) had an extremely simple logic. The speedometer constantly monitors the car’s speed <span class="math inline">\(v\)</span>. The driver sets a desired speed, which we will call <span class="math inline">\(v_0\)</span>. The cruise control actuator—the mechanism that works to maintain the speed at <span class="math inline">\(v_0\)</span> by, let’s say, adjusting the throttle to increase or reduce speed as appropriate—is designed to produce a throttle input proportional to the deviation in actual speed <span class="math inline">\(v\)</span> from the set speed <span class="math inline">\(v_0\)</span>. <span class="math display">\[\text{throttle-input} = -a (v - v_0)\ .\]</span> You can see that when <span class="math inline">\(v = v_0\)</span>, the throttle input from the system is zero. When <span class="math inline">\(v_0 &lt; v\)</span>, as when starting to go downhill, the throttle input will be negative, reducing the speed.</p>
+<p>A simple model is that the throttle input is proportional to <span class="math inline">\(\partial_t\, v\)</span>: positive input increases speed, negative input decreases speed. The overall system is then described by a linear, first-order differential equation <span class="math display">\[\partial_t\,v = -a(v-v_0)\ .\]</span> This equation has a fixed point at <span class="math inline">\(v = v_0\)</span> (as desired). To describe more simply the dynamics around the fixed point, we can define a new dynamical state <span class="math inline">\(y=v - v_0\)</span>. Differentiating both sides with respect to time gives <span class="math inline">\(\partial_t y = \partial_t v\)</span>, so we can re-write the original differential equation as <span class="math display">\[\partial_t y = -a y\]</span> which has a solution <span class="math inline">\(y(t) = A e^{-at}\)</span> as we’ve seen before. For any positive coefficient <span class="math inline">\(a\)</span>, the control system is stable: a deviation from <span class="math inline">\(v_0\)</span> will be followed by exponential decay back to <span class="math inline">\(v_0\)</span>.</p>
+<p>A modern cruise control system adds an important feature: the car slows down automatically if it gets too close to the car in front. Let’s call the distance to the leading car <span class="math inline">\(x\)</span> and define “too close” to mean closer than distance <span class="math inline">\(x_0\)</span>. The car is traveling at velocity <span class="math inline">\(v\)</span> and the car in front at <span class="math inline">\(v_f\)</span>. If <span class="math inline">\(v_f &lt; v\)</span>, the distance between the cars gets smaller: <span class="math inline">\(\partial_t x = -(v - v_f)\)</span>. On the other hand, if <span class="math inline">\(x_0 &lt; x\)</span>, the car is far enough away that the velocity can be increased: <span class="math inline">\(\partial_t v = b(x - x_0)\)</span>. We can unite these two first-order differential equations into a single, second-order equation: <span class="math display">\[\partial_t x = -(v - v_f) \ \ \implies\ \ \partial_{tt} x = - \partial_t v = - b(x-x_0)\]</span> To solve this system, define <span class="math inline">\(y \equiv x - x_0\)</span>. This implies <span class="math inline">\(\partial_{tt} y = \partial_{tt} x\)</span>, so the equation describing the control system becomes <span class="math display">\[\partial_{tt} y = - b y\ .\]</span> The solution to this is <span class="math inline">\(y(t) = A \sin\left(\sqrt{b} \ t\right)\)</span> as you can confirm by substitution.</p>
+<p>Result: The simple car-following control system oscillates. That is not a very good experience for the driver! By constructing a theory of stability, we may be able to figure out a re-design that will cause the oscillations to go away.</p>
+</div>
+<section id="vector-solutions-to-linear-differential-equations" class="level2 page-columns page-full" data-number="45.1">
+<h2 data-number="45.1" class="anchored" data-anchor-id="vector-solutions-to-linear-differential-equations"><span class="header-section-number">45.1</span> Vector solutions to linear differential equations</h2>
+<p>The form in which we have been writing linear differential equations in two state variables is <span class="math display">\[\partial_t x = a x + b y\\
+\partial_t y = c x + d y\]</span></p>
+<p>A key part of constructing a theory of stability is finding a set of mathematical ideas that enable us to view dynamics in a simpler way. The idea we will introduce here is thinking about the state and trajectory of a differential equation in terms of <strong><em>vectors</em></strong>. We will work here with systems with a two-variable dynamical state, but the results apply just as well to higher dimensional states. That is important in applied work, where the systems being modeled are complicated with many state components.</p>
+<p>We can re-write the linear differential equation using vector and matrix notation. Suppose that we collect the <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> components of the state into a vector, <span class="math display">\[\vec{w(t)} =\left[\begin{array}{c}x(t)\\y(t)\end{array}\right]\ .\]</span> The differential equation, in terms of <span class="math inline">\(\vec{w(t)}\)</span> is <span class="math display">\[\partial_t \vec{w(t)} = \left[\begin{array}{cc}a&amp;b\\c&amp;d\end{array}\right] \vec{w(t)}\ .\]</span> Now imagine that we pick two non-colinear vectors, <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span> that span the state space. Since the vectors are assumed to span the state, any initial condition can be written as a linear combination of those two vectors: <span class="math display">\[\vec{w(0)} =\left[\begin{array}{c}x(0)\\y(0)\end{array}\right] = m_1 \vec{u_1} + m_2 \vec{u_2}\ .\]</span></p>
+<p>For the moment, we won’t worry about how best to choose <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span>; any two vectors that are not colinear will do.</p>
+<div class="example page-columns page-full">
+<p><span class="math inline">\(\ \)</span></p>
+<p>As a running example, we will work with the pair of first-order differential equations <span class="math display">\[\partial_t x = x + y\\
+\partial_t y = 2 x \ \ \ \ \]</span> which, in vector/matrix form are <span class="math display">\[\partial_t \vec{w(t)} = \left[\begin{array}{cc}1&amp;1\\2&amp;0\end{array}\right] \vec{w(t)}\ .\]</span> Imagine that we choose, arbitrarily, <span class="math display">\[\vec{u_1} = \color{magenta}{\left[\begin{array}{r}1\\-3\end{array}\right]}\ \ \ \text{and}\ \ \ \vec{u_2} = \color{blue}{\left[\begin{array}{r}1.0\\0\end{array}\right]}\ .\]</span></p>
+<p>For the example, we will calculate a trajectory starting at the initial condition <span class="math inline">\(\vec{w(0)} = \left[\begin{array}{r}-1.1\\ 2.1\end{array}\right]\)</span>:</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>traj <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>(dx <span class="sc">~</span> x <span class="sc">+</span> y, dy <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x, <span class="at">x=</span><span class="sc">-</span><span class="fl">1.1</span>, <span class="at">y=</span><span class="fl">2.1</span>, <span class="at">tdur=</span><span class="dv">2</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">traj_plot</span>(<span class="fu">y</span>(t) <span class="sc">~</span> <span class="fu">x</span>(t), traj)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B6-eigen_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-vec-example-1" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="B6-eigen_files/figure-html/fig-vec-example-1-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 45.1: The trajectory calculated starting at (-1.1, 2.1). The graph is annotated with the vectors <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span> and the flow field.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The initial condition (marked “0” in <a href="#fig-vec-example-1">Figure&nbsp;<span>45.1</span></a> is, like any other point in the state space, a linear combination of <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span>. We can find the scalar coefficients of the linear combination using any of the methods presented in Block 5, for instance the telescope method. We will illustrate with <code>qr.solve()</code>:</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">rbind</span>(<span class="dv">1</span>,<span class="sc">-</span><span class="dv">3</span>), <span class="fu">rbind</span>(<span class="dv">1</span>,<span class="dv">0</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>w0 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="sc">-</span><span class="fl">1.1</span>, <span class="fl">2.1</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">qr.solve</span>(M, w0)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="do">##      [,1]</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="do">## [1,] -0.7</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="do">## [2,] -0.4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>So, <span class="math inline">\(\vec{w(0)} = -0.7 \vec{u_1} - 0.4 \vec{u_2}\)</span>. Keep these scalar coefficients, <span class="math inline">\(-0.7\)</span> and <span class="math inline">\(-0.4\)</span> in mind for the next example.</p>
+</div>
+<p>We can use <code>integrateODE()</code> to find the solution starting at any initial condition. In particular, we can find the solution <span class="math inline">\(\vec{u_1}\)</span> as the initial condition and, similarly, using <span class="math inline">\(\vec{u_2}\)</span> as the initial condition.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>traj_u1 <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>(dx <span class="sc">~</span> x <span class="sc">+</span> y, dy <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x, <span class="at">x=</span><span class="dv">1</span>, <span class="at">y=</span><span class="sc">-</span><span class="dv">3</span>, <span class="at">tdur=</span><span class="dv">2</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>traj_u2 <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>(dx <span class="sc">~</span> x <span class="sc">+</span> y, dy <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x, <span class="at">x=</span><span class="dv">1</span>, <span class="at">y=</span> <span class="dv">0</span>, <span class="at">tdur=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><a href="#fig-vec-example-2">Figure&nbsp;<span>45.2</span></a> shows these trajectories.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-vec-example-2" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="B6-eigen_files/figure-html/fig-vec-example-2-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 45.2: Trajectories from the initial conditions <span class="math inline">\(\color{magenta}{\vec{u_1}}\)</span> and <span class="math inline">\(\color{blue}{\vec{u_2}}\)</span>.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>At first glance, the two trajectories <span class="math inline">\(\vec{u_1(t)}\)</span> and <span class="math inline">\(\vec{u_2(t)}\)</span> in <span class="quarto-unresolved-ref">?fig-vec-example2</span> that start from <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span> might not look much like the trajectory in <a href="#fig-vec-example-1">Figure&nbsp;<span>45.1</span></a> that starts from <span class="math inline">\(\vec{w(0)} = -0.7 \vec{u_1} - 0.4 \vec{u_2}\)</span>. But in fact there is a very simple relationship between the trajectories: <span class="math display">\[\vec{w(t)} = -0.7 \vec{u_1(t)} - 0.4 \vec{u_2(t)}\ .\]</span> To state the situation more generally, any solution to the differential equations can be written as a linear combination of the solutions starting at <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span>, regardless of how <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span> were chosen.</p>
+<p>We can see this algebraically. Since <span class="math inline">\(\vec{u_1(t)}\)</span> and <span class="math inline">\(\vec{u_2(t)}\)</span> are solutions to the linear differential equation, it must be that <span class="math display">\[\partial_t \vec{u_1(t)} = \left[\begin{array}{cc}1&amp;1\\2&amp;0\end{array}\right] \vec{u_1(t)}\ \ \text{and}\ \ \partial_t \vec{u_2(t)} = \left[\begin{array}{cc}1&amp;1\\2&amp;0\end{array}\right] \vec{u_2(t)}\ .\]</span> Taking a linear combination of these equations gives<br>
+<span class="math display">\[\partial_t \left[m_1\, \vec{u_1(t)} + m_2 \vec{u_2(t)}\right] = \left[\begin{array}{cc}1&amp;1\\2&amp;0\end{array}\right] \left[m_1\, \vec{u_1(t)} + m_2 \vec{u_2(t)}\right]\]</span> The same will be true in general, that is, for the matrix <span class="math inline">\(\left[\begin{array}{cc}a&amp;b\\c&amp;d\end{array}\right]\)</span>.</p>
+</section>
+<section id="eigenvectors-and-eigenvalues" class="level2 page-columns page-full" data-number="45.2">
+<h2 data-number="45.2" class="anchored" data-anchor-id="eigenvectors-and-eigenvalues"><span class="header-section-number">45.2</span> Eigenvectors and eigenvalues</h2>
+<p>In the previous section, we saw that the solution to any linear differential equation starting at any initial condition can be written as a linear combination <span class="math inline">\(m_1 \vec{u_1(t)} + m_2 \vec{u_2(t)}\)</span>, where <span class="math inline">\(\vec{u_1(t)}\)</span> is the solution starting at an initial condition <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2(t)}\)</span> is the solution starting at <span class="math inline">\(\vec{u_2}\)</span>. It does not matter how <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span> are chosen, so long as they are not colinear, that is, so long as they span the state space.</p>
+<p>In this section, we will demonstrate that there is a particular way of selecting <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span> that makes the solutions <span class="math inline">\(\vec{u_1(t)}\)</span> and <span class="math inline">\(\vec{u_2(t)}\)</span> have a very simple, purely exponential format. The vectors to be chosen are the <strong><em>eigenvectors</em></strong> of the matrix <span class="math inline">\(\left[\begin{array}{cc}a&amp;b\\c&amp;d\end{array}\right]\)</span>. We will call these eigenvectors <span class="math inline">\(\vec{\Lambda_1}\)</span> and <span class="math inline">\(\vec{\Lambda_2}\)</span>. (This use of the Greek letter <span class="math inline">\(\Lambda\)</span> (capital “lambda”) and it is lower-case version <span class="math inline">\(\lambda\)</span>, is conventional in mathematics, physics, and engineering. So it is worth learning to identify the letters.)</p>
+<p>Our task in this section is to show how to compute the eigenvectors <span class="math inline">\(\vec{\Lambda_1}\)</span> and <span class="math inline">\(\vec{\Lambda_2}\)</span> and that the solutions <span class="math inline">\(\vec{\Lambda_1(t)}\)</span> and <span class="math inline">\(\vec{\Lambda_2(t)}\)</span> are in fact simple exponentials. In Chapter <a href="B6-second-order.html">Section&nbsp;<span>46</span></a> we will derive the formula for the eigenvectors. Here, we will use the R function <code>eigen()</code> to do the calculations for us.</p>
+<div class="example">
+<p><span class="math inline">\(\ \)</span> Eigenvectors can be calculated using the R function <code>eigen()</code> applied to the abcd matrix that defines the linear differential equation.</p>
+<p>For the system of first-order differential equations <span class="math display">\[\partial_t x = x + y\\\partial_t y = 2x\ \ \ \ \ \]</span> the matrix is, as we’ve seen, <span class="math display">\[\left[\begin{array}{cc}1&amp;1\\2&amp;0\end{array}\right]\ .\]</span></p>
+<p>Carrying out the eigenvector calculation is straightforward:</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">rbind</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="fu">rbind</span>(<span class="dv">1</span>,<span class="dv">0</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">eigen</span>(M)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="do">## eigen() decomposition</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="do">## $values</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="do">## [1]  2 -1</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="do">## $vectors</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="do">##           [,1]       [,2]</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="do">## [1,] 0.7071068 -0.4472136</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="do">## [2,] 0.7071068  0.8944272</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The eigenvectors are the two columns of the matrix labeled <code>vectors</code> returned by the calculation. Here, that is<br>
+<span class="math display">\[\vec{\Lambda_1} = \left[\begin{array}{r}0.7071\\0.7071\end{array}\right]
+\ \ \ \text{and}\ \ \ \
+\vec{\Lambda_2} = \left[\begin{array}{r}-0.4472\\0.8944\end{array}\right]\ .\]</span></p>
+<p>The calculation also produces <strong><em>eigenvalues</em></strong>. Here that is <span class="math inline">\(\lambda_1 = 2\)</span> and <span class="math inline">\(\lambda_2 = -1\)</span>.</p>
+</div>
+<p>We can see what’s special about <span class="math inline">\(\vec{\Lambda_1}\)</span> and <span class="math inline">\(\vec{\Lambda_2}\)</span> by plotting them along with the flow field, as in <a href="#fig-eigen-flow">Figure&nbsp;<span>45.3</span></a>.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-eigen-flow" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="B6-eigen_files/figure-html/fig-eigen-flow-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 45.3: The eigenvectors for the <span class="math inline">\(\left[\begin{array}{cc}1&amp;1\\2&amp;0\end{array}\right]\)</span> plotted along with the flow.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The eigenvectors mark the directions where the flow is either directly toward the fixed point or directly away from it. Here, the flow on the subspace of <span class="math inline">\(\color{magenta}{\vec{\Lambda_1}}\)</span> is away from the fixed point, while the flow along the subspace of <span class="math inline">\(\color{blue}{\vec{\Lambda_2}}\)</span> is inward to the fixed point.</p>
+<p>The consequence of this alignment of the flow with the eigenvectors is that the trajectory from any initial condition <span class="math inline">\(m_1 \vec{\Lambda_1}\)</span> will have the form <span class="math inline">\(m_1(t) \vec{\Lambda_1}\)</span> and similarly for an initial condition <span class="math inline">\(m_2(t) \vec{\Lambda_2}\)</span>.</p>
+<p>As we did in the previous section, let’s calculate the trajectories <span class="math inline">\(\color{magenta}{\vec{\Lambda_1(t)}}\)</span> and <span class="math inline">\(\color{blue}{\vec{\Lambda_2(t)}}\)</span> starting at the two eigenvectors and plot out the <span class="math inline">\(y(t)\)</span> component of the solution. Since we are anticipating an exponential form for the function, we will use semi-log axes, where an exponential will look like a straight line.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>traj_eigen1 <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>(dx <span class="sc">~</span> x <span class="sc">+</span> y, dy <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x, <span class="at">x=</span><span class="fl">0.7071</span>, <span class="at">y=</span><span class="fl">0.7071</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>traj_eigen2 <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>(dx <span class="sc">~</span> x <span class="sc">+</span> y, dy <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x, <span class="at">x=</span><span class="sc">-</span><span class="fl">0.4472</span>, <span class="at">y=</span><span class="fl">0.8944</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">traj_plot</span>(<span class="fu">y</span>(t) <span class="sc">~</span> t, traj_eigen1, <span class="at">color=</span><span class="st">"magenta"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">traj_plot</span>(<span class="fu">y</span>(t) <span class="sc">~</span> t, traj_eigen2, <span class="at">color=</span><span class="st">"blue"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_log10</span>(<span class="at">breaks=</span><span class="fu">c</span>(<span class="fl">0.3290</span>, <span class="fl">0.7071</span>, <span class="fl">0.8944</span>, <span class="fl">5.2248</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B6-eigen_files/figure-html/eigen-time-series-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We’ve marked the <span class="math inline">\(y\)</span> axis with the starting and ending values of each function, so that you can find the exponential parameter <span class="math inline">\(k\)</span> for each function.</p>
+<p><span class="math display">\[\color{magenta}{y_1(t) = 0.7071 e^{k_1 t}}\\
+\color{blue}{y_2(t)} = 0.8944 e^{k_2 t}\]</span> To find <span class="math inline">\(k_1\)</span> and <span class="math inline">\(k_2\)</span>, plug in <span class="math inline">\(t=1\)</span> to the solution:</p>
+<p><span class="math display">\[\color{magenta}{y_1(1) = 5.2248 = 0.7071 e^{k_1}} \implies k_1=2\\
+\color{blue}{y_2(1) = 0.3290 = 0.8944 e^{k_2}} \implies k_2 = -1\]</span></p>
+<p>Look back at the results from the <code>eigen(M)</code> calculation. These values for <span class="math inline">\(k_1\)</span> and <span class="math inline">\(k_2\)</span> are exactly the <strong><em>eigenvalues</em></strong> that were computed from the matrix <code>M</code>. In standard notation, rather than <span class="math inline">\(k_1\)</span> and <span class="math inline">\(k_2\)</span>, the notation <span class="math inline">\(\lambda_1 = k_1\)</span> and <span class="math inline">\(\lambda_2 = k_2\)</span> is preferred. (Remember, <span class="math inline">\(\lambda\)</span> is the Greek letter “lambda” in it is lower-case form.) Every solution to the differential equation has the form <span class="math display">\[m_1\, e^{\lambda_1 t} \vec{\Lambda_1} + m_2\, e^{\lambda_2 t} \vec{\Lambda_2}\ .\]</span> The scalar coefficients <span class="math inline">\(m_1\)</span> and <span class="math inline">\(m_2\)</span> can be found from the initial condition. The stability of the system depends only on <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span>. If either one of these is positive, then the system is unstable.</p>
+</section>
+<section id="exercises" class="level2" data-number="45.3">
+<h2 data-number="45.3" class="anchored" data-anchor-id="exercises"><span class="header-section-number">45.3</span> Exercises</h2>
+<section id="exercise-45.01" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-45.01">Exercise 45.01</h4>
+<p>Using an angle from -90 to 90 degrees to specify directions, say in what directions each of the eigenvectors is pointed. (Your answer should be good to <span class="math inline">\(\pm 10 degrees\)</span>. Remember, 0 degrees is horizontal.)</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B6-eigen_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B6-eigen_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B6-eigen_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Problem with Dynamics Exercises/child-buy-drawer.Rmd</p>
+</section>
+<section id="exercise-45.03" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-45.03">Exercise 45.03</h4>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part A</strong> What are the numerical values of the eigenvalues of the matrix <span class="math inline">\(\left[\begin{array}{rc}-1 &amp; \frac{3}{4} \\ 1 &amp; 0\end{array}\right]\)</span>?</p>
+<ol type="a">
+<li><span class="math inline">\(\frac{1}{2}\)</span> and <span class="math inline">\(-\frac{3}{2}\)</span></li>
+<li><span class="math inline">\(\frac{1}{2}\)</span> and <span class="math inline">\(-\frac{5}{2}\)</span></li>
+<li><span class="math inline">\(\frac{1}{2}\)</span> and <span class="math inline">\(+\frac{5}{2}\)</span></li>
+<li><span class="math inline">\(-\frac{1}{2}\)</span> and <span class="math inline">\(-\frac{5}{2}\)</span></li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part B</strong> What are the numerical values of the eigenvalues of the matrix <span class="math inline">\(\left[\begin{array}{rc}0 &amp; \frac{1}{2} \\ 1 &amp; 0\end{array}\right]\)</span>?</p>
+<p><span class="math inline">\(\pm\sqrt{2}/2\)</span> <span class="math inline">\(\pm\sqrt{2}\)</span> <span class="math inline">\(\pm 2\)</span> <span class="math inline">\(\pm\frac{1}{2}\)</span></p>
+</div>
+</div>
+<!-- 
+Eigenvalues are important because they dramatically simplify the interpretation of matrices and of dynamical system behavior near fixed points.
+
+Eigenvalues are numbers. To use the language of linear combinations, an eigenvalue is a *scalar*. As you know, when you multiply a vector times a scalar, the result has the same direction (or the exact opposite direction) but might be longer or shorter. Like this:
+$$ 3 \left[\begin{array}{c}1\\2 \end{array}\right] = \left[\begin{array}{c}3\\6 \end{array}\right]\ \ \ \ \text{or}\ \ \ \ \ 
+-4 \left[\begin{array}{r}3\\-1 \end{array}\right] = \left[\begin{array}{r}-12\\4\end{array}\right]$$
+In contrast, **matrix** multiplication of a vector can generate a result that has a *different direction* than the original vector, like this:
+
+$$\left[\begin{array}{rc}0 & \frac{1}{2} \\ 1 & 0\end{array}\right]\cdot \left[\begin{array}{c}2 \\ 1\end{array}\right] =
+\left[\begin{array}{c}\frac{1}{2} \\2\end{array}\right]\ \ \ \ \text{or}\ \ \ \ \left[\begin{array}{rc}-1 & \frac{3}{4} \\ 1 & 0\end{array}\right]\cdot \left[\begin{array}{r}1 \\ -4\end{array}\right] =
+\left[\begin{array}{c}4 \\1\end{array}\right]$$
+
+An **eigenvector** is a vector has a seemingly magical property with respect to multiplication by the matrix it characterizes: the result of the multiplication is a vector that has the same direction as the original but scaled by it is corresponding eigenvalue $\lambda$. That is, if $\lambda$ is an eigenvalue of ${\mathbf M}$ and ${\mathbf \Lambda}$ is the corresponding eigenvector: 
+$${\mathbf M}\cdot {\mathbf \Lambda} = \lambda {\mathbf \Lambda}$$
+
+::: {.cell layout-align="center" fig.showtext='false'}
+::: {.cell-output-display}
+**Part C**  Which of these is an eigenvector of the matrix $\left[\begin{array}{rc}-1 & \frac{3}{4} \\ 1 & 0\end{array}\right]$? (Hint: Multiply the matrix by each of the vectors listed. For one of them, the result of the multiplication will be aligned with the vector used. You can use the constant of proportionality to answer the next question, but you will have to start by choosing the right one of the options that follow.) 
+
+
+a. $\left[\begin{array}{r}-3\\2\end{array}\right]$
+b. $\left[\begin{array}{r}3\\2\end{array}\right]$
+c. $\left[\begin{array}{r}-2\\3\end{array}\right]$
+d. $\left[\begin{array}{r}2\\3\end{array}\right]$
+:::
+:::
+
+::: {.cell layout-align="center" fig.showtext='false'}
+::: {.cell-output-display}
+**Part D**  What is the eigenvalue associated with the correct answer from the previous problem? 
+
+
+0.5&emsp;-1&emsp;-0.5&emsp;1.5&emsp;-1.5
+:::
+:::
+
+::: {.cell layout-align="center" fig.showtext='false'}
+::: {.cell-output-display}
+**Part E**  Consider the two matrices $${\mathbf M}_1 = \left[\begin{array}{rr}5 & 6 \\0 & 1\end{array}\right]\ \ \text{and}\ \ \left[\begin{array}{rr}-3 & 1 \\0 & 1\end{array}\right]$$ Which of the following is **not** an eigenvector of ${\mathbf M}_1$ or of ${\mathbf M}_2$? (We've rounded off to two decimal places and provided a sandbox for calculations.) 
+
+
+a. $\left[\begin{array}{r}6\\1\end{array}\right]$
+b. $\left[\begin{array}{r}-1\\1\end{array}\right]$
+c. $\left[\begin{array}{r}3\\2\end{array}\right]$
+d. $\left[\begin{array}{r}3.02\\10\end{array}\right]$
+e. $\left[\begin{array}{r}3.30\\-1\end{array}\right]$
+:::
+:::
+
+You can use the sandbox below either for arithmetic calculations that you hand write or to use matrix-related R commands. In the initial code in the sandbox is a test that shows whether a vector `v` is an eigenvector of `M`. In this example it is and has eigenvalue 0.5615 (rounding off to 4 decimal places). You can print out `M` or `v` in the ordinary way, with the simple commands `M` or `v` respectively.
+::: {.cell layout-align="center" exercise='true' exercise.cap='Matrix calculations' exercise.nlines='7' fig.showtext='false'}
+
+```{.r .cell-code}
+M <- rbind(cbind(-3, 2), cbind(1, 0))
+v <- rbind(5.6155, 10)
+(M %*% v) / v # element-by-element division
+
+```
+:::
+
+-->
+</section>
+<section id="exercise-45.04" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-45.04">Exercise 45.04</h4>
+<p>We will work with the linear dynamical system</p>
+<p><span class="math display">\[\partial_t x = -x\\
+\partial_t y = -11 x - 2 y\]</span></p>
+<p>Using <code>integrateODE()</code> find the solution <span class="math inline">\(x(t)\)</span> for <code>tdur=10</code> for each of these three initial conditions:</p>
+<p>Trajectory 1) <span class="math inline">\(x_0=1, y_0=-1\)</span></p>
+<p>Trajectory 2) <span class="math inline">\(x_0=0, y_0=1\)</span></p>
+<p>Trajectory 3) <span class="math inline">\(x_0=1, y_0=0\)</span></p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>T1 <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>( ...., <span class="at">x=</span><span class="dv">1</span>, <span class="at">y=</span><span class="sc">-</span><span class="dv">1</span>, <span class="at">tdur=</span><span class="dv">10</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>T2 <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>( ...., <span class="at">x=</span><span class="dv">0</span>, <span class="at">y=</span><span class="dv">1</span>,  <span class="at">tdur=</span><span class="dv">10</span>) </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>T3 <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>( ...., <span class="at">x=</span><span class="dv">1</span>, <span class="at">y=</span><span class="dv">0</span>,  <span class="at">tdur=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The three solutions will be the functions <code>T1$x()</code>, <code>T2$x()</code>, and <code>T3$x()</code>.</p>
+<p>Since the dynamics are linear, there will be a simple relationship between the three solutions, just as there is a simple relationship between three vectors in a 2-dimensional vector space.</p>
+<p>Find this simple relationship and make a graph that demonstrate it.</p>
+<!-- solution -->
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+
+</div>
+</section>
+<section id="exercise-45.05" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-45.05">Exercise 45.05</h4>
+<p>The only fixed point of the rabbit-fox system is <span class="math inline">\(\left(r^\star, f^\star\right) = \left(\frac{\alpha}{\beta}, -\frac{\delta}{\gamma}\right)\)</span></p>
+<p>The linearized dynamics around this fixed point are: <span class="math display">\[\partial_t r =
+\left(\alpha + \frac{\beta\gamma}{\delta}\right) [r - r^\star] +
+\alpha [f - f^\star]\\
+\partial_t f =
+- \delta [r - r^\star] +
+\left(\delta + \frac{\alpha\beta}{\delta}\right) [f - f^\star]\]</span></p>
+<p>Using the formula for eigenvalues, calculate the eigenvalues symbolically and report on the stability of the fixed point.</p>
+</section>
+<section id="exercise-45.06" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-45.06">Exercise 45.06</h4>
+<p>In this exercise, you will be using an app that allows you to set <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> in the [ab10] matrix and hunt for eigenvectors.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<p><a href="https://maa-statprep.shinyapps.io/142Z-Eigenflows/" target="_blank"><img src="www/eigenflow-app.png" width="50%"></a></p>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div id="fig-anonymous-8401878" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><a href="https://maa-statprep.shinyapps.io/142Z-Eigenflows/"><img src="www/eigenflow-app.png" class="img-fluid figure-img"></a></p>
+</figure>
+</div>
+</div>
+<p>Open up the app in another browser tab and arrange it side-by-side with this document, so you can see both at the same time.</p>
+<p>You used a somewhat similar app when exploring linear, two-dimensional finite-difference equations. <a href="https://maa-statprep.shinyapps.io/142Z-Matrix-iteration/">Here’s a link</a>, but you don’t need to open that app for this exercise.</p>
+<p>This new app does a few things differently:</p>
+<ul>
+<li>In the old app, you had four number-entry boxes to set the values of the [abcd] matrix. Here, because we are using the [ab10] format, you need only set <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>. You can do this by clicking within the left-hand graph.</li>
+<li>The a-b selector graph is annotated with the type of generic behavior that the differential-equation system will show for any combination of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>. This allows you to reason backward from the behavior you are interested in to the corresponding values of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>. Since the type of behavior is encoded in the eigenvalues, you are effectively inverting the eigenvalue formula to find <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>.</li>
+<li>The flow field (right-hand graph) shows <em>stream-lines</em> of continuous-time motion. Imagine you had a bunch of glitter which you cast out over a pool of water with a given flow pattern. If you took a time-exposure photo, you would see each piece of glitter as it moved along with the water in which it is embedded.</li>
+<li>You can click in the flow field to start a trajectory at that point. You can control the time domain—that is, how long is the time exposure of the photo—with the radio buttons at the bottom.</li>
+<li>There is a thin, green line annotating the flow field. This line runs from the fixed point (right in the center) in the direction of the point on which you click to start a trajectory. A vector with the same orientation as the green line is given numerically below the graph. This orientation is also described using an angle measurement in degrees.</li>
+<li>There is no display of the <em>solution</em>, that is, <span class="math inline">\(x()\)</span> versus <span class="math inline">\(t\)</span>. This is because we want you to understand the <em>geometry</em> of the flow.</li>
+</ul>
+<p>First, play around with the app. Choose miscellaneous values of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, observe the flow, and click in the flow field to draw a red trajectory. Notice what happens when you make the number of steps larger or smaller. In unstable directions, you can get a good view of the trajectory by starting it near the fixed point. If you start it at the periphery of the graph, most of the trajectory will be outside the display. And if the number of steps is very small, you may not see it at all because the glyph is so thin near the start.</p>
+<p>When coming from a stable direction, click near the periphery of the graph to get a good view, since the red trajectory will naturally be heading in towards the origin. When estimating the orientation of an eigenvector, try to get the green line heading straight down the middle of the red trajectory. This often requires a bit of fiddling, moving the starting point just a tiny amount to find one that is just right.</p>
+<p>When you are <em>on</em> an eigenvector, the trajectory will be dead straight on the green line. Any trajectory not starting on an eigenvector will be curved to a greater or lesser extent, depending on the relative sizes of the eigenvalues.</p>
+<p>In the following questions, pick the choice <strong>closest</strong> to the answer you found. The exact choice of <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> stemming from a click depends somewhat on the graphics resolution of your display, so you should expect only to be able to get close to the <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> values given in the question.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part A</strong> Set <span class="math inline">\(a=-1.0\)</span> and <span class="math inline">\(b = 0.5\)</span> (or as close as you can get) and observe the flow. This is a saddle: stable in one direction, unstable in another. There will be one stable eigenvector, where the flow moves <strong>directly outward</strong> from the origin, and one unstable eigenvector, where the flow moves <strong>directly inward</strong> toward the origin. Which one of these is the orientation (in degrees) of the unstable eigenvector?</p>
+<p>-149.7 -63.6 -31.7 69.1 73.5 106.6 143.7 149</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part B</strong> Which of these best describes the eigenvalue corresponding to the unstable eigenvector?</p>
+<ol type="a">
+<li>Negative and real</li>
+<li>Zero and real</li>
+<li>Positive and real</li>
+<li>Complex with a negative real part</li>
+<li>Complex with a positive real part</li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part C</strong> Keeping <span class="math inline">\(a=-1.0\)</span> and <span class="math inline">\(b = 0.5\)</span>, hunt for the stable eigenvector. Which one of these is the orientation (in degrees) of the stable eigenvector?</p>
+<p>-149.7 -63.6 -31.7 69.1 73.5 106.6 143.7 149</p>
+</div>
+</div>
+<hr>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part D</strong> Set <span class="math inline">\(a=2\)</span> and <span class="math inline">\(b = -0.5\)</span> and observe the flow. This is a source: all initial conditions lead to motion away from the fixed point. But for this <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, some directions are “faster” than others. Which one of these is the orientation (in degrees) of the fast eigenvector?</p>
+<p>-149.7 -63.6 -31.7 69.1 73.5 106.6 143.7 149</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part E</strong> Keeping <span class="math inline">\(a=2\)</span> and <span class="math inline">\(b = -0.5\)</span>, what is the orientation of the slow eigenvector?</p>
+<p>-149.7 -63.6 -31.7 69.1 73.5 106.6 143.7 149</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part F</strong> Staying with the flow from <span class="math inline">\(a=2\)</span> and <span class="math inline">\(b = -0.5\)</span>, which of these best describes the pair of eigenvalues?</p>
+<ol type="a">
+<li>Both are real and positive</li>
+<li>Both are real and negative</li>
+<li>One is complex, the other real</li>
+<li>Both are complex, one has negative real part</li>
+</ol>
+</div>
+</div>
+<hr>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part G</strong> Set <span class="math inline">\(a=-2\)</span> and <span class="math inline">\(b = -0.5\)</span> and observe the flow. This is a sink: all initial conditions lead to motion toward the fixed point. Which one of these is the orientation (in degrees) of the fast eigenvector?</p>
+<p>-149.7 -63.6 -31.7 69.1 73.5 106.6 143.7 149</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part H</strong> Keeping <span class="math inline">\(a=-2\)</span> and <span class="math inline">\(b = -0.5\)</span>, what is the orientation of the slow eigenvector?</p>
+<p>-149.7 -63.6 -31.7 69.1 73.5 106.6 143.7 149</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part I</strong> Staying with the flow from <span class="math inline">\(a=2\)</span> and <span class="math inline">\(b = -0.5\)</span>, which of these best describes the pair of eigenvalues?</p>
+<ol type="a">
+<li>Both are real and positive</li>
+<li>Both are real and negative</li>
+<li>One is complex, the other real</li>
+<li>Both are complex, one has negative real part</li>
+<li>Both are complex, both have negative real part</li>
+</ol>
+</div>
+</div>
+<hr>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part J</strong> Set <span class="math inline">\(a=-1\)</span> and <span class="math inline">\(b = -1\)</span> and observe the flow. This is a node: the flow is spiral with the fixed point at the center. Is the flow stable or unstable?</p>
+<ol type="a">
+<li>stable</li>
+<li>unstable</li>
+<li>neither stable nor unstable</li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part K</strong> Keeping <span class="math inline">\(a=-1\)</span> and <span class="math inline">\(b = -1\)</span>, what can you correctly say about the eigenvectors?</p>
+<ol type="a">
+<li>They have almost the same orientation</li>
+<li>There is only one eigenvector</li>
+<li>There are no eigenvectors</li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part L</strong> Staying with the flow from <span class="math inline">\(a=2\)</span> and <span class="math inline">\(b = -0.5\)</span>, which of these best describes the pair of eigenvalues?</p>
+<ol type="a">
+<li>Both are real and positive</li>
+<li>Both are real and negative</li>
+<li>One is complex, the other real</li>
+<li>Both are complex, one has negative real part</li>
+<li>Both are complex, both have negative real part</li>
+</ol>
+</div>
+</div>
+<hr>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part M</strong> Set <span class="math inline">\(a=0\)</span> and some <span class="math inline">\(b &lt; 0\)</span>. The result will be a trajectory that goes around in a closed loop. (You will want to make the number of steps large to see a complete loop.) You may not be able to click on exactly <span class="math inline">\(a=0\)</span>, but you should be able to get close enough that the trajectory is a very tightly wound spiral. We are interested here in how many cycles the trajectory covers in a fixed number of time steps, that is, whether the trajectory moves quickly or slowly around the loop. Which of these statements is true about the relationship between <span class="math inline">\(b\)</span> and the speed of the motion?</p>
+<ol type="a">
+<li>There is no relationship between <span class="math inline">\(b\)</span> and speed of oscillation.</li>
+<li>When <span class="math inline">\(b\)</span> is closer to zero, the speed is higher.</li>
+<li>When <span class="math inline">\(b\)</span> is further from zero, the speed is higher.</li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part N</strong> we will look at the relationship between the eigenvalues and the speed of oscillation. Keep <span class="math inline">\(a=0\)</span> and <span class="math inline">\(b &lt; 0\)</span>, which guarantees that the motion will be circular. Vary <span class="math inline">\(b\)</span>, each time observing how many loops the trajectory makes (for a fixed number of steps), and what the eigenvalues are. Which of these statements is <strong>not</strong> true about the speed of oscillation and the eigenvalues.</p>
+<ol type="a">
+<li>The larger the magnitude of the imaginary part of the eigenvalues, the faster the oscillation.</li>
+<li>The two eigenvalues have the same imaginary part, except one is positive and the other negative.</li>
+<li>The speed of oscillation relates to the <em>difference</em> between the imaginary part of the eigenvalues.</li>
+<li>The real part of the eigenvalues is the same for both when there is oscillatory motion.</li>
+</ol>
+</div>
+</div>
+<!--
+- WP-103-16: Using eigenvalues, eigenvectors, and vector decomposition, develop closed form solutions to initial value problems involving systems of linear equations.
+
+- D-BRUPM: Calculate the eigenvalues of a 2x2 numerical matrix by hand, and larger matrices by computer.
+
+- WP-103-14: Explain the graphical/geometrical interpretation of an eigenvector and eigenvalue and how to compute each for a two-by-two matrix.
+-->
+
+
+</section>
+</section>
+</main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../Dynamics/B6-equilibria.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../Dynamics/B6-second-order.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Force-balance equations</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+</body></html>

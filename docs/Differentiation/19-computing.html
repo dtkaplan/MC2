@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.9.80">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>MOSAIC Calculus - 20&nbsp; Constructing derivatives</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="../site_libs/quarto-nav/headroom.min.js"></script>
+  <script src="../site_libs/clipboard/clipboard.min.js"></script>
+  <meta name="quarto:offset" content="../">
+  <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+  <script src="../site_libs/quarto-search/fuse.min.js"></script>
+  <script src="../site_libs/quarto-search/quarto-search.js"></script>
+  <link href="../Differentiation/20-concavity.html" rel="next">
+  <link href="../Differentiation/18-evanescent-h.html" rel="prev">
+  <script src="../site_libs/quarto-html/quarto.js"></script>
+  <script src="../site_libs/quarto-html/popper.min.js"></script>
+  <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="../site_libs/quarto-html/anchor.min.js"></script>
+  <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "sidebar",
+    "copy-button": false,
+    "collapse-after": 2,
+    "panel-placement": "start",
+    "type": "textbox",
+    "limit": 20,
+    "language": {
+      "search-no-results-text": "No results",
+      "search-matching-documents-text": "matching documents",
+      "search-copy-link-title": "Copy link to search",
+      "search-hide-matches-text": "Hide additional matches",
+      "search-more-match-text": "more match in this document",
+      "search-more-matches-text": "more matches in this document",
+      "search-clear-button-title": "Clear",
+      "search-detached-cancel-button-title": "Cancel",
+      "search-submit-button-title": "Submit"
+    }
+  }</script>
+  <script async="" src="https://hypothes.is/embed.js"></script>
+  </head><body class="floating slimcontent"><span class="math inline" style="display: none;">
+  \(\newcommand{\line}{\text{line}}
+  \newcommand{\hump}{\text{hump}}
+  \newcommand{\sigmoid}{\text{sigmoid}}
+  \newcommand{\recip}{\text{recip}}
+  \newcommand{\diff}[1]{{\cal D}_#1}
+  \newcommand{\pnorm}{\text{pnorm}}
+  \newcommand{\dnorm}{\text{dnorm}}
+  \let\origvec\vec
+  \let\origmathit\mathit
+  \let\orighat\hat
+  \let\origbar\bar
+  \newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+  \newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+  \newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+  \newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+  \newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+  \newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+  \newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+  \newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+  \newcommand{\modeledby}[2]{#1\!\sim\!#2}
+  \newcommand{\CC}[1]{\color{#648fff}{#1}}
+  \newcommand{\CE}[1]{\color{#785ef0}{#1}}
+  \newcommand{\CA}[1]{\color{#dc267f}{#1}}
+  \newcommand{\CB}[1]{\color{#fe6100}{#1}}
+  \newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+  </span>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Constructing derivatives</span></h1>
+      <button type="button" class="quarto-btn-toggle btn">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">MOSAIC Calculus</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/dtkaplan/MC2/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-preliminaries-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-preliminaries-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/01-modeling-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">Modeling</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-modeling-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-modeling-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/01-parameters.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/02-assembling-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/03-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/05-low-order-polynomials.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/06-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/07-magnitudes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/08-dimensions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/09-modeling-cycle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling cycle [DRAFT]</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/Modeling-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">Differentiation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-differentiation-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-differentiation-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/16-continuous-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Continuous change</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/17-rate-of-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rate of change</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/18-evanescent-h.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/19-computing.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Constructing derivatives</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/20-concavity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/21-cont-and-smooth.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/22-rules.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/23-optim.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/24-partial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/25-approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations [DRAFT]</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/26-taylor.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/Differentiation-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">Vectors and linear combinations</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-linear-combinations-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-linear-combinations-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-Vectors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-linear-combinations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-projection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-target-problem.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-stat-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">Accumulation</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-accumulation-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-accumulation-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/27-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/28-visualizing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/29-integration.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/30-euler.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/31-symbolic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">Dynamics</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-dynamics-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-dynamics-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-diff-eq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Differential equations</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-solution.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Finding a “solution”</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-line.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Flows on the line</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-plane.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the plane</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-equilibria.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-eigen.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-second-order.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Force-balance equations</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">Manifestations</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-manifestations-partqmd" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-manifestations-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-splines.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Data-driven functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">50</span>&nbsp; <span class="chapter-title">Probability and evidence</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-future-value.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">51</span>&nbsp; <span class="chapter-title">Present and future value</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-mechanics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">52</span>&nbsp; <span class="chapter-title">Mechanics</span></a>
+  </div>
+</li>
+    </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+<h2 id="toc-title">Table of contents</h2>
+<ul>
+<li><a href="#why-differentiate" class="nav-link active" data-scroll-target="#why-differentiate"> <span class="header-section-number">20.1</span> Why differentiate?</a></li>
+<li><a href="#symbolic-differentiation" class="nav-link" data-scroll-target="#symbolic-differentiation"> <span class="header-section-number">20.2</span> Symbolic differentiation</a></li>
+<li><a href="#finite-difference-derivatives" class="nav-link" data-scroll-target="#finite-difference-derivatives"> <span class="header-section-number">20.3</span> Finite-difference derivatives</a></li>
+<li><a href="#second-and-higher-order-derivatives" class="nav-link" data-scroll-target="#second-and-higher-order-derivatives"> <span class="header-section-number">20.4</span> Second and higher-order derivatives</a></li>
+<li><a href="#drill" class="nav-link" data-scroll-target="#drill"> <span class="header-section-number">20.5</span> Drill</a></li>
+</ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dtkaplan/MC2/edit/main/Differentiation/19-computing.Rmd" class="toc-action">Edit this page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+<header id="title-block-header">
+<h1 class="title display-7"><span id="sec-computing-derivs" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Constructing derivatives</span></span></h1>
+</header>
+
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+
+</div>
+<div class="page-columns page-full"><p>This chapter showshow to use the computer to construct the derivative of any function. This is easy because the task of constructing derivatives is well suited to the computer. </p><div class="no-row-height column-margin column-container"><span class="aside">There are functions where the derivative cannot be meaningfully defined. Examples are the absolute-value function or the Heaviside function which we introduced when discussing piecewise functions in Chapter <a href="../Modeling/02-assembling-functions.html#sec-piecewise-intro">Section&nbsp;<span>9.4</span></a>. In Chapter <a href="21-cont-and-smooth.html">Section&nbsp;<span>22</span></a> we will consider the pathological cases and show you how to spot them at a glance.</span></div></div>
+<p>We will demonstrate two methods:</p>
+<ol type="1">
+<li><p><strong><em>Symbolic differentiation</em></strong>, which transforms an algebraic formula for a function into a corresponding algebraic formula for the derivative.</p></li>
+<li><p><strong><em>Finite-difference</em></strong> methods that use a “small”—but not evanescent—<span class="math inline">\(h\)</span>.</p></li>
+</ol>
+<p>Chapter <a href="22-rules.html">Section&nbsp;<span>23</span></a> covers the algorithms used by the computer to construct symbolic derivatives. One reason for teaching you to do with paper and pencil the simpler sorts of problems that the computer does perfectly is analogous to why you learned basic arithmetic by hand even though a calculator can perform the task more reliably. Another reason to learn to carry out symbolic differentiation on your own is to enable you to follow textbook or classroom demonstrations of formulas which often come from solve a differentiation problem.</p>
+<section id="why-differentiate" class="level2 page-columns page-full" data-number="20.1">
+<h2 data-number="20.1" class="anchored" data-anchor-id="why-differentiate"><span class="header-section-number">20.1</span> Why differentiate?</h2>
+<p>Before showing the easy computer-based methods for constructing the derivative of a function, it is good to provide some motivation: Why is differentiation so frequently in so many fields of study and application?</p>
+<p>A primary reason lies in the laws of physics. Newton’s Second Law of Motion reads:</p>
+<blockquote class="blockquote">
+<p><em>“The change of motion of an object is proportional to the force impressed; and is made in the direction of the straight line in which the force is impressed.”</em></p>
+</blockquote>
+<p>Newton defined used position <span class="math inline">\(x(t)\)</span> as the basis for velocity <span class="math inline">\(v(t) = \partial_t x(t)\)</span>. “Change in motion,” which we call “acceleration,” is in turn the derivative <span class="math inline">\(\partial v(t)\)</span>. Derivatives are also central to the expression of more modern forms of physics such as quantum theory and general relativity.</p>
+<p>Many relationships encountered in the everyday or technical worlds are more understandable if framed in terms of derivatives. For instance,</p>
+<ul>
+<li>Electrical power is the rate of change with respect to time of electrical energy.</li>
+<li>Birth rate is one component of the rate of change with respect to time of population. (The others are the death rate and the rates immigration and emigration.)</li>
+<li>Interest, as in bank interest or credit card interest, is the rate of change with respect to time of assets.</li>
+<li>Inflation is the rate of change with respect to time of prices.</li>
+<li>Disease incidence is one component of the rate of change with respect to time of disease prevalence. (The other components are death or recovery from disease.)</li>
+<li>Force is the rate of change with respect to position of energy.</li>
+<li>Deficit (as in spending deficits) is the change with respect to time of debt.</li>
+</ul>
+<p>Often, we know one member in such function-and-derivative pairs, but to need to calculate the other. Many modeling situations call for putting together different components of change to reveal how some other quantity of interest will change. For example, modeling the financial viability of retirement programs such as the US Social Security involves looking at the changing age structure of the population, the returns on investment, the changing cost of living, and so on. In Block <span class="quarto-unresolved-ref">?sec-dynamics-part</span>, we will use derivatives explicitly to construct models of systems, such as an outbreak of disease, with many changing parts.</p>
+<p>Derivatives also play an important role in design. They play an important role in the construction and representation of smooth curves, such as a robot’s track or the body of a car. (See Chapter <a href="../Manifestations/B4-splines.html">Section&nbsp;<span>48</span></a>.) Control systems that work to stabilize a airplane’s flight or regulate the speed and spacing of cars are based on derivatives. The notion of “stability” itself is defined in terms of derivatives. (See Chapter <a href="../Dynamics/B6-equilibria.html">Section&nbsp;<span>44</span></a>.) Algorithms for optimizing design choices also often make use of derivatives. (See Chapter <a href="../Manifestations/B4-optimization.html">Section&nbsp;<span>49</span></a>.)</p>
+<div class="intheworld page-columns page-full">
+<p>Economics as a field makes considerable use of concepts of calculus—particularly first and second derivatives, the subjects of this Block—although the names used are peculiar to economics, for instance, “elasticity”, “marginal returns” and “diminishing marginal returns.”</p>
+<p>The origins of modern economics, especially the theory of the free market, are attributed to a book published in 1776, <em>The Wealth of Nations</em>. The author, Adam Smith (1723-1790), lays out dozens of relationships between different quantities — wages, labor, stock, interest, prices, profits, and coinage among others. Yet despite the invention of calculus a century before <em>Wealth of Nations</em>, the book uses no calculus.</p>
+<p>Consider this characteristic statement in <em>Wealth of Nations</em>:</p>
+<blockquote class="blockquote">
+<p><em>The market price of every particular commodity is regulated by the proportion between the quantity which is brought to market, and the demand of those who are willing to pay the natural price of the commodity.</em></p>
+</blockquote>
+<p>Without calculus and the ideas of functions and their derivatives, Smith was not able to think about prices in a modern way where price is shaped by demand and supply. Instead, for Smith, each item has a “natural price”: a fixed quantity that depends on the amount of labor used to produce the item. Nowadays, we understand that productivity changes as new methods of production and new inventions are introduced. But Smith lived near the end of a centuries-long period of <strong><em>static</em></strong> economies. Transportation, agriculture, manufacture, and population size were all much as they had been for the past 500 years or longer. James Watt’s steam engine was introduced only in 1776 and it would be decades before being adapted to the myriad uses of steam power characteristic of the 19th century. The cotton gin (1793), labor-saving agricultural machines such as the McCormick reaper (1831), the assembly line (1901), and the many other innovations of industry all lay in the future when Smith was writing <em>Wealth of Nations</em>.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="www/cournot-demand-curve.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Demand as a <em>function</em> of price, as first published by Antoine-Augustin Cournot in 1836.</figcaption><p></p>
+</figure>
+</div>
+</div></div></div>
+<p>It took the industrial revolution and nearly a century of intellectual development before economics had to and could embrace the rapid changes in the production process. In this dynamical view, supply and demand are not mere quantities, but <strong><em>functions</em></strong> of which price is the primary input. The tradition in economics is to use the word “curve” instead of “function,” giving us the phrases “supply curve” and “demand curve.” Making the transition from quantity to function, that is, between a single amount and a relationship between amounts, is a core challenge to those learning economics.</p>
+</div>
+</section>
+<section id="symbolic-differentiation" class="level2" data-number="20.2">
+<h2 data-number="20.2" class="anchored" data-anchor-id="symbolic-differentiation"><span class="header-section-number">20.2</span> Symbolic differentiation</h2>
+<p>The R/mosaic function <code>D()</code> takes a formula for a function and produces the derivative. It uses the same sort of tilde expression used by <code>makeFun()</code> or <code>contour_plot()</code> or the other R/mosaic tools. For instance,</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">D</span>(t <span class="sc">*</span> <span class="fu">sin</span>(t) <span class="sc">~</span> t)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="do">## function (t) </span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="do">## sin(t) + t * cos(t)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If you prefer, you can use <code>makeFun()</code> to define a function, then hand that function to <code>D()</code> for differentiation.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>myf <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">sqrt</span>(y <span class="sc">*</span> <span class="fu">pnorm</span>(<span class="dv">1</span> <span class="sc">+</span> x<span class="sc">^</span><span class="dv">2</span>, <span class="at">mean=</span><span class="dv">2</span>, <span class="at">sd=</span><span class="dv">3</span>)) <span class="sc">~</span> x <span class="sc">&amp;</span> y)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dx_myf <span class="ot">&lt;-</span> <span class="fu">D</span>(<span class="fu">myf</span>(x, y) <span class="sc">~</span> x, <span class="at">y=</span><span class="dv">3</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>dx_myf</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="do">## function (x, y = 3) </span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="do">## {</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="do">##     .e1 &lt;- 1 + x^2</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="do">##     x * y * dnorm(.e1, 2, 3)/sqrt(y * pnorm(.e1, mean = 2, sd = 3))</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="do">## }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the right side of the tilde expression handed off to <code>D()</code> names the with-respect-to input. This is similar to the tilde expressions used in plotting, which name the inputs that form the graphics domain. But it contrasts with the tilde expressions in <code>makeFun()</code>, where the right-hand side specifies the order in which you want the inputs to appear.</p>
+<div class="example">
+<p>Needless to say, <code>D()</code> knows the rules for the derivatives of the pattern-book functions introduced in Section <a href="18-evanescent-h.html#sec-d-pattern-book">Section&nbsp;<span>19.3</span></a>. For instance,</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">D</span>(<span class="fu">sin</span>(t) <span class="sc">~</span> t)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="do">## function (t) </span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="do">## cos(t)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">D</span>(<span class="fu">log</span>(x) <span class="sc">~</span> x)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="do">## function (x) </span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="do">## 1/x</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">D</span>(<span class="fu">exp</span>(x) <span class="sc">~</span> x)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="do">## function (x) </span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="do">## exp(x)</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">D</span>(x<span class="sc">^</span><span class="dv">2</span> <span class="sc">~</span> x)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="do">## function (x) </span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="do">## 2 * x</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="finite-difference-derivatives" class="level2 page-columns page-full" data-number="20.3">
+<h2 data-number="20.3" class="anchored" data-anchor-id="finite-difference-derivatives"><span class="header-section-number">20.3</span> Finite-difference derivatives</h2>
+<p>Whenever you have a formula amenable to the construction of a symbolic derivative, that is what you should use. Finite-difference derivatives are useful in those situation where you don’t have such a formula. The calculation is simple but has a weakness that points out the advantages of the evanescent-<span class="math inline">\(h\)</span> approach.</p>
+<p>For a function <span class="math inline">\(f(x)\)</span> and a “small,” non-zero number <span class="math inline">\(h\)</span>, the finite-difference approximates the derivative with this formula:</p>
+<p><span class="math display">\[\partial_x f(x) \approx \frac{f(x+h) - f(x-h)}{2h}\ .\]</span> To demonstrate, let’s construct the finite-difference approximation to <span class="math inline">\(\partial_x \sin(x)\)</span>. Since we already know the symbolic derivative—it is <span class="math inline">\(\partial_x \sin(x) = \cos(x)\)</span>—there is no genuinely practical purpose for this demonstration. Still, it can serve to confirm the symbolic rule.</p>
+<p>We will call the finite-difference approximation <code>fq_sin()</code> and use <code>makeFun()</code> to construct it:</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fq_sin <span class="ot">&lt;-</span> <span class="fu">makeFun</span>((<span class="fu">sin</span>(x<span class="sc">+</span>h)<span class="sc">-</span> <span class="fu">sin</span>(x<span class="sc">-</span>h))<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>h) <span class="sc">~</span> x, <span class="at">h=</span><span class="fl">0.01</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice that <code>fq_sin()</code> has a parameter, <code>h</code> whose default value is being set to <code>0.01</code>. Whether 0.01 is “small” or not depends on the context. Operationally, we define “small” to be a value that gives practically the same result even if it is made smaller by a factor of 2 or 10.</p>
+<p>As a demonstration that <code>fq_sin()</code> with <span class="math inline">\(h=0.01\)</span> approximates the genuine <span class="math inline">\(\partial_x \sin(x)\)</span>, we exploit our knowledge that <span class="math inline">\(\partial_x \sin(x) = \cos(x)\)</span>. <a href="#fig-confirm-fq-sin">Figure&nbsp;<span>20.1</span></a> plots out the difference between the the <span class="math inline">\(h=0.01\)</span> approximation and the genuine derivative.</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">fq_sin</span>(x, <span class="at">h=</span><span class="fl">0.01</span>) <span class="sc">-</span> <span class="fu">cos</span>(x) <span class="sc">~</span> x, <span class="fu">domain</span>(<span class="at">x=</span><span class="sc">-</span><span class="dv">10</span><span class="sc">:</span><span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_plot</span>(<span class="fu">fq_sin</span>(x, <span class="at">h=</span><span class="fl">0.001</span>) <span class="sc">-</span> <span class="fu">cos</span>(x) <span class="sc">~</span> x, <span class="at">color=</span><span class="st">"magenta"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">y=</span><span class="st">"Error from true value."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-confirm-fq-sin" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="19-computing_files/figure-html/fig-confirm-fq-sin-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 20.1: Comparing <code>fq_sin()</code> to <span class="math inline">\(\partial_x \sin(x)\)</span> for two values of <span class="math inline">\(h\)</span>.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>You will need to look carefully at the vertical axis scale in <a href="#fig-confirm-fq-sin">Figure&nbsp;<span>20.1</span></a> to see what’s happening. For <span class="math inline">\(h=0.01\)</span>, <code>fq_sin()</code> is not exactly the same as <code>cos()</code>, but it is close, always being within $$0.00017. For many purposes, this would be accurate enough. But not for all purposes. We can make the approximation better by using a smaller <span class="math inline">\(h\)</span>. For instance, the <span class="math inline">\(h=0.001\)</span> version of <code>fq_sin()</code> is accurate to within $$0.0000017.</p>
+<p>In practical use, one employs the finite-difference method in those cases where one does <em>not already know</em> the exact derivative function. This would be the case, for example, if the function is a sound wave recorded in the form of an MP3 audio file.</p>
+<p>In such situations, a practical way to determine what is a small <span class="math inline">\(h\)</span> is to pick one based on your understanding of the situation. For example, much of what we perceive of sound involves mixtures of sinusoids with periods longer than one-two-thousandth of a second, so you might start with <span class="math inline">\(h\)</span> of 0.002 seconds. Use this guess about <span class="math inline">\(h\)</span> to construct a candidate finite-difference approximation. Then, construct another candidate using a smaller <code>h</code>, say, 0.0002 seconds. If the two candidates are a close match to one another, then you have confirmed that your choice of <span class="math inline">\(h\)</span> is adequate.</p>
+<p>It is tempting to think that the approximation gets better and better as <code>h</code> is made even smaller. But that is not necessarily true for computer calculations. The reason is that quantities on the computer have only a limited precision: about 15 digits. To illustrate, let’s calculate a simple quantity, <span class="math inline">\((\sqrt{3})^2 - 3\)</span>. Mathematically, this quantity is exactly zero. On the computer, however it is not quite zero:</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="dv">3</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">3</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] -4.440892e-16</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can see this loss of precision at work if we make <code>h</code> very small in the finite-difference approximation to <span class="math inline">\(\partial_x \sin(x)\)</span>. In <a href="#fig-too-small-h">Figure&nbsp;<span>20.2</span></a> we are using <code>h = 0.000000000001</code>. The result is unsatisfactory.</p>
+<div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(  <span class="fu">fq_sin</span>(x, <span class="at">h=</span><span class="fl">0.000000000001</span>) <span class="sc">-</span> <span class="fu">cos</span>(x) <span class="sc">~</span> x, </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>           <span class="fu">domain</span>(<span class="at">x=</span><span class="sc">-</span><span class="dv">10</span><span class="sc">:</span><span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_plot</span>(<span class="fu">fq_sin</span>(x, <span class="at">h=</span><span class="fl">0.0000000000001</span>) <span class="sc">-</span> <span class="fu">cos</span>(x) <span class="sc">~</span> x,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">color=</span><span class="st">"magenta"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">y=</span><span class="st">"Error from true value."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display page-columns page-full">
+<div id="fig-too-small-h" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="19-computing_files/figure-html/fig-too-small-h-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 20.2: In computer calculations, using too small an <code>h</code> leads to a loss of accuracy in the finite-difference approximation.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="second-and-higher-order-derivatives" class="level2" data-number="20.4">
+<h2 data-number="20.4" class="anchored" data-anchor-id="second-and-higher-order-derivatives"><span class="header-section-number">20.4</span> Second and higher-order derivatives</h2>
+<p>Many applications call for differentiating a derivative or even differentiating the derivative of a derivative. In English, such phrases are hard to read. They are much simpler using mathematical notation.</p>
+<ul>
+<li><span class="math inline">\(f(x)\)</span> a function</li>
+<li><span class="math inline">\(\partial_x f(x)\)</span> the derivative of <span class="math inline">\(f(x)\)</span></li>
+<li><span class="math inline">\(\partial_x \partial_x f(x)\)</span>, the <strong><em>second derivative</em></strong> of <span class="math inline">\(f(x)\)</span>, usually written even more concisely as <span class="math inline">\(\partial_{xx}f f(x)\)</span>.</li>
+</ul>
+<p>There are third-order derivatives, fourth-order, and on up, although they are not often used.</p>
+<p>To compute a second-order derivative <span class="math inline">\(\partial_{xx} f(x)\)</span>, first differentiate <span class="math inline">\(f(x)\)</span> to produce <span class="math inline">\(\partial_x f(x)\)</span>. Then, still using the techniques described earlier in this chapter, differentiate <span class="math inline">\(\partial_x f(x)\)</span>.</p>
+<p>There is a shortcut for constructing high-order derivatives using <code>D()</code> in a single step. On the right-hand side of the tilde expression, list the with-respect-to name repeatedly. For instance:</p>
+<ul>
+<li>The second derivative <span class="math inline">\(\partial_{xx} \sin(x)\)</span>:</li>
+</ul>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">D</span>(<span class="fu">sin</span>(x) <span class="sc">~</span> x <span class="sc">&amp;</span> x)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="do">## function (x) </span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="do">## -sin(x)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>The third derivative <span class="math inline">\(\partial_{xxx} \ln(x)\)</span>:</li>
+</ul>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb9"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">D</span>(<span class="fu">log</span>(x) <span class="sc">~</span> x <span class="sc">&amp;</span> x <span class="sc">&amp;</span> x)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="do">## function (x) </span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="do">## 2/x^3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="example">
+<p>Physics students learn a formula for the position of an object in free fall dropped from a height <span class="math inline">\(x_0\)</span> and at an initial velocity <span class="math inline">\(v_0\)</span>: <span class="math display">\[ x(t) \equiv -\frac{1}{2} g t^2 + v_0 t + x_0\ .\]</span> The acceleration of the object is the second derivative <span class="math inline">\(\partial_{tt} x(t)\)</span>. Use <code>D()</code> to find the object’s acceleration.</p>
+<p>The second derivative of <span class="math inline">\(x(t)\)</span> with respect to <span class="math inline">\(t\)</span> is:</p>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">D</span>(<span class="fl">0.5</span><span class="sc">*</span>g<span class="sc">*</span>t<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> v0<span class="sc">*</span>t <span class="sc">+</span> x0 <span class="sc">~</span> t <span class="sc">&amp;</span> t)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="do">## function (t, g, v0, x0) </span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="do">## g</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The acceleration does not depend on <span class="math inline">\(t\)</span>; it is the constant <span class="math inline">\(g\)</span>. No wonder <span class="math inline">\(g\)</span> is called “gravitational acceleration.”</p>
+</div>
+</section>
+<section id="drill" class="level2" data-number="20.5">
+<h2 data-number="20.5" class="anchored" data-anchor-id="drill"><span class="header-section-number">20.5</span> Drill</h2>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part 1</strong> Which pattern-book function is the <strong>derivative</strong> of the sigmoid function pnorm()? That is, <span class="math display">\[{\large \text{pnorm}(x)}  \underset{\scriptsize \text{anti-diff}}{{\stackrel{\text{diff}}{\ \ \ \ {\Huge\rightleftharpoons}\ \ \ }}}  {\LARGE ?}\]</span></p>
+<p>Gaussian dnorm(x) Exponential <span class="math inline">\(e^x\)</span> Sinusoid <span class="math inline">\(\sin(x)\)</span> Constant <span class="math inline">\(1\)</span> Reciprocal <span class="math inline">\(1/x\)</span></p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part 2</strong> Which pattern-book function is the <strong>anti-derivative</strong> of the reciprocal <span class="math inline">\(1/x\)</span>? That is, <span class="math display">\[{\LARGE ?}  \underset{\scriptsize \text{anti-diff}}{{\stackrel{\text{diff}}{\ \ \ \ {\Huge\rightleftharpoons}\ \ \ }}}  {\large \frac{1}{x}}\]</span><br> <br> NOTE: Differentiation produces a “child” function from a “parent” function. The child is the derivative of the parent. Putting the relationship the other way, the parent is the <strong>anti-derivative</strong> of the child. “Derivative” and “anti-derivative” are two ways of looking at the same relationship between a pair of functions. So, if <span class="math inline">\(f(x)\)</span> is the derivative of <span class="math inline">\(F(x)\)</span>, then <span class="math inline">\(F(x)\)</span> is the anti-derivative of <span class="math inline">\(f(x)\)</span>.</p>
+<ol type="a">
+<li>Gaussian <span class="math inline">\(\text{dnorm(x)}\)</span></li>
+<li>Logarithm <span class="math inline">\(\ln(x)\)</span></li>
+<li>Sinusoid <span class="math inline">\(\sin(x)\)</span></li>
+<li>Constant <span class="math inline">\(1\)</span></li>
+<li>Reciprocal <span class="math inline">\(1/x\)</span></li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part 3</strong> Which pattern-book function is the <strong>anti-derivative</strong> of the gaussian <span class="math inline">\(\text{dnorm()}\)</span>? That is, <span class="math display">\[{\LARGE ?}  \underset{\scriptsize \text{anti-diff}}{{\stackrel{\text{diff}}{\ \ \ \ {\Huge\rightleftharpoons}\ \ \ }}}  {\large \text{dnorm}(x)}\]</span><br> <br> NOTE: Differentiation produces a “child” function from a “parent” function. The child is the derivative of the parent. Putting the relationship the other way, the parent is the <strong>anti-derivative</strong> of the child. “Derivative” and “anti-derivative” are two ways of looking at the same relationship between a pair of functions. So, if <span class="math inline">\(f(x)\)</span> is the derivative of <span class="math inline">\(F(x)\)</span>, then <span class="math inline">\(F(x)\)</span> is the anti-derivative of <span class="math inline">\(f(x)\)</span>. In other words: <span class="math display">\[{\large F(x)}  \underset{\scriptsize \text{anti-diff}}{{\stackrel{\text{diff}}{\ \ \ \ {\Huge\rightleftharpoons}\ \ \ }}}  {\Large f(x)}\]</span></p>
+<ol type="a">
+<li>Gaussian <span class="math inline">\(\text{dnorm(x)}\)</span></li>
+<li>Logarithm <span class="math inline">\(\ln(x)\)</span></li>
+<li>Sigmoid <span class="math inline">\(\text{pnorm(x)}\)</span></li>
+<li>Constant <span class="math inline">\(1\)</span></li>
+<li>Reciprocal <span class="math inline">\(1/x\)</span></li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part 4</strong> What is the <strong>derivative</strong> of the power-law function <span class="math inline">\(x^p\)</span>?i That is, <span class="math display">\[{\Large x^p}  \underset{\scriptsize \text{anti-diff}}{{\stackrel{\text{diff}}{\ \ \ \ {\Huge\rightleftharpoons}\ \ \ }}}  {\LARGE ?}\]</span></p>
+<ol type="a">
+<li><span class="math inline">\((p-1)\, x^{p-1}\)</span></li>
+<li><span class="math inline">\((p-1)\, x^p\)</span></li>
+<li><span class="math inline">\(p\, x^{p-1}\)</span></li>
+<li><span class="math inline">\(\frac{1}{p} x^{p+1}\)</span></li>
+<li><span class="math inline">\(p\, x^p\)</span></li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part 5</strong> There are two pattern-book functions whose <strong>second</strong> derivative is proportional to the function itself. Which are they?</p>
+<ol type="a">
+<li>Sinusoid and gaussian</li>
+<li>Exponential and sigmoid</li>
+<li>Exponential and sinusoid</li>
+<li>Exponential and logarithm</li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part 6</strong> What is the <strong>derivative</strong> of <span class="math inline">\(t^5\)</span> with respect to <span class="math inline">\(t\)</span>? That is, <span class="math display">\[{\Large t^5}  \underset{\scriptsize \text{anti-diff}}{{\stackrel{\text{diff}}{\ \ \ \ {\Huge\rightleftharpoons}\ \ \ }}}  {\Large ?}\]</span></p>
+<p><span class="math inline">\(\frac{1}{4} t^5\)</span> <span class="math inline">\(4 t^5\)</span> <span class="math inline">\(5 t^4\)</span> <span class="math inline">\(\frac{1}{5} t^4\)</span></p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part 7</strong> What is <span class="math inline">\(\partial_x x^2\)</span>?</p>
+<p><span class="math inline">\(2/x\)</span> <span class="math inline">\(2\)</span> <span class="math inline">\(2 x\)</span> <span class="math inline">\(2 x^2\)</span></p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part 8</strong> What is <span class="math inline">\(\partial_t \sin(x)\)</span></p>
+<p><span class="math inline">\(-\cos(x)\)</span> 0 <span class="math inline">\(\cos(x)\)</span> <span class="math inline">\(-\sin(x)\)</span></p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part 9</strong> Suppose you know only this one fact about <span class="math inline">\(f(x)\)</span>, that <span class="math inline">\(\partial_{xx}\, f(7.3) = 1.6\)</span>. Which of these statements must be true?</p>
+<ol type="a">
+<li><span class="math inline">\(f(x)\)</span> is concave up at <span class="math inline">\(x=7.3\)</span>, but eventually it will become concave down.</li>
+<li><span class="math inline">\(f(x)\)</span> is concave up and decreasing at <span class="math inline">\(x=7.3\)</span></li>
+<li><span class="math inline">\(f(x)\)</span> is increasing at <span class="math inline">\(x=7.3\)</span>.</li>
+<li><span class="math inline">\(f(x)\)</span> is concave up at <span class="math inline">\(x=7.3\)</span></li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part 10</strong> If <span class="math inline">\(f(x)\)</span> is discontinuous at <span class="math inline">\(x=5\)</span>, can it possibly be <strong>smooth</strong> at <span class="math inline">\(x=6\)</span>?</p>
+<p>No Yes</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part 11</strong> If <span class="math inline">\(g(x)\)</span> is discontinuous at <span class="math inline">\(x=1\)</span>, what will be the value of <span class="math inline">\(\partial_x g(x)\)</span> at <span class="math inline">\(x=1\)</span>?</p>
+<ol type="a">
+<li>Depends on how big the gap is at the discontinuity.</li>
+<li>0</li>
+<li><span class="math inline">\(1/x\)</span></li>
+<li>The derivative isn’t defined at a discontinuity.</li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part 12</strong> Which of the following is the correct construction for <span class="math inline">\(\partial_t g(t)\)</span>?</p>
+<ol type="a">
+<li><span class="math inline">\(\lim_{x \rightarrow 0} \frac{g(t + h) - g(t)}{h}\)</span></li>
+<li><span class="math inline">\(\lim_{h \rightarrow 0} \frac{g(t + h) - g(t)}{t}\)</span></li>
+<li><span class="math inline">\(\lim_{h \rightarrow 0} \frac{g(t + h) - g(t)}{h}\)</span></li>
+<li><span class="math inline">\(\lim_{h \rightarrow 0} \frac{g(t) - g(t+h)}{h}\)</span></li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part 13</strong> Which of these is a reasonable definition of a derivative?</p>
+<ol type="a">
+<li>A derivative is the slope of a function.</li>
+<li>A derivative is a function whose value tells, for any input, the instantaneous rate of change of the function from which it was derived.</li>
+<li>A derivative is a function whose value tells, for any input, the instantaneous change of the function from which it was derived.</li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part 14</strong> Which one of these is <strong>not</strong> the derivative of a pattern-book function?</p>
+<p>Sigmoid Zero Reciprocal One</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<p><strong>Part 15</strong> Which of the following shapes of functions is <strong>not</strong> allowed? You are <strong>strongly</strong> advised to try to draw each shape.</p>
+<ol type="a">
+<li>Increasing and concave up.</li>
+<li>Decreasing and concave up.</li>
+<li>Increasing and concave down.</li>
+<li>Decreasing and concave down.</li>
+<li>None of them are allowed.</li>
+<li>All of them are allowed.</li>
+</ol>
+</div>
+</div>
+
+
+</section>
+</main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../Differentiation/18-evanescent-h.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../Differentiation/20-concavity.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+</body></html>
