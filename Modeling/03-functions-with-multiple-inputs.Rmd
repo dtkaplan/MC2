@@ -11,23 +11,27 @@ Housing prices are determined by several (or many!) factors. Translating the pre
 
 Often, the starting point for building a function with multiple inputs is a data frame whose variables include the function output (price) and the inputs to the function. Modelers often begin by constructing a function that is a linear combination of the input variables. To demonstrate what such functions look like, we can use the `SaratogaHouses` dataset, which records the sales price of 1728 houses in Saratoga County, New York, USA and 15 other variables for each house, such as `livingArea` and the number of `bedrooms` and `bathrooms`. 
 
-The techniques for constructing functions from data will be introduced in Block @sec-vectors-linear-combinations. For now, let's simply see what such functions look like. From `SaratogaHouses` we constructed this function:
+The techniques for constructing functions from data will be introduced in Block III. For now, let's simply see what such functions look like. From `SaratogaHouses` we constructed this function:
 
-[These are not made-up scalars in the linear combination. They have been derived from the `SaratogaHouses` data using a method called ***linear regression***. The "linear" in the name refers to "linear combination."]
+[These are not made-up scalars in the linear combination. They have been derived from the `SaratogaHouses` data using a method called ***linear regression***. The "linear" in the name refers to "linear combination."]{.aside}
 
-$$\mathtt{price}(\mathtt{livingArea}, \mathtt{bedrooms}, \mathtt{bathrooms}) \equiv\\  21000 + 105\, \mathtt{livingArea}\\ - 13000\,\mathtt{bedrooms} + 26000\, \mathtt{bathrooms}$$
+\begin{eqnarray}
+\mathtt{price}(\mathtt{livingArea}, &&\mathtt{bedrooms}, \mathtt{bathrooms})  \equiv \\  &&21000 + 105\, \mathtt{livingArea}\\ &&- 13000\,\mathtt{bedrooms}\\ &&+ 26000\, \mathtt{bathrooms}
+\end{eqnarray}
 
 The model function is a simple linear combination, but it effectively quantifies how different aspects of a house contribute to its sales price. The model (which is based on data from two decades ago) indicates that an additional square foot of living area is worth about 105 dollars per foot^2^. An extra bathroom is worth about $25,000. Bedrooms, strangely, are assigned a *negative* value by the model.
 
-Possibly you already understand what is meant by "an additional square foot" or "an extra bathroom." These ideas can be intuitive, but they can be best understood with a grounding in calculus, which we turn to in Block @sec-differentiation-block. For instance, the negative scalar on `bedrooms` will make sense when you understand "partial derivatives," the subject of Chapter @sec-partial-change.
+Possibly you already understand what is meant by "an additional square foot" or "an extra bathroom." These ideas can be intuitive, but they can be best understood with a grounding in calculus, which we turn to in Block II. For instance, the negative scalar on `bedrooms` will make sense when you understand "partial derivatives," the subject of Chapter @sec-partial-change.
 
 ## f(x) times g(t)
 
 When a guitar string is at rest it forms a straight line connecting its two fixed ends: one set by finger pressure along the neck of the guitar and the other at the bridge near the center of the guitar body. When a guitar string is plucked, its oscillations follow a sinusoid pattern of **displacement**. With the right camera and lighting setup, we can see these oscillations in action:
 
+::: {.column-margin}
 ```{asis echo=knitr::is_html_output()}
 <iframe width="243" height="136" src="https://www.youtube.com/embed/F0NsJ7J8rYM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 ```
+:::
 
 ```{r echo=FALSE, eval=knitr::is_latex_output()}
 #| label: fig-guitar-still
@@ -38,45 +42,52 @@ knitr::include_graphics("www/guitar-still.png")
 
 For a string of length $L$, the string displacement is a function of position $x$ along the string and is a linear combination of functions of the form $$g_k(x) \equiv \sin(k \pi x /L)$$ where $k$ is an integer.  A few of these functions are graphed in @fig-guitar-string-modes with $k=1$, $k=2$, and $k=3$.
 
-```{r echo=FALSE, fig.height=3, fig.width=7, fig.show="hold"}
-#| label: fig-guitar-string-modes
-#| fig-cap: "Vibrational modes of a guitar string."
+```{r echo=FALSE, fig.height=3, fig.width=7}
 slice_plot(sin(pi*x/100) ~ x, domain(x=c(0, 100)), 
            label_text = "k=1") %>% 
   slice_plot(sin(2* pi*x/100) ~ x, color="dodgerblue",
              label_text="k=2", label_x = 0.95) %>%
   slice_plot(sin(3* pi*x/100) ~ x, color="green",
              label_text="k=3", label_x = 0.90) %>%
-  gf_labs(x="", y="", title="Three modes of a guitar string.")
+  gf_labs(x="", y="Displacement (mm)", title="Three modes of a guitar string.")
 string_shape <- function(x, t) {
   sin(pi*x/100)*sin(pi*t) - 2*sin(2*pi*x/100)*sin(2*pi*t) - 1.5*sin(3*pi*x/100)*sin(3*pi*t)
 }
+```
 
+```{r echo=FALSE, fig.height=3, fig.width=7}
+#| label: fig-guitar-string-modes
+#| fig-cap: "Vibrational modes of a guitar string."
+#| fig-cap-location: margin
 slice_plot(
   string_shape(x, t=pi/2) ~ x,
   domain(x=c(0,100))
 ) %>%
-  gf_labs(x="Position along string (%)", y="Side-to-side displacement (mm) ", title="A linear combination of the modes")
+  gf_labs(x="Position along string (%)", y="Displacement (mm) ", title="A linear combination of the modes")
 ```
 
 Shapes of the sort in @fig-guitar-string-modes are a stop-motion flash snapshot of the string. The string's shape also changes in time, so the string's displacement is a function of both $x$ and $t$. The displacement itself is a sinusoid whose time period depends on the length and tension of the string as well as the number of cycles of the spatial sine: 
 $$g_k(x, t) \equiv \sin(\frac{k \pi}{L} x) \ \sin(\frac{k \pi}{P}t)$$ @fig-string-motion shows a few snapshots of the 1.5 cycle string at different moments in time, and the motion of the linear combination.
 
 ```{r echo=FALSE, fig.height=3, fig.width=7, fig.show="hold"}
-#| label: string-motion 
-#| fig-cap: "String position changes over time."
 slice_plot(sin(3*pi*x/100) * sin(.5) ~ x, 
            domain(x=c(0,100))) %>%
   slice_plot(sin(3*pi*x/100) * sin(.6) ~ x, alpha = 0.5) %>%
   slice_plot(sin(3*pi*x/100) * sin(.7) ~ x, alpha = 0.25) %>%
   gf_labs(title="Shape at three different instants",
           x = "", y="Side-to-side displacement")
+```
+
+```{r echo=FALSE, fig.height=3, fig.width=7, fig.show="hold"}
+#| label: fig-string-motion 
+#| fig-cap: "String position changes over time."
+#| fig-cap-location: margin
 slice_plot(string_shape(x, .5) ~ x, domain(x=c(0,100))) %>%
   slice_plot(string_shape(x, .525) ~ x, alpha = 0.7) %>%
   slice_plot(string_shape(x, .55) ~ x, alpha = 0.5) %>%
   slice_plot(string_shape(x, .575) ~ x, alpha = 0.37) %>%
   slice_plot(string_shape(x, .6) ~ x, alpha = 0.25) %>%
-  gf_labs(y="Side-to-side displacement (mm)",
+  gf_labs(y="Displacement (mm)",
           x = "Position along string (%)",
           title="Linear combination of vibrating modes at different times.")
 ```
