@@ -245,7 +245,7 @@ What is the gravitational attraction of the galaxy on the probe? One way to find
 For the galaxy, the center of mass is located at a point $(\bar{x},\bar{y})$ where $$\bar{x} \equiv \sum_\text{galaxy} m_i x_i\ \ \ \text{and}\ \ \ \ \bar{y} \equiv \sum_\text{galaxy} m_i y_i$$
 
 ```{r echo=FALSE}
-Boundary <- Zcalc::Blob1
+Boundary <- Blob1
 Dots <- box_set(1 ~ x + y, Boundary, dx=0.1)
 
 P1 <- gf_polygon(y ~ x, data=Boundary, fill="blue", alpha=0.2) %>%
@@ -264,7 +264,7 @@ P4 <- P1 %>%
 
 ```{r echo=FALSE}
 #| label: fig-shape1
-#| fig-cap: "An irregular shape used in the example. The $(x,y)$ coordinates of closely spaced points on the boundary are available as `Zcalc::Blob1` in the sandbox software."
+#| fig-cap: "An irregular shape used in the example. The $(x,y)$ coordinates of closely spaced points on the boundary are available as `Blob1` in the sandbox software."
 #| fig-cap-location: margin
 P1
 ```
@@ -301,7 +301,7 @@ gridExtra::grid.arrange(P4, P3, nrow=1)
 ```
 
 ::: {.rmosaic data-latex=""}
-Compute the center of mass of the object `Zcalc::Blob1` shown in @fig-shape1, assuming the mass-density $\rho(x,y) = 10$.
+Compute the center of mass of the object `Blob1` shown in @fig-shape1, assuming the mass-density $\rho(x,y) = 10$.
 
 The mass of the object is $$M = \int_\text{Blob1} \rho(x, y)\, dA$$
 The $x$-component of the center of mass is
@@ -312,7 +312,7 @@ and similarly for $\bar{y}$.
 To find the center of mass, we first need to know the total mass of the object. We will carry out the calculation by dividing the object into a series of rectangles, computing the mass of each rectangle, then adding together the masses. The R/mosaic function `box_set()` takes as input the density function, a data frame with points on the boundary of the object, and a size for the boxes, which we will set to $dx=0.1$. 
 
 ```{r}
-Boxes <- box_set(10 ~ x + y, Zcalc::Blob1, dx=0.1)
+Boxes <- box_set(10 ~ x + y, Blob1, dx=0.1)
 ```
 
 Give this command in a sandbox and look at the resulting data frame `Boxes`. Each row is one box. The `x` and `y` columns give the location of the center of that box, `dx` and `dy` are the lengths of the box sides in the $x$ and $y$ directions. The value ofthe function being accumulated is in the column labelled `.output.` column `dA` gives the area of each box (which is simply $dA = dx\, dy$).
@@ -329,7 +329,7 @@ mass
 Computing the $x$-component of the center of mass, $\bar{x}$, is much the same but now the function being integrated is $x \rho(x,y)$ instead of just $\rho(x,y)$:
 
 ```{r}
-Boxes2 <- box_set(10*x ~ x + y, Zcalc::Blob1, dx=0.1)
+Boxes2 <- box_set(10*x ~ x + y, Blob1, dx=0.1)
 xbar <- with(Boxes2, sum(.output. * dA)) / mass
 ```
 
@@ -340,7 +340,7 @@ xbar
 The $y$ component of the center of mass, $\bar{y}$ is computed almost identically, but substituting `10*y ~ x & y` as the function to be integrated. In the next line, we will tell `box_set()` to do the summation over all the boxes directly, instead of our having to do it with the `with(..., sum(.output. * dA))` command.
 
 ```{r}
-ybar <- box_set(10*y ~ x + y, Zcalc::Blob1, dx=0.1, sum=TRUE) / mass
+ybar <- box_set(10*y ~ x + y, Blob1, dx=0.1, sum=TRUE) / mass
 ```
 
 ```{r echo=FALSE}
@@ -351,15 +351,15 @@ ybar
 Recall that the summation over the boxes provides an *approximation* to the integral. The quality of the approximation depends on the boxes being small enough. It is responsible to check the result by using smaller box size:
 
 ```{r cache=TRUE}
-ybar <- box_set(10*y ~ x + y, Zcalc::Blob1, dx = 0.01, sum=TRUE) / mass
+ybar <- box_set(10*y ~ x + y, Blob1, dx = 0.01, sum=TRUE) / mass
 ybar
-box_set(10*y ~ x + y, Zcalc::Blob1, dx = 0.001, sum=TRUE) / mass
+box_set(10*y ~ x + y, Blob1, dx = 0.001, sum=TRUE) / mass
 ```
 From this, we conclude that a box size `dx = 0.01` gives 4 digits precision, but `dx = 0.1` was not small enough.
 
 Repeat the calculation for $\bar{x}$ to get the same precision:
 ```{r}
-xbar  <- box_set(10*x ~ x + y, Zcalc::Blob1, dx = 0.01, sum=TRUE) / mass
+xbar  <- box_set(10*x ~ x + y, Blob1, dx = 0.01, sum=TRUE) / mass
 ```
 ```{r echo=FALSE}
 xbar
@@ -382,7 +382,7 @@ ribbon <- tibble(
   top = top(x),
   bottom = bottom(x)
 )
-P1 <- slice_plot(top(x) ~ x, domain(x=-1.5:4), 
+P1 <- slice_plot(top(x) ~ x, bounds(x=-1.5:4), 
            label_text="top(x)", label_x=0.3, label_vjust=-1.3) %>%
   slice_plot(bottom(x) ~ x, label_text="bottom(x)", label_vjust=2.8, label_x = 0.4) %>%
   gf_ribbon(bottom + top ~ x, data = ribbon, inherit=FALSE) %>%
@@ -555,13 +555,14 @@ In a typical wheel, there is mass density throughout the wheel, not just at dist
 $$\text{moment of inertia} = \int_\text{wheel} \rho(x,y) \left(\strut x^2 + y^2\right) d \text{wheel}\ .$$
 
 ::: {.example data-latex=""}
-Compute the moment of inertia of `Zcalc::Blob1`.
+Compute the moment of inertia of `Blob1`.
 
 It is not enough to say, "compute the moment of inertia." We also have to specify what is the reference location---the wheel axle in the configuration. We will first do the calculation around the center of mass $(\bar{x}, \bar{y})$ which we computed earlier as `xbar` and `ybar`:
 
 ```{r}
 # moment of inertia
-box_set(10*((x - xbar)^2 + (y-ybar)^2)~ x + y, Zcalc::Blob1, dx = 0.01, sum=TRUE) 
+box_set(10*((x - xbar)^2 + (y-ybar)^2)~ x + y, 
+        Blob1, dx = 0.01, sum=TRUE) 
 ```
 :::
 

@@ -38,7 +38,7 @@ The task for our example robot will be to visit the points shown in @fig-robot-p
 #| fig-cap-location: margin
 nudges <- rep(40, 16)
 nudges[c(3,12)] <- -40
-gf_path(y ~ x, data = Zcalc::Robot.stations, size = 2) %>%
+gf_path(y ~ x, data = Robot_stations, size = 2) %>%
   gf_point(y ~ x, size=8, color="orange", alpha=.5) %>%
   gf_text(y ~ x, label= ~ t, nudge_y=nudges) %>%
   gf_refine(coord_fixed()) %>%
@@ -47,13 +47,13 @@ gf_path(y ~ x, data = Zcalc::Robot.stations, size = 2) %>%
 
 @fig-robot-points shows a continuous path in $(x,y)$ coordinates together with discrete labels indicating *when* each waypoint is to be reached. Note that the path is not a function $y(x)$. Mathematical functions are required to be ***single valued***, meaning that for each value of the input (in the function domain) there can be only one, unique output value. The path in @fig-robot-points often involves two or more different $y$ values for a single $x$ value. There is even a small domain of $x$ near $x=900$ where the path at any given $x$ crosses *six* different $y$-values.
 
-Even so, functions can be a useful way of describing the $(x,y)$ path. The key is the plural: function**s**. For the path in @fig-robot-points  we need *two* quantities varying with time in a coordinated way. One approach, familiar to navigators, is to specify direction of movement and velocity at each instant of time. Perhaps not as familiar, but more fundamental mathematically, is to specify $x$ as a function of time and, separately, $y$ as a function of time. Using this formalism, the trajectory of the robot arm will consist of two functions, $x(t)$ and $y(t)$. To build those functions, well start with the waypoints stored in the data frame `Zcalc::Robot.stations`.
+Even so, functions can be a useful way of describing the $(x,y)$ path. The key is the plural: function**s**. For the path in @fig-robot-points  we need *two* quantities varying with time in a coordinated way. One approach, familiar to navigators, is to specify direction of movement and velocity at each instant of time. Perhaps not as familiar, but more fundamental mathematically, is to specify $x$ as a function of time and, separately, $y$ as a function of time. Using this formalism, the trajectory of the robot arm will consist of two functions, $x(t)$ and $y(t)$. To build those functions, well start with the waypoints stored in the data frame `Robot_stations`.
 
 ```{r echo=FALSE, eval=knitr::is_html_output()}
 TAB <- if (knitr::is_html_output()) {
-  Znotes::and_so_on(Zcalc::Robot.stations)
+  Znotes::and_so_on(Robot_stations)
 } else {
-  Znotes::and_so_on_latex(Zcalc::Robot.stations)
+  Znotes::and_so_on(Robot_stations)
 }
 TAB %>% 
   kableExtra::kable_paper("hover", full_width = FALSE)
@@ -70,10 +70,10 @@ One strategy is to construct the functions as piecewise linear functions of $t$,
 ```{r echo=FALSE}
 #| label: fig-piecewise-linear-path
 #| fig-cap: "Two functions $x(t)$ and $y(t)$ which describe the path shown in @fig-robot-points."
-xl <- mosaic::connector(x ~ t, data = Zcalc::Robot.stations)
-yl <- mosaic::connector(y ~ t, data = Zcalc::Robot.stations)
-P1 <- slice_plot(xl(t) ~ t, domain(t=1:16), npts=500) %>% gf_labs(y="x(t) (mm)", x="")
-P2 <- slice_plot(yl(t) ~ t, domain(t=1:16), npts=500) %>% gf_labs(y="y(t) (mm)", x = "t (sec)")
+xl <- mosaic::connector(x ~ t, data = Robot_stations)
+yl <- mosaic::connector(y ~ t, data = Robot_stations)
+P1 <- slice_plot(xl(t) ~ t, bounds(t=1:16), npts=500) %>% gf_labs(y="x(t) (mm)", x="")
+P2 <- slice_plot(yl(t) ~ t, bounds(t=1:16), npts=500) %>% gf_labs(y="y(t) (mm)", x = "t (sec)")
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
 It can be difficult at first glance to see the relationship between the $x(t)$ and $y(t)$ functions and the path shown in \@ref(fig:robot-points). As an exercise, look specifically at the segment $9 \leq t \leq 10$. In @fig-piecewise-linear-path, this is the segment connecting points 9 and 10. In the path view, you can see that on this segment $x$ changes a lot while $y$ changes only a little. Correspondingly, in the function view, $\partial_t x(t)$ is large in magnitude compared to $\partial_t y(t)$.
@@ -89,9 +89,9 @@ For instance, let's look at $\partial_t y(t)$. Since $y$ is a position along the
 labels <- latex2exp::TeX(c('\\partial_t x(t)  (mm/s)', "\\partial_t y(t)  (mm/s)"))
 dt_xl <- D(xl(t) ~ t)
 dt_yl <- D(yl(t) ~ t)
-P1 <- slice_plot(dt_xl(t) ~ t, domain(t=1:16), npts=901, singularities = 1:16) %>% 
+P1 <- slice_plot(dt_xl(t) ~ t, bounds(t=1:16), npts=901, singularities = 1:16) %>% 
   gf_labs(y=labels[[1]], x="")
-P2 <- slice_plot(dt_yl(t) ~ t, domain(t=1:16), npts=901,, singularities = 1:16) %>%
+P2 <- slice_plot(dt_yl(t) ~ t, bounds(t=1:16), npts=901,, singularities = 1:16) %>%
   gf_labs(y=labels[[2]], x="t (sec)")
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
@@ -105,8 +105,8 @@ Think about what it is that causes the change from one velocity step to another.
 ```{r fig-x-acceleration, echo=FALSE}
 ddt_xl <- D(xl(t) ~ t & t, .hstep=0.1)
 ddt_yl <- D(yl(t) ~ t & t, .hstep=0.1)
-P1 <- slice_plot(ddt_xl(t) ~ t, domain(t=1:16), npts=901) %>% gf_labs(y="x acceleration (mm/s^2)", x="")
-P2 <- slice_plot(ddt_yl(t) ~ t, domain(t=1:16), npts=901) %>%
+P1 <- slice_plot(ddt_xl(t) ~ t, bounds(t=1:16), npts=901) %>% gf_labs(y="x acceleration (mm/s^2)", x="")
+P2 <- slice_plot(ddt_yl(t) ~ t, bounds(t=1:16), npts=901) %>%
   gf_labs(y="y acceleration (mm/s^2)", x = "t (time)")
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
@@ -121,8 +121,8 @@ As an accommodation to the physical existence of the robot hand, we've softened 
 #| fig-cap-location: margin
 vx <- antiD(ddt_xl(t) ~ t)
 xx <- antiD(vx(t) ~ t)
-slice_plot(xx(t) + 500 ~ t, domain(t=1.9:2.1)) %>% 
-  gf_point(x ~ t, data = Zcalc::Robot.stations[2,]) %>%
+slice_plot(xx(t) + 500 ~ t, bounds(t=1.9:2.1)) %>% 
+  gf_point(x ~ t, data = Robot_stations[2,]) %>%
   gf_labs(y="x(t) (mm)", x="t (sec)")
 ```
 
@@ -156,9 +156,9 @@ gf_point(y ~ t, data = Pts,
          color="orange", size=6, alpha=0.5) %>%
   gf_line(y ~ t, color="black", linetype="dotted") %>%
   gf_labs(y = "y(t)", x="t") %>%
-  slice_plot(f(t) ~ t, domain(t=1:2)) %>%
-  slice_plot(f(t) ~ t, domain(t=2:3), color="red") %>%
-  slice_plot(f(t) ~ t, domain(t=3:4), color="blue")
+  slice_plot(f(t) ~ t, bounds(t=1:2)) %>%
+  slice_plot(f(t) ~ t, bounds(t=2:3), color="red") %>%
+  slice_plot(f(t) ~ t, bounds(t=3:4), color="blue")
 ```
 
 The framework we will adopt for the smooth interpolating function is piecewise quadratic segments between adjacent knots. There are four knots, requiring three segments. We will call the segment $p_1(y)$ connecting the first knot to the second, with $p_2(y)$ connecting the second to the third knot and $p_3(y)$ connecting the third to the fourth knot. Each of those segments will be a second-order polynomial. To keep things organized, we will use coefficient names systematically:
@@ -234,10 +234,10 @@ free_slopes <- c(-5, -1, 2, 5)
 P <- list()
 for (k in 1:4) {
   id <- LETTERS[k]
-  f <- Zcalc::qspliner(y ~ t, data=Pts, free=free_slopes[k])
-  P[[k]] <- slice_plot(f(t) ~ t, domain(t=1:2)) %>%
-  slice_plot(f(t) ~ t, domain(t=2:3), color="red") %>%
-  slice_plot(f(t) ~ t, domain(t=3:4), color="blue") %>%
+  f <- qspliner(y ~ t, data=Pts, free=free_slopes[k])
+  P[[k]] <- slice_plot(f(t) ~ t, bounds(t=1:2)) %>%
+  slice_plot(f(t) ~ t, bounds(t=2:3), color="red") %>%
+  slice_plot(f(t) ~ t, bounds(t=3:4), color="blue") %>%
   gf_point(y ~ t, data = Pts, color="orange", size=4, alpha=0.5) %>%
     gf_lims(y=c(-1.5,4.5)) %>%
     gf_text(4 ~ 4, label=id) %>%
@@ -252,8 +252,8 @@ Keeping in mind the piecewise nature of the interpolating polynomial, it may see
 Quadratic spline functions can be created with the R/mosaic `qspliner()` function. The second argument is a data frame giving the knot locations. The first argument is a tilde expression specifying the variables to use from the data frame.
 
 ```{r results="hide"}
-xfun <- qspliner(x ~ t, data = Zcalc::Robot.stations)
-yfun <- qspliner(y ~ t, data = Zcalc::Robot.stations)
+xfun <- qspliner(x ~ t, data = Robot_stations)
+yfun <- qspliner(y ~ t, data = Robot_stations)
 ```
 
 ```{r echo=FALSE}
@@ -270,7 +270,7 @@ Path <- tibble(
 #| label: fig-qspline-x
 #| fig-cap: "A quadratic spline interpolation of the $x$-coordinates of the robot-path knots. The data hardly speak for themselves, since the interpolationg function tends to alternate between concave up and concave down in adjacent segments between the knots."
 #| fig-cap-location: margin
-slice_plot(xfun(t) ~ t, domain(t=1:16), npts=500) %>%
+slice_plot(xfun(t) ~ t, bounds(t=1:16), npts=500) %>%
   gf_point(x ~ t, data = Robot.stations, color="orange", alpha=0.5, size=4) %>%
   gf_labs(y="x(t)")
 ```
@@ -286,8 +286,8 @@ Putting together the $x(t)$ and $y(t)$ interpolating functions, each of which ha
 nudges <- rep(40, 16)
 nudges[c(3,12)] <- -40
 gf_path(y ~ x, data = Path) %>%
-  gf_point(y ~ x, size=8, data = Zcalc::Robot.stations, color="orange", alpha=.5) %>%
-  gf_text(y ~ x, label= ~ paste0("t=", t), alpha=0.5, data = Zcalc::Robot.stations, nudge_y=nudges) %>%
+  gf_point(y ~ x, size=8, data = Robot_stations, color="orange", alpha=.5) %>%
+  gf_text(y ~ x, label= ~ paste0("t=", t), alpha=0.5, data = Robot_stations, nudge_y=nudges) %>%
   gf_refine(coord_fixed()) %>%
   gf_labs(x="x (mm)", y="y (mm)")
 ```
@@ -308,8 +308,8 @@ With the ability to match piecewise cubic polynomials to a set of knots, we can 
 Cubic spline functions can be created with the R/mosaic `spliner()` function. The second argument is a data frame giving the knot locations. The first argument is a tilde expression specifying the variables to use from the data frame.
 
 ```{r results="hide"}
-xfun <- spliner(x ~ t, data = Zcalc::Robot.stations)
-yfun <- spliner(y ~ t, data = Zcalc::Robot.stations)
+xfun <- spliner(x ~ t, data = Robot_stations)
+yfun <- spliner(y ~ t, data = Robot_stations)
 ```
 
 ```{r echo=FALSE}
@@ -329,8 +329,8 @@ Path <- tibble(
 nudges <- rep(40, 16)
 nudges[c(3,12)] <- -40
 gf_path(y ~ x, data = Path) %>%
-  gf_point(y ~ x, size=8, data = Zcalc::Robot.stations, color="orange", alpha=.5) %>%
-  gf_text(y ~ x, label= ~ paste0("t=", t), alpha=0.5, data = Zcalc::Robot.stations, nudge_y=nudges) %>%
+  gf_point(y ~ x, size=8, data = Robot_stations, color="orange", alpha=.5) %>%
+  gf_text(y ~ x, label= ~ paste0("t=", t), alpha=0.5, data = Robot_stations, nudge_y=nudges) %>%
   gf_refine(coord_fixed()) %>%
   gf_labs(x="x (mm)", y="y (mm)")
 ```
@@ -340,7 +340,7 @@ gf_path(y ~ x, data = Path) %>%
 #| label: fig-cubic-spline-x
 #| fig-cap: "A cubic spline interpolation of the $x$-coordinates of the robot-path knots. The cubic spline respects the monotonicity of consecutive knot points."
 #| fig-cap-location: margin
-slice_plot(xfun(t) ~ t, domain(t=1:16), npts=500) %>%
+slice_plot(xfun(t) ~ t, bounds(t=1:16), npts=500) %>%
   gf_point(x ~ t, data = Robot.stations, color="orange", alpha=0.5, size=4) %>%
   gf_labs(y="x(t)")
 ```

@@ -17,8 +17,8 @@ Continuity can be an important attribute of a modeling function. Often, we expec
 #| label: fig-heaviside2
 #| fig-cap: "The Heaviside function is piecewise constant with a discontiuity at $x=0$."
 #| column: margin
-slice_plot(0 ~ x, domain(x = c(-10, 0)), size=2) %>%
-  slice_plot(1 ~ x, domain(x = c(0,10)), size=2) %>%
+slice_plot(0 ~ x, bounds(x = c(-10, 0)), size=2) %>%
+  slice_plot(1 ~ x, bounds(x = c(0,10)), size=2) %>%
   gf_labs(title="The Heaviside function") %>%
   gf_lims(y = c(-0.5, 1.5))
 ```
@@ -35,7 +35,7 @@ In contrast, the piecewise ***ramp function*** (@fig-ramp2) is continuous; you d
 #| fig-cap: "The ramp function is a continuous piecewise function."
 #| column: margin
 ramp <- makeFun(ifelse(0 < x, x, 0) ~ x)
-slice_plot(ramp(x) ~ x, domain(x=-3:3), size=2, npts=1000) %>%
+slice_plot(ramp(x) ~ x, bounds(x=-3:3), size=2, npts=1000) %>%
   gf_labs(title="The ramp function.")
 ```
 
@@ -75,7 +75,7 @@ H <- makeFun(ifelse(x >=0, 1, 0) ~ x)
 DH01   <- makeFun((H(x + 0.1) - H(x))/0.1 ~ x)
 DH001  <- makeFun((H(x + 0.01) - H(x))/0.01 ~ x)
 DH0001 <- makeFun((H(x + 0.001) - H(x))/0.001 ~ x)
-slice_plot(DH01(x) ~ x, domain(x=-0.02:0.02),
+slice_plot(DH01(x) ~ x, bounds(x=-0.02:0.02),
            npts=500, color="red", size=2) %>%
   slice_plot(DH001(x) ~ x,
            color="darkgreen", npts=500, size=3, alpha=0.5) %>%
@@ -103,7 +103,7 @@ options(digits=5)
 H <- function(x) ifelse(x > 0, 1, 0)
 HH <- antiD(H(x) ~ x)
 HHH <- antiD(HH(x) ~ x)
-pA <- slice_plot(HHH(x) ~ x, domain(x=-0.1:0.1), npts=1000) 
+pA <- slice_plot(HHH(x) ~ x, bounds(x=-0.1:0.1), npts=1000) 
 ```
 You cannot tell from the plot that the second derivative is discontinuous. But if you were in a plane flying along that trajectory, you would feel a jerk as you crossed $x=0$.
 
@@ -123,7 +123,7 @@ Mathematicians quantify the "smoothness" of a function by looking at the functio
 
 - $x^2$: the derivatives are $\partial_x x^2 = 2 x$, $\partial_{xx} x^2 = 2$, $\partial_{xxx} x^2 = 0$, ... Higher order derivatives are all simply 0. Boring, but still existing.
 
-**Example of non-$C^2$ functions:** We see these often when we take two or more different $C^\infty$ functions and split their domain, using one function for one subdomain and the other(s) for other subdomain(s).
+**Example of non-$C^2$ functions:** We see these often when we take two or more different $C^\infty$ functions and split their domain, using one function for one subdomain and the other(s) for other subbounds(s).
 
 - $|x|$, the absolute value function. $|x|$ is a pasting together of two $C^\infty$ functions: $$|x| \equiv \left\{\begin{array}{rcl}+x & \text{for} & 0 \leq x\\-x&\text{for}& \text{otherwise}\end{array} \right.\ .$$ The domain is split at $x=0$.
 

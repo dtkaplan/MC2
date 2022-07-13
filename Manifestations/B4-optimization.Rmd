@@ -87,7 +87,7 @@ Since the configuration of the system is set by the coordinate $(x_1, y_1)$, the
 #| label: fig-spring-mass1-pot
 #| fig-cap: "The potential energy of the spring-mass system in @fig-spring-mass1."
 # E2 <- makeFun(abs(x)^2.7 + abs(y)^2.7 - 1 + abs(x - 2)^1.5 + abs(y)^1.5 - 1 + 9.8 *y + abs(x-3)^3 + abs(y)^3 - 1 ~ x & y)
-contour_plot(Zcalc::SM_2_potential(x, y) ~ x & y, domain(x=0:3, y=-3:0),
+contour_plot(PE_fun1(x, y) ~ x & y, bounds(x=0:3, y=-3:0),
               skip=0, contours_at=c(30,20, 15, 10, 5, 0, -2, -3)) %>%
   gf_refine(coord_fixed()) %>%
   gf_labs(title="Potential energy E(x,y)")
@@ -127,7 +127,7 @@ The gradient points in the steepest direction uphill so, once you know the direc
 #| fig-align: "center"
 #| out-width: "60%"
 #| fig-cap: "The gradient provides information about the shape of the local function in a convenient form to guide the step to the next locale in your journey toward the argmin or argmax."
-# gradient_plot(SM_2_potential(x, y) ~ x & y, domain(x=0:3, y=-3:0), alpha=1, color="black") %>%
+# gradient_plot(PE_fun1(x, y) ~ x & y, bounds(x=0:3, y=-3:0), alpha=1, color="black") %>%
 #  gf_refine(coord_fixed())
 # the mask is in figures2.key
 knitr::include_graphics("www/loophole-gradient.png")
@@ -138,11 +138,11 @@ For humans, the length of a step is fixed by the length of our legs and the size
 Fortunately, a variety of effective ideas for determining step size have been implemented in software and packaged up as algorithms. The modeler need only provide the objective function in a suitable forma starting guess for the inputs. 
 
 ::: {.rmosaic data-latex=""}
-The R/mosaic function `argM()` is set up to find argmins and argmaxes using the familiar tilde-formula/domain style of arguments used throughout this book. For instance, the potential energy of the spring-mass system shown in @fig-spring-mass1 is available as `Zcalc::SM_2_potential()`
+The R/mosaic function `argM()` is set up to find argmins and argmaxes using the familiar tilde-formula/domain style of arguments used throughout this book. For instance, the potential energy of the spring-mass system shown in @fig-spring-mass1 is available as `mosaicCalc::PE_fun1()`
 
 
 ```{r}
-argM(SM_2_potential(x, y) ~ x & y, domain(x=0:3, y=-3:0))
+argM(PE_fun1(x, y) ~ x & y, bounds(x=0:3, y=-3:0))
 ```
 :::
 
@@ -156,10 +156,10 @@ In data science and machine learning, often advanced solution-phase software is 
 
 <!-- In using such software systems, the modeler needs to understand the structure of the arguments handed off to the systems. It is also important to be able to test whether you have structured those arguments appropriately to represent your intentions. This often involves some level of debugging and the incremental development of objective functions so that you can verify correct performance with a strategy like this: first implement a simple version of the objective function then add more detail; repeat the cycle of verify-then-add-more-detail until you have an objective function that contains all the salient factors.
 
-As a simple example of support for such debugging, we will examine a core R function, `optim()`, for carrying out optimization. The command `?optim`, given in a sandbox or on the R command line will display the documentation for `optim()`. Such documentation is typically aimed at those already proficient with programming in R at a level beyond that covered in this book. (that is  one reason this book uses the R/mosaic `argM()` function and similar functions based on tilde expressions and domains. These R/mosaic functions makes use of `optim()` internally, surrounding it with an interface using tilde expressions and domains.) To illustrate, @fig-SM2-path traces the sequence of ascent steps followed by `optim()` in working toward the argmin of `SM_2_potential()`.
+As a simple example of support for such debugging, we will examine a core R function, `optim()`, for carrying out optimization. The command `?optim`, given in a sandbox or on the R command line will display the documentation for `optim()`. Such documentation is typically aimed at those already proficient with programming in R at a level beyond that covered in this book. (that is  one reason this book uses the R/mosaic `argM()` function and similar functions based on tilde expressions and domains. These R/mosaic functions makes use of `optim()` internally, surrounding it with an interface using tilde expressions and domains.) To illustrate, @fig-SM2-path traces the sequence of ascent steps followed by `optim()` in working toward the argmin of `PE_fun1()`.
 
 ```{r message=FALSE, eval=FALSE, warning=FALSE, echo=FALSE}
-obj_fun <- vector_arg(SM_2_potential)
+obj_fun <- vector_arg(PE_fun1)
 out <- capture.output(
   results <- optim(c(0,0), obj_fun,
                  control=list(trace=1, REPORT=3), method="CG")
@@ -175,24 +175,24 @@ Plot1 <-
   gf_path(y ~ x, data = steps[1:6,], color="blue") %>%
   gf_text(y ~ x, data = steps[1:6,], label=~row, 
           inherit=FALSE, color="blue", hjust=-1.2) %>%
-  gradient_plot(SM_2_potential(x, y) ~ x & y, 
-                domain(x=0:3, y=-3:0), alpha=1, color="black") %>%
+  gradient_plot(PE_fun1(x, y) ~ x & y, 
+                bounds(x=0:3, y=-3:0), alpha=1, color="black") %>%
   gf_refine(coord_fixed())
 
 Plot2 <- 
   gf_point(y ~ x, data = steps[6:11,], inherit=FALSE, color="blue") %>%
   gf_path(y ~ x, data = steps[6:11,], color="blue") %>%
   gf_text(y ~ x, data = steps[6:11,], label=~row, inherit=FALSE, color="blue", hjust=1.2) %>%
-  gradient_plot(SM_2_potential(x, y) ~ x & y, 
-                domain(x=1.65:1.656, y=-1.216:-1.20), 
+  gradient_plot(PE_fun1(x, y) ~ x & y, 
+                bounds(x=1.65:1.656, y=-1.216:-1.20), 
                 alpha=1, color="black", npts=10) %>%
   gf_refine(coord_fixed())
 Plot3 <- 
   gf_point(y ~ x, data = steps[8:13,], inherit=FALSE, color="blue") %>%
   gf_path(y ~ x, data = steps[8:13,], color="blue") %>%
   gf_text(y ~ x, data = steps[8:13,], label=~row, inherit=FALSE, color="blue", hjust=1.2) %>%
-  gradient_plot(SM_2_potential(x, y) ~ x & y, 
-                domain(x=1.651:1.652, y=-1.2131:-1.2117), 
+  gradient_plot(PE_fun1(x, y) ~ x & y, 
+                bounds(x=1.651:1.652, y=-1.2131:-1.2117), 
                 alpha=1, color="black", npts=10) %>%
   gf_refine(coord_fixed())
 ```
@@ -212,12 +212,12 @@ The bottom two graphs zoom in on the gradient field for later steps. The most dr
 -->
 
 ::: {.rmosaic data-latex=""}
-The potential energy function of the spring-mass system in @fig-spring-mass-3 is available as the R/mosaic function `Zcalc::SM_3_potential()`. This potential energy function has six inputs: the $x$ and $y$ coordinates of each of the three masses. The code below shows how to use the R/mosaic `argM()` function to locate an argmin of the potential energy.
+The potential energy function of the spring-mass system in @fig-spring-mass-3 is available as the R/mosaic function `PE_fun2()`. This potential energy function has six inputs: the $x$ and $y$ coordinates of each of the three masses. The code below shows how to use the R/mosaic `argM()` function to locate an argmin of the potential energy.
 
 ```{r}
-argM(SM_3_potential(
+argM(PE_fun2(
   x1, y1, x2, y2, x3, y3) ~ x1 & y1 & x2 & y2 & x3 & y3, 
-  domain(x1 = 0:3, y1=-3:0, x2=0:3, y2=-3:0, x3=0:3, y3=-3:0))
+  bounds(x1 = 0:3, y1=-3:0, x2=0:3, y2=-3:0, x3=0:3, y3=-3:0))
 ```
 The `argM()` function reports the final result, the end of the path followed in descending the gradient field. @fig-SM3-path gives a movie of the path as it is being followed.
 
@@ -262,7 +262,7 @@ $$V(x, y) \equiv x (y - 2x)^2\ .$$ There are two inputs, $x$ and $y$, so a simpl
 #| label: fig-box2
 #| fig-cap: "The volume of the box (in cubic inches) constructed by cutting corners of size $x$-by$x$ out of a $y$-by-$y$ piece of cardboard."
 V <- makeFun(x*(y-2*x)^2 ~ x & y)
-P1 <- contour_plot(V(x,y) ~ x & y, domain(x=0:10, y=0:30),
+P1 <- contour_plot(V(x,y) ~ x & y, bounds(x=0:10, y=0:30),
              contours_at = c(10,20, 50,100,200,300,500,700, 1000, 1500,2000, 2500, 3000),
              skip=0)
 P1
@@ -278,7 +278,7 @@ To make the calculation realistic, we should search for the argmax only in that 
 #| label: fig-box2b
 #| fig-cap: "The inequality constraint that $y > 2x$ renders much of the graphics frame inadmissible as a possible solution. The inadmissible region is shaded in blue. The argmax must be sought in the unshaded region of the frame."
 P1 %>%  inequality_constraint(y > 2*x ~ x + y,
-                              domain(x=0:10,y=0:30), 
+                              bounds(x=0:10,y=0:30), 
                               alpha=0.35, npts=200)
 ```
 
@@ -296,10 +296,10 @@ $$\text{Profit}(x,y) \equiv 1\, x (y-2x)^2 - 3 y^2$$
 #| label: fig-total-cost
 #| fig-cap: "The \"profit\" (value minus cost) of the cardboad box (cents)."
 box_P2 <- contour_plot(1*x*(y-2*x)^2 - 1 * y^2 ~ x & y,
-                       domain(x=0:15,y=10:50),
+                       bounds(x=0:15,y=10:50),
                        skip=0) %>% 
   inequality_constraint(y > 2*x ~ x + y, 
-                        domain(x=0:15, y=10:50), 
+                        bounds(x=0:15, y=10:50), 
                         alpha=0.35, npts=200) 
 box_P2
 ```
@@ -318,14 +318,14 @@ This is called an ***equality constraint***. @fig-cube-total-cost shows the equa
 #| label: fig-cube-total-cost
 #| fig-cap: "The profit function shown in more detail along with the equality constraint (green) for the box to be cube-shaped."
 box_P3 <- contour_plot(1*x*(y-2*x)^2 - 1 * y^2 ~ x & y,
-                       domain(x=0:15,y=10:50),
+                       bounds(x=0:15,y=10:50),
              contours_at=c(100*((-3):3),500, 750, 1000, 1350, 2000, 2500,3500, 4500,5500),
                        skip=0) %>% 
   inequality_constraint(y > 2*x ~ x + y, 
-                        domain(x=0:15, y=10:50), 
+                        bounds(x=0:15, y=10:50), 
                               alpha=0.35, npts=200)  %>%
   equality_constraint(y - 3*x ~ x & y, 
-                      domain(x=0:15,y=10:50), alpha=.5, fill="magenta", npts=300)
+                      bounds(x=0:15,y=10:50), alpha=.5, fill="magenta", npts=300)
 box_P3
 ```
 
@@ -350,7 +350,7 @@ Since the purpose of the factory is to make things for sale, a good objective fu
 #| label: fig-cobb-doug1
 #| fig-cap: "A Cobb-Douglas production function with $p=100$, $b=40$ and $a=0.3$. (Output units in millions of dollars)."
 P <- makeFun(p*b*(L^a)*(K^(1-a))/1e6 ~ K & L, a=0.3, p=450, b =40)
-Plot1 <- contour_plot(P(L, K) ~ L & K, domain(L=300:1000, K=50:250), skip=0)
+Plot1 <- contour_plot(P(L, K) ~ L & K, bounds(L=300:1000, K=50:250), skip=0)
 Plot1
 ```
 As you can see from @fig-cobb-doug1, the more labor and the more capital you use, the higher the production. Notice that the production function itself does not have an argmax interior to the domain being plotted. It is one of those "more is better" situations.
@@ -362,7 +362,7 @@ Suppose that labor costs $6000 per person-month. Capital, in units of production
 #| fig-cap: "The production function with the budget constraint shown in green."
 Plot1 %>%
   inequality_constraint(6000*L + 13000*K <= 5500000 ~ L & K, fill="green",
-                      domain(L=300:1000, K=50:250), alpha=0.6, npts=250)
+                      bounds(L=300:1000, K=50:250), alpha=0.6, npts=250)
 ```
 Any mixture of labor and capital that falls outside the green zone stays within your budget. What's the best mixture? The one that gives the largest production. You can read this off the graph, $L\approx 650$ person-months and $K\approx 125$ workstations which gives slightly more than $7 million dollars in production. 
 
@@ -388,12 +388,12 @@ The constraint-to-function translated situation is shown in @fig-profit-cube:
 #| label: fig-profit-cube
 #| fig-cap: "Zooming in on the objective function Profit() and showing the function version of the constraint, cube_box()  with green contours, with the heavy green line being the contour at cube_box(x,y)=1."
 contour_plot(1*x*(y-2*x)^2 - 1 * y^2 ~ x & y,
-                       domain(x=12:15,y=40:50),
+                       bounds(x=12:15,y=40:50),
              contours_at=c(100*((-3):3),500, 750, 1000, 1350, 2000, 2500,3500, 4500,5500),
                        skip=0) %>% 
   gf_abline(intercept=~ 0, slope=~ 3, color="magenta", size=1.5, alpha=0.7) %>%
   inequality_constraint(y > 2*x ~ x + y, 
-                        domain(x=12:15, y=40:50), 
+                        bounds(x=12:15, y=40:50), 
                               alpha=0.35, npts=200)  %>%
   contour_plot(y/(3*x) ~ x & y, label_color="magenta", 
                contour_color="magenta",
@@ -445,12 +445,12 @@ A manager presented with a budget knows that she should work within the constrai
 #| fig-cap: "The production function (black, curved lines) and the expenditure function (magenta, straight lines). Contour labels are in millions of dollars. We've drawn contours at levels that happen to be tangent to the expenditure contours."
 Plot1 %>%
   inequality_constraint(6000*L + 13000*K <= 5500000 ~ L & K, fill="green",
-                      domain(L=300:1000, K=50:250), alpha=0.6, npts=250) %>%
+                      bounds(L=300:1000, K=50:250), alpha=0.6, npts=250) %>%
   contour_plot((6000*L + 13000*K)/1e6 ~ L & K, contour_color="magenta", 
                contours_at=c(3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9), labels=FALSE, filled=FALSE) %>%
   contour_plot((6000*L + 13000*K)/1e6 ~ L & K, contour_color="magenta", 
                contours_at=c(3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9), 
-               domain(L=300:1000, K=200:250), skip=0, filled=FALSE)
+               bounds(L=300:1000, K=200:250), skip=0, filled=FALSE)
 ```
 
 With the budget fixed at $5.5 million---that is, on the $5.5-million contour of the expenditure function---the maximum production was $7.1 million. 
@@ -475,7 +475,7 @@ Generations of calculus students have been taught a method of mathematical optim
 #| label: fig-cobb-doug-grad
 #| fig-cap: "The production and expenditure functions displayed as gradient fields. Expenditure is brown, production is magenta."
 P <- makeFun(p*b*(L^a)*(K^(1-a)) ~ K & L, a=0.3, p=450, b =40)
-Gplot1 <- gradient_plot(P(L, K) ~ L & K, domain(L=300:600, K=50:250), color="magenta", alpha=1, npts=10)
+Gplot1 <- gradient_plot(P(L, K) ~ L & K, bounds(L=300:600, K=50:250), color="magenta", alpha=1, npts=10)
 Gplot1 %>% gradient_plot(-(6000*L + 13000*K) ~ L & K, color="brown", alpha=.8, npts=10) %>%
   gf_text(250 ~ 300, label="(a)") %>%
   gf_text(100 ~ 450, label="(b)") %>%

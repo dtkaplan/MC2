@@ -102,10 +102,10 @@ Bicycle_speed <- tibble::tribble(
 mod <- lm(V ~ s + g + I(s*g) + I(g^2) , data = Bicycle_speed)
 knitr::kable(coef(mod))
 mod_fun <- makeFun(mod) # turn the statistical model into a function
-dom <- domain(s = c(-8, 8), g = c(1, 10))
+dom <- bounds(s = c(-8, 8), g = c(1, 10))
 contour_plot(mod_fun(s, g) ~ s + g, dom)
 interactive_plot(mod_fun(s, g) ~ s + g, dom)
-slice_plot(mod_fun(s=0, g) ~ g, domain(g=c(1,10)),
+slice_plot(mod_fun(s=0, g) ~ g, bounds(g=c(1,10)),
            color = "red", label_text = "flat") %>%
   slice_plot(mod_fun(s = -5, g) ~ g, color = "black",
              label_text = "downhill") %>%

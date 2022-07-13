@@ -33,7 +33,7 @@ The sandbox defines the function $h(x)$ and graphs it, with particular emphasis 
 sigma <- 1
 mu <- 0
 h <- makeFun(  -(x-mu)^2/(2*sigma^2) ~ x, mu=mu, sigma=sigma)
-slice_plot(h(x) ~ x, domain(x=sigma*c(-1.5, 1.5))) %>%
+slice_plot(h(x) ~ x, bounds(x=sigma*c(-1.5, 1.5))) %>%
   gf_hline(yintercept = c(0,-0.5), color=c("dodgerblue", "orange3"))
 ```
 
@@ -102,7 +102,7 @@ The sandbox defines $f(x)$ and graphs it. As with the previous sandbox, the grap
 sigma <- 1
 mu <- 0
 f <- makeFun(  exp( -(x-mu)^2/(2*sigma^2) ) ~ x, mu=mu, sigma=sigma)
-slice_plot(f(x) ~ x, domain(x=sigma*c(-3.5, 3.5))) %>%
+slice_plot(f(x) ~ x, bounds(x=sigma*c(-3.5, 3.5))) %>%
   gf_hline(yintercept = c(0,exp(-0.5)), color=c("dodgerblue", "orange3"))
 sigmoid <- antiD(g(x) ~ x, lower.bound = -Inf)
 # Graph the sigmoid on the domain -10 < x < 10
@@ -221,17 +221,17 @@ $$T_{t+h}(x) \approx T_t(x) + h\,k\, \partial_{xx} T_t(x)$$
 Exercise: Turn away from the iron rod of the picture and imagine being presented with four new rods each of which has been heated in some way to produce a temperature profile at time 0, that is $T_0(x)$ as shown in the four graphs below. 
 
 ```{r echo=FALSE, out-width: "50%", fig.show="keep"}
-slice_plot(70 + 100* cos(x) ~ x, domain(x=c(-1,1))) %>%
+slice_plot(70 + 100* cos(x) ~ x, bounds(x=c(-1,1))) %>%
   gf_labs(x="Position x", y = "Temperature", title = "(A)") %>%
   gf_point(170 ~ 0, size=3)
-slice_plot(70 + 100* (2-cos(x)) ~ x, domain(x=c(-1,1))) %>%
+slice_plot(70 + 100* (2-cos(x)) ~ x, bounds(x=c(-1,1))) %>%
   gf_labs(x="Position x", y = "Temperature", title = "(B)") %>%
   gf_point(170 ~ 0, size=3)
 
-slice_plot(70 + 50*(x+1) ~ x, domain(x=c(-1,1))) %>%
+slice_plot(70 + 50*(x+1) ~ x, bounds(x=c(-1,1))) %>%
   gf_labs(x="Position x", y = "Temperature", title = "(C)") %>%
   gf_point(120 ~ 0, size=3)
-slice_plot(100 ~ x, domain(x=c(-1,1))) %>%
+slice_plot(100 ~ x, bounds(x=c(-1,1))) %>%
   gf_labs(x="Position x", y = "Temperature", title = "(D)") %>%
   gf_lims(y=c(50,125))%>%
   gf_point(100 ~ 0, size=3)
@@ -394,7 +394,7 @@ The next frame of the movie will show $C_h(x)$. To construct that, we will compu
 ```{r echo=FALSE}
 tmp <- spliner(y ~ x, data = C_funs[[1]])
 foo <- D(tmp(x) ~ x & x, .hstep=1)
-slice_plot(foo(x) ~ x, domain(x=c(-25, 25)), npts=500) %>%
+slice_plot(foo(x) ~ x, bounds(x=c(-25, 25)), npts=500) %>%
   gf_labs(y="Net flux (deg C/cm^2)", x="Position along bar", title="Net flux at time t=0")
 ```
 

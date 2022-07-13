@@ -38,7 +38,7 @@ potential_slice <- function(X, n) {
     res
   }
   ypos <-tibble(y1 = X[1:n, 4], y2 = X[1:n, 6])
-  gradient_plot(fun(y1, y2) ~ y1 & y2, domain(y1=-3.5:0, y2=-3.5:0),
+  gradient_plot(fun(y1, y2) ~ y1 & y2, bounds(y1=-3.5:0, y2=-3.5:0),
                 npts=12) %>%
     gf_refine(coord_fixed()) %>%
     gf_path(y2 ~ y1, data = ypos, color="red", inherit=FALSE)
@@ -57,7 +57,7 @@ potential_slice2 <- function(X, n) {
     res
   }
   ypos <-tibble(x1 = X[1:n, 1], y1 = X[1:n, 2])
-  gradient_plot(fun(x1, y1) ~ x1 & y1, domain(x1=0:2, y1=-2.8:0),
+  gradient_plot(fun(x1, y1) ~ x1 & y1, bounds(x1=0:2, y1=-2.8:0),
                 npts=12) %>%
     gf_refine(coord_fixed()) %>%
     gf_path(y1 ~ x1, data = ypos, color="red", inherit=FALSE)

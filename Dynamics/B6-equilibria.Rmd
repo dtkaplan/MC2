@@ -67,17 +67,18 @@ $\ $
 
 @fig-bc-system shows the flow field, some trajectories and their time series for the system $$\partial_t x = b y\\ \partial_t y = c x$$ for $b=1$ and $c=2$.
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE}
 #| label: fig-bc-system
 #| fig-cap: "Three trajectories from the system $\\partial_t x = y$ & $\\partial_t y = 2 x$"
 #| fig-cap-location: margin
-t1 <- integrateODE(dx ~ y, dy ~ 2*x, x=-.8, y= 1, tdur=2)
-t2 <- integrateODE(dx ~ y, dy ~ 2*x, x=.70, y= -1, tdur=3.7)
-t3 <- integrateODE(dx ~ y, dy ~ 2*x, x=.72, y= -1, tdur=3.3)
+t1 <- integrateODE(dx ~ y, dy ~ 2*x, 
+                   bounds(t=0:2), x=-.8, y= 1)
+t2 <- integrateODE(dx ~ y, dy ~ 2*x, x=.70, y= -1, bounds(t=0:3.7))
+t3 <- integrateODE(dx ~ y, dy ~ 2*x, x=.72, y= -1, bounds(t=0:3.3))
 traj_plot(y(t) ~ x(t), t1, color="blue", nt=0)  %>%
     traj_plot(y(t) ~ x(t), t2, color="magenta", nt=0)  %>%
     traj_plot(y(t) ~ x(t), t3, color="black", nt=0)  %>%
-vectorfield_plot(y ~ x & y, 2*x ~ x & y, domain(x=-1:1, y=-1:1)) %>%
+vectorfield_plot(y ~ x & y, 2*x ~ x & y, bounds(x=-1:1, y=-1:1)) %>%
     gf_refine(coord_fixed())
 ```
 

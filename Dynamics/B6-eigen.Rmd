@@ -51,8 +51,8 @@ Imagine that we choose, arbitrarily, $$\vec{u_1} = \color{magenta}{\left[\begin{
 
 For the example, we will calculate a trajectory starting at the initial condition $\vec{w(0)} = \left[\begin{array}{r}-1.1\\ 2.1\end{array}\right]$:
 
-```{r results="hide"}
-traj <- integrateODE(dx ~ x + y, dy ~ 2*x, x=-1.1, y=2.1, tdur=2)
+```{r results="hide", message=FALSE}
+traj <- integrateODE(dx ~ x + y, dy ~ 2*x, x=-1.1, y=2.1, domain(t=0:2))
 traj_plot(y(t) ~ x(t), traj)
 ```
 
@@ -63,7 +63,7 @@ traj_plot(y(t) ~ x(t), traj)
 traj_plot(y(t) ~ x(t), traj, inherit=FALSE, nt=2) %>%
   gf_segment(0 + -3 ~ 0 + 1, color="magenta", inherit=FALSE, arrow=arrow(ends="last", type="closed", length=unit(2, "mm"))) %>%
   gf_segment(0 + 0 ~ 0 + 1, color="blue", inherit=FALSE, arrow=arrow(ends="last",type="closed", length=unit(2, "mm"))) %>%
-  flow_field(dx ~ x + y, dy ~ 2*x, domain = domain(x=-2:2, y=-3:2), color="gray", npts=15) %>%
+  flow_field(dx ~ x + y, dy ~ 2*x, domain = bounds(x=-2:2, y=-3:2), color="gray", npts=15) %>%
   gf_refine(coord_fixed())
 ```
 The initial condition (marked "0" in @fig-vec-example-1 is, like any other point in the state space, a linear combination of $\vec{u_1}$ and $\vec{u_2}$. We can find the scalar coefficients of the linear combination using any of the methods presented in Block 5, for instance the telescope method. 
@@ -79,9 +79,9 @@ So, $\vec{w(0)} = -0.7 \vec{u_1} - 0.4 \vec{u_2}$. Keep these scalar coefficient
 
 We can use `integrateODE()` to find the solution starting at any initial condition. In particular, we can find the solution $\vec{u_1}$ as the initial condition and, similarly, using $\vec{u_2}$ as the initial condition.
 
-```{r}
-traj_u1 <- integrateODE(dx ~ x + y, dy ~ 2*x, x=1, y=-3, tdur=2)
-traj_u2 <- integrateODE(dx ~ x + y, dy ~ 2*x, x=1, y= 0, tdur=2)
+```{r message=FALSE}
+traj_u1 <- integrateODE(dx ~ x + y, dy ~ 2*x, x=1, y=-3, domain(t=0:2))
+traj_u2 <- integrateODE(dx ~ x + y, dy ~ 2*x, x=1, y= 0, domain(t=0:2))
 ```
 
 @fig-vec-example-2 shows these trajectories.
@@ -90,11 +90,18 @@ traj_u2 <- integrateODE(dx ~ x + y, dy ~ 2*x, x=1, y= 0, tdur=2)
 #| label: fig-vec-example-2
 #| fig-cap: "Trajectories from the initial conditions $\\color{magenta}{\\vec{u_1}}$ and $\\color{blue}{\\vec{u_2}}$."
 #| fig-cap-location: margin
-traj_plot(y(t) ~ x(t), traj_u1, color="magenta", nt=1, domain=domain(t=0:1)) %>%
-  traj_plot(y(t) ~ x(t), traj_u2, color="blue", nt=1, domain=domain(t=0:1)) %>%
-  gf_segment(0 + -3 ~ 0 + 1, color="magenta", inherit=FALSE, arrow=arrow(ends="last", type="closed", length=unit(2, "mm"))) %>%
-  gf_segment(0 + 0 ~ 0 + 1, color="blue", inherit=FALSE, arrow=arrow(ends="last",type="closed", length=unit(2, "mm"))) %>%
-  flow_field(dx ~ x + y, dy ~ 2*x, domain = domain(x=-3:5, y=-4:5), color="gray", npts=15) %>%
+traj_plot(y(t) ~ x(t), traj_u1, bounds(t=0:1),  color="magenta", nt=1) %>%
+  traj_plot(y(t) ~ x(t), traj_u2, bounds(t=0:1), color="blue", nt=1) %>%
+  gf_segment(0 + -3 ~ 0 + 1, color="magenta", 
+             inherit=FALSE, 
+             arrow=arrow(ends="last", type="closed",
+                         length=unit(2, "mm"))) %>%
+  gf_segment(0 + 0 ~ 0 + 1, color="blue", inherit=FALSE,
+             arrow=arrow(ends="last",type="closed", 
+                         length=unit(2, "mm"))) %>%
+  flow_field(dx ~ x + y, dy ~ 2*x, 
+             bounds(x=-3:5, y=-4:5), 
+             color="gray", npts=15) %>%
   gf_refine(coord_fixed())
 ```
 
@@ -145,7 +152,7 @@ We can see what's special about $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$ by plott
 #| fig-cap-location: margin
   gf_segment(0 + 0.7072 ~ 0 + 0.7071, color="magenta", inherit=FALSE, arrow=arrow(ends="last", type="closed", length=unit(2, "mm"))) %>%
   gf_segment(0 + 0.8944 ~ 0 + -0.4472, color="blue", inherit=FALSE, arrow=arrow(ends="last",type="closed", length=unit(2, "mm"))) %>%
-  flow_field(dx ~ x + y, dy ~ 2*x, domain = domain(x=-1:1, y=-1:1), color="black", npts=15) %>%
+  flow_field(dx ~ x + y, dy ~ 2*x, domain = bounds(x=-1:1, y=-1:1), color="black", npts=15) %>%
   gf_refine(coord_fixed())
 ```
 
@@ -157,11 +164,16 @@ The consequence of this alignment of the flow with the eigenvectors is that the 
 As we did in the previous section, let's calculate the trajectories $\color{magenta}{\vec{\Lambda_1(t)}}$ and $\color{blue}{\vec{\Lambda_2(t)}}$ starting at the two eigenvectors and plot out the $y(t)$ component of the solution. Since we are anticipating an exponential form for the function, we will use semi-log axes, where an exponential will look like a straight line.
 
 ```{r eigen-time-series}
-traj_eigen1 <- integrateODE(dx ~ x + y, dy ~ 2*x, x=0.7071, y=0.7071)
-traj_eigen2 <- integrateODE(dx ~ x + y, dy ~ 2*x, x=-0.4472, y=0.8944)
+traj_eigen1 <- integrateODE(dx ~ x + y, dy ~ 2*x, 
+                            bounds(t=0:1), 
+                            x=0.7071, y=0.7071)
+traj_eigen2 <- integrateODE(dx ~ x + y, dy ~ 2*x, 
+                            bounds(t=0:1),
+                            x=-0.4472, y=0.8944)
 traj_plot(y(t) ~ t, traj_eigen1, color="magenta") %>%
  traj_plot(y(t) ~ t, traj_eigen2, color="blue") %>% 
-  gf_refine(scale_y_log10(breaks=c(0.3290, 0.7071, 0.8944, 5.2248)))
+  gf_refine(scale_y_log10(
+    breaks=c(0.3290, 0.7071, 0.8944, 5.2248)))
 ```
 We've marked the $y$ axis with the starting and ending values of each function, so that you can find the exponential parameter $k$ for each function.
 

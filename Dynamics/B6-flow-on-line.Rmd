@@ -22,7 +22,7 @@ The flow itself appears as the example in @fig-phase-line-intro. The state space
 #| fig-cap: "A one-dimensional state space shown with its flow vectors."
 #| fig-cap-location: margin
 raw <- rfun( ~ x, seed=920)
-Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-4:4),
+Znotes::phase_line(raw(x) - 2 ~ x, bounds(x=-4:4),
                    nix_dyn=TRUE, narrows=25,
                    transform=function(x) x^.75) 
 ```
@@ -33,7 +33,7 @@ Because the state space can be drawn without using the vertical coordinate of th
 #| fig-cap: "A one-dimensional state space shown with its flow vectors."
 #| fig-cap-location: margin
 raw <- rfun( ~ x, seed=920)
-Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-4:4), 
+Znotes::phase_line(raw(x) - 2 ~ x, bounds(x=-4:4), 
                    nix_dyn=FALSE, 
                    narrows=15, 
                    transform=function(x) x^.75) 
@@ -50,7 +50,7 @@ We can see the dynamics near fixed points more closely by zooming in, as in @fig
 #| fig-cap: "Zooming in on the flow for the system shown in \\@fig-phase-line-intro2."
 #| fig-cap-location: margin
 raw <- rfun( ~ x, seed=920)
-Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-3.5:-1.25), 
+Znotes::phase_line(raw(x) - 2 ~ x, bounds(x=-3.5:-1.25), 
                    nix_dyn=FALSE, 
                    narrows=15, 
                    transform=function(x) x^.75) 
@@ -63,11 +63,11 @@ A calculus technique you will be familiar with from previous Blocks is zooming i
 #| label: fig-phase-line-zoom1
 #| fig-cap: "Zooming in closely on each of the fixed points seen in \\@fig-phase-line-intro3."
 raw <- rfun( ~ x, seed=920)
-pA <- Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-3.07:-3.05), 
+pA <- Znotes::phase_line(raw(x) - 2 ~ x, bounds(x=-3.07:-3.05), 
                    nix_dyn=FALSE, 
                    narrows=15, 
                    transform=function(x) x^1.03) 
-pB <- Znotes::phase_line(raw(x) - 2 ~ x, domain(x=-1.59:-1.58), 
+pB <- Znotes::phase_line(raw(x) - 2 ~ x, bounds(x=-1.59:-1.58), 
                    nix_dyn=FALSE, 
                    narrows=15, 
                    transform=function(x) x^1.03) 
@@ -112,7 +112,7 @@ Pts <- tibble::tibble(x=seq(-4,4,length=100),
                       y=rnorm(length(x))/2)
 raw <- rfun( ~ x, seed=920)
 Znotes::phase_line(3*sin((raw(x) - 2)/5) ~ x, 
-                   domain(x=-4:4),
+                   bounds(x=-4:4),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   slice_plot(raw(x) - 2 ~ x, color="magenta", alpha=.5)
@@ -216,7 +216,7 @@ After 40 years of contributions, your retirement account will have almost one-mi
 You could have accomplished the same calculation using `integrateODE()`, like this:
 ```{r}
 Soln <- integrateODE(dV ~ r*V + M, V=0, M=12000, r=0.03,  
-                     tdur=40)
+                     domain(t=0:40))
 Soln$V(30)
 Soln$V(40)
 ```
@@ -253,28 +253,28 @@ But biomass production is not the only thing going on in the pasture. The grazin
 #| fig-cap: "Comparing the pasture dynamics for different herd sizes." #| fig-cap-location: margin
 r = .3; K=10; C=0.1; H=3
 pA <- Znotes::phase_line(r*x*(1-x/K) ~ x, 
-                   domain(x=0:10.5),
+                   bounds(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="Ungrazed pasture dynamics", x="",
           y = "Daily change in biomass") %>%
   gf_lims(y=c(-1,1))
 pB <- Znotes::phase_line(r*x*(1-x/K) -H*C~ x, 
-                   domain(x=0:10.5),
+                   bounds(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="3 cows grazing", x="",
           y = "") %>%
   gf_lims(y=c(-1,1))
 pC <- Znotes::phase_line(r*x*(1-x/K) - 7*C~ x, 
-                   domain(x=0:10.5),
+                   bounds(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="7 cows grazing", x="v (biomass of vegetation)",
           y = "Daily change in biomass") %>%
   gf_lims(y=c(-1,1))
 pD <- Znotes::phase_line(r*x*(1-x/K) - 8*C~ x, 
-                   domain(x=0:10.5),
+                   bounds(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="8 cows grazing", x="v (biomass of vegetation)",
@@ -298,7 +298,7 @@ In his *Nature* article, May modeled the consumption rate by a single cow with t
 #| fig-cap: "Consumption of vegetation by a single cow as a function of the amount available in the pasture."
 #| fig-cap-location: margin
 consumption <- makeFun((beta*v^2/(v0^2 + v^2))~ v, beta=0.1, v0=1)
-slice_plot(consumption(v) ~ v, domain(v=0:10)) %>%
+slice_plot(consumption(v) ~ v, bounds(v=0:10)) %>%
   gf_labs(y="Consumption (tons/day)", x="v: available biomass (tons)")
 ```
 You can recognize this as a form of sigmoid. When the amount of vegetation is very large, a cow will eat her fill. That is the saturation of the sigmoid. For small $v$, the cow needs to hunt around for vegetation tall enough to eat, reducing the consumption steeply.
@@ -312,28 +312,28 @@ You can recognize this as a form of sigmoid. When the amount of vegetation is ve
 consumption <- makeFun(0.1*v^2/(1+v^2) ~ v)
 r = .3; K=10; C=0.1; H=3
 pA <- Znotes::phase_line(r*x*(1-x/K) -3*consumption(x)~ x, 
-                   domain(x=0:10.5),
+                   bounds(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="3 cows grazing", x="",
           y = "Daily change in biomass") %>%
   gf_lims(y=c(-1,1))
 pB <- Znotes::phase_line(r*x*(1-x/K) -5*consumption(x)~ x, 
-                   domain(x=0:10.5),
+                   bounds(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="5 cows grazing", x="",
           y = "") %>%
   gf_lims(y=c(-1,0.5))
 pC <- Znotes::phase_line(r*x*(1-x/K) - 7*consumption(x)~ x, 
-                   domain(x=0:10.5),
+                   bounds(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="7 cows grazing", x="v (biomass of vegetation)",
           y = "Daily change in biomass") %>%
   gf_lims(y=c(-1,0.5))
 pD <- Znotes::phase_line(r*x*(1-x/K) - 8*consumption(x)~ x, 
-                   domain(x=0:10.5),
+                   bounds(x=0:10.5),
                    nix_dyn=FALSE, narrows=15,
                    transform=function(x) x^.75) %>%
   gf_labs(subtitle="8 cows grazing", x="v (biomass of vegetation)",

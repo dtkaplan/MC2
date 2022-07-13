@@ -11,9 +11,9 @@ In drawing a graph of $F(x)$, we will of course want to use coordinate axes wher
 ```{r echo=FALSE}
 #| label: fig-F-blank-axes
 #| fig-cap: "The graphics frame in which we want to draw the graph of $F(x)$. A small region of the domain is labeled $dx$. Within that domain, $F(x)$, whatever it is, will be a sloping segment. The gray segment shows what this might look like."
-slice_plot(cos(2*pi*x/10) ~ x, domain(x=-5:5), alpha=0) %>%
+slice_plot(cos(2*pi*x/10) ~ x, bounds(x=-5:5), alpha=0) %>%
   gf_lims(x=c(-5,5), y=c(-1,1)) %>%
-  slice_plot(0.1 + cos(2*pi*x/6) ~ x, domain(x=-2.5:-2.0), color="gray", size=2) %>%
+  slice_plot(0.1 + cos(2*pi*x/6) ~ x, bounds(x=-2.5:-2.0), color="gray", size=2) %>%
   gf_errorbarh(0 ~ -2.5 + -2.0, color="blue", width=2) %>%
   gf_text(0 ~ -2.25, label="dx", color="blue", vjust=-1) %>%
   gf_labs(y="Output of F(x)")
@@ -31,10 +31,10 @@ But we can draw $f(x)$ in terms of the slope of a segment of horizontal extent $
 #| label: fig-F-blank-axes2
 #| fig-cap: "Graphing $f(x)$ as a series of sloped segments. The slope is the value of $f(x)$. But the vertical position of the segment is not information provided by $f(x)$, so we've drawn all of them at the same vertical level."
 #| fig-cap-location: margin
-Pts <- Znotes::segmentize(cos(2*pi*x/10) ~ x, h=0.5, domain(x=-5:5), npts=100)
+Pts <- Znotes::segmentize(cos(2*pi*x/10) ~ x, h=0.5, bounds(x=-5:5), npts=100)
 
 
-slice_plot(cos(2*pi*x/10) ~ x, domain(x=-5:5), alpha=0) %>%
+slice_plot(cos(2*pi*x/10) ~ x, bounds(x=-5:5), alpha=0) %>%
   gf_segment(ymin + ymax ~ xmin + xmax, data = Pts, color="gray", size=2) %>%
   gf_lims(x=c(-5,5), y=c(-1,1)) %>%
   gf_errorbarh(0 ~ -2.5 + -2.0, color="blue", width=2) %>%
@@ -53,10 +53,10 @@ Let's now consider how to "sum up all the segments." we will start in @fig-F-232
 #| fig-cap: "Top: A function $F(x)$ for demonstration purposes. Bottom: Slicing $F(x)$ into piecewise domains of width $dx=2$ and anchoring the left-most point of each slice vertically at 0."
 #| fig-cap-location: margin
 F <- rfun(~ x, seed = 232)
-P1 <- slice_plot(F(x) ~ x, domain(x=-5:5)) %>%
+P1 <- slice_plot(F(x) ~ x, bounds(x=-5:5)) %>%
   gf_labs(title = "F(x)") %>%
   gf_refine(scale_x_continuous(breaks=-5:5))
-Pts <- Znotes::segmentize(F(x) ~ x, h=2, domain(x=-5:5), npts=100)
+Pts <- Znotes::segmentize(F(x) ~ x, h=2, bounds(x=-5:5), npts=100)
 P2 <- gf_segment(ymin + ymax ~ xmin + xmax, data = Pts) %>%
   gf_point(7.072 ~ -2.995, color="blue", size=2) %>%
   gf_hline(yintercept = ~ 7.072, color="blue", alpha=0.25) %>%
@@ -115,14 +115,14 @@ When we make the segment width $h$ smaller and smaller, the individual segments 
 #| label: fig-F-slice-many
 #| fig-cap: "Using small segments gives each segment a simple shape. In @fig-F-seg-2 the segments had width $dx=2.0$ and were discernable curvy. Top of this figure: At width $dx=0.25$ a few of the segments look curved. Middle: This graph zooms in on the subdomain $-1 \\leq x \\leq 1$ in the top panel, where there is a notably curved segment in the top graph. Setting $dx=0.1$ breaks up such curved segment into components better approximated by a straight line. Bottom: Using $dx=0.01$ further improves the approximation of each segment to a straight line."
 #| fig-cap-location: margin
-Pts <- Znotes::segmentize(F(x) ~ x, h=0.25, domain(x=-5:5), npts=20)
+Pts <- Znotes::segmentize(F(x) ~ x, h=0.25, bounds(x=-5:5), npts=20)
 P1 <- 
   gf_rect(1.1 + -2.2 ~ -1 + 1, fill="orange", color=NA, alpha=0.2) %>%
   gf_segment(ymin + ymax ~ xmin + xmax, data = Pts) %>%
   gf_labs(x="x", y="output") %>%
   gf_errorbarh( -0.8 ~ -2.5 + -2.25, color="blue") %>%
   gf_text(-0.8 ~ -2., label="dx=0.25", color="blue", hjust=0)
-Pts <- Znotes::segmentize(F(x) ~ x, h=0.1, domain(x=c(-1,1)), npts=20)
+Pts <- Znotes::segmentize(F(x) ~ x, h=0.1, bounds(x=c(-1,1)), npts=20)
 P2 <- 
   gf_rect(0.4 + -0.6 ~ -1 + 1, fill="orange", color=NA, alpha=0.1) %>%
   gf_rect(0.4 + -0.6 ~ 0.25 + 0.50, fill="red", color=NA, alpha=0.1) %>%
@@ -131,7 +131,7 @@ P2 <-
   gf_errorbarh( -0.1 ~ -0.5 + -0.4, color="blue", height=0.05) %>%
   gf_text(-0.1 ~ -0.35, label="dx=0.1", color="blue", hjust=0) 
   
-Pts <- Znotes::segmentize(F(x) ~ x, h=0.01, domain(x=c(0.25,0.5)), npts=20)
+Pts <- Znotes::segmentize(F(x) ~ x, h=0.01, bounds(x=c(0.25,0.5)), npts=20)
 P3 <- 
   gf_rect(0.01 + -0.013 ~ 0.25 + 0.50, fill="red", color=NA, alpha=0.1) %>%
   gf_segment(ymin + ymax ~ xmin + xmax, data = Pts) %>%
@@ -168,11 +168,11 @@ Returning to the example with which we started the chapter, here are the little 
 ```{r echo=FALSE}
 #| label: fig-show-bits2
 #| fig-cap: "$\\color{blue}{\\int} f(x)dx$ means to assemble the straight-line pieces $f(x) dx$ in the manner described in the previous section."
-Pts <- Znotes::segmentize(cos(2*pi*x/10) ~ x, h=0.5, domain(x=-5:5), npts=1) %>%
+Pts <- Znotes::segmentize(cos(2*pi*x/10) ~ x, h=0.5, bounds(x=-5:5), npts=1) %>%
   mutate(top = cumsum(ymax - ymin), bottom=top - (ymax-ymin))
 
 
-slice_plot(cos(2*pi*x/10) ~ x, domain(x=-5:5), alpha=0) %>%
+slice_plot(cos(2*pi*x/10) ~ x, bounds(x=-5:5), alpha=0) %>%
   gf_segment(ymin + ymax ~ xmin + xmax, data = Pts, color="gray", size=1.5) %>%
   gf_segment(bottom + top ~ xmin + xmax, data = Pts) %>%
   #gf_lims(x=-5:5, y=c(-1,1)) %>%

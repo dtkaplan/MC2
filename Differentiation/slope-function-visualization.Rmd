@@ -25,11 +25,11 @@ ii. extract the **slope** of each line segment as the value of the slope functio
 ```{r echo=FALSE}
 #| label: fig-segment-approx
 #| fig-cap: "A function $f(x)$ shown along with the tangent line segment touching $f()$ at each of the green points. For the slope function visualization, the tangent line segments are moved down to the horizontal axis."
-Segs <- create_segments(sin(x) ~ x, domain(x=c(-.1,pi)), nsegs=10)
+Segs <- create_segments(sin(x) ~ x, bounds(x=c(-.1,pi)), nsegs=10)
 gf_segment(yf + yfend ~ x + xend, data = Segs, 
            color=~slope,size=2, alpha=.9) %>%
     gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
-    slice_plot(sin(x) ~ x, color="black", domain(x=c(0, pi)),
+    slice_plot(sin(x) ~ x, color="black", bounds(x=c(0, pi)),
                alpha = 0.85, size=1, inherit=FALSE) %>%
     gf_point(offset ~ start, size=1, color="green") %>%
     gf_segment(y + yend ~ x + xend, data = Segs, 
@@ -45,11 +45,11 @@ You can see that the slopes are a function of $x$, that is, the slope changes wi
 ```{r eval=FALSE, echo=FALSE}
 #| label: fig-finer-slope
 ## Leaving this figure out
-Segs <- create_segments(sin(x) ~ x, domain(x=c(-.1,pi)), nsegs=100)
+Segs <- create_segments(sin(x) ~ x, bounds(x=c(-.1,pi)), nsegs=100)
 # gf_segment(yf + yfend ~ x + xend, data = Segs, 
 #            color=~slope,size=2, alpha=.9) %>%
 #     gf_refine(scale_color_continuous(type="gradient")) %>%
-#     slice_plot(sin(x) ~ x, color="orange3", domain(x=c(0, pi)),
+#     slice_plot(sin(x) ~ x, color="orange3", bounds(x=c(0, pi)),
 #                alpha = 0.5, size=1, inherit=FALSE) %>%
 #     gf_point(offset ~ start, size=1, color="green") %>%
   gf_segment(y + yend ~ x + xend, data = Segs, 
@@ -67,10 +67,10 @@ Segs <- create_segments(sin(x) ~ x, domain(x=c(-.1,pi)), nsegs=100)
 ```{r echo=FALSE, fig.height=3, fig.width=7, fig.show="hold", out.width="100%"} 
 #| label: fig-slope-visualization-examples
 #| fig-cap: "Slope-function visualizations (left) of several pattern-book functions (right)."
-Segs <- create_segments(exp(x) ~ x, domain(x=c(-pi,pi)), nsegs=30)
+Segs <- create_segments(exp(x) ~ x, bounds(x=c(-pi,pi)), nsegs=30)
 
 ggpubr::ggarrange(
-  slice_plot(exp(x) ~ x, domain(x=c(-pi, pi))) %>%
+  slice_plot(exp(x) ~ x, bounds(x=c(-pi, pi))) %>%
     gf_labs(title="exp(x)"),
 gf_segment(y + yend ~ x + xend, data = Segs, 
            color=~slope,size=1.3, lineend="round") %>%
@@ -78,9 +78,9 @@ gf_segment(y + yend ~ x + xend, data = Segs,
     gf_labs(title="exp(x) slope-function visualization")  %>%
     gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
   gf_theme(theme(legend.position = "none")), ncol = 2)
-Segs <- create_segments(log(x) ~ x, domain(x=c(.2,pi)), nsegs=30)
+Segs <- create_segments(log(x) ~ x, bounds(x=c(.2,pi)), nsegs=30)
 ggpubr::ggarrange(
-  slice_plot(log(x) ~ x, domain(x=c(.2, pi))) %>%
+  slice_plot(log(x) ~ x, bounds(x=c(.2, pi))) %>%
     gf_labs(title="log(x)"),
 gf_segment(y + yend ~ x + xend, data = Segs, 
            color=~slope,size=1.3, lineend="round") %>%
@@ -88,9 +88,9 @@ gf_segment(y + yend ~ x + xend, data = Segs,
     gf_labs(title="log(x) slope-function visualization")  %>%
     gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
   gf_theme(theme(legend.position = "none")), ncol = 2)
-Segs <- create_segments(x^2 ~ x, domain(x=c(-pi,pi)), nsegs=30)
+Segs <- create_segments(x^2 ~ x, bounds(x=c(-pi,pi)), nsegs=30)
 ggpubr::ggarrange(
-  slice_plot(x^2 ~ x, domain(x=c(-pi, pi))) %>%
+  slice_plot(x^2 ~ x, bounds(x=c(-pi, pi))) %>%
     gf_labs(title=expression(x^2)),
 gf_segment(y + yend ~ x + xend, data = Segs, 
            color=~slope,size=1.3, lineend="round") %>%
@@ -98,9 +98,9 @@ gf_segment(y + yend ~ x + xend, data = Segs,
     gf_labs(title=expression(paste("x^2 slope-function visualization")))  %>%
     gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
   gf_theme(theme(legend.position = "none")), ncol=2)
-Segs <- create_segments(2*x -4 ~ x, domain(x=c(-pi,pi)), nsegs=30)
+Segs <- create_segments(2*x -4 ~ x, bounds(x=c(-pi,pi)), nsegs=30)
 ggpubr::ggarrange(
-  slice_plot(2*x - 4 ~ x, domain(x=c(-pi, pi))) %>%
+  slice_plot(2*x - 4 ~ x, bounds(x=c(-pi, pi))) %>%
     gf_labs(title="2x - 4"),
 gf_segment(y + yend ~ x + xend, data = Segs, 
            color=~slope,size=1.3, lineend="round") %>%

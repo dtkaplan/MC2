@@ -67,7 +67,7 @@ The pattern-book functions are closely related to one another but each has a dis
 my_arrow <- grid::arrow(angle = 30, 
                         length = grid::unit(0.15, "inches"), 
                         ends = "last", type = "open")
-dom <- interval(x=-1.25:1.25)
+dom <- bounds(x=-1.25:1.25)
 Pa <- slice_plot(x ~ x, dom) %>%
   gf_labs(subtitle="Proportional function", x="input") %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed") %>%
@@ -77,7 +77,7 @@ Pb <- slice_plot(1 ~ x, dom) %>%
   gf_labs(subtitle="'Constant function", x="input") %>%
   gf_lims(y=c(-1.25, 1.25)) %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
-dom <- interval(x=-3:3)
+dom <- bounds(x=-3:3)
 P1 <- slice_plot(pmax(-100, pmin(x^-1, 100)) ~ x, dom, npts=751, singularities=0) %>%
   gf_labs(subtitle="Reciprocal function") %>%
   gf_lims(y=c(-100, 100)) %>%
@@ -128,11 +128,11 @@ P2 <- slice_plot(log(x) ~ x, dom) %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed") %>%
   gf_segment(1.065 + 1.099 ~  2.9 + 3, arrow=my_arrow) %>%
   gf_segment(-2.8 + -3 ~  .0608 + 0.0498, arrow=my_arrow)
-P5 <- slice_plot(pnorm(x) ~ x, domain(x=c(-3,3))) %>%
+P5 <- slice_plot(pnorm(x) ~ x, bounds(x=c(-3,3))) %>%
   gf_labs(subtitle="Sigmoid", x="input") %>% 
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
 
-P4 <- slice_plot(dnorm(x) ~ x, domain(x=c(-3,3))) %>%
+P4 <- slice_plot(dnorm(x) ~ x, bounds(x=c(-3,3))) %>%
   gf_labs(subtitle="Gaussian", x="input") %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
 ```
@@ -200,7 +200,7 @@ In trigonometry, the sine has the cosine as a partner. But the two functions $\s
 #| fig-cap: "The output of the sinusoid function oscillates as the input increases."
 #| fig-width: 7
 #| fig-height: 3
-slice_plot(sin(x) ~ x, domain(x=c(-20,20)), npts=500) %>%
+slice_plot(sin(x) ~ x, bounds(x=c(-20,20)), npts=500) %>%
   gf_labs(subtitle="Sinusoid", x="input") %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
 ```
@@ -228,7 +228,7 @@ Pts <- tibble(
 )
 gf_vline(xintercept=~t, data=Pts, color="brown", 
          alpha=0.5) %>%
-slice_plot(exp(t) ~ t, domain(t=-1.6:2.2), color="blue") %>%
+slice_plot(exp(t) ~ t, bounds(t=-1.6:2.2), color="blue") %>%
   gf_theme(scale_y_continuous(breaks = -1:10)) %>%
   gf_hline(yintercept=~0, linetype="dashed") %>%
   gf_point(y ~ t, data = Pts, color="magenta") %>%
@@ -250,7 +250,7 @@ Within the power-law family, it is helpful to know and be able to distinguish be
 #| column: page-right
 #| layout-ncol: 3
 #| fig-pos: 'h'
-dom <- interval(x=c(-1.25, 1.25))
+dom <- bounds(x=c(-1.25, 1.25))
 P0 <- slice_plot(1 ~ x, dom) %>% gf_labs(subtitle=expression(m[0](x) %==% x^0), x="input") %>%
   gf_lims(y=c(-1, 2)) %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
@@ -295,7 +295,7 @@ knitr::include_graphics("www/tiny-blank.png")
 #| label: fig-negative-graphs
 #| fig-cap-location: margin
 #| fig-pos: "h"
-dom <- domain(x=-1.5:1.5)
+dom <- bounds(x=-1.5:1.5)
 P1 <- slice_plot(x^-1 ~ x, dom, npts=281, singularities=0) %>%
   gf_labs(subtitle=expression(x^{-1}), y="") %>%
   gf_lims(y=c(-100, 100)) %>%
@@ -337,7 +337,7 @@ knitr::include_graphics("www/tiny-blank.png")
 #| label: fig-non-integer-graphs
 #| fig-cap: "The domain of power-law functions with non-integer power is $0 \\leq x < \\infty$."
 #| fig-cap-location: margin
-dom <- domain(x=c(-1.5, 1.5))
+dom <- bounds(x=c(-1.5, 1.5))
 Pa <- slice_plot(x^(1/2) ~ x, dom, npts=501) %>%
   gf_labs(title=expression(x^{1/2})) %>%
   gf_lims(y=c(-2, 2)) %>%

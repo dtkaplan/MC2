@@ -53,7 +53,7 @@ fun <- spliner(y ~ x, data = Mapping)
 gf_point(y ~ x, data = Mapping, color=~ hue, size=2, alpha=0.5) %>%
   gf_vline(xintercept=~ x, data = Mapping, color=~ hue, size=.1) %>%
   gf_hline(yintercept=~ y, data = Mapping, color=~ hue, size=.1) %>%
-  slice_plot(fun(x) ~ x, domain(x=-5:6.1), npts=500) %>%
+  slice_plot(fun(x) ~ x, bounds(x=-5:6.1), npts=500) %>%
   gf_labs(x="input", y="output") %>%
   gf_refine(scale_color_identity(), 
             scale_y_continuous(breaks=seq(-6, 6, by=1), limits=c(-6.5, 6.5)),
@@ -87,7 +87,7 @@ FHN_points <- tibble(
 gf_point(w ~ I(-v*36*25), data = FHN_points) %>%
   gf_labs(y="Current (mA)", x = "Voltage (mV)") %>%
   slice_plot( -(v/25 + 2) + (v/25 + 2)^3/3 ~ v, 
-              domain(v=-105:5)) +
+              bounds(v=-105:5)) +
   coord_flip()
 ```
 The data points themselves might be described metaphorically as "clouds" spotting the voltage vs current "sky." Real-world clouds often show patterns such as animal or country shapes. We might say that a given cloud resembles a rabbit. Similarly, the data clouds show a pattern between current and voltage. We might, for instance, describe the current-voltage relationship as S-shaped. Or, rather than using the letter "S" we could draw a curve through the dots to summarize and simplify the relationship.
@@ -118,16 +118,16 @@ A tilde. Make sure you can find it on your keyboard.
 :::
 
 1. The function that is to be graphed. This is to be written as an R ***tilde expression***. Some examples of tilde expressions are shown in the table below. The essential feature of a tilde expression is the ![](www/tilde-small.png) mark, called a "tilde," which serves as punctuation dividing a left side of the expression from a right side. 
-2. The ***domain interval***. The domain of many functions reaches infinity, but our computer screens are not so big! Making a graph requires choosing a finite interval for each of the input quantities. 
+2. The ***bounds***. The domain of many functions reaches infinity, but our computer screens are not so big! Making a graph requires choosing a finite interval for each of the input quantities. 
 
 The tilde expression for a function with one input will have only one name on the right-hand side of the ![](www/tilde-small.png). The domain interval specification must use the same name:
 
 Tilde expression     |  Domain interval specification
 ---------------------|----------------------------
-`x^2 ~ x`            |  `interval(x = -3:3)`
-`y * exp(y) ~ y`     |  `interval(y = 0:10)`
-`log(y) / exp(y) ~ y`|  `interval(y = -5:5)`
-`sin(z) / z ~ z`     |  `interval(y = -3*pi:3*pi)`
+`x^2 ~ x`            |  `bounds(x = -3:3)`
+`y * exp(y) ~ y`     |  `bounds(y = 0:10)`
+`log(y) / exp(y) ~ y`|  `bounds(y = -5:5)`
+`sin(z) / z ~ z`     |  `bounds(y = -3*pi:3*pi)`
 
 ### Slice plot
 
@@ -137,7 +137,7 @@ To draw a graph of a function with one input, use `slice_plot()`. The tilde expr
 #| label: fig-first-slice-plot
 #| fig.cap: "Graph of the function $f(t) \\equiv t e^t$."
 #| column: margin
-slice_plot(t * exp(t) ~ t, domain(t=0:10))
+slice_plot(t * exp(t) ~ t, bounds(t=0:10))
 ```
 
 
@@ -173,7 +173,7 @@ Functions with **two inputs** can be displayed with `contour_plot()`. Naturally,
 #| label: fig-first-contour
 #| fig-cap: "Contour plot of a function with two inputs $g(y,z) \\equiv e^{-z}\\sin(y)$"
 #| fig-cap-location: margin
-contour_plot(exp(-z)*sin(y) ~ y & z, domain(y=-6:6, z=0:2))
+contour_plot(exp(-z)*sin(y) ~ y & z, bounds(y=-6:6, z=0:2))
 ```
 
 Contour plots will be a preferred format for displaying functions with two inputs. The main reason to prefer contour plots is the ease with which locations of points in the input space can be identified and the ability to read output values without much difficulty. 
@@ -188,7 +188,7 @@ the space of all possibilities (y, z, output) is three-dimensional, but very few
 
 
 ```{r results="hide", eval=FALSE}
-  surface_plot(exp(-z)*sin(y) ~ y & z, interval(y=-6:6, z=0:2))
+  surface_plot(exp(-z)*sin(y) ~ y & z, bounds(y=-6:6, z=0:2))
 ```
 
 
@@ -199,7 +199,7 @@ the space of all possibilities (y, z, output) is three-dimensional, but very few
 if (!knitr::is_html_output()) {
   knitr::include_graphics("www/surface-plot1.png")
 } else {
-  surface_plot(exp(-z)*sin(y) ~ y & z, interval(y=-6:6, z=0:2))
+  surface_plot(exp(-z)*sin(y) ~ y & z, bounds(y=-6:6, z=0:2))
 }
 ```
 
@@ -220,7 +220,7 @@ What's the value of the function being plotted here at input $(\text{input}_1=0,
 ```{r echo=FALSE}
 f2 <- rfun( ~ input_1 + input_2, seed=932)
 contour_plot(f2(input_1, input_2) ~ input_1 + input_2,
-                 domain(input_1=c(-5, 5), input_2 = c(0, 4)),
+                 bounds(input_1=c(-5, 5), input_2 = c(0, 4)),
              skip=0) %>%
   gf_labs(x = "Input 1", y = "Input 2") %>%
   gf_point(0 ~ 0, color="red", size=1)
@@ -241,7 +241,7 @@ For this contour graph
 #| label: dkskes
 #| fig-cap: ""
 g <- rfun(~ x & y, seed=783)
-contour_plot(g(x,y)-2.5 ~ x & y, interval(x=-3:3, y=-3:6), skip=0, label_alpha=.5)
+contour_plot(g(x,y)-2.5 ~ x & y, bounds(x=-3:3, y=-3:6), skip=0, label_alpha=.5)
 ```
 
 i. Find an input coordinate where the function is steepest.
@@ -271,7 +271,7 @@ Almost always, when mathematically modeling a real-world situation or phenomenon
 #| fig-cap-location: margin
 f2 <- rfun( ~ input_1 + input_2, seed=96)
 contour_plot(f2(input_1, input_2) ~ input_1 + input_2,
-                 domain(input_1=c(-5, 5), input_2 = c(0, 4)),
+                 bounds(input_1=c(-5, 5), input_2 = c(0, 4)),
              skip=0)
 ```
 
@@ -298,12 +298,12 @@ For instance, suppose we set input 22 to the constant value 1.5. This means that
 #| fig-height: 2.5
 f2 <- rfun( ~ input_1 + input_2, seed=96)
 PL <- contour_plot(f2(input_1, input_2) ~ input_1 + input_2,
-                 domain(input_1=c(-5, 5), input_2 = c(0, 4)),
+                 bounds(input_1=c(-5, 5), input_2 = c(0, 4)),
              skip=0) %>%
   gf_hline(yintercept=1.5, color="orange3", size=2) %>%
   gf_hline(yintercept=1.5, color="red", size=1) 
 
-PR <- slice_plot(f2(input_1, input_2=1.5) ~ input_1, domain(input_1=c(-5, 5))) 
+PR <- slice_plot(f2(input_1, input_2=1.5) ~ input_1, bounds(input_1=c(-5, 5))) 
 gridExtra::grid.arrange(PL, PR, ncol=2)
 ```
 
@@ -317,11 +317,11 @@ Slices can be taken in any direction or even along a curved path! The blue line 
 #| fig-cap-location: margin
 #| fig-height: 2.5
 Pleft <- contour_plot(f2(input_1, input_2) ~ input_1 + input_2,
-                 domain(input_1=c(-5, 5), input_2 = c(0, 4)),
+                 bounds(input_1=c(-5, 5), input_2 = c(0, 4)),
              skip=0) %>%
   gf_vline(xintercept=0, color="dodgerblue", size=2) 
 
-Pright <- slice_plot(f2(input_1 = 0 , input_2) ~ input_2, domain(input_2=c(0, 5))) 
+Pright <- slice_plot(f2(input_1 = 0 , input_2) ~ input_2, bounds(input_2=c(0, 5))) 
 gridExtra::grid.arrange(Pleft, Pright, ncol=2)
 ```
 :::

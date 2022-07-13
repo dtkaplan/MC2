@@ -54,7 +54,7 @@ Finding the argmax can be accomplished simply by plotting the function $\cos(\th
 #| fig-cap: "In the simple model of  a tennis ball launched at an angle $\\theta$ from the horizontal, the distance travelled  is $2 v_0^2 / g$ times $\\cos(\\theta)\\sin(\\theta)$."
 #| column: margin
 f <- makeFun(cos(pi*theta/180)*sin(pi*theta/180) ~ theta)
-slice_plot(f(theta) ~ theta, domain(theta=c(0,90))) %>%
+slice_plot(f(theta) ~ theta, bounds(theta=c(0,90))) %>%
   gf_labs(x = expression(theta), y= expression(cos(theta)* sin(theta)))
 ```
 
@@ -66,7 +66,7 @@ Zooming in on the $\theta$ axis let's you find the argmax with more precision:
 #| label: fig-ball-theta-zoom
 #| fig-cap: "Zooming in on the argmax of the objective function. It is important to look at the scale of the vertical axis. Any value of $\\theta$ between about 40 and 50 gives a close approximation to the maximum."
 #| column: margin
-slice_plot(f(theta) ~ theta, domain(theta = c(40, 50))) %>%
+slice_plot(f(theta) ~ theta, bounds(theta = c(40, 50))) %>%
   gf_labs(x = expression(theta))
 ```
 
@@ -114,20 +114,20 @@ For an argmin, changing $x$ from less than $x^\star$ to greater than $x^\star$; 
 #| fig-cap: "Top row: An objective function near an argmax (left) and an argmin (right). Bottom row: The derivative of the objective function. A horizontal line (orange) marks zero on the vertical axis."
 f <- makeFun(sin(2*pi*x/4)~ x)
 f2 <- D(f(x) ~ x)
-P1 <- slice_plot(f(x) ~ x, domain(x=c(0.5, 1.5))) %>%
+P1 <- slice_plot(f(x) ~ x, bounds(x=c(0.5, 1.5))) %>%
   gf_labs(title="Argmax x* = 1") %>%
   gf_vline(xintercept = ~ 1, color="dodgerblue", alpha = 0.25, size=2) %>%
   gf_text(.9 ~ 0.95, label="x*", size=6, color="dodgerblue")
-P2 <- slice_plot(f(x) ~ x, domain(x=c(2.5, 3.5))) %>%
+P2 <- slice_plot(f(x) ~ x, bounds(x=c(2.5, 3.5))) %>%
   gf_labs(title="Argmin x* = 3") %>%
   gf_vline(xintercept = ~ 3, color="dodgerblue", alpha = 0.25, size=2) %>%
   gf_text(-0.8 ~ 2.97, label="x*", size=6, color="dodgerblue")
-P3 <- slice_plot(f2(x) ~ x, domain(x=c(0.5, 1.5))) %>%
+P3 <- slice_plot(f2(x) ~ x, bounds(x=c(0.5, 1.5))) %>%
   gf_labs(title="Argmax x* = 1", y="Derivative of f(x)") %>%
   gf_vline(xintercept = ~ 1, color="dodgerblue", alpha = 0.25, size=2) %>%
   gf_text(0.96 ~ 0.95, label="x*", size=6, color="dodgerblue") %>%
   gf_hline(yintercept = ~ 0, color="orange")
-P4 <- slice_plot(f2(x) ~ x, domain(x=c(2.5, 3.5))) %>%
+P4 <- slice_plot(f2(x) ~ x, bounds(x=c(2.5, 3.5))) %>%
   gf_labs(title="Argmin x* = 3", y="Derivative of f(x)") %>%
   gf_vline(xintercept = ~ 3, color="dodgerblue", alpha = 0.25, size=2) %>%
   gf_text(.85 ~ 2.97, label="x*", size=6, color="dodgerblue") %>%
@@ -262,7 +262,7 @@ Suppose $V$ is specified as 1000 liters. A good first step is to choose appropri
 ```{r}
 #| column: margin
 A <- makeFun(2*pi*r^2 + 2*V/r ~ r, V=1000000)
-slice_plot(A(r) ~ r, domain(r=c(10, 100))) %>%
+slice_plot(A(r) ~ r, bounds(r=c(10, 100))) %>%
   gf_labs(x = "radius (cm)", y = "Surface area of container (square cm)")
 ```
 
@@ -286,7 +286,7 @@ Approach (2) is always at hand, since you already know the objective function. L
 
 ```{r echo=FALSE}
 #| column: margin
-slice_plot(A(r) ~ r, domain(r=c(50, 60))) %>%
+slice_plot(A(r) ~ r, bounds(r=c(50, 60))) %>%
   gf_point(A(54.1926) ~ 54.1926, shape="*", size=10) %>%
   gf_labs(x = "radius (cm)", y="Container surface area (square cm)")
 ```

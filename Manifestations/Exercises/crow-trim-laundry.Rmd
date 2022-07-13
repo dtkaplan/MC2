@@ -44,7 +44,7 @@ A simple approach is to plot out the total benefit as a function of expenditures
 overall <- makeFun( fA(xA) + fB(xB) ~ xA + xB)
 g_budget <- makeFun(xA + xB ~ xA + xB)
 contour_plot(overall(xA, xB) ~ xA  + xB, 
-         domain(xA=range(0,50), xB=range(0,50))) %>%
+         bounds(xA=range(0,50), xB=range(0,50))) %>%
   contour_plot(g_budget(xA, xB) ~ xA + xB, filled=FALSE,
                contours_at=NULL, contour_color="orange3", alpha=0.5)
 ```
@@ -78,7 +78,7 @@ askMC(
 Another way to look at the problem is to find the total QALY outcome as a function of the amount $x_A$, recognizing that once $x_A$ is set, the remaining money will go to option B, so $x_B = 50-x_A$. The following sandbox makes the plot.
 
 ```{r}
-slice_plot( fA(xA) + fB(50-xA) ~xA, domain(xA = c(0,50)))
+slice_plot( fA(xA) + fB(50-xA) ~xA, bounds(xA = c(0,50)))
 ```
 
 
@@ -95,7 +95,7 @@ The following graphic shows the difference $\partial_{x_A} f_A() - \partial_{x_B
 dfA = D(fA(xA)~xA)
 dfB = D(fB(xB)~xB)
 contour_plot( dfA(xA) - dfB(xB) ~ xA&xB, 
-          domain(xA=range(0,50), xB=range(0,50)),
+          bounds(xA=range(0,50), xB=range(0,50)),
           contours_at = c(-2, -4, 0, 4, 2), skip=0) %>%
   contour_plot(xA + xB ~ xA + xB, contour_color="magenta", skip=0)
 ```

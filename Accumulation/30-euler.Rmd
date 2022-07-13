@@ -54,7 +54,7 @@ raw <- rfun( ~ t, seed=541)
 f <- makeFun((raw(t)+10)/2 ~ t) 
 
 gf_rect(0 + 4.384 ~ 1.25 + 1.60, color=NA, fill="brown", alpha=0.25) %>%  
-slice_plot(f(t) ~ t, domain(t=-.5:4)) %>%
+slice_plot(f(t) ~ t, bounds(t=-.5:4)) %>%
   gf_hline(yintercept = ~ 0, color="brown") %>%
   gf_refine(scale_x_continuous(breaks=c(-1,0,1, 1.25, 1.60, 2, 3, 4),
                                labels = c(-1, 0, 1, latex2exp::TeX(c("$t_0$", "$t_0 + dt$")), 2, 3, 4 ))) %>%
@@ -78,12 +78,12 @@ In this sort of visualization, an integral is the accumulation of many of these 
 #| label: fig-bars-0-3
 #| fig-cap: "Visualizing the integral $\\int_0^3 f(t) dt$ as the total \"area\" of several $f(t) dt$ bars. The width of each of the bars is $dt$. The height depends on the value of the function $f(t)$ at the bar. For illustration, two of the bars are marked with vertical and horizontal line segments."
 #| fig-cap-location: margin
-Bars <- Znotes::Riemann_bars(f(t) ~ t, h=0.3, domain(t=0:3))
+Bars <- Znotes::Riemann_bars(f(t) ~ t, h=0.3, bounds(t=0:3))
 
 gf_text(1.5 ~ 2.2, label=latex2exp::TeX("$\\sim \\int_0^3 f(t)dt$"), size=10, color=alpha("blue", 0.5)) %>%
 gf_rect(ymin + ymax ~ xmin + xmax, data = Bars, color= "grey", fill=~color, alpha=0.3 ) %>%
   gf_refine(scale_fill_identity()) %>%
-  slice_plot(f(t) ~ t, domain(t=-1:4), inherit=FALSE) %>%
+  slice_plot(f(t) ~ t, bounds(t=-1:4), inherit=FALSE) %>%
   gf_hline(yintercept = ~ 0, color="brown") %>%
   gf_segment(0 + f(1.5) ~ 1.5 + 1.5, color = "magenta", arrow=arrow(ends="both", type="closed", length=unit(0.12, "inches"))) %>%
   gf_text(1.7 ~ 1.4, label=latex2exp::TeX("$f(t=1.5)$"), angle=90, color="magenta", size=5) %>%
@@ -104,12 +104,13 @@ As always in calculus, we imagine $dt$ as a "small" quantity. In @fig-bars-0-3B 
 #| label: bars-0-3B
 #| fig-cap: "Visualizing the integral $\\int_0^3 f(t) dt$ as the total \"area\" of several $f(t) dt$ bars. The width of each of the bars is $dt$. The height depends on the value of the function $f(t)$ at the bar. For illustration, two of the bars are marked with vertical and horizontal line segments."
 #| fig-cap-location: margin
-Bars <- Znotes::Riemann_bars(f(t) ~ t, h=0.1, domain(t=0:3))
+Bars <- Znotes::Riemann_bars(f(t) ~ t, h=0.1, bounds(t=0:3))
 P1 <- 
-  gf_rect(ymin + ymax ~ xmin + xmax, data = Bars, color= "grey", fill=~color, alpha=0.3 ) %>%
+  slice_plot(f(t) ~ t, bounds(t=-1:4)) %>%
+  gf_rect(ymin + ymax ~ xmin + xmax, data = Bars, color= "grey", fill=~color, alpha=0.3, inherit=FALSE ) %>%
   gf_refine(scale_fill_identity()) %>%
   gf_text(2 ~ 1.5, label=latex2exp::TeX("$\\sim\\int_0^3 f(t)dt$"), size=10, color=alpha("blue", 0.5)) %>%
-  slice_plot(f(t) ~ t, domain(t=-1:4), inherit=FALSE) %>%
+  
   gf_hline(yintercept = ~ 0, color="brown") %>%
   gf_text(-.4 ~ 1.65, label="dt", color="orange") %>%
   gf_text(-.4 ~ 0.65, label="dt", color="orange") %>%
@@ -117,10 +118,11 @@ P1 <-
   gf_segment(0 + 0 ~ 1.6 + 1.7, color = "orange", arrow=arrow(ends="both", type="closed", length=unit(0.06, "inches"))) %>%
   gf_lims(y=c(-0.5, 5)) %>%
   gf_text(4 ~ 2.5, label="dt=0.1", color="orange")
-Bars2 <- Znotes::Riemann_bars(f(t) ~ t, h=0.0333, domain(t=0:3))
-P2 <- gf_rect(ymin + ymax ~ xmin + xmax, data = Bars2, color= "grey", fill=~color, alpha=0.3 ) %>%
+Bars2 <- Znotes::Riemann_bars(f(t) ~ t, h=0.0333, bounds(t=0:3))
+P2 <- slice_plot(f(t) ~ t, bounds(t=-1:4)) %>%
+  gf_rect(ymin + ymax ~ xmin + xmax, data = Bars2, color= "grey", fill=~color, alpha=0.3, inherit=FALSE ) %>%
   gf_refine(scale_fill_identity()) %>%
-  slice_plot(f(t) ~ t, domain(t=-1:4), inherit=FALSE) %>%
+  
   gf_hline(yintercept = ~ 0, color="brown") %>%
 gf_text(2 ~ 1.5, label=latex2exp::TeX("$\\sim \\int_0^3 f(t)dt$"), size=10, color=alpha("blue", 0.5)) %>%
   gf_lims(y=c(-0.5, 5)) %>%
@@ -138,13 +140,13 @@ When $f(t_i) < 0$, then $f(t_i) dt$ will be negative. There is no such thing as 
 #| fig-cap: "The $\\int_{-2}^3 g(t) dt$ covers subdomains where $g(t) > 0$ and where $g(t) < 0$. In those latter subdomains, the \"area\" is negative, and shown in light orange here."
 raw <- rfun( ~ t, seed=541)
 g <- makeFun((raw(-t)+10)/2 ~ t) 
-Bars3 <- Znotes::Riemann_bars(g(t) ~ t, h=0.0333, domain(t=-2:3))
+Bars3 <- Znotes::Riemann_bars(g(t) ~ t, h=0.0333, bounds(t=-2:3))
 gf_text(2 ~ -1, label="+7.4", color="blue", size=10) %>%
   gf_text(-3 ~ 2, label="-18.1", color="orange", size=10) %>% 
   gf_rect(ymin + ymax ~ xmin + xmax, 
           data = Bars3, color= NA, fill=~color, alpha=0.3 ) %>%
   gf_hline(yintercept = ~ 0, color="brown") %>%
-  slice_plot(g(t) ~ t, domain(t=-4:4), color="black", inherit=FALSE) %>%
+  slice_plot(g(t) ~ t, bounds(t=-4:4), color="black", inherit=FALSE) %>%
   gf_refine(scale_fill_identity(), scale_y_continuous(breaks=seq(-10,6,by=2))) %>%
   gf_text(-7 ~ -1.7, label=latex2exp::TeX("$\\sim \\int_{-2}^3 g(t)dt = +7.4\\,-18.1=10.7$"), size=8, color=alpha("blue", 0.5)) %>%
   gf_labs(x = "t")
@@ -179,7 +181,7 @@ To start, we will need to create a series of $t$ values. We will do this by spec
 In previous chapters of this book we have worked with data tables, but always the data table was *given* to us, we did not have to construct it.^[The root  of the word "data" is the Latin for "given".] Now we need to construct the data frame with the $t$ column containing appropriate values. Computer languages provide many ways to accomplish this task. We will use a simple R/mosaic function `Picket()`, which constructs a data table like the one shown above. You provide two arguments: the domain for $t$, that is, the desired upper and lower bounds of integration; the interval size $dt$ (which is called `h` in the argument list). For instance, to construct the $t$ column of the table shown above, you can use `Picket()` this way:
 
 ```{r}
-Pts <- Picket(domain(t = -2:1), h=0.5)
+Pts <- Picket(bounds(t = -2:1), h=0.5)
 Pts
 ```
 
@@ -228,7 +230,7 @@ The final step in constructing the anti-derivative is to add up the steps. This 
 ```{r}
 # Doing everything in one command
 Pts <- 
-  Picket(domain(t = -2:1), h=0.5) %>%
+  Picket(bounds(t = -2:1), h=0.5) %>%
   mutate(vals = f(t),
          step = vals * weight,
          F = cumsum(step))
@@ -243,14 +245,14 @@ We can summarize the steps in this Euler approach to numerical integration graph
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 dt <- 1
 f2 <- makeFun(f(t) + 2 ~ t)
-Pts <- Picket(domain(t=-5:5), h=dt) %>%
+Pts <- Picket(bounds(t=-5:5), h=dt) %>%
   mutate(center = t + dt/2,
          neighbor = t + 0.95* dt, 
          val = f2(t), 
          area = val*dt,
          F = cumsum(area))
 P1 <- gf_point(0 ~ t, data = Pts) %>%
-  slice_plot(f2(t) ~ t, domain(t=-5:5), color="grey") %>%
+  slice_plot(f2(t) ~ t, bounds(t=-5:5), color="grey") %>%
   gf_hline(yintercept = ~ 0, color="brown") %>%
   gf_text(-1 ~ center, data = Pts, label = "dt") %>%
   gf_segment(-0.5 + -0.5 ~ t + neighbor, color="orange",

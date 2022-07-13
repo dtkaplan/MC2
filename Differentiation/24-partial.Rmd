@@ -95,7 +95,7 @@ Pts <- tibble::tribble(
   1.5, 1.2, "B",
   -1.7, -1.7, "C"
 )
-P <- contour_plot(g(x, y) ~ x + y, domain(x=c(-3,3), y=c(-3,3))) %>%
+P <- contour_plot(g(x, y) ~ x + y, bounds(x=c(-3,3), y=c(-3,3))) %>%
   gf_text(y ~ x, data = Pts, color="magenta", label=~label) %>%
   gf_refine(coord_fixed())
 dx <- D(g(x, y) ~ x)
@@ -103,30 +103,30 @@ dy <- D(g(x, y) ~ y)
 xA <- -1
 yA <- 1
 gA <- function(x, y) {g(xA, yA) + dx(xA, yA)*(x-xA) + dy(xA,yA)*(y-yA)}
-PA <- contour_plot(gA(x, y) ~ x + y, domain(x=xA + 3*c(-.1, .1), y=yA +3*c(-.1, .1))) %>%
+PA <- contour_plot(gA(x, y) ~ x + y, bounds(x=xA + 3*c(-.1, .1), y=yA +3*c(-.1, .1))) %>%
   gf_text(y ~ x, data = Pts %>% filter(label=="A"), label=~label, color="magenta", size=12)%>%
   gf_refine(coord_fixed())
-PzA <- contour_plot(g(x, y) ~ x + y, domain(x=xA + 3*c(-.1, .1), y=yA +3*c(-.1, .1))) %>%
+PzA <- contour_plot(g(x, y) ~ x + y, bounds(x=xA + 3*c(-.1, .1), y=yA +3*c(-.1, .1))) %>%
   gf_text(y ~ x, data = Pts %>% filter(label=="A"), label=~label, color="magenta", size=12)%>%
   gf_refine(coord_fixed())
 
 xB <- 1.5
 yB <- 1.2
 gB <- function(x, y) {g(xB, yB) + dx(xB, yB)*(x-xB) + dy(xB,yB)*(y-yB)}
-PB<-   contour_plot(gB(x, y) ~ x + y, domain(x=c(xB-.1, xB+.1), y=c(yB-.1, yB+.1))) %>%
+PB<-   contour_plot(gB(x, y) ~ x + y, bounds(x=c(xB-.1, xB+.1), y=c(yB-.1, yB+.1))) %>%
   gf_text(y ~ x, data = Pts %>% filter(label=="B"), label=~label, color="magenta", size=12)%>%
   gf_refine(coord_fixed())
-PzB <- contour_plot(g(x, y) ~ x + y, domain(x=xB + 1*c(-.1, .1), y=yB +1*c(-.1, .1))) %>%
+PzB <- contour_plot(g(x, y) ~ x + y, bounds(x=xB + 1*c(-.1, .1), y=yB +1*c(-.1, .1))) %>%
   gf_text(y ~ x, data = Pts %>% filter(label=="B"), label=~label, color="magenta", size=12)%>%
   gf_refine(coord_fixed())
 
 xC <- -1.7
 yC <- -1.7
 gC<- function(x, y) {g(xC, yC) + dx(xC, yC)*(x-xC) + dy(xC,yC)*(y-yC)}
-PC <- contour_plot(gC(x, y) ~ x + y, domain(x=c(xC-.1, xC+.1), y=c(yC-.1, yC+.1))) %>%
+PC <- contour_plot(gC(x, y) ~ x + y, bounds(x=c(xC-.1, xC+.1), y=c(yC-.1, yC+.1))) %>%
   gf_text(y ~ x, data = Pts %>% filter(label=="C"), label=~label, color="magenta", size=12)%>%
   gf_refine(coord_fixed())
-PzC <- contour_plot(g(x, y) ~ x + y, domain(x=xC + 1*c(-.1, .1), y=yC +1*c(-.1, .1))) %>%
+PzC <- contour_plot(g(x, y) ~ x + y, bounds(x=xC + 1*c(-.1, .1), y=yC +1*c(-.1, .1))) %>%
   gf_text(y ~ x, data = Pts %>% filter(label=="C"), label=~label, color="magenta", size=12)%>%
   gf_refine(coord_fixed())
 
@@ -169,11 +169,11 @@ To explore the roles of the parameters $b$ and $c$ in setting the orientation of
 ```{r}
 plane <- makeFun(a + b*x + c*y ~ x + y, a = 1, b = -2.5, c = 1.6)
 if (knitr::is_html_output()) {
-  interactive_plot(plane(x, y) ~ x + y, domain(x=c(-2, 2), y=c(-2, 2)))
+  interactive_plot(plane(x, y) ~ x + y, bounds(x=c(-2, 2), y=c(-2, 2)))
 } else {
   knitr::include_graphics("www/plane-3d.png")
 }
-contour_plot(plane(x, y) ~ x + y, domain(x=c(-2, 2), y=c(-2, 2))) %>%
+contour_plot(plane(x, y) ~ x + y, bounds(x=c(-2, 2), y=c(-2, 2))) %>%
   gf_refine(coord_fixed())
 ```
 
@@ -259,9 +259,9 @@ The graphics convention for drawing a gradient vector for a particular input, th
 #| fig-cap-location: margin
 graw <- rfun( ~ x + y, seed=562)
 g <- makeFun(graw(x, y)  ~ x & y)
-contour_plot(g(x, y+.2) ~ x + y, domain(x=c(-2,2), y=c(0, 4))) %>%
+contour_plot(g(x, y+.2) ~ x + y, bounds(x=c(-2,2), y=c(0, 4))) %>%
   gf_text(2 ~ 1, label= ~"(x=1,y=2)", color="orange3", hjust=0, vjust=-0.50) %>%
-  gradient_plot(g(x, y) ~ x + y, domain(x=c(1,2), y=c(2, 3)), npts=1, color="orange3", alpha=1) %>%
+  gradient_plot(g(x, y) ~ x + y, bounds(x=c(1,2), y=c(2, 3)), npts=1, color="orange3", alpha=1) %>%
   gf_refine(coord_fixed())
 ```
 
@@ -271,7 +271,7 @@ A ***gradient field*** (see @fig-gradient-field-A) is the value of the gradient 
 #| label: fig-gradient-field-A
 #| fig-cap: "A plot of the gradient field $\\nabla g(x,y)$." 
 #| fig-cap-location: margin
-contour_plot(g(x, y+.2) ~ x + y, domain(x=c(-2,2), y=c(0, 4))) %>%
+contour_plot(g(x, y+.2) ~ x + y, bounds(x=c(-2,2), y=c(0, 4))) %>%
   gradient_plot(g(x, y) ~ x + y, color="orange3", alpha=1) %>%
   gf_refine(coord_fixed())
 ```

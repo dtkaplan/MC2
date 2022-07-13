@@ -15,18 +15,18 @@ The flow itself is a ***vector field***. This is an assignment of a vector to ea
 # commands to make the individual plots in the figure
 # vectorfield_plot(0.66*r - 1.33*r*f ~ r & f,
 #                  -f + r*f ~ r & f,
-#                  domain(r=0:2, f=0:1)) %>%
+#                  bounds(r=0:2, f=0:1)) %>%
 #   gf_rect(.4 + .7 ~ .8 + 1.3, color="magenta", fill=NA) %>%
 #   gf_refine(coord_fixed())
 # vectorfield_plot(0.66*r - 1.33*r*f ~ r & f,
 #                  -f + r*f ~ r & f,
-#                  domain(r=.8:1.3, f=.4:.7)) %>% 
+#                  bounds(r=.8:1.3, f=.4:.7)) %>% 
 #   gf_rect(.4 + .7 ~ .8 + 1.3, color="magenta", size=2, fill=NA) %>%
 #   gf_rect(.47 + .53 ~ .95 + 1.02, color="green", fill=NA) %>%
 #   gf_refine(coord_fixed())
 # vectorfield_plot(0.66*r - 1.33*r*f ~ r & f,
 #                  -f + r*f ~ r & f,
-#                  domain(r=.95:1.02, f=.47:.53)) %>% 
+#                  bounds(r=.95:1.02, f=.47:.53)) %>% 
 #   gf_rect(.47 + .53 ~ .95 + 1.02, color="green", size=2, fill=NA) %>%
 #   gf_refine(coord_fixed())
 knitr::include_graphics("www/rf-zoom.png")
@@ -46,7 +46,13 @@ A ***fixed point*** of the dynamics is a point in the state space where the dyna
 #| label: fig-rf-nullclines
 #| fig-cap: "Flow field and nullclines for the rabbit/fox dynamics."
 #| fig-cap-location: margin
-contour_plot(dt_rabbit(r,f) ~ r & f, domain(r=0.2:2, f=0.05:1), 
+dt_rabbit <- function(r, f, alpha=2/3, beta=4/3) {
+  alpha*r - beta*r*f
+}
+dt_fox <- function(r, f, delta=1, gamma=1) {
+  -delta*f + gamma*r*f
+}
+contour_plot(dt_rabbit(r,f) ~ r & f, bounds(r=0.2:2, f=0.05:1), 
              contours_at = 0, contour_color = "red",
              labels=FALSE) %>%
   contour_plot(dt_fox(r,f) ~ r & f,
@@ -164,21 +170,22 @@ As for the orbits, one in a clockwise direction and the other counter-clockwise,
 #| fig-cap-location: margin
 traj1 <- integrateODE(dr ~ dt_rabbit(r, f), 
                       df ~ dt_fox(r,f), r=1.5, f=.25,
-                      tdur=7.5
+                      bounds(t=0:7.5)
                       )
 traj2 <- integrateODE(dr ~ dt_rabbit(r, f), 
                       df ~ dt_fox(r,f), r=1, f=.33,
-                      tdur=7.5)
+                      bounds(t=0:7.5))
 traj_plot(f(t) ~ r(t), traj1, inherit=FALSE) %>%
   traj_plot(f(t) ~ r(t), traj2, inherit=FALSE) %>%
 inequality_constraint(dt_rabbit(r, f) < 0 ~ r&f, 
                             fill="red", alpha=0.3, 
-                            domain(r=.1:2, f=0.1:1)) %>%
+                            bounds(r=.1:2, f=0.1:1)) %>%
   inequality_constraint(dt_fox(r, f) < 0 ~ r&f, 
                             fill="blue", alpha=0.3, 
-                            domain(r=.1:2, f=0.1:1)) %>%
+                            bounds(r=.1:2, f=0.1:1)) %>%
   vectorfield_plot(dt_rabbit(r,f) ~ r & f,
                    dt_fox(r,f) ~ r & f,
+                   bounds(r=.1:2, f=0.1:1),
                    transform=function(x) x^0.3) %>%
   gf_lims(x = c(.35,2), y=c(0,1.1))
 ```
@@ -208,20 +215,20 @@ We will use $u$ and $w$ as the dynamical variables in the linear approximation t
 $$\partial_t u = \ \ w\\
 \partial_t w = - u$$
 
-```{r echo=FALSE, , warning=FALSE, message=FALSE}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
 #| label: fig-linearized-pendulum
 #| fig-cap: "Flow field, nullclines, and trajectories of the pendulum (black) and the linearized pendulum ($\\color{magenta}{\\text{magenta}}) from three different initial conditions."
 #| fig-cap-location: margin
-tnl0 <- integrateODE(dtheta ~ v, dv ~ - sin(theta), theta=1, v = 0, tdur=6)
-tnl1 <- integrateODE(dtheta ~ v, dv ~ - sin(theta), theta=2, v = 0, tdur=6)
-tnl2 <- integrateODE(dtheta ~ v, dv ~ - sin(theta), theta=2.8, v = 0, tdur=6)
-t0 <- integrateODE(dtheta ~ v, dv ~ - theta, theta=1, v = 0, tdur=6)
-t1 <- integrateODE(dtheta ~ v, dv ~ - theta, theta=2, v = 0, tdur=6)
-t2 <- integrateODE(dtheta ~ v, dv ~ - theta, theta=2.8, v = 0, tdur=6)
+tnl0 <- integrateODE(dtheta ~ v, dv ~ - sin(theta), theta=1, v = 0, bounds(t=0:6))
+tnl1 <- integrateODE(dtheta ~ v, dv ~ - sin(theta), theta=2, v = 0, bounds(t=0:6))
+tnl2 <- integrateODE(dtheta ~ v, dv ~ - sin(theta), theta=2.8, v = 0, bounds(t=0:6))
+t0 <- integrateODE(dtheta ~ v, dv ~ - theta, theta=1, v = 0, bounds(t=0:6))
+t1 <- integrateODE(dtheta ~ v, dv ~ - theta, theta=2, v = 0, bounds(t=0:6))
+t2 <- integrateODE(dtheta ~ v, dv ~ - theta, theta=2.8, v = 0, bounds(t=0:6))
 
-contour_plot(-sin(theta) ~ theta & v, contours_at=0, contour_color="blue", , domain(theta=-3:3, v=-2.5:2.5), labels=FALSE) %>%
+contour_plot(-sin(theta) ~ theta & v, contours_at=0, contour_color="blue", bounds(theta=-3:3, v=-2.5:2.5), labels=FALSE) %>%
   contour_plot(v ~ theta & v, contours_at=0, contour_color="red", labels=FALSE) %>%
-vectorfield_plot(v ~ theta & v, -sin(theta) ~ theta & v, domain(theta=-3:3, v=-2.5:2.5)) %>%
+vectorfield_plot(v ~ theta & v, -sin(theta) ~ theta & v, bounds(theta=-3:3, v=-2.5:2.5)) %>%
   traj_plot(v(t) ~ theta(t), soln=tnl0, nt=0, size=2, alpha=0.4) %>%
   traj_plot(v(t) ~ theta(t), soln=tnl1, nt=0, size=2, alpha=0.4) %>%
   traj_plot(v(t) ~ theta(t), soln=tnl2, nt=0, size=2, alpha=0.4) %>%

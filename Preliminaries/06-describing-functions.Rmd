@@ -17,14 +17,14 @@ I'll illustrate these concepts using three pattern-book functions graphed in @fi
 #| label: fig-for-words
 #| fig-cap: "Three of the pattern-book functions: (a) exponential, (b) sinusoid, (c) power-law $x^{-1}$."
 #| fig-cap-location: margin
-Pa <- slice_plot(exp(x) ~ x, domain(x=c(-3,3))) %>%
+Pa <- slice_plot(exp(x) ~ x, bounds(x=c(-3,3))) %>%
   gf_labs(subtitle="(a) exponential") %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
-Psinusoid <- slice_plot(sin(x) ~ x, domain(x=c(-5,5))) %>%
+Psinusoid <- slice_plot(sin(x) ~ x, bounds(x=c(-5,5))) %>%
   gf_labs(subtitle="(b) sinusoid", y="") %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
-Pc <- slice_plot(1/x ~ x, domain(x=c(.01, 1.25))) %>%
-  slice_plot(1/x ~ x, domain(x=c(-1.25, -.01))) %>%
+Pc <- slice_plot(1/x ~ x, bounds(x=c(.01, 1.25))) %>%
+  slice_plot(1/x ~ x, bounds(x=c(-1.25, -.01))) %>%
   gf_labs(subtitle="(c) power-law with negative exponent", y="")%>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
 gridExtra::grid.arrange(Pa, Psinusoid, Pc, ncol=1)
@@ -40,12 +40,15 @@ The slope describes whether the output goes up or down, and to what extent, as t
 #| label: fig-slope-at-point
 #| fig-cap: "Short straight-line segments laid over a graph of the sinusoid. The slope of each line segment is selected to match the local slope of the sinusoid."
 #| fig-cap-location: margin
-Segs <- create_segments(sin(x) ~ x, domain(x=c(-5,5)), nsegs=100) %>%
+Segs <- create_segments(sin(x) ~ x, bounds(x=c(-5,5)), nsegs=100) %>%
   mutate(y2end = 2.15*yend)
 
-gf_segment(yf + yfend ~ x + xend, data = Segs[seq(2,nrow(Segs), by=3),], 
-           color=~slope,alpha=0.65, size=3, lineend="round") %>%
-    slice_plot(sin(x) ~ x, domain(x=c(-5, 5)), inherit=FALSE) %>%
+Small <- Segs[seq(2,nrow(Segs), by=3),]
+slice_plot(sin(x) ~ x, bounds(x=c(-5, 5))) %>%
+gf_segment(yf + yfend ~ x + xend, 
+           data = Small, 
+           color=~slope,
+           alpha=0.65, size=3, lineend="round") %>%
     gf_labs(subtitle="sin(x)", y="output") %>%
     gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
   gf_theme(theme(legend.position = "none"))
@@ -159,7 +162,7 @@ Many continous functions have a region of the input domain where the output is g
 #| label: fig-sine-local-max
 #| fig-cap: "The sinusoid has many local maximums and local minimums."
 #| column: margin
-Psinusoid <- slice_plot(sin(x) ~ x, domain(x=c(-5,5))) %>%
+Psinusoid <- slice_plot(sin(x) ~ x, bounds(x=c(-5,5))) %>%
   gf_labs(subtitle="Sinusoid", y="") %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
 ```

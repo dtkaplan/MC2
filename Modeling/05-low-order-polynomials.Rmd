@@ -64,21 +64,21 @@ An easy way to think about how to use low-order polynomials in modeling is to th
 #| column: page-inset-right
 #| fig-cap: "The ***eight simple shapes*** of functions with one input."
 g <- makeFun(a + b*x + c*x^2 ~ x, a=-1, b=2, c=1)
-Pa <- slice_plot(-g(x, c=0) ~ x, domain(x=c(-3,1)), size=2  ) %>%
+Pa <- slice_plot(-g(x, c=0) ~ x, bounds(x=c(-3,1)), size=2  ) %>%
   gf_labs(y="", x="", subtitle="(A) downward sloping line")
-Pb <- slice_plot(g(x, c=0) ~ x, domain(x=c(-3,1)), size=2  ) %>%
+Pb <- slice_plot(g(x, c=0) ~ x, bounds(x=c(-3,1)), size=2  ) %>%
   gf_labs(y="", x="", subtitle="(B) upward sloping line")
-Pc <- slice_plot(g(x) ~ x, domain(x=c(-3,-1)), size=2) %>%
+Pc <- slice_plot(g(x) ~ x, bounds(x=c(-3,-1)), size=2) %>%
   gf_labs(y="", x="", subtitle="(C) downward sloping, concave up; steep then shallow")
-Pd <- slice_plot(g(x) ~ x, domain(x=c(-1,1)), size=2) %>% 
+Pd <- slice_plot(g(x) ~ x, bounds(x=c(-1,1)), size=2) %>% 
   gf_labs(y="", x="", subtitle="(D) upward sloping, concave up; shallow then steep")
-Pe <- slice_plot(-g(x) ~ x, domain(x=c(-3,-1)), size=2) %>% 
+Pe <- slice_plot(-g(x) ~ x, bounds(x=c(-3,-1)), size=2) %>% 
   gf_labs(y="", x="", subtitle="(E) upward sloping, concave down; steep then shallow")
-Pf <- slice_plot(-g(x) ~ x, domain(x=c(-1,1)), size=2) %>%
+Pf <- slice_plot(-g(x) ~ x, bounds(x=c(-1,1)), size=2) %>%
   gf_labs(y="", x="", subtitle="(F) downward sloping, concave down; shallow then steep")
-Pg <- slice_plot(g(x) ~ x, domain(x=c(-3,1)), size=2) %>%
+Pg <- slice_plot(g(x) ~ x, bounds(x=c(-3,1)), size=2) %>%
   gf_labs(y="", x="", subtitle="(G) local minimum")
-Ph <- slice_plot(-g(x) ~ x, domain(x=c(-3,1)), size=2) %>% 
+Ph <- slice_plot(-g(x) ~ x, bounds(x=c(-3,1)), size=2) %>% 
   gf_labs(y="", x="", subtitle="(H) local maximum")
 gridExtra::grid.arrange(Pa, Pb, Pc, Pd, Pe, Pf, Pg, Ph, ncol=3)
 ```
@@ -126,10 +126,12 @@ To produce the steep-then-shallow or shallow-then-steep shapes, you also need to
 #| fig-cap: "Four of the ***eight simple shapes*** correspond to the sides of the parabola. The labels refer to the graphs in  @fig-eight-simple-shapes."
 f1 <- makeFun(a + b*x + c*x^2 ~ x, a=-2, b=1, c=1)
 f2 <- makeFun(a + b*x + c*x^2 ~ x, a=-2, b=1, c=-1)
-P1 <- graph_with_boxes(f1, domain = c(-1.1,0.1), my_letters = c("C", "D"), 
-                 intervals = tibble(x = c(-1, -.45), xend=c(-.55, 0)))
-P2 <- graph_with_boxes(f2, domain = c(-.3,1.4), my_letters = c("E", "F"),
-                 intervals = tibble(x = c(-.2, .55), xend=c(.45, 1.25))) %>%
+P1 <- graph_with_boxes(f1, bounds(x=-1.1:0.1), 
+                       my_letters = c("C", "D"), 
+                       intervals = tibble(x = c(-1, -.45), xend=c(-.55, 0)))
+P2 <- graph_with_boxes(f2, bounds(-.3:1.4), 
+                       my_letters = c("E", "F"),
+                       intervals = tibble(x = c(-.2, .55), xend=c(.45, 1.25))) %>%
   gf_lims(y=c(-2.6, -1.4))
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
@@ -168,16 +170,17 @@ make_gxy <- function(seed=1) {
                ayy = runif(1, -1, 1), axx = runif(1, -1, 1)
   )
 }
-show_poly2 <- function(seed=1, domain=list(x=c(-2, 2), y=c(-2, 2))) {
+show_poly2 <- function(seed=1, 
+                       domain=bounds(x= -2 : 2, y= -2 : 2)) {
   f <- make_gxy(seed)
   list(P1 = contour_plot(f(x, y) ~ x + y, domain=domain),
   P2 = interactive_plot(f(x, y) ~ x + y, domain=domain))
 }
 Bowl <- makeFun(x + y - 1*x*y + x^2 + 2*y^2 ~ x & y)
-Pbowl <- contour_plot(Bowl(x, y) ~ x & y, domain(x=-3:3, y=-3:3)) %>%
+Pbowl <- contour_plot(Bowl(x, y) ~ x & y, bounds(x=-3:3, y=-3:3)) %>%
   gf_refine(coord_fixed())
 
-Phill <- contour_plot(40-Bowl(x, y) ~ x & y, domain(x=-3:3, y=-3:3)) %>%
+Phill <- contour_plot(40-Bowl(x, y) ~ x & y, bounds(x=-3:3, y=-3:3)) %>%
   gf_refine(coord_fixed()) 
 Saddle <- show_poly2(104)
 ```

@@ -3,8 +3,8 @@
 The functions we have worked with up to now have **outputs** that are single quantities: e.g., height or speed or fuel consumed. In Section @sec-cubic-spline, to present the programmed position versus time of a robot arm, we needed to construct two functions, one giving the x-coordinate of the arm, the other giving the y-coordinate. Using differentiation with respect to time, we can calculate from the x- and y-position functions the x- and y-velocity functions and the x- and y-acceleration functions. All six functions are shown in @fig-robot-functions.
 
 ```{r results="hide"}
-pos_x <- spliner(x ~ t, data = Zcalc::Robot.stations)
-pos_y <- spliner(y ~ t, data = Zcalc::Robot.stations)
+pos_x <- spliner(x ~ t, data = Robot_stations)
+pos_y <- spliner(y ~ t, data = Robot_stations)
 vel_x <- D(xfun(t) ~ t)
 vel_y <- D(yfun(t) ~ t)
 accel_x <- D(xfun(t) ~ t & t)
@@ -14,17 +14,17 @@ accel_y <- D(yfun(t) ~ t & t)
 ```{r echo=FALSE}
 #| label: fig-robot-functions
 #| fig-cap: "The position, velocity, and acceleration of the robot arm as a function of time. The x-coordinate is the left column, the y-coordinate the right column."
-P1 <- slice_plot(pos_x(t) ~ t, domain(t=1:15)) %>%
+P1 <- slice_plot(pos_x(t) ~ t, bounds(t=1:15)) %>%
   gf_labs(y = "x position")
-P2 <- slice_plot(pos_y(t) ~ t, domain(t=1:15)) %>%
+P2 <- slice_plot(pos_y(t) ~ t, bounds(t=1:15)) %>%
   gf_labs(y = "y position")
-P3 <- slice_plot(vel_x(t) ~ t, domain(t=1:15), color="blue") %>%
+P3 <- slice_plot(vel_x(t) ~ t, bounds(t=1:15), color="blue") %>%
   gf_labs(y = "x velocity")
-P4 <- slice_plot(vel_y(t) ~ t, domain(t=1:15), color="blue") %>%
+P4 <- slice_plot(vel_y(t) ~ t, bounds(t=1:15), color="blue") %>%
   gf_labs(y = "y velocity")
-P5 <- slice_plot(accel_x(t) ~ t, domain(t=1:15), color="magenta") %>%
+P5 <- slice_plot(accel_x(t) ~ t, bounds(t=1:15), color="magenta") %>%
   gf_labs(y = "x acceleration")
-P6 <- slice_plot(accel_y(t) ~ t, domain(t=1:15), color="magenta") %>%
+P6 <- slice_plot(accel_y(t) ~ t, bounds(t=1:15), color="magenta") %>%
   gf_labs(y = "y acceleration")
                    
 gridExtra::grid.arrange(P1, P2, P3, P4, P5, P6, ncol=2 )

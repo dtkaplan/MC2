@@ -86,7 +86,7 @@ Here's the trajectory:
 traj <- integrateODE(
   dx ~ u, dy ~ v, du ~ 0, dv ~ -9.8, #dynamics
   x=0, y=100, u = 250, v=0, #initial conditions
-  tdur=5
+  bounds(t=0:5)
 ) 
 traj_plot(y(t) ~ x(t), traj)
 traj_plot(v(t) ~ u(t), traj)
@@ -128,7 +128,7 @@ r <- makeFun(alpha*sqrt(u^2 + v^2) ~ u & v, alpha=0.003)
 traj2 <- integrateODE(
   dx ~ u, dy ~ v, du ~ -u*r(u,v), dv ~ -9.8 - v*r(u,v), #dynamics
   x=0, y=100, u = 250, v=0, #initial conditions
-  tdur=6
+  bounds(t=0:6)
 )
 traj_plot(y(t) ~ x(t), traj)
 traj_plot(v(t) ~ u(t), traj)
@@ -258,7 +258,7 @@ We can get a clearer picture by plotting $e^{i\omega t}$ over the domain $0 < t 
 #| fig-cap-location: margin
 f <- makeFun(exp(1i * omega * t) ~ t, omega = 2)
 slice_plot(Re(f(t)) ~ t, 
-           domain(t=0:10), color = "magenta") %>%
+           bounds(t=0:10), color = "magenta") %>%
   slice_plot(Im(f(t)) ~ t, color="brown")
 ```
 
@@ -301,7 +301,9 @@ To graph this function, we need to choose appropriate numerical values for $r$ a
 #| label: fig-decay-sinusoid1
 #| fig-cap: "An exponentially decaying sinusoid arising from $r = 1$ and $b = 6$."
 #| fig-cap-location: margin
-traj <- integrateODE(dv~ -r*v - b*y, dy ~ v, v=10, y=0, r=1, b=6, tdur=20)
+traj <- integrateODE(dv~ -r*v - b*y, dy ~ v, 
+                     v=10, y=0, r=1, b=6, 
+                     bounds(t=0:20))
 traj_plot(y(t) ~ t, traj)
 ```
 This is the situation with a swinging door. You shove it to swing open, after which it oscillates with a decreasing amplitude.
@@ -313,7 +315,9 @@ In contrast, suppose the spring is weak compared to the damping such that $4b < 
 #| label: fig-overdamped1
 #| fig-cap: "A heavily damped spring-mass system with  $r = 1$ and $b = 0.1$."
 #| fig-cap-location: margin
-traj2 <- integrateODE(dv~ -r*v - b*y, dy ~ v, v=10, y=0, r=1, b=0.1, tdur=20)
+traj2 <- integrateODE(dv~ -r*v - b*y, dy ~ v, 
+                      v=10, y=0, r=1, b=0.1, 
+                      bounds(t=0:20))
 traj_plot(y(t) ~ t, traj2) %>%
   gf_lims(y = c(0, NA))
 ```
@@ -325,7 +329,7 @@ Finally, consider the case where $r^2 - 4 b = 0$, a balance between resistance a
 #| label: fig-critically-damped
 #| fig-cap: "A critically damped oscillation with $r=1$, $b=0.25$."
 #| fig-cap-location: margin
-traj3 <- integrateODE(dv~ -r*v - b*y, dy ~ v, v=10, y=0, r=1, b=0.25, tdur=20)
+traj3 <- integrateODE(dv~ -r*v - b*y, dy ~ v, v=10, y=0, r=1, b=0.25, bounds(t=0:20))
 traj_plot(y(t) ~ t, traj3) %>%
   gf_lims(y = c(0, NA))
 ```

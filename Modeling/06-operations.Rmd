@@ -61,7 +61,7 @@ If none of the high-school approaches are suited to your modeling function, as i
 #| fig-cap: "Finding an $x_0$ such that $h(x_0) = 3$"
 #| column: margin
 h <- rfun(~ x, seed=9632)
-slice_plot(h(x) ~ x, domain(x=-4:4)) %>%
+slice_plot(h(x) ~ x, bounds(x=-4:4)) %>%
   gf_hline(yintercept = ~ 3, color="magenta") %>%
   gf_labs(y="h(x)") %>%
   gf_theme(scale_y_continuous(breaks=c(0,3,6,9,12)))
@@ -84,7 +84,7 @@ The graph shows a function $g(t)$. Find a value $t_0$ such that $g(t_0) = 5$.
 ```{r echo=FALSE}
 #| column: margin
 g <- rfun(~ t, seed=84)
-slice_plot(-g(t+3)*cos(t) ~ t, domain(t=0:6)) %>%
+slice_plot(-g(t+3)*cos(t) ~ t, bounds(t=0:6)) %>%
   gf_labs(y="g(t)")
 ```
 
@@ -117,14 +117,14 @@ f <- rfun( ~ x, seed=579)
 We want to find the zeros of the function $f(x) - 10$ which corresponds to solving $f(x) = 10$.
 
 ```{r}
-Zeros(f(x) - 10 ~ x, domain(x=-4:4))
+Zeros(f(x) - 10 ~ x, bounds(x=-4:4))
 ```
 The output produced by `Zeros()` is a data frame with one row for each of the $x_0$ found. Here, two values were found: $x_0 = -2.92$ and $x_0 = 0.0795$. The `.output` column reports $f(x_0)$ which should be zero. It is not always feasible to reach zero exactly, since computer arithmetic is not always exactly precise.
 
 Think about `Zeros()` as a way to refine answers you found graphically. So before using `Zeros()`, make the graph.
 ```{r results="hide"}
 #| column: margin
-slice_plot(f(x) ~ x, domain(x=-4:4)) %>%
+slice_plot(f(x) ~ x, bounds(x=-4:4)) %>%
   gf_hline(yintercept = ~ 10, color="magenta")
 ```
 :::
@@ -147,8 +147,8 @@ To illustrate, @fig-show-peak1 shows a function with two peaks.
 #| label: fig-show-peak1
 #| fig-cap: a function with two peaks
 f <- rfun(~ x, seed=7293)
-Peaks <- argM(f(x) ~ x, domain(x=-5:5))
-slice_plot(f(x) ~ x, domain(x=-5:5)) %>%
+Peaks <- argM(f(x) ~ x, bounds(x=-5:5))
+slice_plot(f(x) ~ x, bounds(x=-5:5)) %>%
   gf_vline(xintercept = ~ 0.173, color="blue", 
            linetype="dotted") %>%
   gf_vline(xintercept = ~ -3.29, color="green", 
@@ -167,7 +167,7 @@ The R/mosaic `argM()` function a functions argmax and argmin over a given domain
 
 ```{r}
 h <- rfun(~ x, seed=7293)
-argM(h(x) ~ x, domain(x=-5:5))
+argM(h(x) ~ x, bounds(x=-5:5))
 ```
 The `x` column holds the argmax and argmin, the `.output.` column gives the value of the function output for the input `x`. The `concavity` column tells whether the function's concavity at `x` is positive or negative. Near a peak, the concavity will be negative; near a valley, the concavity is positive. Consequently, you can see that the first row of the data frame corresponds to a local minimum and the second row is a local maximum.
 
@@ -261,11 +261,11 @@ To iterate graphically, we graph the function to be iterated and mark the initia
 #| column: page-inset-right
 #| out.width: "160%"
 #| fig-cap: "Three steps of iteration of `better()` starting with an initial guess of 1."
-Pa <- ggcobweb(better(guess, x=55) ~ guess, domain(x=0:30), x0=1, n=1) %>%
+Pa <- ggcobweb(better(guess, x=55) ~ guess, bounds(x=0:30), x0=1, n=1) %>%
   gf_labs(x="guess", y="better(guess, x=55)")
-Pb <- ggcobweb(better(guess, x=55) ~ guess, domain(x=0:30), x0=1, n=2) %>%
+Pb <- ggcobweb(better(guess, x=55) ~ guess, bounds(x=0:30), x0=1, n=2) %>%
   gf_labs(x="guess", y="")
-Pc <- ggcobweb(better(guess, x=55) ~ guess, domain(x=0:30), x0=1, n=3) %>%
+Pc <- ggcobweb(better(guess, x=55) ~ guess, bounds(x=0:30), x0=1, n=3) %>%
   gf_labs(x="guess", y="")
 gridExtra::grid.arrange(Pa, Pb, Pc, ncol=3)
 ```

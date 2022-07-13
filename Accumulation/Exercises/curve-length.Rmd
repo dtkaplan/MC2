@@ -16,7 +16,7 @@ We didn't ask you to derive the formula, in part because it is only of theoretic
 
 ```{r echo=FALSE, warning=FALSE}
 y <- makeFun(4*H*x*(D-x)/D^2 ~ x, H=200, D=310)
-slice_plot(y(x) ~ x, domain(x=c(0,310))) %>%
+slice_plot(y(x) ~ x, bounds(x=c(0,310))) %>%
   gf_refine(coord_fixed()) %>%
   gf_vline(xintercept=seq(10,310, by=10), alpha = 0.3) %>%
   gf_labs(y = "Ball height (ft)", "Ground distance from home plate (ft)", title="Nearly a home run to left field at Fenway")
@@ -37,7 +37,7 @@ dy <- D(y(x) ~ x)
 ds <- makeFun(sqrt(dy(x)^2 + 1) ~ x)
 DS <- antiD(ds(x) ~ x)
 DS(310) - DS(0)
-slice_plot(y(x)~x,domain(x=0:310))
+slice_plot(y(x)~x,bounds(x=0:310))
 ```
 
 It is generally a good idea to check an algebraic solution with a numerical solution. Also, it is a good professional practice to have a way of constructing a simple approximation to the answer. For instance, the trajectory in the graph is *very roughly* an upside-down V shape. The base of each segment in the V is 155 feet, the height is 200 feet, so the length of the two segments added together is $2\sqrt{155^2 + 200^2} = 506.1$. We'd expect the length of the actual curve to be a bit longer than this, which it is.

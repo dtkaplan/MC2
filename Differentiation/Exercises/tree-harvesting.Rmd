@@ -17,7 +17,7 @@ tree_volume <- makeFun(1000*pnorm(year, mean=15, sd=10)^3 ~ year)
 # do the deriv numerically to avoid bug in derivative
 # of normal function.
 tree_growth <- numD(tree_volume(year) ~ year)
-slice_plot(tree_volume(year) ~ year, domain(year = c(0, 50))) %>%
+slice_plot(tree_volume(year) ~ year, bounds(year = c(0, 50))) %>%
   gf_labs(y = "Usable wood product (board-feet)",
           x = "Year after planting")
 ```
@@ -49,7 +49,7 @@ Move this to the DERIVATIVES CHAPTER, OR INSTANTANEOUS RATE OF CHANGE.
 Back to the forest ... Here's a graph of the average-rate-of change function. The function has two inputs, but botany dictates that we can only be growing wood from the time the seedling is planted. So we will set $t_A = 0$ and look at the corresponding *slice* of the function:
 
 ```{r echo=FALSE}
-slice_plot(tree_volume(year)/year ~ year, domain(year = c(1, 50))) %>%
+slice_plot(tree_volume(year)/year ~ year, bounds(year = c(1, 50))) %>%
   gf_labs(y = "Annual growth (board-feet)",
           x = "Year after planting")
 ```
@@ -69,7 +69,7 @@ tree_growth <- numD(tree_volume(year) ~ year)
 ```
 
 ```{r instant-tree, echo=FALSE}
-slice_plot(tree_growth(year) ~ year, domain(year=c(0,50)))
+slice_plot(tree_growth(year) ~ year, bounds(year=c(0,50)))
 ```
 It is tempting to look to the year where the growth rate is highest as the optimal harvest year. This is a mistake. The volume of wood being harvested is the ***accumulated growth*** not the instantaneous growth. Even though the instantaneous growth is higher at year 23 than year 30, it is still pretty high at year 30 and waiting until then (or later) accumates those years of higher-than-average growth. That is why the ***average rate of growth*** is a better thing to look at to determine optimal harvest time. Still, is it the right thing to look at? 
 
@@ -79,7 +79,7 @@ To know what is the best year for harvest from this point of view, you want to c
 
 ```{r tree-interest, echo=FALSE, warning=FALSE}
 slice_plot(100* tree_growth(year)/tree_volume(year) ~ year,
-           domain(year=c(0,50))) %>%
+           bounds(year=c(0,50))) %>%
   gf_labs(y = "Growth relative to volume (%/year)") %>%
   gf_refine(scale_y_log10()) %>%
   gf_hline(yintercept=5, color="dodgerblue")

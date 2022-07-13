@@ -150,7 +150,7 @@ boat_width <- makeFun(fRight(y) - fLeft(y) ~ y)
 # x where boat hull is at waterline
 left <- fLeft(0)
 right <- fRight(0)
-dom <- domain(x=c(left,right))
+dom <- bounds(x=c(left,right))
 
 
 xs <- seq(right, left, len=100)
@@ -168,10 +168,10 @@ area <- Integrate(bottom(x) ~ x, domain=dom)
 
 
 CBx <- Integrate(x*bottom(x) ~ x, domain=dom) / area
-CBy <- Integrate(y*boat_width(y) ~ y, domain(y=0:very_bottom$y)) / area
+CBy <- Integrate(y*boat_width(y) ~ y, bounds(y=0:very_bottom$y)) / area
 
 
-slice_plot(-bottom(x) ~ x, domain(x=-1:1), npts=200) %>%
+slice_plot(-bottom(x) ~ x, bounds(x=-1:1), npts=200) %>%
   gf_refine(coord_fixed()) %>%
   gf_polygon(y ~ x, data = Water, fill="blue", color=NA, alpha=0.25) %>%
   gf_polygon(y ~ x, data = Displacement, fill="orange", color=NA, alpha=0.25) %>%

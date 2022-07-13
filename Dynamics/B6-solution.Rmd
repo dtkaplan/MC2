@@ -76,12 +76,12 @@ To draw the entire flow field, repeat this process at many other points in the s
 #| fig-cap-location: margin
 pA <- vectorfield_plot(0.66*r - 1.33*r*f ~ r & f,
                  -f + r*f ~ r & f, 
-                 domain(r=0.1:3, f=0.1:1), transform=I,
+                 bounds(r=0.1:3, f=0.1:1), transform=I,
                  npts=15) %>%
   gf_labs(subtitle="Flow field")
 pB <- streamlines(dr ~ 0.66*r - 1.33*r*f, 
             df ~ -f + r*f,
-            domain = domain(r=0.1:3, f=0.1:1),
+            domain = bounds(r=0.1:3, f=0.1:1),
             dt=0.01, nsteps=10, npts=15) %>%
   gf_labs(subtitle="Trajectory segments")
 gridExtra::grid.arrange(pA, pB, nrow=2)
@@ -193,7 +193,7 @@ Soln <- Iterate(next_step, x0=c(t=0, x=0.2), n=100,
 TAB <- if (knitr::is_html_output()) {
   Znotes::and_so_on(Soln)
 } else {
-  Znotes::and_so_on_latex(Soln)
+  Znotes::and_so_on(Soln)
 }
 TAB
 ```
@@ -216,7 +216,8 @@ Use the R/mosaic function `integrateODE()` to solve differential equations numer
 
 To illustrate, this command will solve the differential equation $\partial_t x = x (1-x)$ that we took on in the previous example with `Iterate()`.
 ```{r}
-Soln2 <- integrateODE(dx ~ x*(1-x), x = 0.2, tdur=list(from=0, to=10, dt=0.01))
+Soln2 <- integrateODE(dx ~ x*(1-x), x = 0.2,
+                      domain(t=0:10), dt=0.01)
 ```
 
 The first argument is a tilde expression, but in a form that is  different from from that used in functions such as `D()` or `contour_plot()`, etc. To the left of the tilde is a single name composed of the state variable---`x` here---prefixed by a `d`. The `d` is just a reminder that we are describing not `x` itself, but $\partial_t\ \mathtt{x}$. On the right of the tilde is the function from the differential equation, in this case, $x(1-x)$.
@@ -226,7 +227,7 @@ The next argument is the initial condition. We are starting the integration at $
 The output of `integrateODE()` is an R structure of a type called a "list" that is new to us. The list contains the function(s) created by `integrateODE()` which you refer to by name (`x`) using a special form of R punctuation `$` suited to lists.. In other words, `Soln2$x` will be a function, which you can plot like any other function, for instance:
 
 ```{r}
-slice_plot(Soln2$x(t) ~ t, domain(t=0:10))
+slice_plot(Soln2$x(t) ~ t, bounds(t=0:10))
 ```
 
 An important feature of `integrateODE()` is its ability to handle *sets* of first-order differential equations. For instance, the rabbit/fox system $$\partial_t r = 0.66\, r - 1.33\, r f\\
@@ -243,8 +244,8 @@ You can plot the time series using `slice_plot()`
 ```{r}
 #| label: fig-fox-rabbit-ts
 #| fig-cap: "Times series of the rabbit and fox densities."
-pA <- slice_plot(Eco_soln$r(t) ~ t, domain(t=0:5)) %>% gf_labs(title="Rabbits")
-pB <- slice_plot(Eco_soln$f(t) ~ t, domain(t=0:5)) %>% gf_labs(title="Foxes")
+pA <- slice_plot(Eco_soln$r(t) ~ t, bounds(t=0:5)) %>% gf_labs(title="Rabbits")
+pB <- slice_plot(Eco_soln$f(t) ~ t, bounds(t=0:5)) %>% gf_labs(title="Foxes")
 gridExtra::grid.arrange(pA, pB, ncol=2)
 ```
 
@@ -287,7 +288,7 @@ $$\frac{x}{1-x} = \underbrace{e^C}_{A} e^t\  .$$ Since $e^C$ is just a constant,
 Now we have $$x = Ae^t - x A e^t \ \ \implies\ \ \ x (1 + Ae^t) = Ae^t$$ which gives our solution $$x = \frac{Ae^t}{1 + Ae^t}\ .$$ To find the initial condition symbolically, plug in $t=0$, giving $x_0 = A/(1+A)$ or, equivalently $A = x_0/(1-x_0)$. Our previous examples used $x_0 = 0.2$, for which $A = 0.2/0.8 = 0.25$. Graphing this solution gives us the familiar sigmoid:
 ```{r}
 Symb_soln = makeFun(A*exp(t)/(1 + A*exp(t)) ~ t)
-slice_plot(Symb_soln(t, A=0.2) ~ t, domain(t=-5:10))
+slice_plot(Symb_soln(t, A=0.2) ~ t, bounds(t=-5:10))
 ```
 
 Not all differential equations can be separated in this way, and even for those that can, the integrals may not be tractable. So this route to a solution is not a general-purpose one, unlike the Euler method. Still, the Euler method gives only an approximate solution, so with Euler we need to take care that the approximation is close enough for the purpose at hand. In this case, we have both an Euler solution (with $dt=0.1$) and a symbolic solution. @fig-diff-Euler-separation shows the *difference* between the two solutions, which ideally should be zero. To show more of the time domain of the solution, we will reset the initial condition to $x_0 = 0.01$. This corresponds to $A = 1/99$.
@@ -296,8 +297,10 @@ Not all differential equations can be separated in this way, and even for those 
 #| label: fig-diff-Euler-separation
 #| fig-cap: "The difference between the Euler and the symbolic solution to $\\partial_t x = x (1-x)$ as a fraction of the symbolic solution. At the worst, the Euler solution is off by 1.5 parts in one-million."
 #| fig-cap-location: margin
-Euler <- integrateODE(dx ~ x*(1-x), x=0.01, tdur=list(from=0, to=20, dt=0.1))
-slice_plot((Symb_soln(t, A=1/99) - Euler$x(t))/Symb_soln(t, A=1/99) ~ t, domain(t=0:20))
+Euler <- integrateODE(dx ~ x*(1-x), x=0.01, 
+                      bounds(t=0:20), dt=0.1)
+traj_plot((Symb_soln(t, A=1/99) - x(t))/Symb_soln(t, A=1/99) ~ t, Euler, bounds(t=0:20))
+traj_plot((Symb_soln(t, A=1/99) - x(t))/Symb_soln(t, A=1/99) ~ t, Euler, bounds(t=0:20))
 ```
 
 ## Exercises

@@ -6,7 +6,7 @@
 #| out-width: "60%"
 f <- rfun(~ x & y, seed=201)
 contour_plot(-f(x - 0.5, y) ~ x & y, 
-             domain(x=c(-3,3), y=c(0,6)),
+             bounds(x=c(-3,3), y=c(0,6)),
              skip = 0) %>%
   gf_refine(coord_fixed(), 
             scale_x_continuous(breaks=-3:3),
@@ -74,7 +74,7 @@ r"($t=-5$)" = r"(5 isn't in the $\sin()$ parentheses.)",
 #| label: fig-rev2-02
 #| fig-cap: "."
 #| out-width: "60%"
-slice_plot(sin(2*pi*(t+2.5)/5) ~ t, domain(t=c(-5.2,5.2))) %>%
+slice_plot(sin(2*pi*(t+2.5)/5) ~ t, bounds(t=c(-5.2,5.2))) %>%
   gf_refine(scale_x_continuous(breaks = -5:5))
 ```
 
@@ -96,7 +96,7 @@ r"( $t = -2.5$)" = r"( )",
 #| label: fig-rev2-01
 #| fig-cap: "."
 #| out-width: "60%"
-slice_plot(sin(2*pi*t/5) ~ t, domain(t=c(-5.2,5.2))) %>%
+slice_plot(sin(2*pi*t/5) ~ t, bounds(t=c(-5.2,5.2))) %>%
   gf_refine(scale_x_continuous(breaks = -5:5))
 ```
 
@@ -132,16 +132,16 @@ r"($(x=0, y=6)$)" = r"( )",
 #| label: fig-M3-14-05
 #| fig-cap: "."
 #| out-width: "60%"
-slice_plot(x^2 ~ x, domain(x=c(-3,3)))
+slice_plot(x^2 ~ x, bounds(x=c(-3,3)))
 ```
 
 
 ```{r drill-M04-29, echo=FALSE, results='markup'}
 askMC(
   prompt = r"(Which command made this plot in @fig-M3-14-05?)",
-r"(+`slice_plot(x^2 ~ x, domain(x=c(-3,3)))`+)" = r"( )",
-  r"(`plot(x^2 ~ x, domain=c(-3,3))`)" = r"(Two things are wrong here: 1) the R/mosaic function to draw graphs of functions of one input is `slice_plot()`, not `plot`; 2) the graphics domain should be set this way: `domain(x=c(-3,3))`)",
-  r"(`slice_plot(x^2, domain(x=c(-3,3)))`)" = r"(The first argument to `slice_plot()` needs to be a tilde expression, for instance `x^2 ~ x`.)",
+r"(+`slice_plot(x^2 ~ x, bounds(x=c(-3,3)))`+)" = r"( )",
+  r"(`plot(x^2 ~ x, domain=c(-3,3))`)" = r"(Two things are wrong here: 1) the R/mosaic function to draw graphs of functions of one input is `slice_plot()`, not `plot`; 2) the graphics domain should be set this way: `bounds(x=c(-3,3))`)",
+  r"(`slice_plot(x^2, bounds(x=c(-3,3)))`)" = r"(The first argument to `slice_plot()` needs to be a tilde expression, for instance `x^2 ~ x`.)",
   r"(`slice_plot(x^2 ~ x, x=c(-3,3))`)" = r"( )",
   r"(None of them correspond to the plot.)" = r"( )",
   random_answer_order=TRUE,
@@ -154,7 +154,7 @@ r"(+`slice_plot(x^2 ~ x, domain(x=c(-3,3)))`+)" = r"( )",
 #| label: fig-M3-14-04
 #| fig-cap: "."
 #| out-width: "60%"
-slice_plot(pnorm(x) ~ x, domain(x=c(-4, 4)))
+slice_plot(pnorm(x) ~ x, bounds(x=c(-4, 4)))
 ```
 
 
@@ -162,9 +162,9 @@ slice_plot(pnorm(x) ~ x, domain(x=c(-4, 4)))
 ```{r drill-M04-30, echo=FALSE, results='markup'}
 askMC(
   prompt = r"(Which command made the plot in @fig-M3-14-04?)",
-r"(+`slice_plot(pnorm(x) ~ x, domain(x=c(-4, 4)))`+)" = r"( )",
-  r"(`slice_plot(pnorm(x) ~ x, domain(x=(-4, 4))`)" = r"(The end-points of the domain need to be collected by the function `c()`, so the argument to `domain()` should be `x=c(-4,4)` not `x=(-4, 4)`)",
-  r"(`slice_plot(pnorm(x) ~ y, domain(x=c(-4, 4)))`)" = r"(The name of the input to the function being graphed, `x` here, needs to be stated on the right-hand side of the tilde expression. So use `pnorm(x) ~ x` rather than `pnorm(x) ~ y`)",
+r"(+`slice_plot(pnorm(x) ~ x, bounds(x=c(-4, 4)))`+)" = r"( )",
+  r"(`slice_plot(pnorm(x) ~ x, bounds(x=(-4, 4))`)" = r"(The end-points of the domain need to be collected by the function `c()`, so the argument to `bounds()` should be `x=c(-4,4)` not `x=(-4, 4)`)",
+  r"(`slice_plot(pnorm(x) ~ y, bounds(x=c(-4, 4)))`)" = r"(The name of the input to the function being graphed, `x` here, needs to be stated on the right-hand side of the tilde expression. So use `pnorm(x) ~ x` rather than `pnorm(x) ~ y`)",
   r"(None of them correspond to the plot.)" = r"( )",
   random_answer_order=TRUE,
   item_label = "Drill "
@@ -176,10 +176,10 @@ r"(+`slice_plot(pnorm(x) ~ x, domain(x=c(-4, 4)))`+)" = r"( )",
 ```{r drill-M04-31, echo=FALSE, results='markup'}
 askMC(
   prompt = r"(Only one of the following commands will successfully generate the graph of a function. Which one? )",
-r"(+`slice_plot(exp(y) ~ y, domain(y=c(-4, 4)))`+)" = r"(Perhaps you were mislead by my using `y` as the name of the input to the function. You can use whatever name you like so long as you use it **consistently** in the whole command.)",
-  r"(`slice_plot(pnorm(x) ~ x, domain(y=c(-4, 4)))`)" = r"(The domain has been specified using the name `y` rather than the input name used in the tilde expression.)",
-  r"(`slice_plot(log(x) ~ x, domain(x=c(0; 10)))`)" = r"(The arguments to `c()` are illegally separated by a semi-colon rather than the mandated comma.)",
-  r"(`slice_plot(dnorm(y)) ~ x, domain(y=c(-3,3)))`)" = r"(The `x` on the right-hand side of the tilde expression is inconsistent with the use of `y` as the input name elsewhere in the command.)",
+r"(+`slice_plot(exp(y) ~ y, bounds(y=c(-4, 4)))`+)" = r"(Perhaps you were mislead by my using `y` as the name of the input to the function. You can use whatever name you like so long as you use it **consistently** in the whole command.)",
+  r"(`slice_plot(pnorm(x) ~ x, bounds(y=c(-4, 4)))`)" = r"(The domain has been specified using the name `y` rather than the input name used in the tilde expression.)",
+  r"(`slice_plot(log(x) ~ x, bounds(x=c(0; 10)))`)" = r"(The arguments to `c()` are illegally separated by a semi-colon rather than the mandated comma.)",
+  r"(`slice_plot(dnorm(y)) ~ x, bounds(y=c(-3,3)))`)" = r"(The `x` on the right-hand side of the tilde expression is inconsistent with the use of `y` as the input name elsewhere in the command.)",
   random_answer_order=TRUE,
   item_label = "Drill "
 )

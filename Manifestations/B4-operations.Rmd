@@ -87,8 +87,8 @@ ticks <- latex2exp::TeX(c(r'(x^*)', "x_0", "x_1"))
 f <- makeFun(raw(x) ~ x)
 df <- D(f(x) ~ x)(x0)
 fhat <- makeFun(f(x0) + df*(x-x0) ~ x)
-xstar <- Zeros(f(x) - 10 ~ x, domain(x=-3:3))$x
-slice_plot(f(x) ~ x, domain(x=-2:5), color="brown", label_text="f(x)", label_vjust=-0.5) %>%
+xstar <- Zeros(f(x) - 10 ~ x, bounds(x=-3:3))$x
+slice_plot(f(x) ~ x, bounds(x=-2:5), color="brown", label_text="f(x)", label_vjust=-0.5) %>%
   slice_plot(fhat(x) ~ x, color="blue", linetype="dotted") %>%
   gf_hline(yintercept=~ 10, color="magenta") %>%
   gf_text(10 ~ 4, label="v = 10", color="magenta", vjust = -0.5) %>%
@@ -179,7 +179,7 @@ Sometimes there will be multiple zeros on the specified domain. To handle such s
 We will illustrate by solving $x^3 = 6$ for $x$.
 
 ```{r} 
-Zeros(x^3 - 6 ~ x, domain(x=c(1,6)))
+Zeros(x^3 - 6 ~ x, bounds(x=c(1,6)))
 ```
 
 :::
@@ -218,15 +218,15 @@ f <- rfun(~ x, 3215)
 ```{r echo=FALSE}
 #| out-width: "50%"
 #| fig-align: "center"
-Xstar <- argM(f(x) ~ x, domain(-5:5))
-slice_plot(f(x) ~ x, domain(x=-5:5)) %>%
+Xstar <- argM(f(x) ~ x, bounds(-5:5))
+slice_plot(f(x) ~ x, bounds(x=-5:5)) %>%
   gf_labs(y = "f(x)") %>%
   gf_point(.output. ~ x, data = Xstar, 
            color="magenta", size=4, alpha=0.5) 
 ```
 
 ```{r}
-argM(f(x) ~ x, domain(x = -5:5))
+argM(f(x) ~ x, bounds(x = -5:5))
 ```
 
 Notice that `argM()` identified both a local maximum and a local minimum, that is, one argmax and one argmin. Visually, it is easy to tell which one is which. In terms of the data frame returned by `argM()`, the sign of the concavity does the identification for you: positive concavity points to an argmin, negative concavity to an argmax. The name `argM()` refers to this versatility of finding both argmins and argmaxes.

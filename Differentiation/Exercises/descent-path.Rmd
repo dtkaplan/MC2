@@ -9,7 +9,7 @@ Pilots of commercial passenger aircraft consider the comfort of their passengers
 A simple model of the descent path is a sigmoid function. Suppose that the descent starts from an altitude of $A = 20,000$ feet at a distance of 30,000 feet from the end of the runway. A reasonable model for the vertical component of the flight path is $$\text{altitude}(x) \equiv A\,\pnorm(x,\ \  mn=30000/2,\ \  sd=30000/6)$$  Notice that the parameter "mean" is set to be half the distance to the runway, and the parameter "sd" is set to be a third of that. This ensures that the start and end of the descent will involve flight that is close to level.
 
 ```{r echo=FALSE}
-slice_plot(20000*pnorm(x, mean=30000/2, sd=30000/6) ~ x, domain(x=0:30000)) %>%
+slice_plot(20000*pnorm(x, mean=30000/2, sd=30000/6) ~ x, bounds(x=0:30000)) %>%
   gf_labs(x = "Distance to end of runway") %>%
   gf_text(19900 ~ 28000, label="<" ) %>%
   gf_text(100 ~ 2000, label = "<")
@@ -28,7 +28,7 @@ Using a sandbox, plot out the function alt($t$) function, choosing a domain for 
 
 ```{r eval=FALSE}
 alt <- makeFun(20000 * pnorm(30000 - v * t, 30000/2, 30000/6) ~ t, v = 293.3)
-slice_plot(alt(t) ~ t, domain(t=0:110))
+slice_plot(alt(t) ~ t, bounds(t=0:110))
 ```
 
 
@@ -39,7 +39,7 @@ Graph the second derivative over the appropriate domain and look for the most ex
 
 ```{r eval=FALSE}
 dd_alt <- numD(alt(t) ~ t + t)
-slice_plot(dd_alt(t) ~ t, domain(t=0:110))
+slice_plot(dd_alt(t) ~ t, bounds(t=0:110))
 ```
 From the graph, read off the maximum vertical acceleration during the descent.
 
@@ -56,9 +56,9 @@ askMC(
 ```{r echo=FALSE, eval=FALSE, results="hide"}
 dist <- 60000
 alt <- makeFun(20000*pnorm(dist-v* t, dist/2, dist/6) ~ t, v = 293.33)
-slice_plot(alt(t) ~ t, domain(t=-0:200))
+slice_plot(alt(t) ~ t, bounds(t=-0:200))
 dd_alt <- numD(alt(t) ~ t & t)
-slice_plot(dd_alt(t) ~ t, domain(t=-0:200))
+slice_plot(dd_alt(t) ~ t, bounds(t=-0:200))
 ```
 
 A rule of thumb is that a vertical acceleration up to $5\, \text{ft}\, \text{s}^{-2}$ is acceptable in terms of passenger comfort. Regrettably, the descent path we described does not meet the standard! So we have to re-design the descent path. Since both the altitude and velocity are set, the only parameter you can change is the distance from the foot of the runway where descent commences. Of course, for the parameters "mean" and "sd" need to be set accordingly.

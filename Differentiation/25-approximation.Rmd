@@ -134,21 +134,21 @@ In many modeling situations with a single input, you can get very close to a goo
 #| fig-cap: "The ***eight simple shapes***, locally, of functions with one input. (See  Chapter @sec-local-approximations.)"
 #| fig-cap-location: margin
 g <- makeFun(a + b*x + c*x^2 ~ x, a=-1, b=2, c=1)
-P1 <- slice_plot(-g(x, c=0) ~ x, domain(x=c(-3,1)), size=2  ) %>%
+P1 <- slice_plot(-g(x, c=0) ~ x, bounds(x=c(-3,1)), size=2  ) %>%
   gf_labs(y="Output", x="Input", title="(A) downward sloping line")
-P2 <- slice_plot(g(x, c=0) ~ x, domain(x=c(-3,1)), size=2  ) %>%
+P2 <- slice_plot(g(x, c=0) ~ x, bounds(x=c(-3,1)), size=2  ) %>%
   gf_labs(y="Output", x="Input", title="(B) upward sloping line")
-P3 <- slice_plot(g(x) ~ x, domain(x=c(-3,-1)), size=2) %>%
+P3 <- slice_plot(g(x) ~ x, bounds(x=c(-3,-1)), size=2) %>%
   gf_labs(y="Output", x="Input", title="(C) downward sloping, concave up; steep then shallow")
-P4 <- slice_plot(g(x) ~ x, domain(x=c(-1,1)), size=2) %>% 
+P4 <- slice_plot(g(x) ~ x, bounds(x=c(-1,1)), size=2) %>% 
   gf_labs(y="Output", x="Input", title="(D) upward sloping, concave up; shallow then steep")
-P5 <- slice_plot(-g(x) ~ x, domain(x=c(-3,-1)), size=2) %>% 
+P5 <- slice_plot(-g(x) ~ x, bounds(x=c(-3,-1)), size=2) %>% 
   gf_labs(y="Output", x="Input", title="(E) upward sloping, concave down; steep then shallow")
-P6 <- slice_plot(-g(x) ~ x, domain(x=c(-1,1)), size=2) %>%
+P6 <- slice_plot(-g(x) ~ x, bounds(x=c(-1,1)), size=2) %>%
   gf_labs(y="Output", x="Input", title="(F) downward sloping, concave down; shallow then steep")
-P7 <- slice_plot(g(x) ~ x, domain(x=c(-3,1)), size=2) %>%
+P7 <- slice_plot(g(x) ~ x, bounds(x=c(-3,1)), size=2) %>%
   gf_labs(y="Output", x="Input", title="(G) local minimum")
-P8 <- slice_plot(-g(x) ~ x, domain(x=c(-3,1)), size=2) %>% 
+P8 <- slice_plot(-g(x) ~ x, bounds(x=c(-3,1)), size=2) %>% 
   gf_labs(y="Output", x="Input", title="(H) local maximum")
 gridExtra::grid.arrange(P1, P2, P3, P4, ncol=2)
 ```
@@ -209,9 +209,9 @@ With the appropriate choice of parameters, the form $a + bx + cx^2$ is  capable 
 #| fig-cap: "Four of the ***eight simple shapes*** correspond to the sides of the parabola. The labels refer to the graphs in @fig-eight-simple-shapes3."
 f1 <- makeFun(a + b*x + c*x^2 ~ x, a=-2, b=1, c=1)
 f2 <- makeFun(a + b*x + c*x^2 ~ x, a=-2, b=1, c=-1)
-P1 <- graph_with_boxes(f1, domain = c(-1.1,0.1), my_letters = c("C", "D"), 
+P1 <- graph_with_boxes(f1, bounds(x=-1.1:0.1), my_letters = c("C", "D"), 
                  intervals = tibble(x = c(-1, -.45), xend=c(-.55, 0)))
-P2 <- graph_with_boxes(f2, domain = c(-.3,1.4), my_letters = c("E", "F"),
+P2 <- graph_with_boxes(f2, bounds(x=-.3:1.4), my_letters = c("E", "F"),
                  intervals = tibble(x = c(-.2, .55), xend=c(.45, 1.25)))
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
@@ -243,7 +243,7 @@ make_gxy <- function(seed=1) {
                ayy = runif(1, -1, 1), axx = runif(1, -1, 1)
   )
 }
-show_poly2 <- function(seed=1, domain=list(x=c(-2, 2), y=c(-2, 2))) {
+show_poly2 <- function(seed=1, domain=bounds(x=-2:2, y=-2:2)) {
   f <- make_gxy(seed)
   list(P1 = contour_plot(f(x, y) ~ x + y, domain=domain),
   P2 = interactive_plot(f(x, y) ~ x + y, domain=domain))
@@ -377,7 +377,7 @@ Let's imagine that the domain of both $S$ and $T$ or the interval zero to one. T
 #| label: fig-zero-one
 #| fig-cap: "The result of our intuitive investigation of the effects of study and tutoring on exam performance. The units are not yet assigned."
 P <- makeFun(0.5*S + 0.5*T + 0.5*S*T - 0.5*S^2 ~ S & T)
-contour_plot(P(S, T) ~ S & T, domain(S=0:1, T=0:1))
+contour_plot(P(S, T) ~ S & T, bounds(S=0:1, T=0:1))
 ```
  
 Notice that for small values of $T$, the horizontal spacing between adjacent contours is large. That is, it takes a lot of study to improve performance a little. At large values of $T$ the horizontal spacing between contours is smaller.
@@ -391,9 +391,9 @@ Low-order polynomials are often used for constructing functions from data. In th
 The data I'll use for the demonstration is a set of physical measurements of height, weight, abdominal circumference, etc. on 252 human subjects. These are contained in the `Body_fat` data frame, shown below. 
 ```{r echo=FALSE}
 if (knitr::is_html_output()) {
-  Zcalc::Body_fat %>% DT::datatable()
+  Body_fat %>% DT::datatable()
 } else {
-  knitr::kable(Zcalc::Body_fat %>% head(10))
+  knitr::kable(Body_fat %>% head(10))
 }
 ```
 
@@ -409,10 +409,10 @@ The process of finding the best coefficients in the polynomial is called ***line
 #| label: fig-bodyfat-mod
 #| fig-cap: "A low order polynomial model of body fat percentage as a function of height (inches) and weight (lbs)."
 mod <- lm(bodyfat ~ height + weight + height*weight,
-          data = Zcalc::Body_fat)
+          data = Body_fat)
 body_fat_fun <- makeFun(mod)
 contour_plot(body_fat_fun(height, weight) ~ height + weight,
-             domain(weight=c(100, 250), height = c(60, 80))) %>%
+             bounds(weight=c(100, 250), height = c(60, 80))) %>%
   gf_labs(title = "Body fat percentage")
 ```
 

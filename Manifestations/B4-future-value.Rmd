@@ -48,7 +48,7 @@ total <- makeFun(rental(t) + sales(t) - construction(t) - maintenance(t) ~ t)
 Rental1 <-
   gf_rect(0 + 1.1e6 ~ -.2 + 31, fill="green", color=NA, alpha=0.2) %>%
 gf_rect(0 + -1.1e6 ~ -.2 + 31, fill="red", color=NA, alpha=0.2) %>%
-  slice_plot(total(t) ~ t, domain(t=-.2:31), npts=500) %>%
+  slice_plot(total(t) ~ t, bounds(t=-.2:31), npts=500) %>%
   gf_labs(x="t (years)", y="Income ($ per year)")
 
 Rental1 %>% 
@@ -119,8 +119,8 @@ The entrepreneur goes to the bank with her business plan and financial forecasts
 #| fig-cap: "Blue curve: The apartment project income stream discounted at 7% per year. Black curve: The undiscounted income stream."
 #| fig-cap-location: margin
 Rental1 %>%
-  slice_plot(total(t)/(1.07^t) ~ t, color="blue", 
-             size=2, domain(t=0:30), npts=500)
+  slice_plot(total(t)/(1.07^t) ~ t, bounds(t=0:30),
+             color="blue", size=2,  npts=500)
 ```
 
 @fig-rental-graph2 shows the income stream discounted at 7% per year. The net present value of the income stream for the apartment project is the accumulation of the discounted income stream:
@@ -133,8 +133,8 @@ The entrepreneur responds to the bank's offer with some business jargon. "I'll h
 
 
 ```{r echo=FALSE, results="hide"}
-Integrate(total(t)/(1.07^t) ~ t, domain(t=0:30))
-Integrate(total(t)/(1.025^t) ~ t, domain(t=0:30))
+Integrate(total(t)/(1.07^t) ~ t, bounds(t=0:30))
+Integrate(total(t)/(1.025^t) ~ t, bounds(t=0:30))
 ```
 :::
 

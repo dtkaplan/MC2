@@ -54,18 +54,18 @@ The left panel of @fig-fhat-and-resid shows the functions $f(t) \equiv t^2$ and 
 #| label: fig-fhat-and-resid
 #| fig-cap: "Projecting $f(t) \\equiv t^2$ onto $g(t) \\equiv \\text{one}(t)$."
 library(latex2exp)
-P1 <- slice_plot(t^2 ~ t, domain(t=-1:1)) %>%
+P1 <- slice_plot(t^2 ~ t, bounds(t=-1:1)) %>%
   slice_plot(1/3 ~ t, color="magenta") %>%
   gf_lims(y = c(-.34, 1)) %>% 
   gf_labs(title = TeX("$f(t)$ and $\\widehat{f(t)}$"))
-P2 <- slice_plot(t^2 - 1/3 ~ t, domain(t=-1:1)) %>%
+P2 <- slice_plot(t^2 - 1/3 ~ t, bounds(t=-1:1)) %>%
   gf_lims(y = c(-.34, 1)) %>% 
   gf_labs(title = TeX("Residual: $f(t)-\\widehat{f(t)}$"))
 Pts <- tibble::tibble(
   x = seq(-1, 1, length=200),
   y = (x^2 - 1/3)^2
 )
-P3 <- slice_plot((t^2 - 1/3)^2 ~ t, domain(t=-1:1)) %>%
+P3 <- slice_plot((t^2 - 1/3)^2 ~ t, bounds(t=-1:1)) %>%
   gf_ribbon(0 + y ~ x, data = Pts, fill="blue", inherit=FALSE) %>%
   gf_lims(y = c(-.34, 1)) %>% 
   gf_labs(title = TeX("$\\int \\left[f(t) - \\widehat{f(t)}\\right]^{1/2} \\,dt$"))
@@ -120,15 +120,15 @@ omega <- 3
 waveA <- makeFun(sin(2*pi*3*t) ~ t)
 waveB <- makeFun(cos(2*pi*3*t) ~ t)
 waveC <- makeFun(sin(2*pi*3*(t-0.10)) ~ t)
-P1 <- slice_plot(waveA(t) ~ t, domain(t=0:1), npts=200) %>%
+P1 <- slice_plot(waveA(t) ~ t, bounds(t=0:1), npts=200) %>%
   gf_vline(xintercept = ~ 0.419, color="magenta") %>%
   gf_labs(y = "Wave A(t)",
           subtitle = "(A)", x="")
-P2 <- slice_plot(waveB(t) ~ t, domain(t=0:1), npts=200) %>% 
+P2 <- slice_plot(waveB(t) ~ t, bounds(t=0:1), npts=200) %>% 
    gf_vline(xintercept = ~ 0.333, color="blue") %>%
   gf_labs(y = "Wave B(t)",
           subtitle = "(B)", x="")
-P3 <- slice_plot(waveC(t) ~ t, domain(t=0:1), npts=200) %>%
+P3 <- slice_plot(waveC(t) ~ t, bounds(t=0:1), npts=200) %>%
   gf_vline(xintercept = ~ 0.183, color="brown")  %>%
   gf_labs(y = "WaveC(t)",
           subtitle = "(C)", x="t (secs)")
@@ -140,18 +140,18 @@ Since we have a dot product for functions, we can treat each of the three sinuso
 ::: {.column-page-inset-right}
 ```{r}
 ## vector lengths 
-lengthA <- Integrate(waveA(t) * waveA(t) ~ t, domain(t=0:1)) %>% sqrt() 
+lengthA <- Integrate(waveA(t) * waveA(t) ~ t, bounds(t=0:1)) %>% sqrt() 
 lengthA
-lengthB <- Integrate(waveB(t) * waveB(t) ~ t, domain(t=0:1)) %>% sqrt()
+lengthB <- Integrate(waveB(t) * waveB(t) ~ t, bounds(t=0:1)) %>% sqrt()
 lengthB
-lengthC <- Integrate(waveC(t) * waveC(t) ~ t, domain(t=0:1)) %>% sqrt()
+lengthC <- Integrate(waveC(t) * waveC(t) ~ t, bounds(t=0:1)) %>% sqrt()
 lengthC
 ## dot products
-dotAB   <- Integrate(waveA(t) * waveB(t) ~ t, domain(t=0:1)) 
+dotAB   <- Integrate(waveA(t) * waveB(t) ~ t, bounds(t=0:1)) 
 dotAB
-dotAC   <- Integrate(waveA(t) * waveC(t) ~ t, domain(t=0:1))
+dotAC   <- Integrate(waveA(t) * waveC(t) ~ t, bounds(t=0:1))
 dotAC
-dotBC   <- Integrate(waveB(t) * waveC(t) ~ t, domain(t=0:1))
+dotBC   <- Integrate(waveB(t) * waveC(t) ~ t, bounds(t=0:1))
 dotBC
 ```
 :::
@@ -175,7 +175,7 @@ Pts <- tibble::tibble(
   top= ifelse(y>=0, y, 0),
   bottom = ifelse(y<=0, y, 0)
 )
-slice_plot(waveA(t)*waveB(t) ~ t, domain(t=0:1), npts=300) %>%
+slice_plot(waveA(t)*waveB(t) ~ t, bounds(t=0:1), npts=300) %>%
   gf_ribbon(0 + top ~ t, data = Pts, fill="blue", inherit=FALSE) %>%
   gf_ribbon(bottom + 0 ~ t, data = Pts, fill="orange", inherit=FALSE) %>%
   gf_labs(subtitle=latex2exp::TeX("$A \\bullet B$"), y="")
@@ -193,7 +193,7 @@ Pts <- tibble::tibble(
   top= ifelse(y>=0, y, 0),
   bottom = ifelse(y<=0, y, 0)
 )
-P1 <- slice_plot(waveA(t)*waveC(t) ~ t, domain(t=0:1), npts=300) %>%
+P1 <- slice_plot(waveA(t)*waveC(t) ~ t, bounds(t=0:1), npts=300) %>%
   gf_ribbon(0 + top ~ t, data = Pts, fill="blue", inherit=FALSE) %>%
   gf_ribbon(bottom + 0 ~ t, data = Pts, fill="orange", inherit=FALSE) %>%
   gf_labs(subtitle=latex2exp::TeX("$A \\bullet C$"), y="")
@@ -203,7 +203,7 @@ Pts <- tibble::tibble(
   top= ifelse(y>=0, y, 0),
   bottom = ifelse(y<=0, y, 0)
 )
-P2 <- slice_plot(waveB(t)*waveC(t) ~ t, domain(t=0:1), npts=300) %>%
+P2 <- slice_plot(waveB(t)*waveC(t) ~ t, bounds(t=0:1), npts=300) %>%
   gf_ribbon(0 + top ~ t, data = Pts, fill="blue", inherit=FALSE) %>%
   gf_ribbon(bottom + 0 ~ t, data = Pts, fill="orange", inherit=FALSE) %>%
   gf_labs(subtitle=latex2exp::TeX("$B \\bullet C$"), y="")
@@ -217,7 +217,7 @@ A_coef <- dotAC / lengthA^2
 B_coef <- dotBC / lengthB^2
 mod_vec <- makeFun(A_coef*waveA(t) + B_coef*waveB(t) ~ t)
 # length of mod_vec
-Integrate(mod_vec(t)*mod_vec(t) ~ t, domain(t=0:1)) %>% sqrt()
+Integrate(mod_vec(t)*mod_vec(t) ~ t, bounds(t=0:1)) %>% sqrt()
 ```
 
 You can see that the length of the model vector is the same as the length of the vector being projected. This means that waveform C lies exactly in the subspace spanned by waveforms A and B.
@@ -231,11 +231,11 @@ Consider the function $g(t) \equiv 17.3 \sin(2*pi*5*(t-0.02)$ on the domain $0 \
 g <- makeFun(17.3 * sin(2*pi*5*(t-0.02)) ~ t)
 sin5 <- makeFun(sin(2*pi*5*t) ~ t)
 cos5 <- makeFun(cos(2*pi*5*t) ~ t)
-A_coef <- Integrate(g(t) * sin5(t) ~ t, domain(t=0:1)) /
-  Integrate(sin5(t) * sin5(t) ~ t, domain(t=0:1))
+A_coef <- Integrate(g(t) * sin5(t) ~ t, bounds(t=0:1)) /
+  Integrate(sin5(t) * sin5(t) ~ t, bounds(t=0:1))
 A_coef
-B_coef <- Integrate(g(t)*cos5(t) ~ t, domain(t=0:1)) /
-  Integrate(cos5(t) * cos5(t) ~ t, domain(t=0:1))
+B_coef <- Integrate(g(t)*cos5(t) ~ t, bounds(t=0:1)) /
+  Integrate(cos5(t) * cos5(t) ~ t, bounds(t=0:1))
 B_coef
 ```
 

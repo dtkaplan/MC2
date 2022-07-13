@@ -28,7 +28,7 @@ n <- 8
 Pts <- tibble(x = runif(n, -3, 3), y = rnorm(n))
 mod <- lm(y ~ poly(x, n-1), data = Pts)
 fmod <- makeFun(mod)
-slice_plot(fmod(x) ~ x, domain(x=c(-2.8, 1.65))) %>%
+slice_plot(fmod(x) ~ x, bounds(x=c(-2.8, 1.65))) %>%
   gf_vline(xintercept = ~ -2.65, color="tan") %>%
   gf_vline(xintercept = ~ 1.6, color="tan") %>%
   gf_text(25 ~ -.5, label="Wriggly domain", color="tan", size=10) %>%
@@ -69,7 +69,7 @@ Our example polynomial, $g(x) \equiv x - \frac{1}{6}x^3$, graphed in color in @f
 ```{r echo=FALSE}
 #| label: fig-small-sine
 #| fig-cap: "The polynomial $g(x) \\equiv x -x^3 / 6$ is remarkably similar to $\\sin(x)$ near $x=0$."
-slice_plot(sin(x) ~ x, domain(x=c(-2.85, 2.85)), size=3, alpha=0.25) %>%
+slice_plot(sin(x) ~ x, bounds(x=c(-2.85, 2.85)), size=3, alpha=0.25) %>%
   slice_plot(x - x^3/6 ~ x, color="magenta")
 ```
 
@@ -83,7 +83,7 @@ One way to measure the quality of the approximation is the ***error*** ${\cal E}
 #| label: fig-sin-error
 #| fig-cap: "The error ${\\cal E}(x)$ of $x - x^3/6$ as an approximation to $\\sin(x)$. Top panel: linear scale. Bottom panel: on a log-log scale."
 P <- slice_plot(abs(sin(x) - (x - x^3/6)) ~ x, 
-                domain(x=c(0.001, 3)), npts=500) %>% 
+                bounds(x=c(0.001, 3)), npts=500) %>% 
   gf_labs(y = "Error(x)")
 
 breaksx <- c(.001,  .005, 0.01,0.05, 0.1,0.3,  0.5, 1, 3)
@@ -172,7 +172,7 @@ Result: the 3rd-order Taylor polynomial approximation to the exponential at $x=0
 ```{r echo=FALSE, class.source="code-hide"}
 #| label: fig-taylor-exp-3
 #| fig-cap: "The 3th-order Taylor polynomial approximation to $e^x$ arount $x=0$"
-slice_plot(exp(x) ~ x, domain(x=c(-2,2)), size=3, alpha = 0.25) %>%
+slice_plot(exp(x) ~ x, bounds(x=c(-2,2)), size=3, alpha = 0.25) %>%
   slice_plot(1 + x + x^2/2 + x^3/6  ~ x, color="magenta")
 ```
 
@@ -227,7 +227,7 @@ Still another answer is suggested by plotting out sinc($x$) near $x=0$ and readi
 ```{r}
 #| label: fig-sinc-near-zero
 #| fig-cap: "To judge from this plot, $\\sin(0) = 1$."
-slice_plot(sin(x) / x ~ x, domain(x=c(-10,10)), npts=500)
+slice_plot(sin(x) / x ~ x, bounds(x=c(-10,10)), npts=500)
 ```
 The graph of sinc() looks smooth and the shape makes sense. Even if we zoom in very close to $x=0$, the graph continues to look smooth. We call such functions ***well behaved***.
 
@@ -238,9 +238,9 @@ Both $\sin(x)/x$ and $\sin(x) / x^3$, evaluated at $x=0$ involve a divide by zer
 ```{r}
 #| label: fig-sinc2
 #| fig-cap: "Zooming in around the division by zero. Left: The graph of $\\sin(x)/x$ versus $x$. Right: The graph of $\\sin(x)/x^2$. The vertical scales on the two graphs are utterly different."
-slice_plot(sin(x) / x ~ x, domain(x=c(-0.1, 0.1)), npts=500) %>%
+slice_plot(sin(x) / x ~ x, bounds(x=c(-0.1, 0.1)), npts=500) %>%
   gf_refine(scale_y_log10())
-slice_plot(sin(x) / x^3 ~ x, domain(x=c(-0.1, 0.1)), npts=500) %>%
+slice_plot(sin(x) / x^3 ~ x, bounds(x=c(-0.1, 0.1)), npts=500) %>%
   gf_refine(scale_y_log10())
 ```
 
@@ -319,7 +319,7 @@ Taylor polynomials provide a means to approximate continuous and smooth function
 #| label: ramp-Taylor
 #| fig-cap: "A piecewise continuous ramp function (gray) together with its Taylor polynomial (magenta) centered on $x_0 = 0$."
 ramp <- makeFun(ifelse(x-1 < 0, 0, x-1) ~ x)
-slice_plot(ramp(x) ~ x, size = 3, alpha = 0.25, domain(x=c(-2, 4))) %>%
+slice_plot(ramp(x) ~ x, bounds(x=-2:4),size = 3, alpha = 0.25) %>%
   slice_plot(0 ~ x, color="magenta") %>%
   gf_text(0.25 ~ 3, label="Taylor poly.",color = "magenta")
 
@@ -335,9 +335,9 @@ Pts <- tibble(x = seq(0, pi/2, length=1000), y = sin(x))
 mod <- lm(y ~ x + I(x*x) + I(x*x*x) - 1, data = Pts)
 mod
 fmod <- makeFun(mod)
-slice_plot(sin(x) ~ x, domain(x=c(0, pi/2)), size=3, alpha=0.25) %>%
+slice_plot(sin(x) ~ x, bounds(x=c(0, pi/2)), size=3, alpha=0.25) %>%
   slice_plot(fmod(x) ~ x, color="magenta")
-slice_plot(sin(x) - fmod(x) ~ x, domain(x=c(0, pi/2))) %>%
+slice_plot(sin(x) - fmod(x) ~ x, bounds(x=c(0, pi/2))) %>%
   slice_plot(sin(x) - (x - x^3/6) ~ x, color="green")
 ```
 

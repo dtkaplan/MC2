@@ -93,8 +93,8 @@ gridExtra::grid.arrange(P1, P2, ncol=2)
 One setting where a vector representation is useful is velocity. In Chapter @sec-splines there is an example involving a robot arm moving in an $(x, y)$-plane. At each instant, the arm has both a $(x, y)$-position and an $(x, y)$-velocity. @fig-robot-xy shows the separate components of position ($x(t)$ and $y(t)$) and velocity ($\partial_t x(t)$ and $\partial_t y(t)$) and acceleration ($\partial_{tt} x(t)$ and $\partial_{tt} y(t)$)  in six graphic frames. \@ref(fig:velocity-vs-position) 
 
 ```{r results="hide"}
-pos_x <- spliner(x ~ t, data = Zcalc::Robot.stations)
-pos_y <- spliner(y ~ t, data = Zcalc::Robot.stations)
+pos_x <- spliner(x ~ t, data = Robot_stations)
+pos_y <- spliner(y ~ t, data = Robot_stations)
 vel_x <- D(pos_x(t) ~ t)
 vel_y <- D(pos_y(t) ~ t)
 accel_x <- D(pos_x(t) ~ t & t)
@@ -104,17 +104,17 @@ accel_y <- D(pos_y(t) ~ t & t)
 ```{r echo=FALSE}
 #| label: fig-robot-xy
 #| fig-cap: "The position, velocity, and acceleration of the robot arm as a function of time. The x-coordinate is the left column, the y-coordinate the right column."
-P1 <- slice_plot(pos_x(t) ~ t, domain(t=1:15)) %>%
+P1 <- slice_plot(pos_x(t) ~ t, bounds(t=1:15)) %>%
   gf_labs(y = "x position")
-P2 <- slice_plot(pos_y(t) ~ t, domain(t=1:15)) %>%
+P2 <- slice_plot(pos_y(t) ~ t, bounds(t=1:15)) %>%
   gf_labs(y = "y position")
-P3 <- slice_plot(vel_x(t) ~ t, domain(t=1:15), color="blue") %>%
+P3 <- slice_plot(vel_x(t) ~ t, bounds(t=1:15), color="blue") %>%
   gf_labs(y = "x velocity")
-P4 <- slice_plot(vel_y(t) ~ t, domain(t=1:15), color="blue") %>%
+P4 <- slice_plot(vel_y(t) ~ t, bounds(t=1:15), color="blue") %>%
   gf_labs(y = "y velocity")
-P5 <- slice_plot(accel_x(t) ~ t, domain(t=1:15), color="magenta") %>%
+P5 <- slice_plot(accel_x(t) ~ t, bounds(t=1:15), color="magenta") %>%
   gf_labs(y = "x acceleration")
-P6 <- slice_plot(accel_y(t) ~ t, domain(t=1:15), color="magenta") %>%
+P6 <- slice_plot(accel_y(t) ~ t, bounds(t=1:15), color="magenta") %>%
   gf_labs(y = "y acceleration")
                    
 gridExtra::grid.arrange(P1, P2, P3, P4, P5, P6, ncol=2 )
@@ -153,10 +153,10 @@ The gradient vector is particularly useful when searching for argmaxes or argmin
 
 ```{r echo=FALSE}
 f <- rfun(~ x & y, seed = 452)
-one <- argM(f(x, y) ~ x & y, domain(x=-1:0, y=-0:2))
-two <- argM(-f(x, y) ~ x & y, domain(x=-4:-3, y=-4:-2)) %>%
+one <- argM(f(x, y) ~ x & y, bounds(x=-1:0, y=-0:2))
+two <- argM(-f(x, y) ~ x & y, bounds(x=-4:-3, y=-4:-2)) %>%
   mutate(.output. = - .output., color="brown")
-three <- argM(-f(x, y) ~ x & y, domain(x=2:4, y=2:4)) %>%
+three <- argM(-f(x, y) ~ x & y, bounds(x=2:4, y=2:4)) %>%
   mutate(.output. = - .output., color="magenta")
 Where <- bind_rows(one, two, three)
 ```
@@ -165,7 +165,7 @@ Where <- bind_rows(one, two, three)
 ```{r echo=FALSE, width=8, height=8, out.width="130%"} 
 #| label: fig-grad-preview1 
 #| fig-cap: "The gradient field for a function. The gradient vector points the way uphill." 
-gradient_plot(f(x, y) ~ x & y, domain(x=-4:4, y=-4:4), npts=30) %>%
+gradient_plot(f(x, y) ~ x & y, bounds(x=-4:4, y=-4:4), npts=30) %>%
   gf_point(y ~ x, data = Where, size=3, alpha=.3,
            inherit=FALSE) %>%
   gf_refine(coord_fixed())
@@ -177,8 +177,8 @@ The gradient vector carries much the same information as do the contours locally
 ```{r echo=FALSE, width=12, height=12, out.width="180%"}
 #| label: fig-contour-and-gradient
 #| fig-cap: "Gradient fields carry much the same information as a set of contours. Note that the gradient vector at each point is perpendicular to the contour through that point." 
-contour_plot(f(x, y) ~ x & y, domain(x=-4:4, y=-4:4), filled=FALSE) %>%
-  gradient_plot(f(x, y) ~ x & y, domain(x=-4:4, y=-4:4), npts=30) %>%
+contour_plot(f(x, y) ~ x & y, bounds(x=-4:4, y=-4:4), filled=FALSE) %>%
+  gradient_plot(f(x, y) ~ x & y, bounds(x=-4:4, y=-4:4), npts=30) %>%
   gf_point(y ~ x, data = Where, fill = ~ color, size=3, alpha=.3) %>%
   gf_refine(coord_fixed())
 ```

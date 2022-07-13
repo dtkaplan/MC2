@@ -9,7 +9,7 @@ Here is a square-wave function:
 
 ```{r}
 sq_wave <- makeFun(ifelse(abs(t) <= 0.5, 1, 0) ~ t)
-slice_plot(sq_wave(t) ~ t, domain(t=-1:1))
+slice_plot(sq_wave(t) ~ t, bounds(t=-1:1))
 ```
 Find the projection of the square wave onto each of these functions. Use the domain $-1 \leq t \leq 1$.
 
@@ -26,8 +26,8 @@ Hint: To find the scalar multiplier of projecting $g(t)$ onto $f(t)$, use
 $$\int_{-1}^1 g(t)\, f(t)\, dt {\LARGE /} \int_{-1}^1 f(t)\, f(t)\,dt$$ or, in R/mosaic 
 
 ```{r eval=FALSE}
-A <- Integrate(g(t)*f(t) ~ t, domain(t=-1:1)) / 
-  Integrate(f(t)*f(t) ~ t, domain(t=-1:1))
+A <- Integrate(g(t)*f(t) ~ t, bounds(t=-1:1)) / 
+  Integrate(f(t)*f(t) ~ t, bounds(t=-1:1))
 ```
 Then the projection of $g()$ onto $f()$ is $A\, f(t)$.
 
@@ -39,8 +39,8 @@ If you calculated things correctly, this is the linear combination of the 8 func
 
 ```{r echo=FALSE, results="hide"}
 project_onto_f <- function(g, f) {
-  Integrate(g(t)*f(t) ~ t, domain(t=-1:1)) / 
-    Integrate(f(t)*f(t) ~ t, domain(t=-1:1))
+  Integrate(g(t)*f(t) ~ t, bounds(t=-1:1)) / 
+    Integrate(f(t)*f(t) ~ t, bounds(t=-1:1))
 }
 
 res <- numeric(7)
@@ -50,7 +50,7 @@ for (n in 1:7) {
   res[n] <- project_onto_f(sq_wave, funs[[n]])
 }
 slice_plot(1/2 + 0.637*funs[[1]](t) -0.2122*funs[[3]](t) + 0.1273*funs[[5]](t) - 0.09095*funs[[7]](t) ~ t,
-           domain(t=-1:1), color="blue") %>%
-  slice_plot(sq_wave(t) ~ t, domain(t=-1:1)) 
+           bounds(t=-1:1), color="blue") %>%
+  slice_plot(sq_wave(t) ~ t, bounds(t=-1:1)) 
 ```
 
