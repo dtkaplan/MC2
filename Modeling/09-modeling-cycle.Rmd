@@ -204,7 +204,7 @@ $C \sin(x +\phi) = A \sin(x) + B \cos(x)$ where $C^2 = A^2 + B^2$ and $\phi=\arc
 
 ## Modeling project
 
-The data frame `SunsetLA` records the number of minutes after 4 pm until the sun sets in Los Angeles, CA  over a 4-year interval from January 2010 (month 1) through December 2013 (month 48). 
+The data frame `MMAC::SunsetLA` records the number of minutes after 4 pm until the sun sets in Los Angeles, CA  over a 4-year interval from January 2010 (month 1) through December 2013 (month 48). 
 
 <!-- (All times are already adjusted for daylight savings time. The book does not tell us whether the value for each month is an average over all days or for a particular day of the month.) -->
 
@@ -212,7 +212,7 @@ Open a sandbox and make a plot of sunset time versus month.
 
 ::: {.scaffolding  data-latex=""}
 ```{r results="hide"}
-gf_point(Minutes ~ Month, data = SunsetLA) %>%
+gf_point(Minutes ~ Month, data = MMAC::SunsetLA) %>%
   gf_line()
 ```
 
@@ -255,11 +255,11 @@ sunset <- makeFun(A + C*sin(2*pi*(Month - offset)/12),
                   A = __your estimate__, 
                   C = __your estimate__,
                   offset=0)
-gf_point(Minutes ~ Month, data = SunsetLA) %>%
+gf_point(Minutes ~ Month, data = MMAC::SunsetLA) %>%
   gf_line() %>%
   slice_plot(sunset(Month) ~ Month)
 ```
-The domain for `slice_plot()` is inherited to that implied by the `SunsetLA` data. Notice that the input name in `slice_plot()` corresponds to that established in `gf_point()`.
+The domain for `slice_plot()` is inherited to that implied by the `MMAC::SunsetLA` data. Notice that the input name in `slice_plot()` corresponds to that established in `gf_point()`.
 :::
 
 
@@ -304,12 +304,12 @@ guessed_fun <-
 
 tuned_fun <-
   fitModel(Minutes ~ A*sin(2*pi*(Month - offset)/12) + C,
-         data  = SunsetLA,
+         data  = MMAC::SunsetLA,
          start = list(A = rough_A,
                       C = rough_C,
                       offset = rough_offset) )
 
-gf_point(Minutes ~ Month, data = SunsetLA) %>%
+gf_point(Minutes ~ Month, data = MMAC::SunsetLA) %>%
   gf_line(color  = "dodgerblue") %>%
   slice_plot(tuned_fun(Month) ~ Month) %>%
   slice_plot(guessed_fun(Month) ~ Month,  color = "orange3")

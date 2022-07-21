@@ -18,19 +18,19 @@ This system of differential equations, called the ***Lorenz equations*** is famo
 
 2. What is the dimension of the state space?
 
-3. For initial conditions $x_0 = -5.276, y_0 = -7.152, z_0=19.452$ and $\rho=28$, $\sigma=10$, and $\beta=8/3$, use `integrateODE()` to integrate the equations over $tdur=100$ time units with a stepsize of $dt=0.01$. (This means you should set the `tdur=` argument to `tdur=list(from=0, to=50, dt=0.01)`) Call your trajectory `T1`.
+3. For initial conditions $x_0 = -5.276, y_0 = -7.152, z_0=19.452$ and $\rho=28$, $\sigma=10$, and $\beta=8/3$, use `integrateODE()` to integrate the equations over $0 \leq t \leq 100$ with a stepsize of $dt=0.01$. (This means you should set use the arguments `bounds(t=0:50), dt=0.01`. Call your trajectory `T1`.
 
 ```{r echo=FALSE, results="hide"}
 T1 <- integrateODE(dx ~ sigma*(y-x), dy ~(x*(rho-z) - y), 
                   dz ~ (x*y - beta*z),
                   x=-5.276, y=-7.152, z=19.452, 
                   rho=28, sigma=10, beta = 8/3, 
-                  tdur=list(from=0, to=50, dt=0.01))
+                  bounds(t=0:50), dt=0.01)
 T2 <- integrateODE(dx ~ sigma*(y-x), dy ~(x*(rho-z) - y), 
                   dz ~ (x*y - beta*z),
                   x=-5.277, y=-7.153, z=19.453, 
                   rho=28, sigma=10, beta = 8/3, 
-                  tdur=list(from=0, to=50, dt=0.01))
+                  bounds(t=0:50), dt=0.01)
 traj_plot(x(t) ~ t, T1)
 traj_plot(y(t) ~ x(t), T1, npts=10000)
 traj_plot(x(t) ~ t, T1, color="blue") %>% traj_plot(x(t) ~ t, T2, color="red")

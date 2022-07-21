@@ -55,8 +55,7 @@ TAB <- if (knitr::is_html_output()) {
 } else {
   Znotes::and_so_on(Robot_stations)
 }
-TAB %>% 
-  kableExtra::kable_paper("hover", full_width = FALSE)
+TAB # %>% kableExtra::kable_paper("hover", full_width = FALSE)
 ```
 
 ```{asis eval=knitr::is_latex_output()}
@@ -76,13 +75,13 @@ P1 <- slice_plot(xl(t) ~ t, bounds(t=1:16), npts=500) %>% gf_labs(y="x(t) (mm)",
 P2 <- slice_plot(yl(t) ~ t, bounds(t=1:16), npts=500) %>% gf_labs(y="y(t) (mm)", x = "t (sec)")
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
-It can be difficult at first glance to see the relationship between the $x(t)$ and $y(t)$ functions and the path shown in \@ref(fig:robot-points). As an exercise, look specifically at the segment $9 \leq t \leq 10$. In @fig-piecewise-linear-path, this is the segment connecting points 9 and 10. In the path view, you can see that on this segment $x$ changes a lot while $y$ changes only a little. Correspondingly, in the function view, $\partial_t x(t)$ is large in magnitude compared to $\partial_t y(t)$.
+It can be difficult at first glance to see the relationship between the $x(t)$ and $y(t)$ functions and the path shown in @fig-robot-points. As an exercise, look specifically at the segment $9 \leq t \leq 10$. In @fig-piecewise-linear-path, this is the segment connecting points 9 and 10. In the path view, you can see that on this segment $x$ changes a lot while $y$ changes only a little. Correspondingly, in the function view, $\partial_t x(t)$ is large in magnitude compared to $\partial_t y(t)$.
 
 Each functions in @fig-piecewise-linear-path is an ***interpolating function***. You're entitled to think of the $x(t)$ function as connecting with lines the sequence of $x$ versus $t$ coordinates from the table and similarly for $y(t)$. Each of the two functions is continuous. But, based on your work in Blocks 1 through 3, you have a richer set of concepts for interpreting those two functions.
 
 For instance, let's look at $\partial_t y(t)$. Since $y$ is a position along the cross rail, $\partial_t y(t)$ is the velocity in that direction. @fig-y-velocity shows the velocity versus time for both the $x$ and $y$ components of the movement.
 
-```{r cho=FALSE, warning=FALSE}
+```{r echo=FALSE, warning=FALSE}
 #| label: fig-y-velocity
 #| fig-cap: "Velocity versus time time along the path defined by $x(t)$ and $y(t)$ as shown in Figure @fig-piecewise-linear-path."
 #| fig-cap-location: margin
@@ -91,23 +90,22 @@ dt_xl <- D(xl(t) ~ t)
 dt_yl <- D(yl(t) ~ t)
 P1 <- slice_plot(dt_xl(t) ~ t, bounds(t=1:16), npts=901, singularities = 1:16) %>% 
   gf_labs(y=labels[[1]], x="")
-P2 <- slice_plot(dt_yl(t) ~ t, bounds(t=1:16), npts=901,, singularities = 1:16) %>%
+P2 <- slice_plot(dt_yl(t) ~ t, bounds(t=1:16), npts=901, singularities = 1:16) %>%
   gf_labs(y=labels[[2]], x="t (sec)")
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
 The speed of the robot arm maxes out at about 600 mm-per-second. You can get a sense for this by moving your finger two feet in 1 second: a normal human speed of movement.
 
-
 Since the original $x(t)$ and $y(t)$ functions are piecewise linear, it makes sense that the derivatives with respect to time are piecewise constant. But the robot hand is a physical thing; it has to have a velocity at every instant in time. It cannot instantaneously have an undefined velocity. 
 
-Think about what it is that causes the change from one velocity step to another. There is a motor that is  spinning and changing its rate of spin, perhaps using a pulley and a belt to move the robot hand to the right position at any instant of time. Changing the velocity requires a **force** to create an acceleration. We can differentiate the velocity to see what the acceleration must be to create the simple piecewise linear function shown in @fig-piecewise-linear-path.
+Think about what it is that causes the change from one velocity step to another. There is a motor that is spinning and changing its rate of spin, perhaps using a pulley and a belt to move the robot hand to the right position at any instant of time. Changing the velocity requires a **force** to create an acceleration. We can differentiate the velocity to see what the acceleration must be to create the simple piecewise linear function shown in @fig-piecewise-linear-path.
 
 ```{r fig-x-acceleration, echo=FALSE}
-ddt_xl <- D(xl(t) ~ t & t, .hstep=0.1)
-ddt_yl <- D(yl(t) ~ t & t, .hstep=0.1)
-P1 <- slice_plot(ddt_xl(t) ~ t, bounds(t=1:16), npts=901) %>% gf_labs(y="x acceleration (mm/s^2)", x="")
+ddt_xl <- D(xl(t) ~ t & t, .h=0.1)
+ddt_yl <- D(yl(t) ~ t & t, .h=0.1)
+P1 <- slice_plot(ddt_xl(t) ~ t, bounds(t=1:16), npts=901) %>% gf_labs(y="x-accel (mm/s^2)", x="")
 P2 <- slice_plot(ddt_yl(t) ~ t, bounds(t=1:16), npts=901) %>%
-  gf_labs(y="y acceleration (mm/s^2)", x = "t (time)")
+  gf_labs(y="y-accel (mm/s^2)", x = "t (time)")
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
 
@@ -130,7 +128,7 @@ A consequence of smoothing the trajectory is that the robot hand comes near, but
 
 If you like working with practical problems, you might find a simple solution to the problem. For instance, we could have aimed the robot hand 2 mm further to the right than the actual station. In falling short by 2mm, the hand would miss the new target but cross right over the originally intended station. 
 
-Solutions like this ae sometimes called ***ad hoc***, meaning that they are so specifically tailored to one situation that they do not generalize well to slightly different problems. The next section introduces an approach that is much more general.
+Solutions like this are sometimes called ***ad hoc***, meaning that they are so specifically tailored to one situation that they do not generalize well to slightly different problems. The next section introduces a superior approach that is much more general.
 
 ## Piecewise but smooth
 
@@ -174,8 +172,7 @@ $$\left[\begin{array}{c}\left(t_1, x_1\right)\\
 \end{array}\right]$$ which you can think of as two columns of a data frame, one with the $t$-coordinates of the knots and the other with the $y$-coordinates. For the knots in @fig-quadratic-spline the data table is
 
 ```{r echo=FALSE}
-Pts %>% kbl() %>%
-  kable_classic(full_width=FALSE)
+Pts %>% kable()
 ```
 
 Constructing the interpolating function is a matter of making good choices for $a_1,$ $a_2,$ $a_3,$ $b_1,$ $b_2,$ $b_3,$ $c_1,$ $c_2,$ and $c_3$.
@@ -271,7 +268,7 @@ Path <- tibble(
 #| fig-cap: "A quadratic spline interpolation of the $x$-coordinates of the robot-path knots. The data hardly speak for themselves, since the interpolationg function tends to alternate between concave up and concave down in adjacent segments between the knots."
 #| fig-cap-location: margin
 slice_plot(xfun(t) ~ t, bounds(t=1:16), npts=500) %>%
-  gf_point(x ~ t, data = Robot.stations, color="orange", alpha=0.5, size=4) %>%
+  gf_point(x ~ t, data = Robot_stations, color="orange", alpha=0.5, size=4) %>%
   gf_labs(y="x(t)")
 ```
 :::
@@ -341,7 +338,7 @@ gf_path(y ~ x, data = Path) %>%
 #| fig-cap: "A cubic spline interpolation of the $x$-coordinates of the robot-path knots. The cubic spline respects the monotonicity of consecutive knot points."
 #| fig-cap-location: margin
 slice_plot(xfun(t) ~ t, bounds(t=1:16), npts=500) %>%
-  gf_point(x ~ t, data = Robot.stations, color="orange", alpha=0.5, size=4) %>%
+  gf_point(x ~ t, data = Robot_stations, color="orange", alpha=0.5, size=4) %>%
   gf_labs(y="x(t)")
 ```
 

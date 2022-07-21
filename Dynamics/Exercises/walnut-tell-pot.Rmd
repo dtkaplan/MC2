@@ -32,9 +32,9 @@ $$ \partial_t x = \partial_x f(x,y)\\
 \partial_t y = \partial_y f(x,y)$$
 
 
-1. Use `integrateODE()` to integrate the equations numerically from the initial condition $(x=0, y=-3)$. Plot the resulting trajectory as a layer on top of the contour plot and gradient field. Make the `tdur=` parameter in `integrateODE()` large enough to get very close to the high-point in the contour plot.
+1. Use `integrateODE()` to integrate the equations numerically from the initial condition $(x=0, y=-3)$. Plot the resulting trajectory as a layer on top of the contour plot and gradient field. Make the time bounds in `integrateODE()` large enough to get very close to the high-point in the contour plot.
 
-2. Modify the differential equations so that they correspond to gradient **descent** rather than ascent. Using the initial condition $(x=-1, y=1)$, numerically integrate the differential equations and, as in (1), plot the trajectory as a layer on the contour-plot/gradient-field. Make the `tdur=` parameter large enough to get very close to a local minimum of $f()$.
+2. Modify the differential equations so that they correspond to gradient **descent** rather than ascent. Using the initial condition $(x=-1, y=1)$, numerically integrate the differential equations and, as in (1), plot the trajectory as a layer on the contour-plot/gradient-field. Make the time bounds large enough to get very close to a local minimum of $f()$.
 
 3. From (2), change the initial condition to $(x=-1.25, y=1)$ and plot the trajectory. What's different from the result in (2).
 
@@ -44,15 +44,15 @@ $$ \partial_t x = \partial_x f(x,y)\\
 soln1 <- integrateODE(dx ~ dx_f(x=x, y=y), 
                      dy ~ dy_f(x=x, y=y), 
                      x = 0, y = -3,
-                     tdur = 10)
+                     bounds(t=0:10), dt=0.1)
 soln2 <- integrateODE(dx ~ -dx_f(x=x, y=y), 
                      dy ~ -dy_f(x=x, y=y), 
                      x = -1., y = 1,
-                     tdur = list(from=0, to=10, dt=0.1))
+                     bounds(t=0:10), dt=0.1)
 soln3 <- integrateODE(dx ~ -dx_f(x=x, y=y), 
                      dy ~ -dy_f(x=x, y=y), 
                      x = -1.25, y = 1,
-                     tdur = list(from=0, to=10, dt=0.1))
+                     bounds(t=0:10), dt=0.1)
 
 Common <- contour_plot(f(x, y) ~ x + y, bounds(x=-4:4, y=-4:4)) %>%
   gradient_plot(f(x, y) ~ x + y) 

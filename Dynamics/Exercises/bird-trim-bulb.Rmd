@@ -10,8 +10,10 @@ The graph shows two trajectories, A, B.
 ```{r echo=FALSE}
 f <- rfun(~ u & v, seed=9391)
 g <- rfun(~ u & v, seed=29932)
-trajA <- integrateODE(du ~ f(u, v)/2, dv ~ g(u, v)/3, u=-1.5, v=1, tdur=3)
-trajB <- integrateODE(du ~ f(u, v)/2, dv ~ g(u, v)/3, u=3, v=3, tdur=2)
+trajA <- integrateODE(du ~ f(u, v)/2, dv ~ g(u, v)/3, 
+                      u=-1.5, v=1, bounds(t=0:3))
+trajB <- integrateODE(du ~ f(u, v)/2, dv ~ g(u, v)/3, 
+                      u=3, v=3, bounds(t=0:3))
 traj_plot(v(t) ~ u(t), trajA, color="magenta") %>%
   traj_plot(v(t) ~ u(t), trajB, color="blue") %>%
 vectorfield_plot(f(u, v) ~ u & v, g(u, v) ~ u & v, 

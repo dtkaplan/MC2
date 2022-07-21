@@ -217,17 +217,23 @@ Use the R/mosaic function `integrateODE()` to solve differential equations numer
 To illustrate, this command will solve the differential equation $\partial_t x = x (1-x)$ that we took on in the previous example with `Iterate()`.
 ```{r}
 Soln2 <- integrateODE(dx ~ x*(1-x), x = 0.2,
-                      domain(t=0:10), dt=0.01)
+                      bounds(t=0:10), dt=0.01)
 ```
 
 The first argument is a tilde expression, but in a form that is  different from from that used in functions such as `D()` or `contour_plot()`, etc. To the left of the tilde is a single name composed of the state variable---`x` here---prefixed by a `d`. The `d` is just a reminder that we are describing not `x` itself, but $\partial_t\ \mathtt{x}$. On the right of the tilde is the function from the differential equation, in this case, $x(1-x)$.
 
-The next argument is the initial condition. We are starting the integration at $x=0.2$. Finally, the argument named `tdur=` consists of a description of the starting and ending times and the time-step size $dt$.
+The next argument is the initial condition. We are starting the integration at $x=0.2$. The `bounds()` sets the time interval for the integration and `dt` sets the time step..
 
 The output of `integrateODE()` is an R structure of a type called a "list" that is new to us. The list contains the function(s) created by `integrateODE()` which you refer to by name (`x`) using a special form of R punctuation `$` suited to lists.. In other words, `Soln2$x` will be a function, which you can plot like any other function, for instance:
 
 ```{r}
 slice_plot(Soln2$x(t) ~ t, bounds(t=0:10))
+```
+
+This use of the R symbol `$` is new to us. We won't emphasize it here. Instead, we'll use the `traj_plot()` graphics function (introduced in [Chapter @sec-splines]) which already knows how to access the functions created by `integrateODE()`. 
+
+```{r}
+traj_plot(x(t) ~ t, Soln2, bounds(t=0:10))
 ```
 
 An important feature of `integrateODE()` is its ability to handle *sets* of first-order differential equations. For instance, the rabbit/fox system $$\partial_t r = 0.66\, r - 1.33\, r f\\
@@ -237,19 +243,19 @@ Eco_soln <- integrateODE(
   dr ~ 0.66*r - 1.33*r*f, 
   df ~     -f +      r*f,
   r = 2, f = 0.5, #initial conditions
-  tdur=list(from=0, to=5, dt=0.1))
+  bounds(t=0:5), dt=0.1)
 ```
 You can plot the time series using `slice_plot()`
 
 ```{r}
 #| label: fig-fox-rabbit-ts
 #| fig-cap: "Times series of the rabbit and fox densities."
-pA <- slice_plot(Eco_soln$r(t) ~ t, bounds(t=0:5)) %>% gf_labs(title="Rabbits")
-pB <- slice_plot(Eco_soln$f(t) ~ t, bounds(t=0:5)) %>% gf_labs(title="Foxes")
+pA <- traj_plot(r(t) ~ t, Eco_soln, bounds(t=0:5)) %>% gf_labs(title="Rabbits")
+pB <- traj_plot(f(t) ~ t, Eco_soln, bounds(t=0:5)) %>% gf_labs(title="Foxes")
 gridExtra::grid.arrange(pA, pB, ncol=2)
 ```
 
-To plot the trajectory, use the `traj_plot()` function. Unlike `slice_plot()`, which creates a time series plot, `traj_plot()` shows the trajectory.
+To plot the trajectory, simply change the tilde expression used in `traj_plot()`.  which creates a time series plot, `traj_plot()` shows the trajectory.
 
 ```{r}
 traj_plot(f(t) ~ r(t), Eco_soln, nt=10)

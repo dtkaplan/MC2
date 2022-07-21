@@ -81,14 +81,14 @@ x_{i+1} = \text{solve-step}(x_{i})\\\ \\
 #| label: fig-newton-step
 #| fig-cap: "A Newton-step calculation seen graphically. The brown function is approximated as a straight-line function at the initial point $x_0$. The resulting $x_1$ is where that straight line crosses the value $v$ on the output scale. Here, $x_1$ is a little to the left of the actual place where $f()$ crosses $v$. The Newton step produced an improved guess, since $\\|x_1 - x^\\star\\|$ is smaller than $\\| x_0 - x^\\star\\|$."
 #| fig-cap-location: margin
-raw <- rfun(~ x, seed = 1933)
+rawf <- rfun(~ x, seed = 1933)
 x0=3.0
 ticks <- latex2exp::TeX(c(r'(x^*)', "x_0", "x_1"))
-f <- makeFun(raw(x) ~ x)
-df <- D(f(x) ~ x)(x0)
-fhat <- makeFun(f(x0) + df*(x-x0) ~ x)
-xstar <- Zeros(f(x) - 10 ~ x, bounds(x=-3:3))$x
-slice_plot(f(x) ~ x, bounds(x=-2:5), color="brown", label_text="f(x)", label_vjust=-0.5) %>%
+fun <- makeFun(rawf(x) ~ x)
+dfun <- D(fun(x) ~ x)(x0)
+fhat <- makeFun(fun(x0) + dfun*(x-x0) ~ x)
+xstar <- Zeros(fun(x) - 10 ~ x, bounds(x=-3:3))$x
+slice_plot(fun(x) ~ x, bounds(x=-2:5), color="brown", label_text="f(x)", label_vjust=-0.5) %>%
   slice_plot(fhat(x) ~ x, color="blue", linetype="dotted") %>%
   gf_hline(yintercept=~ 10, color="magenta") %>%
   gf_text(10 ~ 4, label="v = 10", color="magenta", vjust = -0.5) %>%
