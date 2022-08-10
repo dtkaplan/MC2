@@ -4,10 +4,10 @@
 ```
 
 Many problems in physics and engineering involve the task of ***decomposing*** a vector $\vec{b}$ into two perpendicular component vectors $\hat{b}$ and $\vec{r}$, such that $\hat{b} + \vec{r} = \vec{b}$ and 
-$\hat{b} \cdot \vec{r} = 0$. There is an infinite number of ways to accomplish such a decomposition, one for each way or orienting $\hat{b}$ relative to $\vec{b}$. @fig-decompose-1 shows a few examples.
+$\hat{b} \cdot \vec{r} = 0$. There are infinite ways to accomplish such a decomposition, one for each way or orienting $\hat{b}$ relative to $\vec{b}$. @fig-decompose-1 shows a few examples.
 
 ::: {.takenote data-latex=""}
-This is the first time that we are encountering a symbol like $\hat{b}$, pronounced "b-hat." You will see it especially in statistics and machine learning.
+The hat-shaped crown in $\hat{b}$, pronounced "b-hat,"  often appears in statistics and machine learning. The hat indicates that the quantity is an *estimate* made from data.
 :::
 
 ```{r echo=FALSE}
@@ -18,52 +18,61 @@ This is the first time that we are encountering a symbol like $\hat{b}$, pronoun
 knitr::include_graphics("www/decompose-1.png")
 ```
 ::: {.example data-latex=""}
-Gravitational force, as you know, always points downward. The effective acceleration due to gravity of a mass depends, however, on how that mass is situated with respect to other elements of the structure. The figure below shows several diagrams that might well be found on the pages of a physics textbook. In each diagram, there is a mass and a constraining structure: a ramp, a pendulum, an inclined plane. The force of gravity on the mass always points directly downward. In each diagram, $\hat{b}$ is the effective gravitational force on the mass, pointing down the ramp, or perpendicular to the pendulum strut, or aligned with the gradient vector of the inclined plane.
+The gravitational force on an object always points downward toward the center of the Earth. For an isolated object---often the word "mass" is used instead of "object"---acceleration is in the same downward direction. However, often the mass is just one component in a mechanically interconnected system, such as the three systems shown in @fig-gravity-settings: a ramp, a pendulum, and an inclined plane. The other components of the system counteract, to some extent, the gravitational force on the mass. The net force on the mass---taking into account gravity and the forces imposed by the other elements of the system---is in a direction $\vec{s}$ determined by the system, respectively pointing down the ramp or perpendicular to the pendulum strut or aligned with the gradient vector of the inclined plane.
 
-```{r echo=FALSE, out.width="100%", fig.align="center"}
+```{r echo=FALSE, out.width="100%"}
+#| label: fig-gravity-settings
+#| fig.cap: "Three different mechanical systems consisting of a mass (in black) constrained in its movement by the other components of a system: left: a mass on a ramp; center: a mass as part of a pendulum; right: a round mass constrained to roll on a planar surface."
+#| fig.align: "center"
+#| fig.cap.location: "margin"
 knitr::include_graphics("www/gravity-settings.png")
 ```
 
-The $\vec{r}$ in each diagram gives the component of gravitational force that will be counter-acted by the structure: the pull downward into the ramp, the pull along the pendulum strut, or the pull into the inclined plane.
+The $\vec{r}$ in each diagram gives the component of gravitational force that the structure counteracts: the pull down into the ramp, the pull along the pendulum strut, or the pull into the inclined plane.  Finding $\vec{s}$ and $\vec{r}$ is a matter of *decomposing* the gravitational force into two components: one whose direction is set by the structure and another component perpendicular to that one.
 :::
 
-The task of ***decomposition*** is important also outside of physics and engineering. Our particular interest will be in finding how best to take a linear combination of the columns of a matrix $\mathit{A}$ to make the best approximation to a given vector $\vec{b}$. This problem solves all sorts of problems: finding a linear combination of functions to match a relationship laid out in data, constructing statistical models such as those found in machine learning, effortlessly solving sets of simultaneous linear equations with any number of equations and any number of unknowns.
+The above example shows just one way the task of vector ***decomposition*** arises. Our particular interest in this part of the book is in a more general task: finding how to take a linear combination of the columns of a matrix $\mathit{A}$ to make the best approximation to a given vector $\vec{b}$.  This abstract problem is pertinent to many real-world tasks: finding a linear combination of functions to match a relationship laid out in data, constructing statistical models such as those found in machine learning, and effortlessly solving sets of simultaneous linear equations with any number of equations, and any number of unknowns.
 
 ## Projection terminology
 
-The problem of decomposition can be considered to be a special case of ***projection***. The word "projection" may bring to mind the casting of shadows on a screen in the same manner as an old-fashioned slide projector or movie projector. The light source is arranged to generate parallel rays which arrive perpendicularly to the screen. A movie screen is two-dimensional, a subspace defined by two vectors. Imagining those two vectors to be collected into matrix $\mathit{A}$, the idea is to decompose $\vec{b}$ into a component that lies in the subspace defined by $\mathit{A}$ and another component that is perpendicular to the screen. That perpendicular component is what we have been calling $\vec{r}$ while the vector $\hat{b}$ is the projection of $\vec{b}$ onto the screen. To make it easier to keep track of the various roles played by $\vec{b}$, $\hat{b}$, $\vec{r}$ and $\mathit{A}$, we will give these vectors English-language names. The motivation for these names will become apparent in later chapters, but for now, here they are. You will want to memorize them.
+In a typical vector decomposition task, the setting determines the relevant direction or subspace. The decomposition is accomplished by ***projecting*** the vector onto that direction or subspace. The word "projection" may bring to mind the casting of shadows on a screen in the same manner as an old-fashioned slide projector or movie projector. The light source and focusing lens generate parallel rays that arrive perpendicular to the screen. A movie screen is two-dimensional, a subspace defined by two vectors. Imagining those two vectors to be collected into matrix $\mathit{A}$, the idea is to decompose $\vec{b}$ into a component that lies in the subspace defined by $\mathit{A}$ and another component that is perpendicular to the screen. That perpendicular component is what we have been calling $\vec{r}$ while the vector $\hat{b}$ is the projection of $\vec{b}$ onto the screen. To make it easier to keep track of the various roles played by $\vec{b}$, $\hat{b}$, $\vec{r}$, and $\mathit{A}$, we will give these vectors English-language names. ^[The motivation for these names will become apparent in later chapters.]
 
 - $\vec{b}$ the ***target vector***
 - $\hat{b}$ the ***model vector***
 - $\vec{r}$ the ***residual vector***
 - $\mathit{A}$ the ***model space*** (or "model subspace")
 
-***Projection*** is the process of finding the model vector that is as close as possible to the target vector $\vec{b}$. Another way to see this is as finding the model vector that makes the residual vector as short as possible.
+
+***Projection*** is the process of finding, from all the vectors in the model subspace, the particular vector $\hat{b}$ that is as close as possible to the target vector $\vec{b}$. To state things another way:  projection is the process of finding the model vector that makes the residual vector as short as possible.
 
 ::: {.example data-latex=""}
-@fig-b-onto-u-v2 shows a a solved projection problem in 3-dimensional space. The figure can be rotated or set spinning, which makes it much easier to interpret the diagram as a three dimensional object. In addition to $\vec{b}$ and the vectors $\vec{u}$ and $\vec{b}$ that constitute the matrix $\mathit{A}$, the diagram includes a translucent plane marking $span(\mathit{A})$. The goal of projection is, from these givens, to find the model vector (shown in light green). Once the model vector $\vec{x}$ is known, the residual vector is easy to calculate $$\vec{r} \equiv \vec{b} - \hat{b}\ .$$ Another approach to the problem is to find the residual vector $r$ first, then use that to find the model vector as $$\hat{b} \equiv \vec{b} - \vec{r}\ .$$
+@fig-b-onto-u-v2 shows a solved projection problem in 3-dimensional space. The figure can be rotated or set spinning, which makes it much easier to interpret the diagram as a three-dimensional object. In addition to the target vector $\vec{b}$ and the vectors $\vec{u}$ and $\vec{b}$ that constitute the matrix $\mathit{A}$, the diagram includes a translucent plane marking $span(\mathit{A})$. The goal of projection is, given $\vec{b}$ and $\mathit{A}$, to find the model vector (shown in light green). Once the model vector $\vec{x}$ is known, the residual vector is easy to calculate $$\vec{r} \equiv \vec{b} - \hat{b}\ .$$ Another approach to the problem is to find the residual vector $r$ first, then use that to find the model vector as $$\hat{b} \equiv \vec{b} - \vec{r}\ .$$ 
 
-```{r child="CalcPlot3D/diagram7.Rmd", eval=knitr::is_html_output()}
+::: {.column-margin .content-visible when-format="pdf"}
+A stand-alone, interactive version of this diagram is available at <dtkaplan.github.io/MC2/www/diagram7.html>.
+:::
+
+```{r child="../www/diagram7.html", eval=knitr::is_html_output()}
 ```
 
-NEED TO PROVIDE LINK AND IMAGE FOR PDF version
-
-```{r echo=FALSE}
+```{r echo=FALSE, out.width=ifelse(knitr::is_html_output(), "1%", "50%")}
 #| label: fig-b-onto-u-v2
 #| fig-cap: "A three-dimensional diagram showing the target vector $\\vec{b}$ and the vectors $\\vec{u}$ and $\\vec{v}$. The subspace spanned by $\\vec{u}$ and $\\vec{v}$ is indicated with a translucent plane. The model vector (green) is the result produced in solving the projection problem."
-#| out-width: "1%"
-knitr::include_graphics("www/tiny-blank.png")
+knitr::include_graphics(
+  ifelse(knitr::is_html_output(), 
+        "www/tiny-blank.png", "www/diagram7.png")
+)
 ```
 
-Interpreting such three dimensional diagrams can be difficult. But there are tricks involving watching the diagram as it is rotated. For instance, how do we know that the translucent plane in @fig-b-onto-u-v2 contains $\vec{u}$ and $\vec{v}$? As the diagram rotates, from time to time you will be looking edge on at the plane, so that the plane appears as a line on the screen. At such times, you can see that vectors $\vec{u}$ and $\vec{v}$ disappear. There is no component to $\vec{u}$ and $\vec{v}$ that sticks out from the plane. 
+Interpreting such three-dimensional diagrams on a printed page can be difficult. Better to rotate them interactively. For instance, to see that the translucent plane in @fig-b-onto-u-v2 contains $\vec{u}$ and $\vec{v}$,  rotate the diagram to look edge-on at the plane so that the plane appears as a line on the screen. At such times, vectors $\vec{u}$ and $\vec{v}$ disappear. There is no component to $\vec{u}$ and $\vec{v}$ that sticks out from the plane; they are entirely embedded in the plane.
 :::
 
 
-## Projection onto a single vector
+## Projection onto a single vector {#sec-proj-single-vector}
 
 As we said, projection involves a vector $\vec{b}$ and a matrix $\mathit{A}$ that defines the model space. We will start with the simplest case, where $\mathit{A}$ has only one column. That column is, of course, a vector. We will call that vector $\vec{a}$, so the projection problem is to project $\vec{b}$ onto the subspace spanned by $\vec{a}$.
 
-Geometrically, the situation of projecting the target vector $\vec{b}$ onto the model space $\vec{a}$ is diagrammed in @fig-b-onto-a.
+@fig-b-onto-a diagrams the situation of projecting the target vector $\vec{b}$ onto the model space $\vec{a}$.
 
 ```{r echo=FALSE}
 #| label: fig-b-onto-a 
@@ -73,7 +82,7 @@ Geometrically, the situation of projecting the target vector $\vec{b}$ onto the 
 knitr::include_graphics("www/project-b-onto-a.png")
 ```
 
-The angle between $\vec{a}$ and $\vec{b}$ is labelled $\theta$. You already know how to calculate $\theta$ from $\vec{b}$ and $\vec{a}$ by using the dot product:
+The angle between $\vec{a}$ and $\vec{b}$ is labelled $\theta$. As shown in @sec-angles-dot-product, calculating an angle such as $\theta$ from $\vec{b}$ and $\vec{a}$ with a dot product:
 
 $$\cos(\theta) = \frac{\vec{b} \bullet \vec{a}}{\len{b}\, \len{a}}\ .$$
 Knowing $\theta$ and $\len{b}$, you can calculate the length of the model vector $\hat{b}$: 
@@ -86,7 +95,7 @@ $$\text{model vector:}\ \ \hat{b} = \left[\vec{b} \bullet \vec{a}\right] \,\vec{
 
 ::: {.rmosaic data-latex=""}
 
-In R/mosaic, you can calculate the projection of $\vec{b}$ onto $\vec{a}$ using `%onto%`. For instance
+In R/mosaic, calculate the projection of $\vec{b}$ onto $\vec{a}$ using `%onto%`. For instance
 ```{r}
 b <- rbind(-1, 2)
 a <- rbind(-2.5, -0.8)
@@ -102,10 +111,12 @@ r
 The two properties that a projection satisfies are:
 
 1. The residual vector is perpendicular to each and every vector in $\mathit{A}$. Since in this example, $\mathit{A}$ contains only the one vector $\vec{a}$, we need only look at $\vec{r} \cdot \vec{a}$ and confirm that it is zero.
+
 ```{r}
 r %dot% a
 ```
-2. The residual vector plus the model vector exactly equal the target vector. Since we computed ` r <- b - s`, we know this must be true, but still ...
+2. The residual vector plus the model vector exactly equals the target vector. Since we computed ` r <- b - s`, we know this must be true, but still ...
+
 ```{r}
 (r+s) - b
 ```
@@ -115,17 +126,19 @@ If the difference between two vectors is zero for every coordinate, the two vect
 
 ## Projection onto a set of vectors
 
-As we have just seen, projecting a target $\vec{b}$ onto a single vector is a matter of arithmetic. Now we will expand the technique to project the target vector $\vec{b}$ onto multiple vectors collected into a matrix $\mathit{A}$. Whereas in the chapter we used trigonometry to find the component of $\vec{b}$ aligned with the single vector $\vec{a}$, now we have to deal with multiple vectors **at the same time**. The result will be the component of $\vec{b}$ aligned with the **subspace** sponsored by $\mathit{A}$. 
+As we have just seen, projecting a target $\vec{b}$ onto a single vector is a matter of arithmetic. Now we will expand the technique to project the target vector $\vec{b}$ onto multiple vectors collected into a matrix $\mathit{A}$. Whereas in @sec-proj-single-vector we used trigonometry to find the component of $\vec{b}$ aligned with the single vector $\vec{a}$, now we have to deal with multiple vectors **at the same time**. The result will be the component of $\vec{b}$ aligned with the **subspace** sponsored by $\mathit{A}$. 
 
-There is one situation where the projection is easy: when the vectors in $\mathit{A}$ are **mutually orthogonal**. In this situation, carry out several one-vector-at-a-time projections: 
-$$\vec{p_1} = \modeledby{\vec{b}}{\vec{v_1}}\\
-\vec{p_2} = \modeledby{\vec{b}}{\vec{v_2}}\\
-\vec{p_3} = \modeledby{\vec{b}}{\vec{v_3}}\\
+In one situation, projection is easy: when the vectors in $\mathit{A}$ are **mutually orthogonal**. In this situation, carry out several one-vector-at-a-time projections: 
+$$
+\vec{p_1} \equiv \modeledby{\vec{b}}{\vec{v_1}}\ \ \ \ \ 
+\vec{p_2} \equiv \modeledby{\vec{b}}{\vec{v_2}}\ \ \ \ \ 
+\vec{p_3} \equiv \modeledby{\vec{b}}{\vec{v_3}}\ \ \ \ \ 
 \text{and so on}$$
 The projection of $\vec{b}$ onto $\mathit{A}$ will be the sum $\vec{p_1} + \vec{p2} + \vec{p3}$.
 
 ::: {.example data-latex=""}
-To illustrate the method of projection when the vectors in $\mathit{A}$ are mutually orthogonal, we can construct such a matrix. 
+Consider the following matrix $\mathit{A}$ made up of mutually orthogonal vectors:
+
 ```{r}
 b  <- rbind( 1,  1,  1, 1)
 v1 <- rbind( 1,  2,  0, 0)
@@ -134,7 +147,7 @@ v3 <- rbind( 0,  0, -1, 3)
 A <- cbind(v1, v2, v3)
 ```
 
-You can verify using a dot product that `v1`, `v2`, and `v3` are mutually orthogonal. 
+To confirm that `v1`, `v2`, and `v3` are mutually orthogonal, calculate the dot product between any two of them and observe that, in each case, the result is zero.
 
 Now construct the one-at-a-time projections:
 ```{r}
@@ -149,11 +162,13 @@ To find the projection of $\vec{b}$ onto the subspace spanned by $\mathit{A}$, a
 b_on_A <- p1 + p2 + p3
 ```
 
-Now we will confirm that `b_on_A` really is the projection of `b` onto `A`.  The strategy is to construct the residual from the projection.
+Now we will confirm that `b_on_A` is the projection of `b` onto `A`.  The strategy is to construct the residual from the projection.
+
 ```{r}
 resid <- b - b_on_A
 ```
 All that is  needed is to confirm that the residual is perpendicular to each and every vector in `A`:
+
 ```{r}
 resid %dot% v1
 resid %dot% v2
@@ -165,8 +180,7 @@ resid %dot% v3
 
 Now that we have a satisfactory method for projecting $\vec{b}$ onto a matrix $\mathit{A}$ consisting of mutually orthogonal vectors, we need to develop a method for the projection when the vectors in $\mathit{A}$ are ***not mutually orthogonal***. The big picture here is that we will construct a new matrix $\mathit{Q}$ that spans the same space as $\mathit{A}$ but whose vectors are mutually orthogonal. We will construct $\mathit{Q}$ out of linear combinations of the vectors in $\mathit{A}$, so we can be sure that $span(\mathit{Q}) = span(\mathit{A})$.
 
-We introduce the process with an example, involving a vectors in a 4-dimensional space. $\mathit{A}$ will be a matrix with two columns, $\vec{v_1}$ and $\vec{v_2}$. Here's the setup for the example vectors and model matrix:
-
+We introduce the process with an example involving vectors in a 4-dimensional space. $\mathit{A}$ will be a matrix with two columns, $\vec{v_1}$ and $\vec{v_2}$. Here is the setup for the example vectors and model matrix:
 
 ```{r}
 b <- rbind(1,1,1,1)
@@ -187,21 +201,21 @@ The next $\mathit{Q}$ vector will be constructed to be perpendicular to $\vec{q_
 q2 <- v2 %perp% v1
 ```
 
-since $\vec{q_1}$ and $\vec{q_2}$ are orthogonal and define the same subspace as $\mathit{A}$, we can construct the projection of $\vec{b}$ onto $\vec{A}$ by adding up the projections of $\vec{b}$ onto the individual vectors in $\mathit{Q}$, like this:
+Since $\vec{q_1}$ and $\vec{q_2}$ are orthogonal and define the same subspace as $\mathit{A}$, we can construct the projection of $\vec{b}$ onto $\vec{A}$ by adding up the projections of $\vec{b}$ onto the individual vectors in $\mathit{Q}$, like this:
 
 ```{r}
 bhat <- (b %onto% q1) + (b %onto% q2)
 ```
-To confirm that this calculation of $\hat{\vec{b}}$ is correct, construct the residual vector and confirm that it is perpendicular to every vector in $\mathit{Q}$ (and therefore in $\mathit{A}$, which spans the same space).
+To confirm that this calculation of $\widehat{\strut b}$ is correct, construct the residual vector and show that it is perpendicular to every vector in $\mathit{Q}$ (and therefore in $\mathit{A}$, which spans the same space).
 
 ```{r}
 r <- b - bhat
 r %dot% v1
 r %dot% v2
 ```
-Note that we defined $\vec{r} = \vec{b} - \hat{\mathbf{b}}$, so it is guaranteed that $\vec{r} + \hat{\mathbf{b}}$ will equal $\vec{b}$.
+Note that we defined $\vec{r} = \vec{b} - \widehat{\strut b}$, so it is guaranteed that $\vec{r} + \widehat{\strut b}$ will equal $\vec{b}$.
 
-This process can be extended to any number of vectors in $\mathit{A}$. Here's the algorithm for constructing $\mathit{Q}$:
+This process can be extended to any number of vectors in $\mathit{A}$. Here is the algorithm for constructing $\mathit{Q}$:
 
 i. Take the first vector from $\mathit{A}$ and call it $\vec{q_1}$.
 ii. Take the second vector from $\mathit{A}$ and find the residual from projecting it onto $\vec{q_1}$. This residual will be $\vec{q_2}$. At this point, the matrix $\left[\strut \vec{q_1}, \ \ \vec{q_2}\right]$ consists of mutually orthogonal vectors.
@@ -210,7 +224,7 @@ iv. Continue onward, taking the next vector in $\mathit{A}$, projecting it onto 
 v. Repeat step (iv) until all the vectors in $\mathit{A}$ have been handled. 
 
 ::: {.example data-latex=""}
-Project a $\vec{b}$ that lives in 10-dimensional space onto the subspace sponsored by five vectors that are not mutually orthgonal:
+Project a $\vec{b}$ that lives in 10-dimensional space onto the subspace sponsored by five vectors that are not mutually orthogonal:
 
 ```{r}
 b <- rbind(3,2,7,3,-6,4,1,-1, 8, 2) # or any set of 10 numbers
@@ -221,7 +235,7 @@ v4 <- rbind(0, 3, 9, 6, -4, -5, 4, 0, 5, -4)
 v5 <- rbind(-2, 5, -4, 8, -9, 3, -5, 0, 11, -4)
 A  <- cbind(v1, v2, v3, v4, v5)
 ```
-You can confirm using dot products that the `v`-vectors are **not** mutually orthogonal.
+Confirm using dot products that the `v`-vectors are **not** mutually orthogonal.
 
 Now to construct the vectors in $\mathit{Q}$.
 
@@ -234,7 +248,8 @@ q5 <- v5 %perp% cbind(q1, q2, q3, q4)
 Q <- cbind(q1, q2, q3, q4, q5)
 ```
 
-Since `Q` consists of mutually orthogonal vectors, the projection of `b` onto `Q` can be done one vector at a time.
+Since `Q` consists of mutually orthogonal vectors, the projection of `b` onto `Q` can be made one vector at a time.
+
 ```{r}
 p1 <- b %onto% q1
 p2 <- b %onto% q2
@@ -254,6 +269,8 @@ resid %dot% v5
 :::
 
 
+
 ## Exercises
 
 `r insert_exercises("linear-combinations", "projection")`
+
