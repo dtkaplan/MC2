@@ -1,152 +1,158 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-  <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.9.80">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>MOSAIC Calculus - 44&nbsp; Equilibrium and transient</title>
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style>
 
-  <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-  <script src="../site_libs/quarto-nav/headroom.min.js"></script>
-  <script src="../site_libs/clipboard/clipboard.min.js"></script>
-  <meta name="quarto:offset" content="../">
-  <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-  <script src="../site_libs/quarto-search/fuse.min.js"></script>
-  <script src="../site_libs/quarto-search/quarto-search.js"></script>
-  <link href="../Dynamics/B6-eigen.html" rel="next">
-  <link href="../Dynamics/B6-modeling.html" rel="prev">
-  <script src="../site_libs/quarto-html/quarto.js"></script>
-  <script src="../site_libs/quarto-html/popper.min.js"></script>
-  <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-  <script src="../site_libs/quarto-html/anchor.min.js"></script>
-  <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-  <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
-  <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-  <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-  <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
-  <script id="quarto-search-options" type="application/json">{
-    "location": "sidebar",
-    "copy-button": false,
-    "collapse-after": 2,
-    "panel-placement": "start",
-    "type": "textbox",
-    "limit": 20,
-    "language": {
-      "search-no-results-text": "No results",
-      "search-matching-documents-text": "matching documents",
-      "search-copy-link-title": "Copy link to search",
-      "search-hide-matches-text": "Hide additional matches",
-      "search-more-match-text": "more match in this document",
-      "search-more-matches-text": "more matches in this document",
-      "search-clear-button-title": "Clear",
-      "search-detached-cancel-button-title": "Cancel",
-      "search-submit-button-title": "Submit"
-    }
-  }</script>
-  <script async="" src="https://hypothes.is/embed.js"></script>
-  </head><body class="floating slimcontent"><span class="math inline" style="display: none;">
-  \(\newcommand{\line}{\text{line}}
-  \newcommand{\hump}{\text{hump}}
-  \newcommand{\sigmoid}{\text{sigmoid}}
-  \newcommand{\recip}{\text{recip}}
-  \newcommand{\diff}[1]{{\cal D}_#1}
-  \newcommand{\pnorm}{\text{pnorm}}
-  \newcommand{\dnorm}{\text{dnorm}}
-  \let\origvec\vec
-  \let\origmathit\mathit
-  \let\orighat\hat
-  \let\origbar\bar
-  \newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
-  \newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
-  \newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
-  \newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
-  \newcommand{\len}[1]{{\|{\mathbf #1}\|}}
-  \newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
-  \newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
-  \newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
-  \newcommand{\modeledby}[2]{#1\!\sim\!#2}
-  \newcommand{\CC}[1]{\color{#648fff}{#1}}
-  \newcommand{\CE}[1]{\color{#785ef0}{#1}}
-  \newcommand{\CA}[1]{\color{#dc267f}{#1}}
-  \newcommand{\CB}[1]{\color{#fe6100}{#1}}
-  \newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
-  </span>
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MOSAIC Calculus - 44&nbsp; Equilibrium and transient</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../Dynamics/B6-eigen.html" rel="next">
+<link href="../Dynamics/B6-modeling.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+</head><body class="nav-sidebar floating slimcontent"><span class="math inline" style="display: none;">
+\(\newcommand{\line}{\text{line}}
+\newcommand{\hump}{\text{hump}}
+\newcommand{\sigmoid}{\text{sigmoid}}
+\newcommand{\recip}{\text{recip}}
+\newcommand{\diff}[1]{{\cal D}_#1}
+\newcommand{\pnorm}{\text{pnorm}}
+\newcommand{\dnorm}{\text{dnorm}}
+\let\origvec\vec
+\let\origmathit\mathit
+\let\orighat\hat
+\let\origbar\bar
+\newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+\newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+\newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+\newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+\newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+\newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+\newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+\newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+\newcommand{\modeledby}[2]{#1\!\sim\!#2}
+\newcommand{\CC}[1]{\color{#648fff}{#1}}
+\newcommand{\CE}[1]{\color{#785ef0}{#1}}
+\newcommand{\CA}[1]{\color{#dc267f}{#1}}
+\newcommand{\CB}[1]{\color{#fe6100}{#1}}
+\newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+</span>
+
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
-  <link rel="stylesheet" href="../mosaic-calc-style.css">
+
+<link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
 
 
 <div id="quarto-search-results"></div>
@@ -154,7 +160,7 @@
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
       <h1 class="quarto-secondary-nav-title"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></h1>
-      <button type="button" class="quarto-btn-toggle btn">
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
     </div>
@@ -185,344 +191,359 @@
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-preliminaries-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-preliminaries-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/01-modeling-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">Modeling</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-modeling-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-modeling-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">I. Modeling</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/01-parameters.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/02-assembling-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/03-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/05-low-order-polynomials.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/06-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/07-magnitudes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/08-dimensions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/09-modeling-cycle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling cycle [DRAFT]</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/Modeling-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">Differentiation</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-differentiation-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-differentiation-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">II. Differentiation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/16-continuous-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Continuous change</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/17-rate-of-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rate of change</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/18-evanescent-h.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/19-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Constructing derivatives</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/20-concavity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/21-cont-and-smooth.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/22-rules.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/23-optim.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/24-partial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/25-approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations [DRAFT]</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/26-taylor.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/Differentiation-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">Vectors and linear combinations</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-linear-combinations-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-linear-combinations-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">III. Vectors and linear combinations</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-Vectors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Vectors</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-linear-combinations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-projection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-target-problem.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-stat-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">Accumulation</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-accumulation-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-accumulation-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">IV. Accumulation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/27-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/28-visualizing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/29-integration.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/30-euler.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/31-symbolic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">Dynamics</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-dynamics-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-dynamics-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">V. Dynamics</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-diff-eq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Differential equations</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-solution.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Finding a “solution”</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-flow-on-line.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Flows on the line</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-flow-on-plane.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the plane</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-equilibria.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-eigen.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-second-order.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Force-balance equations</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">Manifestations</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-manifestations-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-manifestations-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">VI. Manifestations</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-splines.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Data-driven functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">50</span>&nbsp; <span class="chapter-title">Probability and evidence</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-future-value.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">51</span>&nbsp; <span class="chapter-title">Present and future value</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-mechanics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">52</span>&nbsp; <span class="chapter-title">Mechanics</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">Appendices</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../R-mosaic-setup.html" class="sidebar-item-text sidebar-link">Setting up R/mosaic</a>
+  </div>
+</li>
+      </ul>
   </li>
     </ul>
     </div>
@@ -530,18 +551,32 @@
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc">
-<h2 id="toc-title">Table of contents</h2>
-<ul>
-<li><a href="#one-state-variable" class="nav-link active" data-scroll-target="#one-state-variable"> <span class="header-section-number">44.1</span> One state variable</a></li>
-<li><a href="#two-state-variables" class="nav-link" data-scroll-target="#two-state-variables"> <span class="header-section-number">44.2</span> Two state variables</a></li>
-<li><a href="#exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">44.3</span> Exercises</a></li>
-</ul>
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#one-state-variable" id="toc-one-state-variable" class="nav-link active" data-scroll-target="#one-state-variable"> <span class="header-section-number">44.1</span> One state variable</a></li>
+  <li><a href="#two-state-variables" id="toc-two-state-variables" class="nav-link" data-scroll-target="#two-state-variables"> <span class="header-section-number">44.2</span> Two state variables</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">44.3</span> Exercises</a></li>
+  </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dtkaplan/MC2/edit/main/Dynamics/B6-equilibria.Rmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
-<header id="title-block-header">
-<h1 class="title display-7"><span id="sec-equilibria" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></span></h1>
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-equilibria" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
 </header>
 
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
@@ -555,35 +590,41 @@
 <p>In this chapter, we will study the quantitative response to dynamical systems with a fixed point when the state is perturbed by some outside force. Our focus will be on linear or linearized dynamical functions, which are generally an excellent description of dynamics near a fixed point.</p>
 <section id="one-state-variable" class="level2" data-number="44.1">
 <h2 data-number="44.1" class="anchored" data-anchor-id="one-state-variable"><span class="header-section-number">44.1</span> One state variable</h2>
-<p>Linear systems with one state variable have simple dynamics: <span class="math display">\[\partial_t y = k y\]</span> which has a fixed point at <span class="math inline">\(y^\star = 0\)</span>. Even dynamics like <span class="math inline">\(\partial_t x = k x + b\)</span> can be easily transformed into this simple form; the fixed point is <span class="math inline">\(x^\star = - b/a\)</span> and defining <span class="math inline">\(y \equiv x - x^\star\)</span> gives the <span class="math inline">\(\partial_t y = k y\)</span> form.</p>
+<p>Linear systems with one state variable have simple dynamics:</p>
+<p><span class="math display">\[\partial_t y = k y\]</span> which has a fixed point at <span class="math inline">\(y^\star = 0\)</span>. Even dynamics like <span class="math inline">\(\partial_t x = k x + b\)</span> can be easily transformed into this simple form; the fixed point is <span class="math inline">\(x^\star = - b/a\)</span> and defining <span class="math inline">\(y \equiv x - x^\star\)</span> gives the <span class="math inline">\(\partial_t y = k y\)</span> form.</p>
 <p>The solution is also simple: <span class="math inline">\(y(t) = y_0\  e^{kt}\)</span>, where <span class="math inline">\(y_0\)</span> is the initial condition on <span class="math inline">\(y\)</span>. If the parameter <span class="math inline">\(k &lt; 0\)</span>, the dynamics are exponential decay to the fixed point. If <span class="math inline">\(0 &lt; k\)</span>, the dynamics are exponential growth away from the fixed point.</p>
 </section>
 <section id="two-state-variables" class="level2 page-columns page-full" data-number="44.2">
 <h2 data-number="44.2" class="anchored" data-anchor-id="two-state-variables"><span class="header-section-number">44.2</span> Two state variables</h2>
-<p>If the state variables <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are measured with respect to a fixed point, the differential equation of the linear or linearized system is: <span class="math display">\[\partial_t x = a x + b y\\
-\partial_t y = c x + d y\]</span></p>
+<p>If the state variables <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are measured with respect to a fixed point, the differential equation of the linear or linearized system is: $$_t x = a x + b y\</p>
+<p>_t y = c x + d y$$</p>
 <p>Exponentials are an important form of ansatz for linear differential equations. To show why, let’s review the solution to <span class="math inline">\(\partial_t x = k x\)</span>, but assume that all we know is that the solution is an exponential function of time: <span class="math inline">\(x(t) = A e^{\lambda t}\)</span> and that we don’t yet know the parameters <span class="math inline">\(A\)</span> or <span class="math inline">\(\lambda\)</span>. As usual for an ansatz, we plug it into both sides of the differential equation, giving <span class="math display">\[\partial_t A e^{\lambda t} = k A e^{\lambda t}\ \ \implies \lambda A e^{\lambda t} = k A e^{\lambda t}\ \ \implies \lambda = k\ .\]</span> Now we know the value of <span class="math inline">\(\lambda\)</span>.</p>
 <p>What about <span class="math inline">\(A\)</span>? Evaluate the solution at <span class="math inline">\(t=0\)</span>. This gives <span class="math inline">\(x(0) = A e^{\lambda 0} = A\)</span>. So we know <span class="math inline">\(A\)</span> is the initial condition <span class="math inline">\(x(0)\)</span> (which we usually abbreviate <span class="math inline">\(x_0\)</span>).</p>
 <p>We will try the same approach with the two-state variable system, but we will start with a special case where some of the parameters <span class="math inline">\(a, b, c\)</span>, and <span class="math inline">\(d\)</span> are zero.</p>
 <p><span class="math display">\[\text{Simplification:}\ \ \  \ \ \begin{array}{l}\partial_t x  = \cancel{ax}  +  b y\\\partial_t y =\ c x + \cancel{dy}\end{array}\ .\]</span></p>
 <p>In the spirit of exponential ansatze, we might try <span class="math display">\[x(t) \equiv C e^{\lambda_1 t} \ \ \text{and}\ \ \ y(t) \equiv D e^{\lambda_2 t}\ .\]</span></p>
 <p>But this is unnecessary complexity. To see why plug the ansatze in to the first differential equation to get <span class="math display">\[\lambda_1 C e^{\lambda_1 t} = b D e^{\lambda_2 t}\ .\]</span> This can be true only if <span class="math inline">\(\lambda_1 \= \lambda_2\)</span> because exponentials with different half-lives cannot be proportional to one another.</p>
-<p>If <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> are proportional to one another, then we hardly need to keep track of both. In fact, we need just one differential equation in <span class="math inline">\(x(t)\)</span>. To turn the system of differential equations into a single differential equation we will take the derivative with respect to time of both sides of the top equation, giving: <span class="math display">\[\partial_{tt} x = b\,  \partial_{t\ }y\\
-\partial_{t\ } y  =  c\, x \]</span> Substitute in the value for <span class="math inline">\(\partial_t y\)</span> from the bottom equation to get a single, <strong><em>second-order differential equation</em></strong>: <span class="math display">\[ \partial_{tt} x = b\, c\, x\ .\]</span></p>
-<p>Plug in the usual ansatz, <span class="math inline">\(x(t) = A e^{\lambda t}\)</span> to get <span class="math display">\[\lambda^2 A e^{\lambda t} = b\,c\, A e^{\lambda t}\ \ \ \implies\ \ \ \ \lambda = \pm \sqrt{\strut b\,c}\]</span> The <span class="math inline">\(\pm\)</span> is the interesting part here. If, say, <span class="math inline">\(b=1\)</span> and <span class="math inline">\(c=1\)</span>, there are two values for <span class="math inline">\(\lambda\)</span> that will be consistent with the differential equation: <span class="math inline">\(\lambda_1 = 1\)</span> and <span class="math inline">\(\lambda_2 = -1\)</span>. Either of these will produce a solution that satisfies the differential equation: <span class="math inline">\(x_1(t) = A e^{\lambda_1 t}\)</span> or <span class="math inline">\(x_2(t) = B e^{\lambda_2 t}\)</span>. So which of the two possibilities is it?</p>
+<p>If <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> are proportional to one another, then we hardly need to keep track of both. In fact, we need just one differential equation in <span class="math inline">\(x(t)\)</span>. To turn the system of differential equations into a single differential equation we will take the derivative with respect to time of both sides of the top equation, giving:</p>
+<p><span class="math display">\[\partial_{tt} x = b\,  \partial_{t\ }y\\
+\partial_{t\ } y  =  c\, x \]</span> Substitute in the value for <span class="math inline">\(\partial_t y\)</span> from the bottom equation to get a single, <strong><em>second-order differential equation</em></strong>:</p>
+<p><span class="math display">\[ \partial_{tt} x = b\, c\, x\ .\]</span></p>
+<p>Plug in the usual ansatz, <span class="math inline">\(x(t) = A e^{\lambda t}\)</span> to get</p>
+<p><span class="math display">\[\lambda^2 A e^{\lambda t} = b\,c\, A e^{\lambda t}\ \ \ \implies\ \ \ \ \lambda = \pm \sqrt{\strut b\,c}\]</span></p>
+<p>The <span class="math inline">\(\pm\)</span> is the interesting part here. If, say, <span class="math inline">\(b=1\)</span> and <span class="math inline">\(c=1\)</span>, there are two values for <span class="math inline">\(\lambda\)</span> that will be consistent with the differential equation: <span class="math inline">\(\lambda_1 = 1\)</span> and <span class="math inline">\(\lambda_2 = -1\)</span>. Either of these will produce a solution that satisfies the differential equation: <span class="math inline">\(x_1(t) = A e^{\lambda_1 t}\)</span> or <span class="math inline">\(x_2(t) = B e^{\lambda_2 t}\)</span>. So which of the two possibilities is it?</p>
 <p>Since everything about the differential equation is linear, any linear combination of the two possibilities will also satisfy the equation. So we can conclude that <span class="math display">\[x(t) = A e^{\lambda_1 t} + B e^{\lambda_2 t}\ .\]</span></p>
 <p>Since <span class="math inline">\(\lambda_2 = -1\)</span>, we know that the <span class="math inline">\(B e^{\lambda_2 t}\)</span> component of the linear combination will decay to zero. That is, <span class="math inline">\(B e^{\lambda_2 t}\)</span> is the <strong>transient</strong> part of the solution.</p>
-<p>What are <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>? That depends on the initial condition. Evaluate both sides of the solution equation at <span class="math inline">\(t=0\)</span> to get <span class="math display">\[x(0) = A e^{\lambda_1 0}+ B e^{\lambda_2 t} = A + B\ .\]</span> At this point, you need to look back at the original system of equations. There are two state variables <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> and therefore we need to specify two components of the initial condition. If <span class="math inline">\(x(0)\)</span> is interpreted as the initial <strong>position</strong>, then following the example of the pendulum we can look to the <strong>velocity</strong> <span class="math inline">\(\partial_t x\)</span> as the second component of the initial condition. From <span class="math inline">\(x(t)\)</span> we can easily calculate the velocity: <span class="math display">\[\partial_t x(t) = \lambda_1 A e^{\lambda_1 t} + \lambda_2 B e^{\lambda_2 t}\ .\]</span> Again, evaluate this at <span class="math inline">\(t=0\)</span> to get a second equation for the initial condition the pair <span class="math display">\[\begin{array}{c}\partial_t x(0)  =   \lambda_1 A  +  \lambda_2 B\\x(0)  = \ \ A \ \  + \ B\\\end{array}\ \ \ \ \implies\ \ \ \
+<p>What are <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>? That depends on the initial condition. Evaluate both sides of the solution equation at <span class="math inline">\(t=0\)</span> to get <span class="math display">\[x(0) = A e^{\lambda_1 0}+ B e^{\lambda_2 t} = A + B\ .\]</span> At this point, you need to look back at the original system of equations. There are two state variables <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> and therefore we need to specify two components of the initial condition. If <span class="math inline">\(x(0)\)</span> is interpreted as the initial <strong>position</strong>, then following the example of the pendulum we can look to the <strong>velocity</strong> <span class="math inline">\(\partial_t x\)</span> as the second component of the initial condition. From <span class="math inline">\(x(t)\)</span> we can easily calculate the velocity: <span class="math display">\[\partial_t x(t) = \lambda_1 A e^{\lambda_1 t} + \lambda_2 B e^{\lambda_2 t}\ .\]</span> Again, evaluate this at <span class="math inline">\(t=0\)</span> to get a second equation for the initial condition the pair</p>
+<p><span class="math display">\[\begin{array}{c}\partial_t x(0)  =   \lambda_1 A  +  \lambda_2 B\\x(0)  = \ \ A \ \  + \ B\\\end{array}\ \ \ \ \implies\ \ \ \
 \left[\begin{array}{c}\lambda_1 \ \ \ \ \ \lambda_2\\1 \ \ \ \ \ \  1\end{array}\right] \left[\begin{array}{c}A\\ B\end{array}\right] = \left[\begin{array}{c}\partial_t x(0)\\ x(0)\end{array}\right] .\]</span> From Block 5, we know how to solve such matrix equations. So, given the initial values <span class="math inline">\(x(0)\)</span> and <span class="math inline">\(\partial_t x(0)\)</span>—position and velocity—we can find an exact, quantitative solution to the differential equation.</p>
 <div class="example page-columns page-full">
 <p><span class="math inline">\(\ \)</span></p>
-<p><a href="#fig-bc-system">Figure&nbsp;<span>44.1</span></a> shows the flow field, some trajectories and their time series for the system <span class="math display">\[\partial_t x = b y\\ \partial_t y = c x\]</span> for <span class="math inline">\(b=1\)</span> and <span class="math inline">\(c=2\)</span>.</p>
+<p><a href="#fig-bc-system">Figure&nbsp;<span class="quarto-unresolved-ref">fig-bc-system</span></a> shows the flow field, some trajectories and their time series for the system <span class="math display">\[\partial_t x = b y\\ \partial_t y = c x\]</span> for <span class="math inline">\(b=1\)</span> and <span class="math inline">\(c=2\)</span>.</p>
 <div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
 <div class="cell-output-display page-columns page-full">
 <div id="fig-bc-system" class="quarto-figure quarto-figure-center anchored page-columns page-full">
 <figure class="figure page-columns page-full">
 <p><img src="B6-equilibria_files/figure-html/fig-bc-system-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 44.1: Three trajectories from the system <span class="math inline">\(\partial_t x = y\)</span> &amp; <span class="math inline">\(\partial_t y = 2 x\)</span></figcaption><p></p>
+<p></p><figcaption class="figure-caption margin-caption">Figure 44.1: Three trajectories from the system <span class="math inline">\(\partial_t x = y\)</span> &amp; <span class="math inline">\(\partial_t y = 2 x\)</span></figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -594,7 +635,7 @@
 <div id="fig-bc-system-ts" class="quarto-figure quarto-figure-center anchored page-columns page-full">
 <figure class="figure page-columns page-full">
 <p><img src="B6-equilibria_files/figure-html/fig-bc-system-ts-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 44.2: The time series <span class="math inline">\(x(t)\)</span> for the three different trajectories in <a href="#fig-bc-system">Figure&nbsp;<span>44.1</span></a>.</figcaption><p></p>
+<p></p><figcaption class="figure-caption margin-caption">Figure 44.2: The time series <span class="math inline">\(x(t)\)</span> for the three different trajectories in <a href="#fig-bc-system">Figure&nbsp;<span class="quarto-unresolved-ref">fig-bc-system</span></a>.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -602,9 +643,10 @@
 <p>Each of the time series is similar, first showing exponential decay toward 0 then exponential growth toward <span class="math inline">\(\pm \infty\)</span>.</p>
 <p>The initial conditions for the black and <span class="math inline">\(\color{magenta}{\text{magenta}}\)</span> trajectories are very similar. You can imagine a trajectory starting between those initial conditions that would go down the middle of the “trumpet.” This trajectory would be exponential decay toward 0, but would be hard to see since <span class="math inline">\(x=0, y=0\)</span> is an unstable fixed point (a saddle).</p>
 <p>The initial condition for the black trajectory is <span class="math inline">\(x(0)=0.72\)</span> and <span class="math inline">\(y(0)=\partial_t x(0) = -1\)</span>, while for the <span class="math inline">\(\color{magenta}{\text{magenta}}\)</span> trajectory it is <span class="math inline">\(x(0)=0.70\)</span> and <span class="math inline">\(y(0)=\partial x(0) = -1\)</span>. Let’s find each trajectory as a separate linear combination <span class="math inline">\(A e^{\lambda_1 t} + B e^{\lambda_2 t}\)</span>. The equations to solve are <span class="math display">\[\left[\begin{array}{c}1 \ \ \ \ 1\\\lambda_1 \ \  \lambda_2\end{array}\right] \left[\begin{array}{c}A\\ B\end{array}\right] = \left[\begin{array}{c}x(0)\\ \partial_t x(0)\end{array}\right] .\]</span></p>
-<p>By plugging in the parameters <span class="math inline">\(a=0\)</span>, <span class="math inline">\(b=1\)</span>, <span class="math inline">\(c=2\)</span>, <span class="math inline">\(d=0\)</span> in the dynamical functions, we find that <span class="math display">\[\lambda = \pm \sqrt{\strut 2} \approx \pm 1.4142 \ .\]</span> Therefore, we solve <span class="math display">\[\left[\begin{array}{c}1.4142 \ \ \  -1.4142\\1 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \   1\end{array}\right] \left[\begin{array}{c}A\\ B\end{array}\right] = \left[\begin{array}{c}\partial_t\,x(0)\\x(0)\end{array}\right] .\]</span></p>
+<p>By plugging in the parameters <span class="math inline">\(a=0\)</span>, <span class="math inline">\(b=1\)</span>, <span class="math inline">\(c=2\)</span>, <span class="math inline">\(d=0\)</span> in the dynamical functions, we find that <span class="math display">\[\lambda = \pm \sqrt{\strut 2} \approx \pm 1.4142 \ .\]</span> Therefore, we solve</p>
+<p><span class="math display">\[\left[\begin{array}{c}1.4142 \ \ \  -1.4142\\1 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \   1\end{array}\right] \left[\begin{array}{c}A\\ B\end{array}\right] = \left[\begin{array}{c}\partial_t\,x(0)\\x(0)\end{array}\right] .\]</span></p>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">rbind</span>(<span class="fl">1.4142</span>, <span class="dv">1</span>), <span class="fu">rbind</span>(<span class="sc">-</span><span class="fl">1.4142</span>,<span class="dv">1</span>))</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">rbind</span>(<span class="fl">1.4142</span>, <span class="dv">1</span>), <span class="fu">rbind</span>(<span class="sc">-</span><span class="fl">1.4142</span>,<span class="dv">1</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>b_black <span class="ot">=</span> <span class="fu">rbind</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.72</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>b_magenta <span class="ot">=</span> <span class="fu">rbind</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.70</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qr.solve</span>(M, b_black)</span>
@@ -616,18 +658,29 @@
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="do">## [1,] -0.003556781</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="do">## [2,]  0.703556781</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The two trajectories are therefore <span class="math display">\[x_\text{black}(t) = 0.0064 e^{1.4142 t} + 0.7136 e^{-1.4142}\\
-\color{magenta}{x_\text{magenta}(t)} = -0.00356 e^{1.4142 t} + 0.70356 e^{-1.4142 t}\]</span> For both trajectories, the initial amplitude of the decaying exponential is much larger than for the growing exponential. That is why the time series decay toward zero initially. As <span class="math inline">\(t\)</span> grows, the exponential growth become much more important. For the black trajectory, the exponential growth has a positive coefficient, so the growth is toward <span class="math inline">\(\infty\)</span>. But for the <span class="math inline">\(\color{magenta}{\text{magenta}}\)</span> trajectory, the exponential growth has a negative coefficient, thus that trajectory grows toward <span class="math inline">\(-\infty\)</span>.</p>
+<p>The two trajectories are therefore $$x_(t) = 0.0064 e^{1.4142 t} + 0.7136 e^{-1.4142}\</p>
+<p> = -0.00356 e^{1.4142 t} + 0.70356 e^{-1.4142 t}$$ For both trajectories, the initial amplitude of the decaying exponential is much larger than for the growing exponential. That is why the time series decay toward zero initially. As <span class="math inline">\(t\)</span> grows, the exponential growth become much more important. For the black trajectory, the exponential growth has a positive coefficient, so the growth is toward <span class="math inline">\(\infty\)</span>. But for the <span class="math inline">\(\color{magenta}{\text{magenta}}\)</span> trajectory, the exponential growth has a negative coefficient, thus that trajectory grows toward <span class="math inline">\(-\infty\)</span>.</p>
 </div>
-<p>The method we used to solve the simplified problem also works for the original problem <span class="math display">\[\begin{array}{c}\partial_t x  = ax  +  b y \\ \partial_t y = c x +  dy\end{array}\ .\]</span></p>
+<p>The method we used to solve the simplified problem also works for the original problem</p>
+<p><span class="math display">\[\begin{array}{c}\partial_t x  = ax  +  b y \\ \partial_t y = c x +  dy\end{array}\ .\]</span></p>
 <p>Step 1: Differentiate with respect to <span class="math inline">\(t\)</span> both sides of the top equation, giving</p>
-<p><span class="math display">\[\begin{array}{c}\partial_{tt} x  =   a\, \partial_t x  +  b\, \partial_t y\\ \  \ \ \partial_t y =  c x \ \ \ \ \ \ \ +  dy\ \ \ \ \ \ \ \ \end{array}\ .\]</span> Step 2: Use the second equation to substitute for <span class="math inline">\(\partial_t\, y\)</span> in the top equation, giving <span class="math display">\[\partial_{tt} x = a \partial_t x + b\left(\strut c x + dy\right) = a\, \partial_t x + b\, c\, x + b\, d\, y\]</span> Step 3: One more substitution. From the original top equation, we know <span class="math display">\[y = \frac{\partial_t x - a x}{b}\ .\]</span> Plug this in for <span class="math inline">\(y\)</span> in the result from Step 2, giving <span class="math display">\[\partial_{tt} x = a\, \partial_t x + b\, c\, x + b\, d\, \frac{\partial_t x - a x}{b} = \left(\strut a + d\right)\ \partial_t x + \left(\strut b c - a d\right)\]</span> Step 4: Use the ansatz <span class="math inline">\(x(t) = e^{\lambda t}\)</span>. This produces <span class="math display">\[\lambda^2 e^{\lambda t}= (a + d) \lambda e^{\lambda t}+ \left(\strut bc - ad\right)e^{\lambda t} \ \ \ \implies\ \ \ \lambda^2 = (a + d) \lambda + \left(\strut bc - ad\right)\]</span> which can be solved for <span class="math inline">\(\lambda\)</span>: <span class="math display">\[\lambda = \frac{1}{2}\left(a + d\right) \pm \frac{1}{2}\sqrt{\left(a - d\right)^2 - 4 b c}\]</span> Again, the <span class="math inline">\(\pm\)</span> is the interesting bit here. There are two simple solutions that satisfy the differential equation: <span class="math inline">\(x_1(t) = e^{\lambda_1 t}\)</span> and <span class="math inline">\(x_2(t) = e^{\lambda_2 t}\)</span>. In addition, any linear combination <span class="math inline">\(A e^{\lambda_ t} + B e^{\lambda_2 t}\)</span> of these simple solutions will satisfy the differential equations. Once we know <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span>, the situation is identical to the simplified version. Again, knowing the initial condition <span class="math inline">\(x(0)\)</span> and <span class="math inline">\(\partial_t x(0)\)</span> allows us to find the coefficients in the linear combination by solving the matrix equation <span class="math display">\[\left[\begin{array}{c}\lambda_1 \ \ \  \lambda_2\\1 \ \ \ \ \ 1\end{array}\right] \left[\begin{array}{c}A\\ B\end{array}\right] = \left[\begin{array}{c}\partial_tx(0)\\  x(0)\end{array}\right] .\]</span></p>
+<p><span class="math display">\[\begin{array}{c}\partial_{tt} x  =   a\, \partial_t x  +  b\, \partial_t y\\ \  \ \ \partial_t y =  c x \ \ \ \ \ \ \ +  dy\ \ \ \ \ \ \ \ \end{array}\ .\]</span></p>
+<p>Step 2: Use the second equation to substitute for <span class="math inline">\(\partial_t\, y\)</span> in the top equation, giving</p>
+<p><span class="math display">\[\partial_{tt} x = a \partial_t x + b\left(\strut c x + dy\right) = a\, \partial_t x + b\, c\, x + b\, d\, y\]</span></p>
+<p>Step 3: One more substitution. From the original top equation, we know <span class="math display">\[y = \frac{\partial_t x - a x}{b}\ .\]</span> Plug this in for <span class="math inline">\(y\)</span> in the result from Step 2, giving</p>
+<p><span class="math display">\[\partial_{tt} x = a\, \partial_t x + b\, c\, x + b\, d\, \frac{\partial_t x - a x}{b} = \left(\strut a + d\right)\ \partial_t x + \left(\strut b c - a d\right)\]</span></p>
+<p>Step 4: Use the ansatz <span class="math inline">\(x(t) = e^{\lambda t}\)</span>. This produces</p>
+<p><span class="math display">\[\lambda^2 e^{\lambda t}= (a + d) \lambda e^{\lambda t}+ \left(\strut bc - ad\right)e^{\lambda t} \ \ \ \implies\ \ \ \lambda^2 = (a + d) \lambda + \left(\strut bc - ad\right)\]</span> which can be solved for <span class="math inline">\(\lambda\)</span>:</p>
+<p><span class="math display">\[\lambda = \frac{1}{2}\left(a + d\right) \pm \frac{1}{2}\sqrt{\left(a - d\right)^2 - 4 b c}\]</span></p>
+<p>Again, the <span class="math inline">\(\pm\)</span> is the interesting bit here. There are two simple solutions that satisfy the differential equation: <span class="math inline">\(x_1(t) = e^{\lambda_1 t}\)</span> and <span class="math inline">\(x_2(t) = e^{\lambda_2 t}\)</span>. In addition, any linear combination <span class="math inline">\(A e^{\lambda_ t} + B e^{\lambda_2 t}\)</span> of these simple solutions will satisfy the differential equations. Once we know <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span>, the situation is identical to the simplified version. Again, knowing the initial condition <span class="math inline">\(x(0)\)</span> and <span class="math inline">\(\partial_t x(0)\)</span> allows us to find the coefficients in the linear combination by solving the matrix equation <span class="math display">\[\left[\begin{array}{c}\lambda_1 \ \ \  \lambda_2\\1 \ \ \ \ \ 1\end{array}\right] \left[\begin{array}{c}A\\ B\end{array}\right] = \left[\begin{array}{c}\partial_tx(0)\\  x(0)\end{array}\right] .\]</span></p>
 </section>
 <section id="exercises" class="level2" data-number="44.3">
 <h2 data-number="44.3" class="anchored" data-anchor-id="exercises"><span class="header-section-number">44.3</span> Exercises</h2>
 <section id="exercise-44.03" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="exercise-44.03">Exercise 44.03</h4>
-<p>We have seen that the solution <span class="math inline">\(x(t)\)</span> to the linear dynamical system in two state variables <span class="math display">\[\begin{array}{c}\partial_t x  = ax  +  b y \\ \partial_t y = c x +  dy\end{array} = \left[\begin{array}{cc}a &amp; b\\c &amp; d\end{array}\right] \left[\begin{array}{c}x\\y\end{array}\right]\]</span> can be written as a linear combination of two exponentials:</p>
+<p>We have seen that the solution <span class="math inline">\(x(t)\)</span> to the linear dynamical system in two state variables</p>
+<p><span class="math display">\[\begin{array}{c}\partial_t x  = ax  +  b y \\ \partial_t y = c x +  dy\end{array} = \left[\begin{array}{cc}a &amp; b\\c &amp; d\end{array}\right] \left[\begin{array}{c}x\\y\end{array}\right]\]</span></p>
+<p>can be written as a linear combination of two exponentials:</p>
 <p><span class="math inline">\(x(t) = A e^{\lambda_1 t} + B e^{\lambda_2 t}\)</span>.</p>
 <p>Let’s call the two components of this linear combination the “A-part” and the “B-part.”</p>
 <p>In each of the following, you are given two specific numerical values for <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span>. Your task is to determine whether the A-part or the B-part (or both or neither) is transient.</p>
@@ -666,7 +719,8 @@
 <section id="exercise-44.05" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="exercise-44.05">Exercise 44.05</h4>
 <p>The linear dynamical system in two variables is</p>
-<p><span class="math display">\[\begin{array}{c}\partial_t x  = ax  +  b y \\ \partial_t y = c x +  dy\end{array} = \left[\begin{array}{cc}a &amp; b\\c &amp; d\end{array}\right] \left[\begin{array}{c}x\\y\end{array}\right]\ .\]</span> The matrix abcd can be turned into two values, <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span> such that $x(t) = A e^{_1 t} + B e^{_2 t}. Use the formula for <span class="math inline">\(\lambda\)</span> in the text to find <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span> for each of the following:</p>
+<p><span class="math display">\[\begin{array}{c}\partial_t x  = ax  +  b y \\ \partial_t y = c x +  dy\end{array} = \left[\begin{array}{cc}a &amp; b\\c &amp; d\end{array}\right] \left[\begin{array}{c}x\\y\end{array}\right]\ .\]</span></p>
+<p>The matrix abcd can be turned into two values, <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span> such that $x(t) = A e^{_1 t} + B e^{_2 t}. Use the formula for <span class="math inline">\(\lambda\)</span> in the text to find <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span> for each of the following:</p>
 <ol type="1">
 <li><p><span class="math inline">\(\left[\begin{array}{rr}1 &amp; 1\\0 &amp; 2 \end{array}\right]\)</span></p></li>
 <li><p><span class="math inline">\(\left[\begin{array}{rr}1 &amp; 1\\1 &amp; 2 \end{array}\right]\)</span></p></li>
@@ -678,7 +732,11 @@
 </section>
 <section id="exercise-44.07" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="exercise-44.07">Exercise 44.07</h4>
-<p>For the two-state variable linear dynamical system <span class="math display">\[\begin{array}{c}\partial_t x  = ax  +  b y \\ \partial_t y = c x +  dy\end{array} = \left[\begin{array}{cc}a &amp; b\\c &amp; d\end{array}\right] \left[\begin{array}{c}x\\y\end{array}\right]\]</span> the solution can be written as a linear combination of exponentials <span class="math display">\[x(t) = A e^{\lambda_1 t} + B e^{\lambda_2 t}\ .\]</span> For each of the following systems and initial conditions, find the coefficients <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>.</p>
+<p>For the two-state variable linear dynamical system</p>
+<p><span class="math display">\[\begin{array}{c}\partial_t x  = ax  +  b y \\ \partial_t y = c x +  dy\end{array} = \left[\begin{array}{cc}a &amp; b\\c &amp; d\end{array}\right] \left[\begin{array}{c}x\\y\end{array}\right]\]</span></p>
+<p>the solution can be written as a linear combination of exponentials</p>
+<p><span class="math display">\[x(t) = A e^{\lambda_1 t} + B e^{\lambda_2 t}\ .\]</span></p>
+<p>For each of the following systems and initial conditions, find the coefficients <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>.</p>
 <ol type="1">
 <li><p><span class="math inline">\(\left[\begin{array}{rr}1 &amp; 1\\0 &amp; 2 \end{array}\right]\)</span> with <span class="math inline">\(x(0) = 3\)</span> and <span class="math inline">\(\partial_t x(0) = 1\)</span>.</p></li>
 <li><p><span class="math inline">\(\left[\begin{array}{rr}1 &amp; 1\\0 &amp; 2 \end{array}\right]\)</span> with <span class="math inline">\(x(0) = 3\)</span> and <span class="math inline">\(\partial_t x(0) = -1\)</span>.</p></li>
@@ -689,7 +747,9 @@
 </section>
 <section id="exercise-44.09" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="exercise-44.09">Exercise 44.09</h4>
-<p>For the linear dynamical system in two state variables <span class="math display">\[\begin{array}{c}\partial_t x  = ax  +  b y \\ \partial_t y = c x +  dy\end{array} = \left[\begin{array}{cc}a &amp; b\\c &amp; d\end{array}\right] \left[\begin{array}{c}x\\y\end{array}\right]\]</span> the two values of <span class="math inline">\(\lambda\)</span> are <span class="math display">\[\lambda_1 = \frac{1}{2}\left(a + d\right) + \frac{1}{2}\sqrt{\left(a - d\right)^2 - 4 b c}\\\lambda_1 = \frac{1}{2}\left(a + d\right) - \frac{1}{2}\sqrt{\left(a - d\right)^2 - 4 b c}\]</span></p>
+<p>For the linear dynamical system in two state variables</p>
+<p><span class="math display">\[\begin{array}{c}\partial_t x  = ax  +  b y \\ \partial_t y = c x +  dy\end{array} = \left[\begin{array}{cc}a &amp; b\\c &amp; d\end{array}\right] \left[\begin{array}{c}x\\y\end{array}\right]\]</span></p>
+<p>the two values of <span class="math inline">\(\lambda\)</span> are <span class="math display">\[\lambda_1 = \frac{1}{2}\left(a + d\right) + \frac{1}{2}\sqrt{\left(a - d\right)^2 - 4 b c}\\\lambda_1 = \frac{1}{2}\left(a + d\right) - \frac{1}{2}\sqrt{\left(a - d\right)^2 - 4 b c}\]</span></p>
 <ol type="1">
 <li><p>Show that the sum <span class="math inline">\(\lambda_1 + \lambda_2 = a + d\)</span>.</p></li>
 <li><p>Show that the square of the difference <span class="math inline">\(\left(\lambda_1 - \lambda_2\right)^2 = (a - d)^2 - 4bc\)</span>.</p></li>
@@ -704,9 +764,28 @@
 
 </section>
 </section>
+
 </main> <!-- /main -->
-<script type="application/javascript">
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -726,7 +805,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.blur();
     // flash "checked"
     button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
     setTimeout(function() {
+      button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
     // clear code selection
@@ -794,6 +876,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 </body></html>

@@ -1,152 +1,158 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-  <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.9.80">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>MOSAIC Calculus - 9&nbsp; Assembling functions</title>
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style>
 
-  <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-  <script src="../site_libs/quarto-nav/headroom.min.js"></script>
-  <script src="../site_libs/clipboard/clipboard.min.js"></script>
-  <meta name="quarto:offset" content="../">
-  <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-  <script src="../site_libs/quarto-search/fuse.min.js"></script>
-  <script src="../site_libs/quarto-search/quarto-search.js"></script>
-  <link href="../Modeling/03-functions-with-multiple-inputs.html" rel="next">
-  <link href="../Modeling/01-parameters.html" rel="prev">
-  <script src="../site_libs/quarto-html/quarto.js"></script>
-  <script src="../site_libs/quarto-html/popper.min.js"></script>
-  <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-  <script src="../site_libs/quarto-html/anchor.min.js"></script>
-  <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-  <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
-  <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-  <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-  <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
-  <script id="quarto-search-options" type="application/json">{
-    "location": "sidebar",
-    "copy-button": false,
-    "collapse-after": 2,
-    "panel-placement": "start",
-    "type": "textbox",
-    "limit": 20,
-    "language": {
-      "search-no-results-text": "No results",
-      "search-matching-documents-text": "matching documents",
-      "search-copy-link-title": "Copy link to search",
-      "search-hide-matches-text": "Hide additional matches",
-      "search-more-match-text": "more match in this document",
-      "search-more-matches-text": "more matches in this document",
-      "search-clear-button-title": "Clear",
-      "search-detached-cancel-button-title": "Cancel",
-      "search-submit-button-title": "Submit"
-    }
-  }</script>
-  <script async="" src="https://hypothes.is/embed.js"></script>
-  </head><body class="floating slimcontent"><span class="math inline" style="display: none;">
-  \(\newcommand{\line}{\text{line}}
-  \newcommand{\hump}{\text{hump}}
-  \newcommand{\sigmoid}{\text{sigmoid}}
-  \newcommand{\recip}{\text{recip}}
-  \newcommand{\diff}[1]{{\cal D}_#1}
-  \newcommand{\pnorm}{\text{pnorm}}
-  \newcommand{\dnorm}{\text{dnorm}}
-  \let\origvec\vec
-  \let\origmathit\mathit
-  \let\orighat\hat
-  \let\origbar\bar
-  \newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
-  \newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
-  \newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
-  \newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
-  \newcommand{\len}[1]{{\|{\mathbf #1}\|}}
-  \newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
-  \newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
-  \newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
-  \newcommand{\modeledby}[2]{#1\!\sim\!#2}
-  \newcommand{\CC}[1]{\color{#648fff}{#1}}
-  \newcommand{\CE}[1]{\color{#785ef0}{#1}}
-  \newcommand{\CA}[1]{\color{#dc267f}{#1}}
-  \newcommand{\CB}[1]{\color{#fe6100}{#1}}
-  \newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
-  </span>
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MOSAIC Calculus - 9&nbsp; Assembling functions</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../Modeling/03-functions-with-multiple-inputs.html" rel="next">
+<link href="../Modeling/01-parameters.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+</head><body class="nav-sidebar floating slimcontent"><span class="math inline" style="display: none;">
+\(\newcommand{\line}{\text{line}}
+\newcommand{\hump}{\text{hump}}
+\newcommand{\sigmoid}{\text{sigmoid}}
+\newcommand{\recip}{\text{recip}}
+\newcommand{\diff}[1]{{\cal D}_#1}
+\newcommand{\pnorm}{\text{pnorm}}
+\newcommand{\dnorm}{\text{dnorm}}
+\let\origvec\vec
+\let\origmathit\mathit
+\let\orighat\hat
+\let\origbar\bar
+\newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+\newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+\newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+\newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+\newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+\newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+\newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+\newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+\newcommand{\modeledby}[2]{#1\!\sim\!#2}
+\newcommand{\CC}[1]{\color{#648fff}{#1}}
+\newcommand{\CE}[1]{\color{#785ef0}{#1}}
+\newcommand{\CA}[1]{\color{#dc267f}{#1}}
+\newcommand{\CB}[1]{\color{#fe6100}{#1}}
+\newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+</span>
+
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
-  <link rel="stylesheet" href="../mosaic-calc-style.css">
+
+<link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
 
 
 <div id="quarto-search-results"></div>
@@ -154,7 +160,7 @@
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
       <h1 class="quarto-secondary-nav-title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></h1>
-      <button type="button" class="quarto-btn-toggle btn">
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
     </div>
@@ -185,344 +191,359 @@
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-preliminaries-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-preliminaries-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/01-modeling-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">I. Modeling</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-modeling-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-modeling-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">I. Modeling</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/01-parameters.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/02-assembling-functions.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/03-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/05-low-order-polynomials.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/06-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/07-magnitudes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/08-dimensions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/09-modeling-cycle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling cycle [DRAFT]</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/Modeling-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">II. Differentiation</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-differentiation-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-differentiation-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">II. Differentiation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/16-continuous-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Continuous change</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/17-rate-of-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rate of change</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/18-evanescent-h.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/19-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Constructing derivatives</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/20-concavity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/21-cont-and-smooth.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/22-rules.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/23-optim.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/24-partial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/25-approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations [DRAFT]</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/26-taylor.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/Differentiation-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">III. Vectors and linear combinations</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-linear-combinations-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-linear-combinations-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">III. Vectors and linear combinations</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-Vectors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Vectors</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-linear-combinations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-projection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-target-problem.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-stat-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">IV. Accumulation</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-accumulation-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-accumulation-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">IV. Accumulation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/27-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/28-visualizing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/29-integration.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/30-euler.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/31-symbolic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">Dynamics</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-dynamics-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-dynamics-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">V. Dynamics</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-diff-eq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Differential equations</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-solution.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Finding a “solution”</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-flow-on-line.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Flows on the line</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-flow-on-plane.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the plane</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-equilibria.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-eigen.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-second-order.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Force-balance equations</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">V. Manifestations</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-manifestations-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-manifestations-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">VI. Manifestations</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-splines.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Data-driven functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">50</span>&nbsp; <span class="chapter-title">Probability and evidence</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-future-value.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">51</span>&nbsp; <span class="chapter-title">Present and future value</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-mechanics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">52</span>&nbsp; <span class="chapter-title">Mechanics</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">Appendices</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../R-mosaic-setup.html" class="sidebar-item-text sidebar-link">Setting up R/mosaic</a>
+  </div>
+</li>
+      </ul>
   </li>
     </ul>
     </div>
@@ -530,25 +551,39 @@
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc">
-<h2 id="toc-title">Table of contents</h2>
-<ul>
-<li><a href="#linear-combination" class="nav-link active" data-scroll-target="#linear-combination"> <span class="header-section-number">9.1</span> Linear combination</a></li>
-<li><a href="#sec-function-composition" class="nav-link" data-scroll-target="#sec-function-composition"> <span class="header-section-number">9.2</span> Function composition</a></li>
-<li><a href="#sec-function-multiplication" class="nav-link" data-scroll-target="#sec-function-multiplication"> <span class="header-section-number">9.3</span> Function multiplication</a></li>
-<li><a href="#sec-piecewise-intro" class="nav-link" data-scroll-target="#sec-piecewise-intro"> <span class="header-section-number">9.4</span> Splitting the domain</a>
-<ul class="collapse">
-<li><a href="#computing-notation" class="nav-link" data-scroll-target="#computing-notation"> <span class="header-section-number">9.4.1</span> Computing notation</a></li>
-</ul></li>
-<li><a href="#computing-outside-the-domain" class="nav-link" data-scroll-target="#computing-outside-the-domain"> <span class="header-section-number">9.5</span> Computing outside the domain</a></li>
-<li><a href="#drill" class="nav-link" data-scroll-target="#drill"> <span class="header-section-number">9.6</span> Drill</a></li>
-<li><a href="#exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">9.7</span> Exercises</a></li>
-</ul>
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#linear-combination" id="toc-linear-combination" class="nav-link active" data-scroll-target="#linear-combination"> <span class="header-section-number">9.1</span> Linear combination</a></li>
+  <li><a href="#sec-function-composition" id="toc-sec-function-composition" class="nav-link" data-scroll-target="#sec-function-composition"> <span class="header-section-number">9.2</span> Function composition</a></li>
+  <li><a href="#sec-function-multiplication" id="toc-sec-function-multiplication" class="nav-link" data-scroll-target="#sec-function-multiplication"> <span class="header-section-number">9.3</span> Function multiplication</a></li>
+  <li><a href="#sec-piecewise-intro" id="toc-sec-piecewise-intro" class="nav-link" data-scroll-target="#sec-piecewise-intro"> <span class="header-section-number">9.4</span> Splitting the domain</a>
+  <ul class="collapse">
+  <li><a href="#computing-notation" id="toc-computing-notation" class="nav-link" data-scroll-target="#computing-notation"> <span class="header-section-number">9.4.1</span> Computing notation</a></li>
+  </ul></li>
+  <li><a href="#computing-outside-the-domain" id="toc-computing-outside-the-domain" class="nav-link" data-scroll-target="#computing-outside-the-domain"> <span class="header-section-number">9.5</span> Computing outside the domain</a></li>
+  <li><a href="#drill" id="toc-drill" class="nav-link" data-scroll-target="#drill"> <span class="header-section-number">9.6</span> Drill</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">9.7</span> Exercises</a></li>
+  </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dtkaplan/MC2/edit/main/Modeling/02-assembling-functions.Rmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
-<header id="title-block-header">
-<h1 class="title display-7"><span id="sec-assembling" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></span></h1>
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-assembling" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
 </header>
 
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
@@ -560,10 +595,12 @@
 <h2 data-number="9.1" class="anchored" data-anchor-id="linear-combination"><span class="header-section-number">9.1</span> Linear combination</h2>
 <p>One of the most widely used sorts of combination is called a <strong><em>linear combination</em></strong>. The mathematics of linear combination is, it happens, at the core of the use of math in a large variety of real-world applications, whether that be constructing a Google-like search engine or analyzing medical data to see if a treatment has a positive effect.</p>
 <div class="page-columns page-full"><p></p><div class="no-row-height column-margin column-container"><span class="aside">There is a special name for a quantity used to scale the output of a function: a <strong><em>scalar</em></strong>. Scalars are ordinary quantities; the word “scalar” is merely a way to distinguish the quantity from the function it is multiplying. Scalars generally come with units. So we might well have a metric polynomial and an equivalent traditional-unit polynomial.</span></div></div>
-<p>To illustrate how linear combination is used to create new functions, consider polynomials, for instance, <span class="math display">\[f(x) \equiv 3 x^2 + 5 x - 2\ .\]</span> There are three pattern-book functions in this polynomial. In polynomials the functions being combined are all power-law functions: <span class="math inline">\(g_0(x) \equiv 1\)</span>, <span class="math inline">\(g_1(x) \equiv x\)</span>, and <span class="math inline">\(g_2(x) \equiv x^2\)</span>. With these functions defined, we can write the polynomial <span class="math inline">\(f(x)\)</span> as <span class="math display">\[f(x) \equiv 3 g_2(x) + 5 g_1(x) - 2 g_0(x)\]</span> Each of the functions is being scaled by a quantity: 3, 5, and -2 in this example. Then the scaled functions are added up. That is a linear combination; scale and add.</p>
+<p>To illustrate how linear combination is used to create new functions, consider polynomials, for instance,</p>
+<p><span class="math display">\[f(x) \equiv 3 x^2 + 5 x - 2\ .\]</span></p>
+<p>There are three pattern-book functions in this polynomial. In polynomials the functions being combined are all power-law functions: <span class="math inline">\(g_0(x) \equiv 1\)</span>, <span class="math inline">\(g_1(x) \equiv x\)</span>, and <span class="math inline">\(g_2(x) \equiv x^2\)</span>. With these functions defined, we can write the polynomial <span class="math inline">\(f(x)\)</span> as <span class="math display">\[f(x) \equiv 3 g_2(x) + 5 g_1(x) - 2 g_0(x)\]</span> Each of the functions is being scaled by a quantity: 3, 5, and -2 in this example. Then the scaled functions are added up. That is a linear combination; scale and add.</p>
 <div class="page-columns page-full"><p></p><div class="no-row-height column-margin column-container"><span class="aside">In high school, polynomials are often presented as puzzles—factor them to find the roots! In calculus, however, polynomials are used as functions for modeling. They are a kind of modeling “clay,” which can be shaped as needed.</span></div></div>
 <p>There are other places where you have seen linear combinations:</p>
-<div class="page-columns page-full"><p></p><div class="no-row-height column-margin column-container"><span class="aside">Note that neither the parameterized exponential nor the parameterized sinusoid is a polynomial. A polynomial is always a linear combination of monomials. (As Section <a href="../Preliminaries/05-pattern-book-functions.html#sec-power-law-family">Section&nbsp;<span>5.3</span></a>, describes, monomials are the power-law functions <span class="math inline">\(x^0\)</span>, <span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>, and so on.)</span></div></div>
+<div class="page-columns page-full"><p></p><div class="no-row-height column-margin column-container"><span class="aside">Note that neither the parameterized exponential nor the parameterized sinusoid is a polynomial. A polynomial is always a linear combination of monomials. (As Section <a href="#sec-power-law-family"><span class="quarto-unresolved-ref">sec-power-law-family</span></a>, describes, monomials are the power-law functions <span class="math inline">\(x^0\)</span>, <span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>, and so on.)</span></div></div>
 <ul>
 <li>The parameterized <strong><em>sinusoid</em></strong> <span class="math display">\[A \sin\left(\frac{2 \pi}{P}t\right) + B\]</span> is a linear combination of the functions <span class="math inline">\(h_1(t) \equiv \sin\left(\frac{2 \pi}{P} t\right)\)</span> and <span class="math inline">\(h_2(t) \equiv 1\)</span>. The linear combination is <span class="math inline">\(A\,h_1(t) + B\, h_2(t)\)</span>.</li>
 <li>The parameterized <strong><em>exponential</em></strong> <span class="math display">\[A e^{kt} + B\]</span> The functions being combined are <span class="math inline">\(e^{kt}\)</span> and <span class="math inline">\(1\)</span>. The scalars are, again, <span class="math inline">\(A\)</span> and <span class="math inline">\(C\)</span>.</li>
@@ -599,7 +636,7 @@
 <p><strong><em>Transient vibration</em></strong></p>
 <p>A guitar string is plucked to produce a note. The sound is, of course, vibrations of the air created by vibrations of the string.</p>
 <p>After plucking, the note fades away. An important model of this is a sinusoid (of the correct period to correspond to the frequency of the note) times an exponential.</p>
-<p>Function multiplication is used so often in modeling that you will see it in many modeling situations. Here’s one example that is important in physics and communication: the <strong><em>wave packet</em></strong>. Overall, the wave packet is a localized oscillation as in <a href="#fig-wave-packet">Figure&nbsp;<span>9.2</span></a>. The packet can be modeled with the product of two pattern-book functions: a gaussian times a sinusoid.</p>
+<p>Function multiplication is used so often in modeling that you will see it in many modeling situations. Here’s one example that is important in physics and communication: the <strong><em>wave packet</em></strong>. Overall, the wave packet is a localized oscillation as in <a href="#fig-wave-packet">Figure&nbsp;<span class="quarto-unresolved-ref">fig-wave-packet</span></a>. The packet can be modeled with the product of two pattern-book functions: a gaussian times a sinusoid.</p>
 </div>
 <div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
 
@@ -607,7 +644,7 @@
 <div id="fig-making-wave-packet" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="02-assembling-functions_files/figure-html/fig-making-wave-packet-1.png" class="img-fluid figure-img" style="width:140.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.1: The two components of the wave packet in <a href="#fig-wave-packet">Figure&nbsp;<span>9.2</span></a>: an “envelope” and an oscillation. Multiplying these components together produces the wave packet.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 9.1: The two components of the wave packet in <a href="#fig-wave-packet">Figure&nbsp;<span class="quarto-unresolved-ref">fig-wave-packet</span></a>: an “envelope” and an oscillation. Multiplying these components together produces the wave packet.</figcaption><p></p>
 </figure>
 </div>
 </div></div></div>
@@ -616,28 +653,30 @@
 <div id="fig-wave-packet" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="02-assembling-functions_files/figure-html/fig-wave-packet-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.2: A <em>wave packet</em> constructed by multiplying a sinusoid and a gaussian function.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 9.2: A <em>wave packet</em> constructed by multiplying a sinusoid and a gaussian function.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="intheworld page-columns page-full">
 <p>The initial rise in popularity of the social media platform <a href="https://en.wikipedia.org/wiki/Yik_Yak">Yik Yak</a> was exponential. Then popularity leveled off, promising a steady, if static, business into the future. But, the internet being what it is, popularity collapsed to near zero and the company closed.</p>
-<p>One way to model this pattern is by multiplying a sigmoid by an exponential. (See <a href="#fig-yikyak">Figure&nbsp;<span>9.3</span></a>.)</p>
+<p>One way to model this pattern is by multiplying a sigmoid by an exponential. (See <a href="#fig-yikyak">Figure&nbsp;<span class="quarto-unresolved-ref">fig-yikyak</span></a>.)</p>
 <div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
 <div class="cell-output-display page-columns page-full">
 <div id="fig-yikyak" class="quarto-figure quarto-figure-center anchored page-columns page-full">
 <figure class="figure page-columns page-full">
 <p><img src="02-assembling-functions_files/figure-html/fig-yikyak-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 9.3: Subscriptions to the web messaging service Yik Yak grew exponentially in 2013 and 2014, then collapsed. The company closed in 2017.</figcaption><p></p>
+<p></p><figcaption class="figure-caption margin-caption">Figure 9.3: Subscriptions to the web messaging service Yik Yak grew exponentially in 2013 and 2014, then collapsed. The company closed in 2017.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 </div>
-<p>Functions constructed as a <strong><em>product</em></strong> of simple functions can look like this in tradition notation: <span class="math display">\[h(t) \equiv \sin(t) e^{-t}\]</span> and like this in computer notation:</p>
+<p>Functions constructed as a <strong><em>product</em></strong> of simple functions can look like this in tradition notation:</p>
+<p><span class="math display">\[h(t) \equiv \sin(t) e^{-t}\]</span></p>
+<p>and like this in computer notation:</p>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">sin</span>(t)<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>t) <span class="sc">~</span> t)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">sin</span>(t)<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>t) <span class="sc">~</span> t)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="sec-piecewise-intro" class="level2 page-columns page-full" data-number="9.4">
@@ -649,11 +688,12 @@
 <div id="fig-abx1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="02-assembling-functions_files/figure-html/fig-abx1-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.4: The absolute-value function</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 9.4: The absolute-value function</figcaption><p></p>
 </figure>
 </div>
 </div></div></div>
-<p><span class="math display">\[abs(x) \equiv \left|x\right|\]</span> Written this way, the definition of <span class="math inline">\(abs()\)</span> is a tautology: unless you already know what <span class="math inline">\(\left|x\right|\)</span> means, you will have no clue what’s going on.</p>
+<p><span class="math display">\[abs(x) \equiv \left|x\right|\]</span></p>
+<p>Written this way, the definition of <span class="math inline">\(abs()\)</span> is a tautology: unless you already know what <span class="math inline">\(\left|x\right|\)</span> means, you will have no clue what’s going on.</p>
 <p>Can we assemble <span class="math inline">\(abs(x)\)</span> out of pattern-book functions? What’s distinctive about <span class="math inline">\(abs(x)\)</span> is the break at <span class="math inline">\(x=0\)</span>. There is no similarly sharp transition in any of the pattern-book functions.</p>
 <p>One way to construct the sharp transition is to view <span class="math inline">\(abs(x)\)</span> as <em>two</em> functions, one whose domain is the negative half of the number line and the other having a domain that is the non-negative half. That is, we will break the domain of <span class="math inline">\(abs()\)</span> into two <strong>pieces</strong>. For the right piece of the domain, <span class="math inline">\(abs(x)\)</span> is simply proportional<span class="math inline">\((x)\)</span>. For the left piece of the domain, <span class="math inline">\(abs(x)\)</span> is <span class="math inline">\(-\)</span>proportional<span class="math inline">\((x)\)</span>.</p>
 <p>A function defined separately on different pieces of its domain is called a <strong><em>piecewise function</em></strong>. In the conventional mathematical notation, there is a large <span class="math inline">\(\LARGE\left\{\right.\)</span> followed by two or more lines. Each line gives a formula for that part of the function and indicates to which interval the formula applies.</p>
@@ -667,7 +707,7 @@
 <div id="fig-heaviside1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="02-assembling-functions_files/figure-html/fig-heaviside1-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.5: The Heaviside function</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 9.5: The Heaviside function</figcaption><p></p>
 </figure>
 </div>
 </div></div></div>
@@ -682,7 +722,7 @@
 <p>The usual mathematical notation for piecewise functions, spread out over multiple lines that are connected with a tall brace, is an obvious non-candidate for computer notation. In R, the stitching together of the two pieces can be done with the function <code>ifelse()</code>. The name is remarkably descriptive. The <code>ifelse()</code> function takes three arguments. The first is a question to be asked, the second is the value to return if the answer is “yes,” and the third is the value to return for a “no” answer.</p>
 <p>To define <span class="math inline">\(abs()\)</span> or Heaviside<span class="math inline">\(()\)</span> the relevant question is, “Is the input on the right or left side of zero on the number line?” In widely-used computing languages such as R, the format for asking a question does not involve a question mark. For example, to ask the question, “Is 3 less than 2?” use the expression:</p>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
-<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span> <span class="sc">&lt;</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span> <span class="sc">&lt;</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>In mathematics notation, <span class="math inline">\(3 &lt; 2\)</span> is a <em>declarative</em> statement and is an impossibility. More familiar would be <span class="math inline">\(x &lt; 2\)</span>, which is again a declarative statement putting a restriction on the possible values of the quantity <span class="math inline">\(x\)</span>.</p>
 <p>In computing notation, <code>3 &lt; 2</code> or <code>x &lt; 2</code> is not a declaration, it is an <em>imperative </em> statement that directs the computer to do the calculation to find out if the statement is true or false, or, as written in R, <code>TRUE</code> or <code>FALSE</code>.</p>
@@ -692,70 +732,67 @@
 <p>Only when you apply the function created by <code>makeFun()</code> to an input quantity will the tilde-expression be turned into an <em>imperative</em> statement that asks the question <code>0 &lt;= x</code> and then chooses the second or third argument to <code>ifelse()</code> as the result.</p>
 </div></div><p>Here’s a definition of <code>Heaviside()</code> written with <code>ifelse()</code>.</p>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
-<div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Heaviside <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">ifelse</span>(<span class="dv">0</span> <span class="sc">&lt;=</span> x, <span class="dv">1</span>, <span class="dv">0</span>) <span class="sc">~</span> x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Heaviside <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">ifelse</span>(<span class="dv">0</span> <span class="sc">&lt;=</span> x, <span class="dv">1</span>, <span class="dv">0</span>) <span class="sc">~</span> x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><span class="quarto-unresolved-ref">?tbl-r-questions</span> shows computer notation for some common sorts of questions.</p>
-<div class="tbl-parent column-page-inset-right quarto-layout-panel">
-<div class="panel-caption table-caption">
-<p>Each of these imperative statements in R asks a question about numbers.</p>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<p><a href="#tbl-R-questions">Table&nbsp;<span class="quarto-unresolved-ref">tbl-R-questions</span></a> shows computer notation for some common sorts of questions.</p>
+<div class="column-page-inset-right">
+<div id="tbl-R-questions" class="anchored">
 <table class="table">
+<caption>Table 9.1: Each of these imperative statements in R asks a question about numbers.</caption>
 <colgroup>
 <col style="width: 30%">
 <col style="width: 70%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">R notation</th>
-<th style="text-align: left;">English</th>
+<th>R notation</th>
+<th>English</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><code>x &gt; 2</code></td>
-<td style="text-align: left;">“Is <span class="math inline">\(x\)</span> greater than 2?”</td>
+<td><code>x &gt; 2</code></td>
+<td>“Is <span class="math inline">\(x\)</span> greater than 2?”</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><code>y &gt;= 3</code></td>
-<td style="text-align: left;">“Is <span class="math inline">\(y\)</span> greater than or equal to 3?”</td>
+<td><code>y &gt;= 3</code></td>
+<td>“Is <span class="math inline">\(y\)</span> greater than or equal to 3?”</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><code>x == 4</code></td>
-<td style="text-align: left;">“Is <span class="math inline">\(x\)</span> exactly 4?”</td>
+<td><code>x == 4</code></td>
+<td>“Is <span class="math inline">\(x\)</span> exactly 4?”</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><code>2 &lt; x &amp; x &lt; 5</code></td>
-<td style="text-align: left;">“Is <span class="math inline">\(x\)</span> between 2 and 5?” Literally, “Is <span class="math inline">\(x\)</span> both greater than 2 and less than 5?”</td>
+<td><code>2 &lt; x &amp; x &lt; 5</code></td>
+<td>“Is <span class="math inline">\(x\)</span> between 2 and 5?” Literally, “Is <span class="math inline">\(x\)</span> both greater than 2 and less than 5?”</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><code>x &lt; 2 | x &gt; 6</code></td>
-<td style="text-align: left;">“Is <span class="math inline">\(x\)</span> either less than 2 or greater than 6?”</td>
+<td><code>x &lt; 2 | x &gt; 6</code></td>
+<td>“Is <span class="math inline">\(x\)</span> either less than 2 or greater than 6?”</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><code>abs(x-5) &lt; 2</code></td>
-<td style="text-align: left;">“Is <span class="math inline">\(x\)</span> within two units of 5?”</td>
+<td><code>abs(x-5) &lt; 2</code></td>
+<td>“Is <span class="math inline">\(x\)</span> within two units of 5?”</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-</div>
 <div class="intheworld page-columns page-full">
-<p><a href="#fig-gas-use-two">Figure&nbsp;<span>9.6</span></a> is a graph of monthly natural gas use in the author’s household versus average temperature during the month. (Natural gas is measured in cubic feet, abbreviated <em>ccf</em>.)</p>
+<p><a href="#fig-gas-use-two">Figure&nbsp;<span class="quarto-unresolved-ref">fig-gas-use-two</span></a> is a graph of monthly natural gas use in the author’s household versus average temperature during the month. (Natural gas is measured in cubic feet, abbreviated <em>ccf</em>.)</p>
 <div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
 <div class="cell-output-display page-columns page-full">
 <div id="fig-gas-use-two" class="quarto-figure quarto-figure-center anchored page-columns page-full">
 <figure class="figure page-columns page-full">
 <p><img src="02-assembling-functions_files/figure-html/fig-gas-use-two-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption margin-caption">Figure 9.6: The amount of natural gas used for heating the author’s home varies with the outside temperature.</figcaption><p></p>
+<p></p><figcaption class="figure-caption margin-caption">Figure 9.6: The amount of natural gas used for heating the author’s home varies with the outside temperature.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <p>The graph looks somewhat like a hockey stick. A sloping straight-line dependence of ccf on temperature for temperatures below <span class="math inline">\(60^\circ\)</span>F and constant for higher temperatures. The shape originates from the dual uses of natural gas. Gas is used for cooking and domestic hot water, the demand for which is more or less independent of outdoor temperature at about 15 ccf per month. Gas is also used for heating the house, but that is needed only when the temperature is less than about <span class="math inline">\(60^\circ\)</span>F.</p>
-<p>We can accomplish the hockey-stick shape with a linear combination of the ramp() function and a constant. The ramp function represents gas used for heating, the constant is the other uses of gas (which are modeled as not depending on temperature. Overall, the model is <span class="math display">\[\text{gas}(x) \equiv 4.3\,  \text{ramp}(62-x)  + 15\ .\]</span> Even simpler is the model for the other uses of natural gas: <span class="math display">\[\text{other}(x) \equiv 15\ .\]</span></p>
+<p>We can accomplish the hockey-stick shape with a linear combination of the ramp() function and a constant. The ramp function represents gas used for heating, the constant is the other uses of gas (which are modeled as not depending on temperature. Overall, the model is <span class="math display">\[\text{gas}(x) \equiv 4.3\,  \text{ramp}(62-x)  + 15\ .\]</span> Even simpler is the model for the other uses of natural gas:</p>
+<p><span class="math display">\[\text{other}(x) \equiv 15\ .\]</span></p>
 </div>
 </section>
 </section>
@@ -774,7 +811,7 @@
 <div class="rmosaic">
 <p>It can be tedious to make sure that you are on the right side of the law when dealing with functions whose domain is not the whole number line. The designers of the hardware that does computer arithmetic, after several decades of work, found a clever system to make it easier. It is a standard part of such hardware that whenever a function is handed an input that is not part of that function’s domain, one of two special “numbers” is returned. To illustrate:</p>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
-<div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="sc">-</span><span class="dv">3</span>)</span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="sc">-</span><span class="dv">3</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] NaN</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>(<span class="sc">-</span><span class="dv">2</span>)<span class="sc">^</span><span class="fl">0.9999</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] NaN</span></span>
@@ -783,7 +820,7 @@
 </div>
 <p><code>NaN</code> stands for “not a number.” Just about any calculation involving <code>NaN</code> will generate <code>NaN</code> as a result, even those involving multiplication by zero or cancellation by subtraction or division.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> For instance:</p>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
-<div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dv">0</span> <span class="sc">*</span> <span class="cn">NaN</span></span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dv">0</span> <span class="sc">*</span> <span class="cn">NaN</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] NaN</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cn">NaN</span> <span class="sc">-</span> <span class="cn">NaN</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] NaN</span></span>
@@ -792,7 +829,7 @@
 </div>
 <p>Division by zero produces <code>Inf</code>, whose name is reminiscent of “infinity.” <code>Inf</code> infiltrates any calculation in which it takes part:</p>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
-<div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span> <span class="sc">*</span> <span class="cn">Inf</span></span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span> <span class="sc">*</span> <span class="cn">Inf</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] Inf</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="cn">Inf</span>)</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] Inf</span></span>
@@ -811,30 +848,21 @@
 <section id="drill" class="level2" data-number="9.6">
 <h2 data-number="9.6" class="anchored" data-anchor-id="drill"><span class="header-section-number">9.6</span> Drill</h2>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
-<div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>f1 <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">ifelse</span>(x <span class="sc">&gt;</span> <span class="dv">1</span>, <span class="dv">1</span>, x<span class="sc">^</span><span class="dv">2</span>) <span class="sc">~</span> x)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>f2 <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">ifelse</span>(x <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="fu">sin</span>(x), x) <span class="sc">~</span> x)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>f3 <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">ifelse</span>(<span class="fu">abs</span>(x) <span class="sc">&gt;</span> <span class="dv">1</span>, x, x<span class="sc">^</span><span class="dv">3</span>) <span class="sc">~</span> x)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>f4 <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">ifelse</span>(<span class="fu">abs</span>(x) <span class="sc">&gt;</span> <span class="dv">1</span>, x<span class="sc">^</span><span class="dv">3</span>, x) <span class="sc">~</span> x)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>f5 <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">ifelse</span>(<span class="fu">abs</span>(x) <span class="sc">&gt;</span> <span class="dv">1</span>, x, <span class="fu">exp</span>(x<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">~</span> x)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>P1 <span class="ot">&lt;-</span> <span class="fu">slice_plot</span>(<span class="fu">f1</span>(x) <span class="sc">~</span> x, <span class="fu">domain</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>)))</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>P2 <span class="ot">&lt;-</span> <span class="fu">slice_plot</span>(<span class="fu">f2</span>(x) <span class="sc">~</span> x, <span class="fu">domain</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>)))</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>P3 <span class="ot">&lt;-</span> <span class="fu">slice_plot</span>(<span class="fu">f3</span>(x) <span class="sc">~</span> x, <span class="fu">domain</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>)))</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>P4 <span class="ot">&lt;-</span> <span class="fu">slice_plot</span>(<span class="fu">f4</span>(x) <span class="sc">~</span> x, <span class="fu">domain</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>)))</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>P5 <span class="ot">&lt;-</span> <span class="fu">slice_plot</span>(<span class="fu">f5</span>(x) <span class="sc">~</span> x, <span class="fu">domain</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
 <div class="cell-output-display">
 <div id="fig-pieces-01" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="02-assembling-functions_files/figure-html/fig-pieces-01-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.7: .</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 9.7: .</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
 <div class="cell-output-display">
-<p><strong>Part 1</strong> Which of the following tilde-expressions could be used to generate the graph in <a href="#fig-pieces-01">Figure&nbsp;<span>9.7</span></a>?</p>
+<p><strong>Part 1</strong> Which of the following tilde-expressions could be used to generate the graph in <a href="#fig-pieces-01">Figure&nbsp;<span class="quarto-unresolved-ref">fig-pieces-01</span></a>?</p>
 <ol type="a">
 <li><code>ifelse(abs(x) &gt; 1, x^3, x) ~ x</code></li>
 <li><code>ifelse(x &gt; 0, sin(x), x) ~ x</code></li>
@@ -849,14 +877,14 @@
 <div id="fig-pieces-02" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="02-assembling-functions_files/figure-html/fig-pieces-02-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.8: .</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 9.8: .</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
 <div class="cell-output-display">
-<p><strong>Part 2</strong> Which of the following tilde-expressions could be used to generate the graph in <a href="#fig-pieces-02">Figure&nbsp;<span>9.8</span></a>?</p>
+<p><strong>Part 2</strong> Which of the following tilde-expressions could be used to generate the graph in <a href="#fig-pieces-02">Figure&nbsp;<span class="quarto-unresolved-ref">fig-pieces-02</span></a>?</p>
 <ol type="a">
 <li><code>ifelse(abs(x) &gt; 1, x^3, x) ~ x</code></li>
 <li><code>ifelse(x &gt; 0, sin(x), x) ~ x</code></li>
@@ -871,14 +899,14 @@
 <div id="fig-pieces-03" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="02-assembling-functions_files/figure-html/fig-pieces-03-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.9: .</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 9.9: .</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
 <div class="cell-output-display">
-<p><strong>Part 3</strong> Which of the following tilde-expressions could be used to generate the graph in <a href="#fig-pieces-03">Figure&nbsp;<span>9.9</span></a>?</p>
+<p><strong>Part 3</strong> Which of the following tilde-expressions could be used to generate the graph in <a href="#fig-pieces-03">Figure&nbsp;<span class="quarto-unresolved-ref">fig-pieces-03</span></a>?</p>
 <ol type="a">
 <li><code>ifelse(abs(x) &gt; 1, x^3, x) ~ x</code></li>
 <li><code>ifelse(x &gt; 0, sin(x), x) ~ x</code></li>
@@ -893,14 +921,14 @@
 <div id="fig-pieces-04" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="02-assembling-functions_files/figure-html/fig-pieces-04-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.10: .</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 9.10: .</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
 <div class="cell-output-display">
-<p><strong>Part 4</strong> Which of the following tilde-expressions could be used to generate the graph in <a href="#fig-pieces-04">Figure&nbsp;<span>9.10</span></a>?</p>
+<p><strong>Part 4</strong> Which of the following tilde-expressions could be used to generate the graph in <a href="#fig-pieces-04">Figure&nbsp;<span class="quarto-unresolved-ref">fig-pieces-04</span></a>?</p>
 <ol type="a">
 <li><code>ifelse(abs(x) &gt; 1, x^3, x) ~ x</code></li>
 <li><code>ifelse(x &gt; 0, sin(x), x) ~ x</code></li>
@@ -915,14 +943,14 @@
 <div id="fig-pieces-05" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="02-assembling-functions_files/figure-html/fig-pieces-05-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 9.11: .</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 9.11: .</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
 <div class="cell-output-display">
-<p><strong>Part 5</strong> Which of the following tilde-expressions could be used to generate the graph in <a href="#fig-pieces-05">Figure&nbsp;<span>9.11</span></a>?</p>
+<p><strong>Part 5</strong> Which of the following tilde-expressions could be used to generate the graph in <a href="#fig-pieces-05">Figure&nbsp;<span class="quarto-unresolved-ref">fig-pieces-05</span></a>?</p>
 <ol type="a">
 <li><code>ifelse(abs(x) &gt; 1, x^3, x) ~ x</code></li>
 <li><code>ifelse(x &gt; 0, sin(x), x) ~ x</code></li>
@@ -939,10 +967,10 @@
 <h4 class="unnumbered anchored" data-anchor-id="exercise-9.01">Exercise 9.01</h4>
 <p>The function <code>bigger()</code> is defined piecewise in terms of two extremely simple functions. Each of the two simple functions has a contour plot with contours that are parallel. The piecewise combination of the simple functions has a more complicated contour plot, with each simple function’s parallel contours showing up in half of the domain. We will call these “pieces” of the domain.</p>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
-<div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>bigger <span class="ot">&lt;-</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">makeFun</span>(<span class="fu">ifelse</span>(y <span class="sc">&gt;</span> x, y, x) <span class="sc">~</span> x <span class="sc">+</span> y)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">contour_plot</span>(<span class="fu">bigger</span>(x,y) <span class="sc">~</span> x<span class="sc">+</span>y, </span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>             <span class="fu">domain</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>), <span class="at">y=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>bigger <span class="ot">&lt;-</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">makeFun</span>(<span class="fu">ifelse</span>(y <span class="sc">&gt;</span> x, y, x) <span class="sc">~</span> x <span class="sc">+</span> y)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">contour_plot</span>(<span class="fu">bigger</span>(x,y) <span class="sc">~</span> x<span class="sc">+</span>y, </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>             <span class="fu">bounds</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>), <span class="at">y=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -972,6 +1000,23 @@
 </ol>
 <p>Problem with Modeling Exercises/shark-rise-kitchen.Rmd</p>
 <p>Problem with Modeling Exercises/beach-ride-table.Rmd</p>
+</section>
+<section id="exercise-9.11" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-9.11">Exercise 9.11</h4>
+<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell-output-display">
+<div id="fig-solar-june" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="www/solar-multiplier.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption class="figure-caption">Figure 9.12: Power produced by the author’s rooftop photovoltaic array in June 4 (solid line) and June 3 (bars), 2022.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-solar-june">Figure&nbsp;<span class="quarto-unresolved-ref">fig-solar-june</span></a> comes from the monitoring app for a photovoltaic (solar electricity) array on two consecutive days in June 2022. The vertical axis is in kilowatts (power). The overall pattern for June 4 is a hump function with a peak around 13:00 falling to zero at 6am and 9pm. (13:00 is roughly solar noon, due to daylight savings time.) We’ll call this function sun(t). June 3 shows a more complex pattern, due to passing clouds that diminish the available sunlight.</p>
+<p>A reasonable model for the June 3 pattern is the hump function sun(t) <em>multiplied by</em> an irregular function of time representing the clouds. Let’s call it cloudiness(t), imagining that the range is from 0 (dark, obscuring clouds) to 1 (no clouds at all). The power produced is therefore</p>
+<p>power(t) <span class="math inline">\(\equiv\)</span> solar(t) <span class="math inline">\(\times\)</span> cloudiness(t)</p>
+<p>Using <a href="#fig-solar-june">Figure&nbsp;<span class="quarto-unresolved-ref">fig-solar-june</span></a>, sketch out the graph of cloudiness(t) for June 3.</p>
 
 
 </section>
@@ -982,9 +1027,28 @@
 <li id="fn1" role="doc-endnote"><p>One that does produce a number is <code>NaN^0</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
+
 </main> <!-- /main -->
-<script type="application/javascript">
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -1004,7 +1068,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.blur();
     // flash "checked"
     button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
     setTimeout(function() {
+      button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
     // clear code selection
@@ -1072,6 +1139,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 </body></html>

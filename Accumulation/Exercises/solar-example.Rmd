@@ -42,7 +42,7 @@ plotOutput("Fplot", height="200px")
 ```{r context="server"}
 create_plots <- reactive({
   suppressWarnings(
-    cone_diagram(total, dom=list(x=c(0, 24)), 
+    cone_diagram(total, dom=bounds(x=c(0, 24)), 
                  total_area = 11, 
                  events_per_unit_area = 60,
                  left = input$interval$xmin , 
@@ -53,7 +53,7 @@ create_plots <- reactive({
 output$fplot <- renderPlot({
   tmp <- create_plots()
   tmp$fplot  %>%
-    gf_hline(yintercept = 0, color = "dodgerblue") %>%
+    gf_hline(yintercept = ~ 0, color = "dodgerblue") %>%
     gf_labs(y = "Net power production (kW)", x = "") %>%
     gf_theme( axis.title.x = element_blank(),
               axis.text.x = element_blank())
@@ -67,7 +67,7 @@ output$eplot <- renderPlot({
 output$Fplot <- renderPlot({
   tmp <- create_plots()
   tmp$Fplot  %>%
-    gf_hline(yintercept = 0, color = "dodgerblue") %>%
+    gf_hline(yintercept = ~ 0, color = "dodgerblue") %>%
     gf_labs(y = "Battery level (kWh)", x = "Hour of day")
 })
 ```

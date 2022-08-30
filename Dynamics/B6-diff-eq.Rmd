@@ -228,9 +228,9 @@ The vector field corresponding to the dynamics is called a ***flow***, as if it 
 #| label: fig-rabbit-fox-vectors
 #| fig-cap: "The dynamics of the rabbit/fox system shown as a vector field over the state space. The parameters have been set, for the purpose of illustration, to $\\alpha = 2/3$, $\\beta = 4/3$, $\\gamma = 1$, and $\\delta = 1$."
 #| fig-cap-location: margin
-vectorfield_plot(0.66*r - 1.33*r*f ~ r & f, 
-                 1*f*r -1*f ~ r & f, 
-                 bounds(r=.1:2, f=0:1), npts=20, 
+vectorfield_plot(r ~ 0.66*r - 1.33*r*f, 
+                 f ~ 1*f*r -1*f, 
+                 bounds(r=0.1:2, f=0:1), npts=20, 
                  transform=function(x) x^0.3) %>%
   gf_labs(x="Rabbit density", y="Fox density")
 ```
@@ -258,10 +258,10 @@ $$\partial_t \theta = v\\
 #| fig-cap: "The flow field of a pendulum with air resistance. From the initial condition (marked by $\\color{red}{\\text{x}}$), a trajectory is sketched out for $0 \\leq t \\leq 20$. The individual components of that trajectory are graphed as time series." 
 theta_exp <- latex2exp::TeX("$\\theta$")
 v_exp <- latex2exp::TeX("$v_\\theta$$")
-soln <- integrateODE(dtheta ~ v, dv ~ -sin(theta) - 0.1*2*sign(v)*v^2, theta = pi/4, v=+1, domain(t=0:20))
+soln <- integrateODE(dtheta ~ v, dv ~ -sin(theta) - 0.1*2*sign(v)*v^2, theta = pi/4, v=+1, bounds(t=0:20))
 Flow <- traj_plot(v(t) ~ theta(t), soln, color="blue") %>%
-vectorfield_plot(v  ~ theta & v, 
-                 -sin(theta) - 0.1*2*sign(v)*v^2 ~ theta & v, 
+vectorfield_plot(theta  ~ v, 
+                 v ~ -sin(theta) - 0.1*2*sign(v)*v^2, 
                  bounds(theta=-(pi/2):(pi/2), v=-1:1), npts=20) %>% 
   gf_point(1 ~ pi/4, color="red", shape="x", size=5) %>%
   #gf_refine(coord_fixed()) %>%

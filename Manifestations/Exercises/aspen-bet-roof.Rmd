@@ -4,9 +4,6 @@ created: "Thu Dec 16 17:46:57 2021"
 global_id: "ixpCg0"
 ---
 
-**UNDER CONSTRUCTION**
-
-
 One of the goals for self-driving cars is to reduce road accidents, especially fatal accidents. People are understandably skeptical that an automated system can cope with all the varying conditions of traffic, visibility, road damage, etc. without the benefit of human judgment or experience. For this reason, society will need to accumulate substantial evidence for enhanced safety in self-driving cars before accepting any claims to that effect. 
 
 This exercise is about how to accumulate such evidence. 
@@ -55,7 +52,23 @@ $i$   | Status    | Mileage
 $\vdots$| $\vdots$  | $\vdots$
 100 | on road   | 107,200
 
-Thr first two cars in the fleet have accumulated 85,300 and 65,200 accident-free miles respectively. The third car was in an accident at 13,495 miles and is no longer on the road.
+```{r echo=FALSE, results="hide"}
+Crash_data <- tibble::tribble(
+  ~ i, ~ status, ~ mileage,
+1 , "on road" ,  85300,
+2 , "on road" ,  65200,
+3 , "accident",  13495,
+4 , "on road" , 131200,
+5 , "on road" ,  96000,
+6 , "accident",  54682,
+7 , "accident", 105200,
+8 , "on road" ,  53900,
+9 , "accident",  86000,
+10, "on road" ,  94300, 
+)
+```
+
+The first two cars in the fleet have accumulated 85,300 and 65,200 accident-free miles respectively. The third car was in an accident at 13,495 miles and is no longer on the road.
 
 In response to the data, you issue a yearly report in the form of a **posterior** distribution on $D$, our measure of safety. 
 
@@ -78,6 +91,7 @@ Plot out the two functions and explain why their shape makes sense. Show the cod
 Now you are in a position to update the prior to create the posterior probability density on $D$ given the data at hand. As always with Bayesian inference, the posterior will be: $$\text{posterior}(D) = \frac{1}{A} \prod_\text{cars}\text{likelihood}_i(D | \text{miles}_i) \text{prior}(D)$$ where $\text{likelihood}_i()$ refers to whichever one of the two likelihood functions in Part C is relevant to car $i$ and $\text{miles}_i$ is the observed mileage for that car. The constant $A$ is selected to normalize the posterior probability density.
 
 **Part D**.  To keep things simple, we will use just the first 10 cars in the fleet report. The unnormalized posterior function will be:
+
 ```{r}
 post <- function(D) {
   Lno(85300, D) * Lno(65200, D) * 
@@ -89,5 +103,18 @@ post <- function(D) {
     
 Based on the data from the first 10 cars, do you think that the self-driving cars are safer than the ordinary cars? Recall that $D_0$, calculated above, represents the safety of ordinary cars.
 
+<!-- What does the posterior look like based on the first ten cars? -->
 
-
+```{r echo=FALSE, eval=FALSE}
+overall <- function(D, data=Crash_data) {
+  res <- prior(D)
+  for (k in 1:nrow(data)) {
+    Lfun <- if (data$status[k] == "accident") Laccident else Lno
+    res <- res * Lfun(data$mileage[k], D)
+  }
+  return(res)
+}
+slice_plot(overall(D) ~ D, bounds(D=10000:500000))
+cumulative <- antiD(overall(x) ~ x)
+slice_plot(cumulative(D) ~ D, bounds(D=10000:1000000))
+```

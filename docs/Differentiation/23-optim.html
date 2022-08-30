@@ -1,152 +1,158 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-  <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.9.80">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>MOSAIC Calculus - 24&nbsp; Optimization</title>
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style>
 
-  <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-  <script src="../site_libs/quarto-nav/headroom.min.js"></script>
-  <script src="../site_libs/clipboard/clipboard.min.js"></script>
-  <meta name="quarto:offset" content="../">
-  <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-  <script src="../site_libs/quarto-search/fuse.min.js"></script>
-  <script src="../site_libs/quarto-search/quarto-search.js"></script>
-  <link href="../Differentiation/24-partial.html" rel="next">
-  <link href="../Differentiation/22-rules.html" rel="prev">
-  <script src="../site_libs/quarto-html/quarto.js"></script>
-  <script src="../site_libs/quarto-html/popper.min.js"></script>
-  <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-  <script src="../site_libs/quarto-html/anchor.min.js"></script>
-  <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-  <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
-  <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-  <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-  <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
-  <script id="quarto-search-options" type="application/json">{
-    "location": "sidebar",
-    "copy-button": false,
-    "collapse-after": 2,
-    "panel-placement": "start",
-    "type": "textbox",
-    "limit": 20,
-    "language": {
-      "search-no-results-text": "No results",
-      "search-matching-documents-text": "matching documents",
-      "search-copy-link-title": "Copy link to search",
-      "search-hide-matches-text": "Hide additional matches",
-      "search-more-match-text": "more match in this document",
-      "search-more-matches-text": "more matches in this document",
-      "search-clear-button-title": "Clear",
-      "search-detached-cancel-button-title": "Cancel",
-      "search-submit-button-title": "Submit"
-    }
-  }</script>
-  <script async="" src="https://hypothes.is/embed.js"></script>
-  </head><body class="floating slimcontent"><span class="math inline" style="display: none;">
-  \(\newcommand{\line}{\text{line}}
-  \newcommand{\hump}{\text{hump}}
-  \newcommand{\sigmoid}{\text{sigmoid}}
-  \newcommand{\recip}{\text{recip}}
-  \newcommand{\diff}[1]{{\cal D}_#1}
-  \newcommand{\pnorm}{\text{pnorm}}
-  \newcommand{\dnorm}{\text{dnorm}}
-  \let\origvec\vec
-  \let\origmathit\mathit
-  \let\orighat\hat
-  \let\origbar\bar
-  \newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
-  \newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
-  \newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
-  \newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
-  \newcommand{\len}[1]{{\|{\mathbf #1}\|}}
-  \newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
-  \newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
-  \newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
-  \newcommand{\modeledby}[2]{#1\!\sim\!#2}
-  \newcommand{\CC}[1]{\color{#648fff}{#1}}
-  \newcommand{\CE}[1]{\color{#785ef0}{#1}}
-  \newcommand{\CA}[1]{\color{#dc267f}{#1}}
-  \newcommand{\CB}[1]{\color{#fe6100}{#1}}
-  \newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
-  </span>
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MOSAIC Calculus - 24&nbsp; Optimization</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../Differentiation/24-partial.html" rel="next">
+<link href="../Differentiation/22-rules.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+</head><body class="nav-sidebar floating slimcontent"><span class="math inline" style="display: none;">
+\(\newcommand{\line}{\text{line}}
+\newcommand{\hump}{\text{hump}}
+\newcommand{\sigmoid}{\text{sigmoid}}
+\newcommand{\recip}{\text{recip}}
+\newcommand{\diff}[1]{{\cal D}_#1}
+\newcommand{\pnorm}{\text{pnorm}}
+\newcommand{\dnorm}{\text{dnorm}}
+\let\origvec\vec
+\let\origmathit\mathit
+\let\orighat\hat
+\let\origbar\bar
+\newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+\newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+\newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+\newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+\newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+\newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+\newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+\newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+\newcommand{\modeledby}[2]{#1\!\sim\!#2}
+\newcommand{\CC}[1]{\color{#648fff}{#1}}
+\newcommand{\CE}[1]{\color{#785ef0}{#1}}
+\newcommand{\CA}[1]{\color{#dc267f}{#1}}
+\newcommand{\CB}[1]{\color{#fe6100}{#1}}
+\newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+</span>
+
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
-  <link rel="stylesheet" href="../mosaic-calc-style.css">
+
+<link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
 
 
 <div id="quarto-search-results"></div>
@@ -154,7 +160,7 @@
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
       <h1 class="quarto-secondary-nav-title"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></h1>
-      <button type="button" class="quarto-btn-toggle btn">
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
     </div>
@@ -185,344 +191,359 @@
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-preliminaries-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-preliminaries-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/01-modeling-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">Modeling</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-modeling-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-modeling-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">I. Modeling</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/01-parameters.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/02-assembling-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/03-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/05-low-order-polynomials.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/06-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/07-magnitudes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/08-dimensions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/09-modeling-cycle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling cycle [DRAFT]</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/Modeling-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">Differentiation</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-differentiation-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-differentiation-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">II. Differentiation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/16-continuous-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Continuous change</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/17-rate-of-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rate of change</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/18-evanescent-h.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/19-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Constructing derivatives</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/20-concavity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/21-cont-and-smooth.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/22-rules.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/23-optim.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/24-partial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/25-approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations [DRAFT]</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/26-taylor.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/Differentiation-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">Vectors and linear combinations</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-linear-combinations-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-linear-combinations-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">III. Vectors and linear combinations</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-Vectors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Vectors</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-linear-combinations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-projection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-target-problem.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-stat-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">Accumulation</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-accumulation-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-accumulation-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">IV. Accumulation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/27-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/28-visualizing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/29-integration.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/30-euler.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/31-symbolic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">Dynamics</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-dynamics-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-dynamics-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">V. Dynamics</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-diff-eq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Differential equations</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-solution.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Finding a “solution”</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-flow-on-line.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Flows on the line</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-flow-on-plane.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the plane</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-equilibria.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-eigen.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-second-order.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Force-balance equations</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">Manifestations</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-manifestations-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-manifestations-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">VI. Manifestations</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-splines.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Data-driven functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">50</span>&nbsp; <span class="chapter-title">Probability and evidence</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-future-value.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">51</span>&nbsp; <span class="chapter-title">Present and future value</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-mechanics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">52</span>&nbsp; <span class="chapter-title">Mechanics</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">Appendices</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../R-mosaic-setup.html" class="sidebar-item-text sidebar-link">Setting up R/mosaic</a>
+  </div>
+</li>
+      </ul>
   </li>
     </ul>
     </div>
@@ -530,20 +551,34 @@
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc">
-<h2 id="toc-title">Table of contents</h2>
-<ul>
-<li><a href="#structure-of-the-problem" class="nav-link active" data-scroll-target="#structure-of-the-problem"> <span class="header-section-number">24.1</span> Structure of the problem</a></li>
-<li><a href="#interpreting-the-argmax" class="nav-link" data-scroll-target="#interpreting-the-argmax"> <span class="header-section-number">24.2</span> Interpreting the argmax</a></li>
-<li><a href="#derivatives-and-optimization" class="nav-link" data-scroll-target="#derivatives-and-optimization"> <span class="header-section-number">24.3</span> Derivatives and optimization</a></li>
-<li><a href="#sec-flat-on-top" class="nav-link" data-scroll-target="#sec-flat-on-top"> <span class="header-section-number">24.4</span> Be practical!</a></li>
-<li><a href="#exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">24.5</span> Exercises</a></li>
-</ul>
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#structure-of-the-problem" id="toc-structure-of-the-problem" class="nav-link active" data-scroll-target="#structure-of-the-problem"> <span class="header-section-number">24.1</span> Structure of the problem</a></li>
+  <li><a href="#interpreting-the-argmax" id="toc-interpreting-the-argmax" class="nav-link" data-scroll-target="#interpreting-the-argmax"> <span class="header-section-number">24.2</span> Interpreting the argmax</a></li>
+  <li><a href="#derivatives-and-optimization" id="toc-derivatives-and-optimization" class="nav-link" data-scroll-target="#derivatives-and-optimization"> <span class="header-section-number">24.3</span> Derivatives and optimization</a></li>
+  <li><a href="#sec-flat-on-top" id="toc-sec-flat-on-top" class="nav-link" data-scroll-target="#sec-flat-on-top"> <span class="header-section-number">24.4</span> Be practical!</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">24.5</span> Exercises</a></li>
+  </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dtkaplan/MC2/edit/main/Differentiation/23-optim.Rmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
-<header id="title-block-header">
-<h1 class="title display-7"><span id="sec-optim-and-shape" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></span></h1>
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-optim-and-shape" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
 </header>
 
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
@@ -565,7 +600,7 @@
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>Mathematically, maximization and minimization are the same thing. Every minimization problem can be turned into a maximization problem by putting a negative sign in front of the objective function. To simplify the discussion, in talking about finding the solution to an optimization problem we will imagine that the goal is to maximize. But keep in mind that many circumstances in the real world, “best” can mean minimization.</p>
-</div></div><p>Recall from Section <a href="../Preliminaries/06-describing-functions.html#sec-local-extremes">Section&nbsp;<span>6.7</span></a> that there are two components to the task of maximization or minimization. The <strong><em>argmax</em></strong> is the <strong>input</strong> to the objective function which produces the largest output. The <strong><em>maximum</em></strong> is the value of that output.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <strong><em>Argmin</em></strong> and <strong><em>minimum</em></strong> are the words used in a situation where you seek the smallest value of the objective function.</p>
+</div></div><p>Recall from Section <a href="#sec-local-extremes"><span class="quarto-unresolved-ref">sec-local-extremes</span></a> that there are two components to the task of maximization or minimization. The <strong><em>argmax</em></strong> is the <strong>input</strong> to the objective function which produces the largest output. The <strong><em>maximum</em></strong> is the value of that output.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <strong><em>Argmin</em></strong> and <strong><em>minimum</em></strong> are the words used in a situation where you seek the smallest value of the objective function.</p>
 <p>Once you have found the argmax you can plug that value into the objective function to find the output value. That value is the <strong><em>maximum</em></strong>.</p>
 <div class="takenote">
 <p>People often talk about “finding the maximum.” This is misleading. Instead, the idea is to find the input to the objective function—that is, the <strong>argmax</strong>—that produces the maximum output.</p>
@@ -573,7 +608,8 @@
 <p>To illustrate the setup of an optimization problem, imagine yourself in the situation of a contest to see who can shoot a tennis ball the farthest into a field with a slingshot. During the contest, you will adjust the vertical angle of launch, place the ball into the slingshot’s cradle, pull back as far as possible, and let go. To win the contest, you need to optimize how you launch the ball.</p>
 <p>The objective is to maximize the distance traveled by the ball. The <strong><em>objective function</em></strong> models the distance travelled as a function of the quantities you can control, for instance the vertical angle of launch or the amount by which you pull back the slingshot. For simplicity, we will imagine that the slingshot is pulled back by a standard amount, producing a velocity of the ball at release of <span class="math inline">\(v_0\)</span>. You will win or lose based on the angle of launch you choose.</p>
 <p>Before you head out into the field to experiment, let’s prepare by constructing the objective function. Using some principles of physics and mathematics (which you may not yet understand), we will model how far the ball will travel (horizontally) as a function of the angle of launch <span class="math inline">\(\theta\)</span> and the initial velocity <span class="math inline">\(v_0\)</span>.</p>
-<p>The mathematics of such problems involves an area called <strong><em>differential equations</em></strong>, an important part of calculus which we will come to later in the course. Since you don’t have the tools yet, we will just state a simple model of how long the ball stays in the air. <span class="math display">\[\text{duration}(v_0, \theta) = 2 v_0 \sin(\theta)/g\]</span> <span class="math inline">\(g\)</span> is the acceleration due to gravity, which is about <span class="math inline">\(9.8 \text{m}\text{s}^{-2}\)</span>, assuming that the contest is being held on Earth.</p>
+<p>The mathematics of such problems involves an area called <strong><em>differential equations</em></strong>, an important part of calculus which we will come to later in the course. Since you don’t have the tools yet, we will just state a simple model of how long the ball stays in the air.</p>
+<p><span class="math display">\[\text{duration}(v_0, \theta) = 2 v_0 \sin(\theta)/g\]</span> <span class="math inline">\(g\)</span> is the acceleration due to gravity, which is about <span class="math inline">\(9.8 \text{m}\text{s}^{-2}\)</span>, assuming that the contest is being held on Earth.</p>
 <p>The horizontal distance travelled by the tennis ball will be <span class="math display">\[\text{hdist}(v_0, \theta) = \cos(\theta) v_0\, \text{duration}(v_0, \theta) = 2 v_0^2 \cos(\theta)\sin(\theta) / g\]</span> Our objective function is hdist(), and we seek to find the argmax. The input <span class="math inline">\(v_0\)</span> is (we have assumed) fixed, so the only decision quantity is the angle <span class="math inline">\(\theta\)</span>.</p>
 <p>The best choice of <span class="math inline">\(\theta\)</span> will make the quantity <span class="math inline">\(\cos(\theta)\sin(\theta)\)</span> as large as possible. So in finding the argmax, we don’t need to be concerned with <span class="math inline">\(v_0\)</span> or <span class="math inline">\(g\)</span>.</p>
 <p>Finding the argmax can be accomplished simply by plotting the function <span class="math inline">\(\cos(\theta)\sin(\theta)\)</span>. We will implement the function so that the input is in units of <em>degrees</em>.</p>
@@ -583,7 +619,7 @@
 <div id="fig-ball-theta" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="23-optim_files/figure-html/fig-ball-theta-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 24.1: In the simple model of a tennis ball launched at an angle <span class="math inline">\(\theta\)</span> from the horizontal, the distance travelled is <span class="math inline">\(2 v_0^2 / g\)</span> times <span class="math inline">\(\cos(\theta)\sin(\theta)\)</span>.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 24.1: In the simple model of a tennis ball launched at an angle <span class="math inline">\(\theta\)</span> from the horizontal, the distance travelled is <span class="math inline">\(2 v_0^2 / g\)</span> times <span class="math inline">\(\cos(\theta)\sin(\theta)\)</span>.</figcaption><p></p>
 </figure>
 </div>
 </div></div></div>
@@ -595,7 +631,7 @@
 <div id="fig-ball-theta-zoom" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="23-optim_files/figure-html/fig-ball-theta-zoom-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 24.2: Zooming in on the argmax of the objective function. It is important to look at the scale of the vertical axis. Any value of <span class="math inline">\(\theta\)</span> between about 40 and 50 gives a close approximation to the maximum.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 24.2: Zooming in on the argmax of the objective function. It is important to look at the scale of the vertical axis. Any value of <span class="math inline">\(\theta\)</span> between about 40 and 50 gives a close approximation to the maximum.</figcaption><p></p>
 </figure>
 </div>
 </div></div></div>
@@ -606,30 +642,30 @@
 <h2 data-number="24.2" class="anchored" data-anchor-id="interpreting-the-argmax"><span class="header-section-number">24.2</span> Interpreting the argmax</h2>
 <p>The graphical solution given to the slingshot problem is entirely satisfactory. Whether that solution will win the contest depends on whether the model we built for the objective function is correct. We have left out, for instance, air resistence, which is potentially important.</p>
 <p>Solving the optimization problem has prepared us to test the result in the field. Perhaps we will find that the real-world optimum angle is somewhat steeper or shallower than <span class="math inline">\(\theta = 45^\circ\)</span>.</p>
-<p>Besides the argmax, another important quantity to read from the graph in <a href="#fig-ball-theta">Figure&nbsp;<span>24.1</span></a> is the <strong><em>precision</em></strong> of the argmax. In strict mathematical terms, the argmax for the tennis-ball problem is exactly 45 degrees at which point <span class="math inline">\(\cos(\theta)\sin(\theta) = 0.5\)</span>. Suppose, however, that the ball were launched at only 40 degrees. Five degrees difference is apparent to the eye, but the result will be essentially the same as for 45 degrees: <span class="math inline">\(\cos(\theta)\sin(\theta) = 0.492\)</span>. The same is true for a launch angle of 50 degrees. For both “sub-optimal” launch angles, the output is within 2 percent of the 45-degree result. It is easy to imagine that a factor outside the scope of the simple model—the wind, for instance—could change the result by as much or more than 2 percent, so a practical report of the argmax should reasonable be “40 to 50 degrees” rather than “exactly 45 degrees.”</p>
+<p>Besides the argmax, another important quantity to read from the graph in <a href="#fig-ball-theta">Figure&nbsp;<span class="quarto-unresolved-ref">fig-ball-theta</span></a> is the <strong><em>precision</em></strong> of the argmax. In strict mathematical terms, the argmax for the tennis-ball problem is exactly 45 degrees at which point <span class="math inline">\(\cos(\theta)\sin(\theta) = 0.5\)</span>. Suppose, however, that the ball were launched at only 40 degrees. Five degrees difference is apparent to the eye, but the result will be essentially the same as for 45 degrees: <span class="math inline">\(\cos(\theta)\sin(\theta) = 0.492\)</span>. The same is true for a launch angle of 50 degrees. For both “sub-optimal” launch angles, the output is within 2 percent of the 45-degree result. It is easy to imagine that a factor outside the scope of the simple model—the wind, for instance—could change the result by as much or more than 2 percent, so a practical report of the argmax should reasonable be “40 to 50 degrees” rather than “exactly 45 degrees.”</p>
 <p>Contests are won or lost by margins of less than 1%, so you should not casually deviate from the argmax. On the other hand, <span class="math inline">\(45^\circ\)</span> is the argmax of the <em>model</em>. Reality may deviate from the model. For instance, suppose that air resistance or wind might might affect distance by 1%. That is. the real-world result might deviate by as much as 1% of the model value. If so, we shouldn’t expect the real-world argmax to be any closer to 45<span class="math inline">\(^\circ\)</span> than <span class="math inline">\(\pm 5^\circ\)</span>; anywhere in that domain interval generates an output that is within 1% of the maximum output for the model.</p>
 </section>
 <section id="derivatives-and-optimization" class="level2 page-columns page-full" data-number="24.3">
 <h2 data-number="24.3" class="anchored" data-anchor-id="derivatives-and-optimization"><span class="header-section-number">24.3</span> Derivatives and optimization</h2>
 <p>We are now going to reframe the search for the argmax and its interpretation in terms of derivatives of the objective function with respect to the decision quantity (<span class="math inline">\(\theta\)</span> in the slingshot problem). For a function with one input, this will not be an improvement from the look-at-the-graph technique to find the argmax. However, a genuine reason to use derivatives is to set us up in the future to solve problems with more than one input, where it is hard to draw or interpret a graph. Also, describing functions in the language of derivatives can help us think more clearly about aspects of the problem, such as the precision of the argmax.</p>
-<p>With a graph such as <a href="#fig-ball-theta">Figure&nbsp;<span>24.1</span></a>, it is easy to find the argmax; common sense carries the day. So it won’t be obvious at first why we will take the following approach:</p>
-<p>Let’s denote an argmax of the objective function <span class="math inline">\(f(x)\)</span> by <span class="math inline">\(x^\star\)</span>. Let’s look at the derivative <span class="math inline">\(\partial_x f(x)\)</span> in the neighborhood of <span class="math inline">\(x^\star\)</span>. Referring to <a href="#fig-ball-theta">Figure&nbsp;<span>24.1</span></a>, where <span class="math inline">\(x^\star = 45^\circ\)</span>, you may be able to see that <span class="math inline">\(\partial_x f(x^\star)\)</span> is zero; the line tangent to the function’s graph at <span class="math inline">\(x^\star\)</span> is horizontal.</p>
+<p>With a graph such as <a href="#fig-ball-theta">Figure&nbsp;<span class="quarto-unresolved-ref">fig-ball-theta</span></a>, it is easy to find the argmax; common sense carries the day. So it won’t be obvious at first why we will take the following approach:</p>
+<p>Let’s denote an argmax of the objective function <span class="math inline">\(f(x)\)</span> by <span class="math inline">\(x^\star\)</span>. Let’s look at the derivative <span class="math inline">\(\partial_x f(x)\)</span> in the neighborhood of <span class="math inline">\(x^\star\)</span>. Referring to <a href="#fig-ball-theta">Figure&nbsp;<span class="quarto-unresolved-ref">fig-ball-theta</span></a>, where <span class="math inline">\(x^\star = 45^\circ\)</span>, you may be able to see that <span class="math inline">\(\partial_x f(x^\star)\)</span> is zero; the line tangent to the function’s graph at <span class="math inline">\(x^\star\)</span> is horizontal.</p>
 <p>Seen another way, the slope of <span class="math inline">\(f(x)\)</span> to the left of <span class="math inline">\(x^\star\)</span> is positive. Moving a tiny bit to the right (that is, increasing <span class="math inline">\(x\)</span> by a very small amount) increases the output <span class="math inline">\(f(x)\)</span>. On the other hand, just to the right of <span class="math inline">\(x^\star\)</span>, the slope of <span class="math inline">\(f(x)\)</span> is negative; as you reach the top of a hill and continue on, you will be going downhill. So the derivative function is positive on one side of <span class="math inline">\(x^\star\)</span> and negative on the other, suggesting that it crosses zero at the argmax.</p>
 <p>Common sense is correct: Walk uphill to get to the peak, walk downhill to move away from the peak. At the top of a smooth hill, the terrain is level. (Since our modeling functions are smooth, so must be the hills that we visualize the functions with.)</p>
 <p>Inputs <span class="math inline">\(x^\star\)</span> such that <span class="math inline">\(\partial_x f(x^\star) = 0\)</span> are called <strong><em>critical points</em></strong>. Why not call them simply argmaxes? Because a the slope will also be zero at an argmin. And it is even possible to have the slope be zero at a point that is neither an argmin or an argmax.</p>
 <p>At this point, we know that values <span class="math inline">\(x^\star\)</span> that give <span class="math inline">\(\partial_x f(x^\star) = 0\)</span> are “critical points,” but we haven’t said how to figure out whether a given critical point is an argmax, an argmin, or neither. This is where the behavior of <span class="math inline">\(\partial_x f(x)\)</span> <em>near</em> <span class="math inline">\(x=x^\star\)</span> is important. If <span class="math inline">\(x^\star\)</span> is an argmax, then <span class="math inline">\(\partial_x f(x)\)</span> will be positive to the left of <span class="math inline">\(x^\star\)</span> and negative to the right of <span class="math inline">\(x^\star\)</span>; walk up the hill to get to <span class="math inline">\(x^\star\)</span>, at the top the hill is flat, and just past the top the hill has a negative slope.</p>
-<p>For an argmin, changing <span class="math inline">\(x\)</span> from less than <span class="math inline">\(x^\star\)</span> to greater than <span class="math inline">\(x^\star\)</span>; you will be walking down into the valley, then level at the very bottom <span class="math inline">\(x=x^\star\)</span>, then back up the other side of the valley after you pass <span class="math inline">\(x=x^\star\)</span>. <a href="#fig-d2-hill">Figure&nbsp;<span>24.3</span></a> shows the situation.</p>
+<p>For an argmin, changing <span class="math inline">\(x\)</span> from less than <span class="math inline">\(x^\star\)</span> to greater than <span class="math inline">\(x^\star\)</span>; you will be walking down into the valley, then level at the very bottom <span class="math inline">\(x=x^\star\)</span>, then back up the other side of the valley after you pass <span class="math inline">\(x=x^\star\)</span>. <a href="#fig-d2-hill">Figure&nbsp;<span class="quarto-unresolved-ref">fig-d2-hill</span></a> shows the situation.</p>
 <div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
 <div class="cell-output-display column-page-right">
 <div id="fig-d2-hill" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="23-optim_files/figure-html/fig-d2-hill-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 24.3: Top row: An objective function near an argmax (left) and an argmin (right). Bottom row: The derivative of the objective function. A horizontal line (orange) marks zero on the vertical axis.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 24.3: Top row: An objective function near an argmax (left) and an argmin (right). Bottom row: The derivative of the objective function. A horizontal line (orange) marks zero on the vertical axis.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>The bottom row of graphs in <a href="#fig-d2-hill">Figure&nbsp;<span>24.3</span></a> shows the derivative of the objective function <span class="math inline">\(f(x)\)</span>, that is, <span class="math inline">\(\partial_x f(x)\)</span>. You can see that for the argmax of <span class="math inline">\(f(x)\)</span>, the derivative <span class="math inline">\(\partial_x f(x)\)</span> is positive to the left and negative to the right. Similarly, near the argmin of <span class="math inline">\(f(x)\)</span>, the derivative <span class="math inline">\(\partial_x f(x)\)</span> is negative to the left and positive to the right.</p>
+<p>The bottom row of graphs in <a href="#fig-d2-hill">Figure&nbsp;<span class="quarto-unresolved-ref">fig-d2-hill</span></a> shows the derivative of the objective function <span class="math inline">\(f(x)\)</span>, that is, <span class="math inline">\(\partial_x f(x)\)</span>. You can see that for the argmax of <span class="math inline">\(f(x)\)</span>, the derivative <span class="math inline">\(\partial_x f(x)\)</span> is positive to the left and negative to the right. Similarly, near the argmin of <span class="math inline">\(f(x)\)</span>, the derivative <span class="math inline">\(\partial_x f(x)\)</span> is negative to the left and positive to the right.</p>
 <p>Stated another way, the derivative <span class="math inline">\(\partial_x f(x)\)</span> has a negative slope just to the left of an argmin and a positive slope to the left of an argmax.</p>
 <p>The second derivative of the objective function <span class="math inline">\(f(x)\)</span> at a critical point <span class="math inline">\(x^\star\)</span> is what tells us whether the critical point is an argmax, an argmin, or neither.</p>
 
@@ -677,7 +713,9 @@
 <div class="practice">
 <p>What’s the critical point?</p>
 <p>You’re familiar with the quadratic polynomial: <span class="math display">\[g(x) = a_0 + a_1 x + a_2 x^2\]</span> The graph of a quadratic polynomial is a <strong><em>parabola</em></strong>, which might be concave up or concave down. A parabola has only one critical point, which might be an argmin or an argmax.</p>
-<p>Let’s find the critical point. We know that the critical point is <span class="math inline">\(x^\star\)</span> such that <span class="math inline">\(\partial_x g(x^\star) = 0\)</span>. Since we know how to differentiate a power law, we can see that <span class="math display">\[\partial_x g(x) = a_1 + 2 a_2 x\]</span> and, more specifically, at the critical point <span class="math inline">\(x^\star\)</span> the derivative will be <span class="math display">\[a_1 + 2 a_2 x^\star = 0\]</span> The above is an equation, not a definition. It says that whatever <span class="math inline">\(x^\star\)</span> happens to be, the quantity <span class="math inline">\(a_1 + 2 a_2 x^\star\)</span> must be zero. Using plain old algebra, we can find the location of the critical point <span class="math display">\[x^\star = -\frac{a_1}{2 a_2}\]</span></p>
+<p>Let’s find the critical point. We know that the critical point is <span class="math inline">\(x^\star\)</span> such that <span class="math inline">\(\partial_x g(x^\star) = 0\)</span>. Since we know how to differentiate a power law, we can see that <span class="math display">\[\partial_x g(x) = a_1 + 2 a_2 x\]</span> and, more specifically, at the critical point <span class="math inline">\(x^\star\)</span> the derivative will be</p>
+<p><span class="math display">\[a_1 + 2 a_2 x^\star = 0\]</span></p>
+<p>The above is an equation, not a definition. It says that whatever <span class="math inline">\(x^\star\)</span> happens to be, the quantity <span class="math inline">\(a_1 + 2 a_2 x^\star\)</span> must be zero. Using plain old algebra, we can find the location of the critical point <span class="math display">\[x^\star = -\frac{a_1}{2 a_2}\]</span></p>
 </div>
 <!--
 ::: {.column-body-outset-left data-latex=''}
@@ -728,7 +766,7 @@ Your uncle Bob is writing a business plan for a tree farm for lumber. Having hea
 lumber <- makeFun(ifelse(t<10, 0, 100*exp((t-25)/8)/(1 + exp((t-25)/8))) ~ t)
 dt_lumber <- D(lumber(t) ~ t)
 ave_growth_rate <- makeFun( your_expression_here ~ t)
-slice_plot(lumber(t) ~ t, domain(t=0:100))
+slice_plot(lumber(t) ~ t, bounds(t=0:100))
 ```
 
 ::: {.cell-output-display}
@@ -776,7 +814,7 @@ This is probably misplaced. and the `plot_lens()` function would have to be prov
 <div id="fig-cournot-demand2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="www/cournot-demand-curve.png" class="img-fluid figure-img" style="width:50.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 24.4: Demand as a <em>function</em> of price, as first published by Antoine-Augustin Cournot in 1836. <a href="https://www.richmondfed.org/~/media/richmondfedorg/publications/research/economic_review/1992/pdf/er780201.pdf">Source</a>)</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 24.4: Demand as a <em>function</em> of price, as first published by Antoine-Augustin Cournot in 1836. <a href="https://www.richmondfed.org/~/media/richmondfedorg/publications/research/economic_review/1992/pdf/er780201.pdf">Source</a>)</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -784,8 +822,11 @@ This is probably misplaced. and the `plot_lens()` function would have to be prov
 <p>In 1836, early economist Antoine-Augustin Cournot published a theory of revenue versus demand based on his conception that demand will be a monotonically decreasing function of price. (That is, higher price means lower demand.) we will write as <span class="math inline">\(\text{Demand}(p)\)</span> demand as a function of price.</p>
 <p>The <strong><em>revenue</em></strong> generated at price <span class="math inline">\(p\)</span> is <span class="math inline">\(R(p) \equiv p \text{Demand}(p)\)</span>: price times demand.</p>
 <p>To find the revenue-maximizing demand, differentiate <span class="math inline">\(R(p)\)</span> with respect to <span class="math inline">\(p\)</span> and find the argmax <span class="math inline">\(p^\star\)</span> at with <span class="math inline">\(\partial_p R(p^\star) = 0).\)</span> This can be done with the product rule.</p>
-<p><span class="math display">\[\partial_p R(p) = p \ \partial_p \text{Demand}(p) + \text{Demand}(p)\]</span> At the argmax <span class="math inline">\(p^\star\)</span> we have: <span class="math display">\[p^\star \partial_p \text{Demand}(p^\star) + \text{Demand}(p^\star) = 0 \ \ \stackrel{\text{solving for}\ p^\star}{\Longrightarrow} \ \ p^\star = - \frac{\text{Demand}(p^\star)}{\partial_p \text{Demand}(p^\star)}\]</span></p>
-<p>If the monopolist knows the demand function <span class="math inline">\(D(p)\)</span>, finding the revenue maximizing price is a simple matter. But in general, the monopolist does not know the demand function in advance. Instead, an informed guess is made to set the initial price <span class="math inline">\(p_0\)</span>. Measuring sales <span class="math inline">\(D(p_0)\)</span> gives one point on the demand curve. Then, try another price <span class="math inline">\(p_1\)</span>. This gives another point on the demand curve as well as an estimate <span class="math display">\[\partial_p D(p_0) = \frac{D(p_1) - D(p_0)}{p_1 - p_0}\]</span> Now the monopolist is set to model the demand curve as a straight-line function and easily to find <span class="math inline">\(p^\star\)</span> for the model. For instance, if the demand function is modeled as <span class="math inline">\(D_1 (p) = a + b p\)</span>, the optimal price will be <span class="math inline">\(p^\star_1 = - \frac{a + b p^\star}{b}\)</span> which can be solved as <span class="math inline">\(p^\star_1 = - a/2b\)</span>.</p>
+<p><span class="math display">\[\partial_p R(p) = p \ \partial_p \text{Demand}(p) + \text{Demand}(p)\]</span></p>
+<p>At the argmax <span class="math inline">\(p^\star\)</span> we have: <span class="math display">\[p^\star \partial_p \text{Demand}(p^\star) + \text{Demand}(p^\star) = 0 \ \ \stackrel{\text{solving for}\ p^\star}{\Longrightarrow} \ \ p^\star = - \frac{\text{Demand}(p^\star)}{\partial_p \text{Demand}(p^\star)}\]</span></p>
+<p>If the monopolist knows the demand function <span class="math inline">\(D(p)\)</span>, finding the revenue maximizing price is a simple matter. But in general, the monopolist does not know the demand function in advance. Instead, an informed guess is made to set the initial price <span class="math inline">\(p_0\)</span>. Measuring sales <span class="math inline">\(D(p_0)\)</span> gives one point on the demand curve. Then, try another price <span class="math inline">\(p_1\)</span>. This gives another point on the demand curve as well as an estimate</p>
+<p><span class="math display">\[\partial_p D(p_0) = \frac{D(p_1) - D(p_0)}{p_1 - p_0}\]</span></p>
+<p>Now the monopolist is set to model the demand curve as a straight-line function and easily to find <span class="math inline">\(p^\star\)</span> for the model. For instance, if the demand function is modeled as <span class="math inline">\(D_1 (p) = a + b p\)</span>, the optimal price will be <span class="math inline">\(p^\star_1 = - \frac{a + b p^\star}{b}\)</span> which can be solved as <span class="math inline">\(p^\star_1 = - a/2b\)</span>.</p>
 <p><span class="math inline">\(p^\star_1\)</span> is just an estimate of the optimum price. Still, the monopolist can try out that price, giving a third data point for the demand function. The new data can lead to a better model of the demand function. With the better estimate, find a new a argmax <span class="math inline">\(p^\star_2\)</span>. This sort of iterative process for finding an argmax of a real-world function is very common in practice.</p>
 <!--
 
@@ -820,10 +861,11 @@ with respect to price. (Note that the product rule applies here.) He obtained th
 </div></div></div>
 <p>Using the notation in the diagram, the volume and surface area of the cylinder is <span class="math display">\[V(r, h) \equiv \pi r^2 h \ \ \ \text{and}\ \ \ A(r, h) \equiv 2 \pi r^2 + 2 \pi r h\]</span></p>
 <p>Minimizing the weight of the cylinder is our objective (according to the problem statement) and the weight is proportional to the surface area. Since the volume <span class="math inline">\(V\)</span> is given (according to the problem statement), we want to re-write the area function to use volume:</p>
-<p><span class="math display">\[h(r, V) \equiv V / \pi r^2 \ \ \ \implies\ \ \ A(r, V) = 2 \pi r^2 + 2 \pi r V/\pi r^2 = 2 \pi r^2 + 2 V / r\]</span> Suppose <span class="math inline">\(V\)</span> is specified as 1000 liters. A good first step is to choose appropriate units for <span class="math inline">\(r\)</span> to make sure the formula for <span class="math inline">\(A(r, V)\)</span> is dimensionally consistent. Suppose we choose <span class="math inline">\(r\)</span> in cm. Then we want <span class="math inline">\(V\)</span> in cubic centimeters (cc). 1000 liters is 1,000,000 cc. Now we can plot a slice of the area function:</p>
+<p><span class="math display">\[h(r, V) \equiv V / \pi r^2 \ \ \ \implies\ \ \ A(r, V) = 2 \pi r^2 + 2 \pi r V/\pi r^2 = 2 \pi r^2 + 2 V / r\]</span></p>
+<p>Suppose <span class="math inline">\(V\)</span> is specified as 1000 liters. A good first step is to choose appropriate units for <span class="math inline">\(r\)</span> to make sure the formula for <span class="math inline">\(A(r, V)\)</span> is dimensionally consistent. Suppose we choose <span class="math inline">\(r\)</span> in cm. Then we want <span class="math inline">\(V\)</span> in cubic centimeters (cc). 1000 liters is 1,000,000 cc. Now we can plot a slice of the area function:</p>
 <div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span>r<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>V<span class="sc">/</span>r <span class="sc">~</span> r, <span class="at">V=</span><span class="dv">1000000</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">A</span>(r) <span class="sc">~</span> r, <span class="fu">domain</span>(<span class="at">r=</span><span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">100</span>))) <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span>r<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>V<span class="sc">/</span>r <span class="sc">~</span> r, <span class="at">V=</span><span class="dv">1000000</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">A</span>(r) <span class="sc">~</span> r, <span class="fu">bounds</span>(<span class="at">r=</span><span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">100</span>))) <span class="sc">%&gt;%</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"radius (cm)"</span>, <span class="at">y =</span> <span class="st">"Surface area of container (square cm)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 <div class="no-row-height column-margin column-container"><div class="cell-output-display">
@@ -834,7 +876,10 @@ with respect to price. (Note that the product rule applies here.) He obtained th
 </div>
 </div></div></div>
 <p>As always, the function’s derivative is zero at the optimal <span class="math inline">\(r\)</span>. In the graph, the argmin is near <span class="math inline">\(r=50\)</span> cm at which point the minimum is about 50,000 cm<span class="math inline">\(^2\)</span>. Since <span class="math inline">\(h(r,V) = V/\pi r^2\)</span>, the required height of cylinder will be near <span class="math inline">\(10^6 / \pi 50^2 = 127\)</span>cm.</p>
-<p>In calculus courses, the goal is often to find a <strong>formula</strong> for the optimal radius as a function of <span class="math inline">\(V\)</span>. So we differentiate the objective function—that is, the area function for any <span class="math inline">\(V\)</span> and <span class="math inline">\(r\)</span> with respect to <span class="math inline">\(r\)</span>, <span class="math display">\[\partial_r A(r, V) = 4 \pi r - 2 V / r^2\]</span> Setting this to zero (which will be true at the optimal <span class="math inline">\(r^\star\)</span>) we can solve for <span class="math inline">\(r^\star\)</span> in terms of <span class="math inline">\(V\)</span>: <span class="math display">\[4 \pi r^\star - 2 \frac{V}{\left[r^\star\right]^2} = 0 \ \ \ \Longrightarrow\ \ \ 4\pi r^\star = 2\frac{V}{\left[r^\star\right]^2} \Longrightarrow\ \ \ \left[r^\star\right]^3 = \frac{1}{2\pi} V \ \ \ \Longrightarrow\ \ \  r^\star = \sqrt[3]{V/2\pi}\]</span></p>
+<p>In calculus courses, the goal is often to find a <strong>formula</strong> for the optimal radius as a function of <span class="math inline">\(V\)</span>. So we differentiate the objective function—that is, the area function for any <span class="math inline">\(V\)</span> and <span class="math inline">\(r\)</span> with respect to <span class="math inline">\(r\)</span>,</p>
+<p><span class="math display">\[\partial_r A(r, V) = 4 \pi r - 2 V / r^2\]</span></p>
+<p>Setting this to zero (which will be true at the optimal <span class="math inline">\(r^\star\)</span>) we can solve for <span class="math inline">\(r^\star\)</span> in terms of <span class="math inline">\(V\)</span>:</p>
+<p><span class="math display">\[4 \pi r^\star - 2 \frac{V}{\left[r^\star\right]^2} = 0 \ \ \ \Longrightarrow\ \ \ 4\pi r^\star = 2\frac{V}{\left[r^\star\right]^2} \Longrightarrow\ \ \ \left[r^\star\right]^3 = \frac{1}{2\pi} V \ \ \ \Longrightarrow\ \ \  r^\star = \sqrt[3]{V/2\pi}\]</span></p>
 <p>For <span class="math inline">\(V = 1,000,000\)</span> cm<span class="math inline">\(^3\)</span>, this gives <span class="math inline">\(r^\star = 54.1926\)</span> cm which in turn implies that the corresponding height <span class="math inline">\(h^\star = V/\pi (r^\star)^2 = 108.3852\)</span> cm.</p>
 <p>We’ve presented the optimum <span class="math inline">\(r^\star\)</span> and <span class="math inline">\(h^\star\)</span> to the nearest <strong>micron</strong>. (Does that make sense to you? Think about it for a moment before reading on.)</p>
 <p>In modeling, a good rule of thumb is this: “If you don’t know what a sensible precision is for reporting your result, you don’t yet have a complete grasp of the problem.” Here are two reasonable ways to sort out a suitable precision.</p>
@@ -866,7 +911,9 @@ with respect to price. (Note that the product rule applies here.) He obtained th
 </figure>
 </div>
 </div></div></div>
-<p>Using <span class="math inline">\(h\)</span> for the length of the cylindrical portion of the tank, and <span class="math inline">\(r\)</span> for the radius, the volume and surface area are: <span class="math display">\[V(r, h) = \pi r^2 h + \frac{4}{3} \pi r^3 \ \ \ \text{and}\ \ \ A(r,h) = 2 \pi r h + 4 \pi r^2\]</span> Again, <span class="math inline">\(V\)</span> is specified as 1000 liters. As detailed in Exercise 24.18, the surface area of this 1000-liter tank is about 48,400 cm<span class="math inline">\(^2\)</span>. This is more than 10% less than for the cylindrical tank.</p>
+<p>Using <span class="math inline">\(h\)</span> for the length of the cylindrical portion of the tank, and <span class="math inline">\(r\)</span> for the radius, the volume and surface area are:</p>
+<p><span class="math display">\[V(r, h) = \pi r^2 h + \frac{4}{3} \pi r^3 \ \ \ \text{and}\ \ \ A(r,h) = 2 \pi r h + 4 \pi r^2\]</span></p>
+<p>Again, <span class="math inline">\(V\)</span> is specified as 1000 liters. As detailed in Exercise 24.18, the surface area of this 1000-liter tank is about 48,400 cm<span class="math inline">\(^2\)</span>. This is more than 10% less than for the cylindrical tank.</p>
 </section>
 <section id="exercises" class="level2" data-number="24.5">
 <h2 data-number="24.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">24.5</span> Exercises</h2>
@@ -1097,14 +1144,14 @@ with respect to price. (Note that the product rule applies here.) He obtained th
 <div id="fig-calculus-dog" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="www/swimmers-run.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 24.5: Swimmer’s optimal path to the ball consists of running <span class="math inline">\(x\)</span> meters along the shore, then swimming diagonally to the ball.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 24.5: Swimmer’s optimal path to the ball consists of running <span class="math inline">\(x\)</span> meters along the shore, then swimming diagonally to the ball.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Can Swimmer do better? You can set up the calculation like this. Imagine <span class="math inline">\(x\)</span> to be the distance down the beach that Swimmer runs. The time to run this distance will be <span class="math inline">\(x/400\)</span>. The distance remaining to the ball can be found by the Pythagorean theorem. One leg of the triangle has length <span class="math inline">\((50-x)\)</span>, the other has length 10 m. So, the length of the third side is <span class="math inline">\(\sqrt{\strut (50-x)^2 + 10^2}\)</span>. For instance, if <span class="math inline">\(x\)</span> were 45, the distance to swim in the water would be <span class="math inline">\(\sqrt{(50-45)^2 + 10^2} = 11.2\)</span> m. Divide this distance by 50 m/min to get the time spent in the water.</p>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
-<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>distance_in_water <span class="ot">&lt;-</span> <span class="fu">makeFun</span>( __your_pythagorean_formula <span class="sc">~</span> x)</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>distance_in_water <span class="ot">&lt;-</span> <span class="fu">makeFun</span>( __your_pythagorean_formula <span class="sc">~</span> x)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>time_to_ball <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(x<span class="sc">/</span><span class="dv">400</span> <span class="sc">+</span> <span class="fu">distance_in_water</span>(x)<span class="sc">/</span><span class="dv">50</span> <span class="sc">~</span> x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>Time_to_ball()</code> takes one argument, the distance <span class="math inline">\(x\)</span> Swimmer runs down the beach before turning into the water. Use a <a href="https://maa-statprep.shinyapps.io/CalcZ-Sandbox/">SANDBOX</a> to find the distance that calculus-savvy Swimmer runs down the beach before turning into the water, if Swimmer’s goal is to get to the ball as fast as possible.</p>
@@ -1154,8 +1201,8 @@ with respect to price. (Note that the product rule applies here.) He obtained th
 <p>Implement the calculation of <code>total_time()</code> in R, then use a graph to find the argmin.</p>
 <div class="scaffolding">
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
-<div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>total_time <span class="ot">&lt;-</span> <span class="fu">makeFun</span>( your_formula <span class="sc">~</span> x)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">total_time</span>(x) <span class="sc">~</span> x, <span class="fu">domain</span>(<span class="at">x=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">20</span>))</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>total_time <span class="ot">&lt;-</span> <span class="fu">makeFun</span>( your_formula <span class="sc">~</span> x)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">total_time</span>(x) <span class="sc">~</span> x, <span class="fu">bounds</span>(<span class="at">x=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">20</span>))</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># For the next problem</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>dx_time  <span class="ot">&lt;-</span> <span class="fu">D</span>(<span class="fu">total_time</span>(x) <span class="sc">~</span> x)</span>
@@ -1177,7 +1224,8 @@ with respect to price. (Note that the product rule applies here.) He obtained th
 </section>
 <section id="exercise-24.18" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="exercise-24.18">Exercise 24.18</h4>
-<p>Return to the problem of finding the optimal radius of a cylindrical tank with spherical ends. The point is to choose the sphere radius <span class="math inline">\(r\)</span> and the cylinder length <span class="math inline">\(h\)</span> that minimize the surface area of the tank while enclosing a specified volume. In terms of <span class="math inline">\(h\)</span> and <span class="math inline">\(r\)</span>, the volume and surface area are: <span class="math display">\[V(r, h) = \pi r^2 h + \frac{4}{3} \pi r^3 \ \ \ \text{and}\ \ \ A(r,h) = 2 \pi r h + 4 \pi r^2\]</span></p>
+<p>Return to the problem of finding the optimal radius of a cylindrical tank with spherical ends. The point is to choose the sphere radius <span class="math inline">\(r\)</span> and the cylinder length <span class="math inline">\(h\)</span> that minimize the surface area of the tank while enclosing a specified volume. In terms of <span class="math inline">\(h\)</span> and <span class="math inline">\(r\)</span>, the volume and surface area are:</p>
+<p><span class="math display">\[V(r, h) = \pi r^2 h + \frac{4}{3} \pi r^3 \ \ \ \text{and}\ \ \ A(r,h) = 2 \pi r h + 4 \pi r^2\]</span></p>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
 <div class="cell-output-display">
 <p><strong>Part A</strong> Which of these is correct? (Hint: Only one of the answers is dimensionally consistent.)</p>
@@ -1238,9 +1286,28 @@ with respect to price. (Note that the product rule applies here.) He obtained th
 <li id="fn1" role="doc-endnote"><p>Another word for an “input” is “argument.” Argmax is the contraction of <strong>arg</strong>ument producing the <strong>max</strong>imum output.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
+
 </main> <!-- /main -->
-<script type="application/javascript">
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -1260,7 +1327,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.blur();
     // flash "checked"
     button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
     setTimeout(function() {
+      button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
     // clear code selection
@@ -1328,6 +1398,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 </body></html>

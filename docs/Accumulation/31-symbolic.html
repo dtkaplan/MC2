@@ -1,152 +1,158 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-  <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.9.80">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>MOSAIC Calculus - 38&nbsp; Symbolic anti-differentiation</title>
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style>
 
-  <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-  <script src="../site_libs/quarto-nav/headroom.min.js"></script>
-  <script src="../site_libs/clipboard/clipboard.min.js"></script>
-  <meta name="quarto:offset" content="../">
-  <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-  <script src="../site_libs/quarto-search/fuse.min.js"></script>
-  <script src="../site_libs/quarto-search/quarto-search.js"></script>
-  <link href="../dynamics-part.html" rel="next">
-  <link href="../Accumulation/30-euler.html" rel="prev">
-  <script src="../site_libs/quarto-html/quarto.js"></script>
-  <script src="../site_libs/quarto-html/popper.min.js"></script>
-  <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-  <script src="../site_libs/quarto-html/anchor.min.js"></script>
-  <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-  <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
-  <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-  <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-  <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
-  <script id="quarto-search-options" type="application/json">{
-    "location": "sidebar",
-    "copy-button": false,
-    "collapse-after": 2,
-    "panel-placement": "start",
-    "type": "textbox",
-    "limit": 20,
-    "language": {
-      "search-no-results-text": "No results",
-      "search-matching-documents-text": "matching documents",
-      "search-copy-link-title": "Copy link to search",
-      "search-hide-matches-text": "Hide additional matches",
-      "search-more-match-text": "more match in this document",
-      "search-more-matches-text": "more matches in this document",
-      "search-clear-button-title": "Clear",
-      "search-detached-cancel-button-title": "Cancel",
-      "search-submit-button-title": "Submit"
-    }
-  }</script>
-  <script async="" src="https://hypothes.is/embed.js"></script>
-  </head><body class="floating slimcontent"><span class="math inline" style="display: none;">
-  \(\newcommand{\line}{\text{line}}
-  \newcommand{\hump}{\text{hump}}
-  \newcommand{\sigmoid}{\text{sigmoid}}
-  \newcommand{\recip}{\text{recip}}
-  \newcommand{\diff}[1]{{\cal D}_#1}
-  \newcommand{\pnorm}{\text{pnorm}}
-  \newcommand{\dnorm}{\text{dnorm}}
-  \let\origvec\vec
-  \let\origmathit\mathit
-  \let\orighat\hat
-  \let\origbar\bar
-  \newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
-  \newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
-  \newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
-  \newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
-  \newcommand{\len}[1]{{\|{\mathbf #1}\|}}
-  \newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
-  \newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
-  \newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
-  \newcommand{\modeledby}[2]{#1\!\sim\!#2}
-  \newcommand{\CC}[1]{\color{#648fff}{#1}}
-  \newcommand{\CE}[1]{\color{#785ef0}{#1}}
-  \newcommand{\CA}[1]{\color{#dc267f}{#1}}
-  \newcommand{\CB}[1]{\color{#fe6100}{#1}}
-  \newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
-  </span>
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MOSAIC Calculus - 38&nbsp; Symbolic anti-differentiation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../dynamics-part.html" rel="next">
+<link href="../Accumulation/30-euler.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+</head><body class="nav-sidebar floating slimcontent"><span class="math inline" style="display: none;">
+\(\newcommand{\line}{\text{line}}
+\newcommand{\hump}{\text{hump}}
+\newcommand{\sigmoid}{\text{sigmoid}}
+\newcommand{\recip}{\text{recip}}
+\newcommand{\diff}[1]{{\cal D}_#1}
+\newcommand{\pnorm}{\text{pnorm}}
+\newcommand{\dnorm}{\text{dnorm}}
+\let\origvec\vec
+\let\origmathit\mathit
+\let\orighat\hat
+\let\origbar\bar
+\newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+\newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+\newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+\newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+\newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+\newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+\newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+\newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+\newcommand{\modeledby}[2]{#1\!\sim\!#2}
+\newcommand{\CC}[1]{\color{#648fff}{#1}}
+\newcommand{\CE}[1]{\color{#785ef0}{#1}}
+\newcommand{\CA}[1]{\color{#dc267f}{#1}}
+\newcommand{\CB}[1]{\color{#fe6100}{#1}}
+\newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+</span>
+
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
-  <link rel="stylesheet" href="../mosaic-calc-style.css">
+
+<link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
 
 
 <div id="quarto-search-results"></div>
@@ -154,7 +160,7 @@
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
       <h1 class="quarto-secondary-nav-title"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></h1>
-      <button type="button" class="quarto-btn-toggle btn">
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
     </div>
@@ -185,344 +191,359 @@
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-preliminaries-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-preliminaries-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">Preliminaries</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/01-modeling-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">Modeling</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-modeling-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-modeling-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">I. Modeling</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/01-parameters.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/02-assembling-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/03-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/05-low-order-polynomials.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/06-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/07-magnitudes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/08-dimensions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/09-modeling-cycle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling cycle [DRAFT]</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Modeling/Modeling-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">Differentiation</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-differentiation-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-differentiation-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">II. Differentiation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/16-continuous-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Continuous change</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/17-rate-of-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rate of change</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/18-evanescent-h.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/19-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Constructing derivatives</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/20-concavity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/21-cont-and-smooth.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/22-rules.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/23-optim.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/24-partial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/25-approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations [DRAFT]</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/26-taylor.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/Differentiation-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">Vectors and linear combinations</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-linear-combinations-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-linear-combinations-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">III. Vectors and linear combinations</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-Vectors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Vectors</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-linear-combinations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-projection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-target-problem.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-stat-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Linear-combinations/B5-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">Accumulation</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-accumulation-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-accumulation-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">IV. Accumulation</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/27-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/28-visualizing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/29-integration.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/30-euler.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Accumulation/31-symbolic.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">Dynamics</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-dynamics-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-dynamics-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">V. Dynamics</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-diff-eq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Differential equations</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-solution.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Finding a “solution”</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-flow-on-line.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Flows on the line</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-flow-on-plane.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the plane</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-equilibria.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-eigen.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Dynamics/B6-second-order.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Force-balance equations</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-    <div class="sidebar-item-container"> 
-        <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">Manifestations</a>
-      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-manifestations-partqmd" aria-expanded="true">
-        <i class="bi bi-chevron-right ms-2"></i>
-      </a>
-    </div>
-    <ul id="quarto-sidebar-section-manifestations-partqmd" class="collapse list-unstyled sidebar-section depth1 show">  
-        <li class="sidebar-item">
+      <div class="sidebar-item-container"> 
+            <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">VI. Manifestations</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-splines.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Data-driven functions</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">50</span>&nbsp; <span class="chapter-title">Probability and evidence</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-future-value.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">51</span>&nbsp; <span class="chapter-title">Present and future value</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Manifestations/B4-mechanics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">52</span>&nbsp; <span class="chapter-title">Mechanics</span></a>
   </div>
 </li>
-    </ul>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">Appendices</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../R-mosaic-setup.html" class="sidebar-item-text sidebar-link">Setting up R/mosaic</a>
+  </div>
+</li>
+      </ul>
   </li>
     </ul>
     </div>
@@ -530,23 +551,37 @@
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc">
-<h2 id="toc-title">Table of contents</h2>
-<ul>
-<li><a href="#sec-cataloged-functions" class="nav-link active" data-scroll-target="#sec-cataloged-functions"> <span class="header-section-number">38.1</span> The cataloged functions</a></li>
-<li><a href="#differentials" class="nav-link" data-scroll-target="#differentials"> <span class="header-section-number">38.2</span> Differentials</a></li>
-<li><a href="#u-substitution" class="nav-link" data-scroll-target="#u-substitution"> <span class="header-section-number">38.3</span> U-substitution</a></li>
-<li><a href="#integration-by-parts-standard-presentation" class="nav-link" data-scroll-target="#integration-by-parts-standard-presentation"> <span class="header-section-number">38.4</span> Integration by parts (standard presentation)</a></li>
-<li><a href="#integration-by-parts-optional-alternative-presentation" class="nav-link" data-scroll-target="#integration-by-parts-optional-alternative-presentation"> <span class="header-section-number">38.5</span> Integration by parts (optional alternative presentation)</a></li>
-<li><a href="#didnt-work" class="nav-link" data-scroll-target="#didnt-work"> <span class="header-section-number">38.6</span> Didn’t work?</a></li>
-<li><a href="#integrating-polynomials" class="nav-link" data-scroll-target="#integrating-polynomials"> <span class="header-section-number">38.7</span> Integrating polynomials</a></li>
-<li><a href="#exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">38.8</span> Exercises</a></li>
-</ul>
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-cataloged-functions" id="toc-sec-cataloged-functions" class="nav-link active" data-scroll-target="#sec-cataloged-functions"> <span class="header-section-number">38.1</span> The cataloged functions</a></li>
+  <li><a href="#differentials" id="toc-differentials" class="nav-link" data-scroll-target="#differentials"> <span class="header-section-number">38.2</span> Differentials</a></li>
+  <li><a href="#u-substitution" id="toc-u-substitution" class="nav-link" data-scroll-target="#u-substitution"> <span class="header-section-number">38.3</span> U-substitution</a></li>
+  <li><a href="#integration-by-parts-standard-presentation" id="toc-integration-by-parts-standard-presentation" class="nav-link" data-scroll-target="#integration-by-parts-standard-presentation"> <span class="header-section-number">38.4</span> Integration by parts (standard presentation)</a></li>
+  <li><a href="#integration-by-parts-optional-alternative-presentation" id="toc-integration-by-parts-optional-alternative-presentation" class="nav-link" data-scroll-target="#integration-by-parts-optional-alternative-presentation"> <span class="header-section-number">38.5</span> Integration by parts (optional alternative presentation)</a></li>
+  <li><a href="#didnt-work" id="toc-didnt-work" class="nav-link" data-scroll-target="#didnt-work"> <span class="header-section-number">38.6</span> Didn’t work?</a></li>
+  <li><a href="#integrating-polynomials" id="toc-integrating-polynomials" class="nav-link" data-scroll-target="#integrating-polynomials"> <span class="header-section-number">38.7</span> Integrating polynomials</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">38.8</span> Exercises</a></li>
+  </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dtkaplan/MC2/edit/main/Accumulation/31-symbolic.Rmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
-<header id="title-block-header">
-<h1 class="title display-7"><span id="sec-accum-symbolic" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></span></h1>
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-accum-symbolic" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
 </header>
 
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
@@ -629,7 +664,8 @@
 <li><p>composition: <span class="math inline">\(\partial_x \left[{\strut}f(g(x))\right] = \left[\partial_x f{\large\strut}\right]\!\left({\large\strut}g(x)\right) \cdot \partial_x g(x)\)</span></p></li>
 </ul>
 <p>This chapter is about the analogous rules for anti-differentiation. The anti-differentiation rule for linear combination is simple: essentially the same as the rule for differentiation.</p>
-<p><span class="math display">\[\int \left[\strut a\, f(x) + b\, g(x)\right] dx = a\!\int\! f(x) dx + b\!\int\! g(x) dx\]</span> How about the rules for function products and for composition? The surprising answer is that there are <strong>no such rules</strong>. There is no template analogous to the product and chain rules for derivatives, that can consistently be used for anti-derivatives. What we have instead are <strong><em>techniques of integration</em></strong>, somewhat vague rules that will sometimes guide a successful search for the anti-derivative, but often will lead you astray.</p>
+<p><span class="math display">\[\int \left[\strut a\, f(x) + b\, g(x)\right] dx = a\!\int\! f(x) dx + b\!\int\! g(x) dx\]</span></p>
+<p>How about the rules for function products and for composition? The surprising answer is that there are <strong>no such rules</strong>. There is no template analogous to the product and chain rules for derivatives, that can consistently be used for anti-derivatives. What we have instead are <strong><em>techniques of integration</em></strong>, somewhat vague rules that will sometimes guide a successful search for the anti-derivative, but often will lead you astray.</p>
 <p>Indeed, there are many functions for which a symbolic anti-derivative cannot be constructed from compositions and/or multiplication of pattern-book functions that can be written using pattern-book functions.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
 <p>Fortunately, we already know the symbolic anti-derivative form of many functions. We will call those the <strong><em>cataloged functions</em></strong>, but this is not a term in general use in mathematics. For functions not in the catalog, it is non-trivial to find out whether the function has a symbolic anti-derivative or not. This is one reason why the techniques of integration do not always provide a result.</p>
 <p>The following sections provide an overview of techniques of integration. We start with a description of the cataloged functions and direct you to computer-based systems for looking up the catalog. (These are almost always faster and more reliable than trying to do things by hand.) Then we introduce a new interpretation of the notation for anti-differentiation: differentials. This interpretation makes it somewhat easier to understand the major techniques of integration: substitution and integration by parts. We will finish by returning to a setting where symbolic integration is easy: polynomials.</p>
@@ -638,28 +674,28 @@
 <h2 data-number="38.1" class="anchored" data-anchor-id="sec-cataloged-functions"><span class="header-section-number">38.1</span> The cataloged functions</h2>
 <p>In a traditional science or mathematics education, students encounter (almost exclusively) basic functions from a mid-sized catalog. For instance: <span class="math inline">\(\sqrt{\strut\_\_\_\ }\)</span>, <span class="math inline">\(\sin()\)</span>, <span class="math inline">\(\cos()\)</span>, <span class="math inline">\(\tan()\)</span>, square(), cube(), recip(), <span class="math inline">\(\ln()\)</span>, <span class="math inline">\(\exp()\)</span>, negate(), gaussian(), and so on. This catalog also includes some functions that take two arguments but are traditionally written without using parentheses. For instance, <span class="math inline">\(a+b\)</span> does not look like a function but is entirely equivalent to <span class="math inline">\(+(a, b)\)</span>. Others in this class are <span class="math inline">\(\times(\ ,\ )\)</span>, <span class="math inline">\(\div(\ , \ )\)</span>, <span class="math inline">\(-(\ ,\ )\)</span>, and ^( , ).</p>
 <p>The professional applied mathematician’s catalog is much larger. You can see an example published by the US National Institute of Standards and Technology as the <a href="https://dlmf.nist.gov/">Digital Library of Mathematical Functions</a>. (Almost all of the 36 chapters in this catalog, important though they be, are highly specialized and not of general interest across fields.)</p>
-<p>There is a considerable body of theory for these <strong><em>cataloged functions</em></strong>, which often takes the form of relating them to one another. For instance, <span class="math inline">\(\ln(a \times b) = \ln(a) + \ln(b)\)</span> demonstrates a relationship among <span class="math inline">\(\ln()\)</span>, <span class="math inline">\(+\)</span> and <span class="math inline">\(\times\)</span>. Along the same lines of relating the cataloged functions to one another is <span class="math inline">\(\partial_x \sin(x) = \cos(x)\)</span> and other statements about derivatives such as those listed in Chapter <a href="../Differentiation/19-computing.html">Section&nbsp;<span>20</span></a>.</p>
-<p>Simply to illustrate what a function catalog looks like, <a href="#fig-table-of-integrals">Figure&nbsp;<span>38.1</span></a> shows a page from an 1899 handbook entitled <a href="https://archive.org/details/integralstable00peirrich/page/114/mode/2up"><em>A Short Table of Integrals</em></a>.</p>
+<p>There is a considerable body of theory for these <strong><em>cataloged functions</em></strong>, which often takes the form of relating them to one another. For instance, <span class="math inline">\(\ln(a \times b) = \ln(a) + \ln(b)\)</span> demonstrates a relationship among <span class="math inline">\(\ln()\)</span>, <span class="math inline">\(+\)</span> and <span class="math inline">\(\times\)</span>. Along the same lines of relating the cataloged functions to one another is <span class="math inline">\(\partial_x \sin(x) = \cos(x)\)</span> and other statements about derivatives such as those listed in Chapter <a href="#sec-computing-derivs"><span class="quarto-unresolved-ref">sec-computing-derivs</span></a>.</p>
+<p>Simply to illustrate what a function catalog looks like, <a href="#fig-table-of-integrals">Figure&nbsp;<span class="quarto-unresolved-ref">fig-table-of-integrals</span></a> shows a page from an 1899 handbook entitled <a href="https://archive.org/details/integralstable00peirrich/page/114/mode/2up"><em>A Short Table of Integrals</em></a>.</p>
 <div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
 
 <div class="no-row-height column-margin column-container"><div class="cell-output-display">
 <div id="fig-table-of-integrals" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="www/table-of-integrals-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 38.1: Entries 124-135 from <em>A Short Table of Integrals</em> (1899) by Benjamin Osgood Pierce. The book includes 938 such entries.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 38.1: Entries 124-135 from <em>A Short Table of Integrals</em> (1899) by Benjamin Osgood Pierce. The book includes 938 such entries.</figcaption><p></p>
 </figure>
 </div>
 </div></div></div>
 <p>The use of cataloged functions is particularly prevalent in textbooks, so the quantitatively sophisticated student will encounter symbolic anti-derivatives of these functions throughout his or her studies.</p>
 <p>The cataloged functions were assembled with great effort by mathematicians over the decades. The techniques and tricks they used to find symbolic anti-derivatives are not part of the everyday experience of technical workers, although many mathematically minded people find them a good source of recreation.</p>
-<p>Calculus textbooks that include extensive coverage of the techniques and tricks should be understood as telling a story of the historical construction of catalogs, rather than conveying skills that are widely used today. In a practical sense, when the techniques are needed, it is more reliable to access them via computer interface such as WolframAlpha, as depicted in <a href="#fig-wolfram-alpha-125">Figure&nbsp;<span>38.2</span></a>.</p>
+<p>Calculus textbooks that include extensive coverage of the techniques and tricks should be understood as telling a story of the historical construction of catalogs, rather than conveying skills that are widely used today. In a practical sense, when the techniques are needed, it is more reliable to access them via computer interface such as WolframAlpha, as depicted in <a href="#fig-wolfram-alpha-125">Figure&nbsp;<span class="quarto-unresolved-ref">fig-wolfram-alpha-125</span></a>.</p>
 <div class="cell page-columns page-full" data-layout-align="center" data-fig.showtext="false">
 
 <div class="no-row-height column-margin column-container"><div class="cell-output-display">
 <div id="fig-wolfram-alpha-125" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="www/wolfram-alpha-125.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 38.2: Pierce’s entry 125 as computed by the WolframAlpha system.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 38.2: Pierce’s entry 125 as computed by the WolframAlpha system.</figcaption><p></p>
 </figure>
 </div>
 </div></div></div>
@@ -678,7 +714,8 @@
 \underbrace{\text{snacks}}_{\text{object}}\]</span></p>
 <p>Likewise, the integrate sentence can be seen as consisting of just two parts:</p>
 <p><span class="math display">\[\underbrace{\int}_{\text{integral sign}} \overbrace{f(x, t) dx}^{\text{differential}}\]</span></p>
-<p>A differential corresponds to the little sloped segments that we add up when calculating a definite integral numerically using the <strong><em>slope function visualization</em></strong>. That is <span class="math display">\[\underbrace{\int}_{\text{Sum}} \underbrace{\overbrace{f(x,t)}^\text{slope of segment}\ \  \overbrace{dx}^\text{run}}_\text{rise}\]</span></p>
+<p>A differential corresponds to the little sloped segments that we add up when calculating a definite integral numerically using the <strong><em>slope function visualization</em></strong>. That is</p>
+<p><span class="math display">\[\underbrace{\int}_{\text{Sum}} \underbrace{\overbrace{f(x,t)}^\text{slope of segment}\ \  \overbrace{dx}^\text{run}}_\text{rise}\]</span></p>
 <p>A differential is a genuine mathematical object and is used, for example, in analyzing the geometry of curved spaces, as in the Theory of General Relativity. But this is well beyond the scope of this introductory calculus course.</p>
 <p>Our use here for differentials will be to express rules for anti-differentiation of function compositions and products.</p>
 <p>You should be thinking in terms of differentials when you see a sentence like the following:</p>
@@ -686,7 +723,7 @@
 <p>“In <span class="math inline">\(\int \sin(x) \cos(x) dx\)</span>, make the substitution <span class="math inline">\(u = \sin(x)\)</span>, implying that <span class="math inline">\(du = \cos(x) dx\)</span> and getting <span class="math inline">\(\int u du\)</span>, which is simple to integrate.”</p>
 </blockquote>
 <p>The table gives some examples of functions and their differentials. “w.r.t” means “with respect to.”</p>
-<div class="tbl-parent column-page-inset-right quarto-layout-panel">
+<div id="tbl-with-respect-to" class="tbl-parent column-page-inset-right quarto-layout-panel anchored">
 <div class="panel-caption table-caption">
 <p><strong>?(caption)</strong></p>
 </div>
@@ -759,7 +796,9 @@
 <li>Compose <span class="math inline">\(f()\)</span> with <span class="math inline">\(g()\)</span> to produce a new function <span class="math inline">\(f(g())\)</span> which, in our case, will be <span class="math inline">\(\ln(\cos(t))\)</span>.</li>
 <li>Use the chain rule to find <span class="math inline">\(\partial_t f(g(t))\)</span>. In the example, the derivative of <span class="math inline">\(\ln(x)\)</span> is <span class="math inline">\(1/x\)</span>, the derivative of <span class="math inline">\(g(t)\)</span> is <span class="math inline">\(-\sin(t)\)</span>. By the chain rule, <span class="math display">\[\partial_t f\left(\strut g(t)\right) = \partial_t \underbrace{\Large\ln}_{f()}\left(\underbrace{\large\cos(t)}_{g(t)}\right) = \underbrace{\left[- \frac{1}{\cos(t)}\right]}_{f'(g(t))} \underbrace{\left[{\LARGE\strut}\sin(t)\right]}_{g'(t)} = -  \frac{\sin(t)}{\cos(t)} = - \tan(t)\]</span></li>
 </ol>
-<p>In a sense, we have just watched a function give birth to another through the straightforward process of differentiation. Having witnessed the birth, we know who is the integration parent of <span class="math inline">\(\tan(t)\)</span>, namely <span class="math inline">\(\int \tan(t) dt = \ln\left(\cos(t)\right)\)</span>. For future reference, we might write this down in our diary of integrals: <span class="math display">\[\int \tan(t) dt = - \ln(\cos(t)) + C\]</span> Saving this fact in your diary is helpful. The next time you need to find <span class="math inline">\(\int \tan(x) dx\)</span>, you can look up the answer (<span class="math inline">\(-\ln(\cos(x)) + C\)</span>) from your diary. If you use <span class="math inline">\(\int \tan(x) dx\)</span> a lot, you will probably come to memorize the answer, just as you have already memorized that <span class="math inline">\(\int \cos(t) dt = \sin(t)\)</span> (a fact that you will use a lot in the rest of this course).</p>
+<p>In a sense, we have just watched a function give birth to another through the straightforward process of differentiation. Having witnessed the birth, we know who is the integration parent of <span class="math inline">\(\tan(t)\)</span>, namely <span class="math inline">\(\int \tan(t) dt = \ln\left(\cos(t)\right)\)</span>. For future reference, we might write this down in our diary of integrals:</p>
+<p><span class="math display">\[\int \tan(t) dt = - \ln(\cos(t)) + C\]</span></p>
+<p>Saving this fact in your diary is helpful. The next time you need to find <span class="math inline">\(\int \tan(x) dx\)</span>, you can look up the answer (<span class="math inline">\(-\ln(\cos(x)) + C\)</span>) from your diary. If you use <span class="math inline">\(\int \tan(x) dx\)</span> a lot, you will probably come to memorize the answer, just as you have already memorized that <span class="math inline">\(\int \cos(t) dt = \sin(t)\)</span> (a fact that you will use a lot in the rest of this course).</p>
 <p>Now for the u-substitution game. The trick is to take a problem of the form <span class="math inline">\(\int h(t) dt\)</span> and extract from <span class="math inline">\(h(t)\)</span> two functions, an <span class="math inline">\(f()\)</span> and a <span class="math inline">\(g()\)</span>. You’re going to do this so that <span class="math inline">\(h(t) = \partial_t F(g(t))\)</span>, where <span class="math inline">\(\partial_x F(x) = f(x)\)</span> Once you’ve done this, you have an answer to the original integration question: <span class="math inline">\(\int h(t) dt = F(g(t)) + C\)</span>.</p>
 <div class="example">
 <p>Task: Evaluate the definite integral <span class="math inline">\(\int \frac{\sin(\ln(x))}{x} dx\)</span>.</p>
@@ -785,10 +824,18 @@
 </ol>
 <p>Let’s integrate both sides of the statement of the product rule. For the left side, applying rule (i), we get a simple result:</p>
 <p><span class="math display">\[\int\left[\strut\partial_x \left[\strut u(x)\cdot v(x) \right]\right] dx = u(x) \cdot v(x)\]</span></p>
-<p>As for the right side, all we get is two anti-derivatives: <span class="math display">\[\int\left[\strut u'(x)\cdot v(x) + v'(x)\cdot u(x)\right]dx =
-\int\left[\strut u'(x)\cdot v(x)\right]dx + \int\left[\strut u(x)\cdot v'(x)\right]dx\]</span> Putting together the previous two expressions and re-arranging gives: <span class="math display">\[\int u(x)\cdot v'(x)\, dx = u(x) \cdot v(x) - \int  v(x)\cdot u'(x)dx\ \ \ \mathbf{ \text{parts re-arrangment}}\]</span> Now, consider a problem like <span class="math inline">\(\int x \cdot \cos(x) dx\)</span> that we don’t yet know how to solve. Let’s associate this problem with the left side of the parts re-arrangement equation. With luck, we will recognize a problem that we will know how to do on the right-hand side.</p>
-<p>To implement the re-arrangement, we need to split our as yet unknown anti-derivative into two pieces: <span class="math inline">\(u(x)\)</span> and <span class="math inline">\(v'(x) dx\)</span>. There are many possible ways to do this but the most obvious is <span class="math display">\[\int \underbrace{\strut x}_{u(x)} \cdot \underbrace{\cos(x) dx}_{v'(x) dx}\]</span> According to this proposed splitting, we have <span class="math inline">\(u(x) = x\)</span> and <span class="math inline">\(v'(x) dx = \cos(x) dx\)</span>. To plug things into the right side of the parts re-arrangement we will need to find <span class="math inline">\(v(x)\)</span> and <span class="math inline">\(u'(x) dx\)</span>. Since we know <span class="math inline">\(u(x) = x\)</span> it is easy to take the differential, <span class="math inline">\(du = dx\)</span>. Similarly, we know <span class="math inline">\(v'(x) dx = \cos(x) dx\)</span> so we can integrate both sides: <span class="math display">\[v(x) = \underbrace{\int v'(x) dx = \int \cos(x) dx}_{\text{from }\ v'(x)\,dx\ =\ \cos(x)\,dx} = \sin(x)\]</span> Now that we know the <span class="math inline">\(v(x)\)</span> that is consistent with our original splitting of the anti-derivative into <span class="math inline">\(\int u(x) \cdot v'(x) dx\)</span> we can plug in our results to the right side of the parts re-arrangement equation:</p>
-<p><span class="math display">\[\int x \cdot \cos(x)dx = x \sin(x) - \int \underbrace{\sin(x)}_{v(x)}\  \underbrace{\ 1\ dx\ \strut}_{u'(x) dx}\]</span> We are in luck! We already know the anti-derivative <span class="math inline">\(\int \sin(x) dx = -\cos(x)\)</span>. Substituting this result for the <span class="math inline">\(\int v(x) u'(x) dx\)</span> term, we arrive at <span class="math display">\[\int x \cdot \cos(x)dx = x \sin(x) + \cos(x)\ .\]</span></p>
+<p>As for the right side, all we get is two anti-derivatives: $$dx =</p>
+<p>dx + dx$$ Putting together the previous two expressions and re-arranging gives:</p>
+<p><span class="math display">\[\int u(x)\cdot v'(x)\, dx = u(x) \cdot v(x) - \int  v(x)\cdot u'(x)dx\ \ \ \mathbf{ \text{parts re-arrangment}}\]</span></p>
+<p>Now, consider a problem like <span class="math inline">\(\int x \cdot \cos(x) dx\)</span> that we don’t yet know how to solve. Let’s associate this problem with the left side of the parts re-arrangement equation. With luck, we will recognize a problem that we will know how to do on the right-hand side.</p>
+<p>To implement the re-arrangement, we need to split our as yet unknown anti-derivative into two pieces: <span class="math inline">\(u(x)\)</span> and <span class="math inline">\(v'(x) dx\)</span>. There are many possible ways to do this but the most obvious is</p>
+<p><span class="math display">\[\int \underbrace{\strut x}_{u(x)} \cdot \underbrace{\cos(x) dx}_{v'(x) dx}\]</span></p>
+<p>According to this proposed splitting, we have <span class="math inline">\(u(x) = x\)</span> and <span class="math inline">\(v'(x) dx = \cos(x) dx\)</span>. To plug things into the right side of the parts re-arrangement we will need to find <span class="math inline">\(v(x)\)</span> and <span class="math inline">\(u'(x) dx\)</span>. Since we know <span class="math inline">\(u(x) = x\)</span> it is easy to take the differential, <span class="math inline">\(du = dx\)</span>. Similarly, we know <span class="math inline">\(v'(x) dx = \cos(x) dx\)</span> so we can integrate both sides:</p>
+<p><span class="math display">\[v(x) = \underbrace{\int v'(x) dx = \int \cos(x) dx}_{\text{from }\ v'(x)\,dx\ =\ \cos(x)\,dx} = \sin(x)\]</span></p>
+<p>Now that we know the <span class="math inline">\(v(x)\)</span> that is consistent with our original splitting of the anti-derivative into <span class="math inline">\(\int u(x) \cdot v'(x) dx\)</span> we can plug in our results to the right side of the parts re-arrangement equation:</p>
+<p><span class="math display">\[\int x \cdot \cos(x)dx = x \sin(x) - \int \underbrace{\sin(x)}_{v(x)}\  \underbrace{\ 1\ dx\ \strut}_{u'(x) dx}\]</span></p>
+<p>We are in luck! We already know the anti-derivative <span class="math inline">\(\int \sin(x) dx = -\cos(x)\)</span>. Substituting this result for the <span class="math inline">\(\int v(x) u'(x) dx\)</span> term, we arrive at</p>
+<p><span class="math display">\[\int x \cdot \cos(x)dx = x \sin(x) + \cos(x)\ .\]</span></p>
 <p>The key creative step in using integration by parts effectively is to choose a helpful split of the original integral into the <span class="math inline">\(u(x)\)</span> and <span class="math inline">\(v'(x) dx\)</span> parts. This is usually based on a solid knowledge of derivatives and anti-derivatives of basic functions as well as insight into the downstream consequences of any choice. In this sense, picking <span class="math inline">\(u(x)\)</span> and <span class="math inline">\(v'(x)dx\)</span> is like making a move in chess. Some players can see two or three moves ahead and so can pick the first move to improve their position. Without such foresight, the best most people can do is to pick a first move that seems attractive and accept that their fate might be either victory or checkmate.</p>
 <p>For the calculus student learning integration by parts, there is an irony. Gaining enough experience to make good choices of <span class="math inline">\(u(x)\)</span> and <span class="math inline">\(v'(x)dx\)</span> means that you will solve, or read about solving, many anti-differentiation problems. You can, of course, enter the solutions into your diary of anti-derivatives, obviating to that extent the need to perform integration by parts in the future.</p>
 <div class="example">
@@ -796,8 +843,10 @@
 </div>
 <div class="example">
 <p>What would happen in the previous example if we had made a <em>bad</em> choice for <span class="math inline">\(u(x)\)</span> and <span class="math inline">\(v'(x) dx\)</span>? For instance, we might have split <span class="math inline">\(x \cos(x) dx\)</span> into <span class="math inline">\(u(x) = \cos(x)\)</span> and <span class="math inline">\(v'(x)\,dx = x\, dx\)</span>. Working out <span class="math inline">\(u'(x)\,dx\)</span> and <span class="math inline">\(v(x)\)</span> is easy: <span class="math inline">\(u'(x)\, dx = -\sin(x)\, dx\)</span> and <span class="math inline">\(v(x) = \frac{1}{2} x^2\)</span>. Plugging into the re-arrangement formula gives:</p>
-<p><span class="math display">\[\int x \cdot \cos(x)\,dx = \frac{1}{2} x^2 \cos(x) - \int \frac{1}{2} x^2 \left[\strut - \sin(x)\right]\,dx = \frac{1}{2} x^2 \cos(x) + \int \frac{1}{2} x^2  \sin(x)\,dx\]</span> Unless you know <span class="math inline">\(\int x^2 \sin(x) dx\)</span>, this re-arrangement leaves you no better off than at the beginning.</p>
-<p>On the other hand … if you are in the business of compiling diaries of anti-derivatives, you could use this situation to chalk up another entry based on already knowing <span class="math inline">\(\int x \cdot \cos(x) dx\)</span>: <span class="math display">\[\int x^2 \sin(x) dx = 2 \int x\cdot \cos(x)dx - x^2\cos(x) = 2x\sin(x) + 2\cos(x) - x^2 \cos(x)\]</span></p>
+<p><span class="math display">\[\int x \cdot \cos(x)\,dx = \frac{1}{2} x^2 \cos(x) - \int \frac{1}{2} x^2 \left[\strut - \sin(x)\right]\,dx = \frac{1}{2} x^2 \cos(x) + \int \frac{1}{2} x^2  \sin(x)\,dx\]</span></p>
+<p>Unless you know <span class="math inline">\(\int x^2 \sin(x) dx\)</span>, this re-arrangement leaves you no better off than at the beginning.</p>
+<p>On the other hand … if you are in the business of compiling diaries of anti-derivatives, you could use this situation to chalk up another entry based on already knowing <span class="math inline">\(\int x \cdot \cos(x) dx\)</span>:</p>
+<p><span class="math display">\[\int x^2 \sin(x) dx = 2 \int x\cdot \cos(x)dx - x^2\cos(x) = 2x\sin(x) + 2\cos(x) - x^2 \cos(x)\]</span></p>
 </div>
 <div class="example">
 <p>Find <span class="math inline">\(\int x \ln(x) dx\)</span>.</p>
@@ -810,27 +859,44 @@
 </section>
 <section id="integration-by-parts-optional-alternative-presentation" class="level2 page-columns page-full" data-number="38.5">
 <h2 data-number="38.5" class="anchored" data-anchor-id="integration-by-parts-optional-alternative-presentation"><span class="header-section-number">38.5</span> Integration by parts (optional alternative presentation)</h2>
-<p>Integration by parts applies to integrals that are recognizably of the form <span class="math display">\[\int f(x) g(x) dx\]</span> Step 1: Split up the integrand into an <span class="math inline">\(f(x)\)</span> and a <span class="math inline">\(g(x)\)</span> multiplied together. That is, split the integrand into <strong><em>parts</em></strong> that are multiplied together. The way we wrote the integrand, this was trivial.</p>
+<p>Integration by parts applies to integrals that are recognizably of the form</p>
+<p><span class="math display">\[\int f(x) g(x) dx\]</span></p>
+<p>Step 1: Split up the integrand into an <span class="math inline">\(f(x)\)</span> and a <span class="math inline">\(g(x)\)</span> multiplied together. That is, split the integrand into <strong><em>parts</em></strong> that are multiplied together. The way we wrote the integrand, this was trivial.</p>
 <p>Step 2: Pick one of <span class="math inline">\(f(x)\)</span> or <span class="math inline">\(g(x)\)</span>. Typically, you pick the one that has a dead-easy anti-derivative. For our general description, let’s suppose this is <span class="math inline">\(g(x)\)</span> which has anti-derivative <span class="math inline">\(G(x)\)</span> (where we know <span class="math inline">\(G()\)</span>).</p>
 <p>Step 3: Construct a <strong><em>helper function</em></strong> <span class="math inline">\(h(x) \equiv f(x) G(x)\)</span>. This requires no work, since we’ve already identified <span class="math inline">\(f(x)\)</span> and <span class="math inline">\(G(x)\)</span> in step (2).</p>
-<p>Step 4: Find <span class="math inline">\(\partial_x h(x)\)</span>. It is always easy to find derivatives, and here we just use the product rule: <span class="math display">\[\partial_x h(x) = \partial_x f(x) \cdot G(x) + f(x)\cdot\partial_x G(x)\]</span> We know from the way we constructed <span class="math inline">\(G(x)\)</span> that <span class="math inline">\(\partial_x G(x) = g(x)\)</span>, so the equation is <span class="math display">\[\partial_x h(x) = \partial_x f(x) \cdot G(x) + f(x)\cdot g(x)\]</span></p>
-<p>Step 5: Anti-differentiate both sides of the previous equation. From the fundamental theorem of calculus, we know how to do the left side of the equation. <span class="math display">\[\int \partial_x h(x) = h(x) \equiv f(x)g(x)\]</span> The right side of the equation has two <strong><em>parts</em></strong>: <span class="math display">\[\int \left[{\large\strut}\partial_x f(x) \cdot G(x) + f(x)\cdot g(x)\right]dx = \underbrace{\int \partial_x f(x) \cdot G(x) dx}_\text{Some NEW integral!}\ \ \ \  + \underbrace{\int f(x) g(x) dx}_\text{The original integral we sought!}\]</span> Putting together the left and right sides of the equation, and re-arranging gives us a new expression for the original integral we sought to calculate: <span class="math display">\[\text{Integration by parts re-arrangement}\\\underbrace{\int f(x) g(x) dx}_\text{The original integral we sought.} = \underbrace{f(x) g(x)}_\text{We know this!}  - \underbrace{\int \partial_x f(x) \cdot G(x) dx}_\text{Some NEW integral!}\]</span> It may seem that we haven’t accomplished much with this re-organization. But we have done something. We took a problem we didn’t otherwise know how to solve (that is <span class="math inline">\(\int f(x) g(x) dx\)</span>) and broke it down into two parts. One is very simple. The other is an integral. If we are clever in picking <span class="math inline">\(g()\)</span> and lucky, we will be able to figure out the new integral and, thereby, we will have computed the original integral. But everything depends on cleverness and luck!</p>
+<p>Step 4: Find <span class="math inline">\(\partial_x h(x)\)</span>. It is always easy to find derivatives, and here we just use the product rule:</p>
+<p><span class="math display">\[\partial_x h(x) = \partial_x f(x) \cdot G(x) + f(x)\cdot\partial_x G(x)\]</span></p>
+<p>We know from the way we constructed <span class="math inline">\(G(x)\)</span> that <span class="math inline">\(\partial_x G(x) = g(x)\)</span>, so the equation is</p>
+<p><span class="math display">\[\partial_x h(x) = \partial_x f(x) \cdot G(x) + f(x)\cdot g(x)\]</span></p>
+<p>Step 5: Anti-differentiate both sides of the previous equation. From the fundamental theorem of calculus, we know how to do the left side of the equation.</p>
+<p><span class="math display">\[\int \partial_x h(x) = h(x) \equiv f(x)g(x)\]</span></p>
+<p>The right side of the equation has two <strong><em>parts</em></strong>:</p>
+<p><span class="math display">\[\int \left[{\large\strut}\partial_x f(x) \cdot G(x) + f(x)\cdot g(x)\right]dx = \underbrace{\int \partial_x f(x) \cdot G(x) dx}_\text{Some NEW integral!}\ \ \ \  + \underbrace{\int f(x) g(x) dx}_\text{The original integral we sought!}\]</span></p>
+<p>Putting together the left and right sides of the equation, and re-arranging gives us a new expression for the original integral we sought to calculate:</p>
+<p><span class="math display">\[\text{Integration by parts re-arrangement}\\\underbrace{\int f(x) g(x) dx}_\text{The original integral we sought.} = \underbrace{f(x) g(x)}_\text{We know this!}  - \underbrace{\int \partial_x f(x) \cdot G(x) dx}_\text{Some NEW integral!}\]</span></p>
+<p>It may seem that we haven’t accomplished much with this re-organization. But we have done something. We took a problem we didn’t otherwise know how to solve (that is <span class="math inline">\(\int f(x) g(x) dx\)</span>) and broke it down into two parts. One is very simple. The other is an integral. If we are clever in picking <span class="math inline">\(g()\)</span> and lucky, we will be able to figure out the new integral and, thereby, we will have computed the original integral. But everything depends on cleverness and luck!</p>
 <div class="example page-columns page-full">
 <p>Task: Find <span class="math inline">\(\int x \cos(x) dx\)</span>.</p>
 <p>An obvious choice for the two parts is <span class="math inline">\(x\)</span> and <span class="math inline">\(\cos(x)\)</span>. But which one to call <span class="math inline">\(g(x)\)</span>. We will just guess and say <span class="math inline">\(g(x)\equiv \cos(x)\)</span> which implies <span class="math inline">\(G(x) = \sin(x)\)</span>. The helper function is <span class="math inline">\(h(x) \equiv f(x) G(x) = x \sin(x)\)</span>.</p>
-<p>Differentiating <span class="math inline">\(h(x)\)</span> can be done by the product rule. <span class="math display">\[\partial_x h(x) = \sin(x) + x \cos(x)\ .\]</span> Now anti-differentiate both sides of the above, the left side by the fundamental theorem of algebra and the right side by other means: <span class="math display">\[\int \partial_x h(x) = h(x) = x \sin(x)= \underbrace{\int\sin(x)dx}_{-\cos(x)} + \underbrace{\int x \cos(x) dx}_\text{The original integral}\]</span> Re-arranging gives the answer <span class="math display">\[\underbrace{\int x \cos(x) dx}_\text{The original integral} = x \sin(x) + \cos(x) + C\]</span> The constant of integration <span class="math inline">\(C\)</span> needs to be included to make the equality true.</p>
+<p>Differentiating <span class="math inline">\(h(x)\)</span> can be done by the product rule.</p>
+<p><span class="math display">\[\partial_x h(x) = \sin(x) + x \cos(x)\ .\]</span></p>
+<p>Now anti-differentiate both sides of the above, the left side by the fundamental theorem of algebra and the right side by other means:</p>
+<p><span class="math display">\[\int \partial_x h(x) = h(x) = x \sin(x)= \underbrace{\int\sin(x)dx}_{-\cos(x)} + \underbrace{\int x \cos(x) dx}_\text{The original integral}\]</span></p>
+<p>Re-arranging gives the answer</p>
+<p><span class="math display">\[\underbrace{\int x \cos(x) dx}_\text{The original integral} = x \sin(x) + \cos(x) + C\]</span></p>
+<p>The constant of integration <span class="math inline">\(C\)</span> needs to be included to make the equality true.</p>
 <p>To confirm the result, you can differentiate the right-hand side; differentiation is always easy.</p>
 <p>Alternatively, we can check numerically if <span class="math inline">\(\int x \cos(x) dx - (x\sin(x)+cos(x))\)</span> is a constant. (See @fig-check-constant).)</p>
 <div class="cell page-columns page-full" data-layout-align="center" data-fig.caption="A numerical check shows $\int x \cos(x) dx - (x\sin(x)+cos(x))$ is a constant." data-fig.showtext="false">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>F1 <span class="ot">&lt;-</span> <span class="fu">antiD</span>(x<span class="sc">*</span><span class="fu">cos</span>(x) <span class="sc">~</span> x)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>F1 <span class="ot">&lt;-</span> <span class="fu">antiD</span>(x<span class="sc">*</span><span class="fu">cos</span>(x) <span class="sc">~</span> x)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>F2 <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(x<span class="sc">*</span><span class="fu">sin</span>(x) <span class="sc">+</span> <span class="fu">cos</span>(x) <span class="sc">~</span> x)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">F1</span>(x) <span class="sc">-</span> <span class="fu">F2</span>(x) <span class="sc">~</span> x, <span class="fu">domain</span>(<span class="at">x=</span><span class="sc">-</span><span class="dv">5</span><span class="sc">:</span><span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">F1</span>(x) <span class="sc">-</span> <span class="fu">F2</span>(x) <span class="sc">~</span> x, <span class="fu">bounds</span>(<span class="at">x=</span><span class="sc">-</span><span class="dv">5</span><span class="sc">:</span><span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 <div class="no-row-height column-margin column-container"><div class="cell-output-display">
 <div id="fig-check-constant" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="31-symbolic_files/figure-html/fig-check-constant-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 38.3: <strong>?(caption)</strong></figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 38.3: <strong>?(caption)</strong></figcaption><p></p>
 </figure>
 </div>
 </div></div></div>
@@ -840,12 +906,23 @@
 <p>The easy solution is to recognize that the anti-derivative of <span class="math inline">\(\ln(x)\)</span> is contained in the table at the top of the chapter. But let’s try doing it by parts as an example (and to show you how it got into the table in the first place).</p>
 <p>It is hard to see a separate <span class="math inline">\(f(x)\)</span> and <span class="math inline">\(g(x)\)</span> in the integrand <span class="math inline">\(\ln(x)\)</span>. But sometimes you need to be clever. We will set <span class="math inline">\(f(x) \equiv \ln(x)\)</span> and <span class="math inline">\(g(x) \equiv 1\)</span>. This means that <span class="math inline">\(G(x) = x\)</span>. The helper function is therefore <span class="math inline">\(h(x) = x\ln(x)\)</span></p>
 <p>Differentiating the helper function gives (by the product rule): <span class="math inline">\(\partial_x h(x) = \ln(x) + x \frac{1}{x} = \ln(x) + 1\)</span></p>
-<p>Integrating the differentiated helper function, we find <span class="math display">\[\int \partial_x h(x) dx = f(x)g(x) = x \ln(x) = \underbrace{\int \ln(x) dx}_\text{The original integral} + \underbrace{\int 1 dx}_{x}\]</span> Re-arranging, we have <span class="math display">\[\underbrace{\int \ln(x) dx}_\text{The original integral} = x \ln(x) - x\ \  =\ \  x\left[\strut \ln(x) - 1\right]\]</span></p>
+<p>Integrating the differentiated helper function, we find</p>
+<p><span class="math display">\[\int \partial_x h(x) dx = f(x)g(x) = x \ln(x) = \underbrace{\int \ln(x) dx}_\text{The original integral} + \underbrace{\int 1 dx}_{x}\]</span></p>
+<p>Re-arranging, we have</p>
+<p><span class="math display">\[\underbrace{\int \ln(x) dx}_\text{The original integral} = x \ln(x) - x\ \  =\ \  x\left[\strut \ln(x) - 1\right]\]</span></p>
 </div>
 <div class="example">
 <p>Task: Find <span class="math inline">\(\int \sin(x) e^x dx\)</span>.</p>
 <p>This isn’t the integral of a pattern book or basic modeling function, and substitution didn’t work, so we try integration by parts.</p>
-<p>The obvious choice for the two parts is <span class="math inline">\(\sin(x)\)</span> and <span class="math inline">\(e^x\)</span>. Both are really easy to anti-differentiate. Let’s choose <span class="math inline">\(g(x) = \sin(x)\)</span>, giving <span class="math inline">\(G(x) = -\cos(x)\)</span>. The re-arrangement of the original integral will be <span class="math display">\[\sin(x) e^x + \int \cos(x) e^x dx\]</span> The new integral that we need to compute does not look any friendlier than the original, but who knows? we will do <span class="math inline">\(\int cos(x) e^x dx\)</span> by parts as well and keep our fingers crossed. That integral turns out to be <span class="math display">\[\int \cos(x) e^x dx = \cos(x) e^x - \int \sin(x) e^x dx\]</span> This may look like we are going in circles, and maybe we are, but let’s put everything together. <span class="math display">\[\underbrace{\int \sin(x) e^x dx}_\text{The original problem} = \underbrace{\sin(x) e^x + \cos(x) e^x}_\text{Easy stuff!}\ \ \  - \underbrace{\int \sin(x) e^x dx}_\text{Also the original problem}\]</span> Rearranging gives <span class="math display">\[\int \sin(x) e^x dx = \frac{\sin(x) e^x + \cos(x) e^x}{2} = \frac{e^x}{2}\left[{\large\strut} \sin(x) + \cos(x)\right]\]</span> And don’t forget the constant of integration.</p>
+<p>The obvious choice for the two parts is <span class="math inline">\(\sin(x)\)</span> and <span class="math inline">\(e^x\)</span>. Both are really easy to anti-differentiate. Let’s choose <span class="math inline">\(g(x) = \sin(x)\)</span>, giving <span class="math inline">\(G(x) = -\cos(x)\)</span>. The re-arrangement of the original integral will be</p>
+<p><span class="math display">\[\sin(x) e^x + \int \cos(x) e^x dx\]</span></p>
+<p>The new integral that we need to compute does not look any friendlier than the original, but who knows? we will do <span class="math inline">\(\int cos(x) e^x dx\)</span> by parts as well and keep our fingers crossed. That integral turns out to be</p>
+<p><span class="math display">\[\int \cos(x) e^x dx = \cos(x) e^x - \int \sin(x) e^x dx\]</span></p>
+<p>This may look like we are going in circles, and maybe we are, but let’s put everything together.</p>
+<p><span class="math display">\[\underbrace{\int \sin(x) e^x dx}_\text{The original problem} = \underbrace{\sin(x) e^x + \cos(x) e^x}_\text{Easy stuff!}\ \ \  - \underbrace{\int \sin(x) e^x dx}_\text{Also the original problem}\]</span></p>
+<p>Rearranging gives</p>
+<p><span class="math display">\[\int \sin(x) e^x dx = \frac{\sin(x) e^x + \cos(x) e^x}{2} = \frac{e^x}{2}\left[{\large\strut} \sin(x) + \cos(x)\right]\]</span></p>
+<p>And don’t forget the constant of integration.</p>
 </div>
 <p>[The presentation of integration by parts in this section was formulated by Prof.&nbsp;Michael Brilleslyper.]</p>
 </section>
@@ -860,14 +937,21 @@
 <p>One of the most famous settings for integration comes from the physics of free fall under gravity.</p>
 <p>Here’s the setting. An object—a ball, let’s imagine—is being held at height <span class="math inline">\(x_0\)</span>. At <span class="math inline">\(t=0\)</span> the ball is released. Perhaps the ball is released from a standstill in which case it is velocity at release is <span class="math inline">\(v_0 = v(t=0) =0\)</span>. Or perhaps the ball has been tossed upward so that <span class="math inline">\(v_0 &gt; 0\)</span>, or downward so that <span class="math inline">\(v_0 &lt; 0\)</span>. Whichever it is, the initial velocity will be labelled <span class="math inline">\(v_0\)</span>.</p>
 <p>On release, the force that held the ball steady is removed and the object moves under the influence of only one factor: gravity. The effect of gravity near the Earth’s surface is easy to describe: it accelerates the object at a constant rate of about 9.8 m/s<span class="math inline">\(^2\)</span>.</p>
-<p>Acceleration is the derivative with respect to time of velocity. Since we know acceleration, to find velocity we find an anti-derivative of acceleration: <span class="math display">\[v(t) = \int -9.8\ dt = -9.8\ t + C\]</span> The constant of integration <span class="math inline">\(C\)</span> is not just a formality. It has physical meaning. In this case, we see that <span class="math inline">\(C=v(0)\)</span>, that is, <span class="math inline">\(C = v_0\)</span>.</p>
-<p>Velocity is the derivative of position: height in this case. So height is an anti-derivative of velocity. <span class="math display">\[x(t) = \int v(t) dt = \int \left[\strut -9.8\ t + v_0\right]dt = - \frac{9.8}{2} t^2 + v_0\ t + C\]</span> Why is <span class="math inline">\(C\)</span> back again? it is a convention to use <span class="math inline">\(C\)</span> to denote the constant of integration. Those experienced with this convention know, from context, that the value of <span class="math inline">\(C\)</span> in the integration that produced <span class="math inline">\(v(t)\)</span> has nothing to do with the value of <span class="math inline">\(C\)</span> involved in the production of <span class="math inline">\(x(t)\)</span>. The situation is a bit like the presentation of prices in US stores: to the price of the item itself, you must always add “plus taxes.” Nobody with experience would assume that “taxes” is always the same number. It depends on the price and type of the item itself.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> You won’t have to deal with the taxes at the time you pick the item from the shelf, but eventually you will see them when you check out of the store. Think of <span class="math inline">\(+\ C\)</span> as meaning, “plus some number that we will have to deal with at some point, but not until checkout.”</p>
-<p>Let’s checkout the function <span class="math inline">\(x(t)\)</span> now. For that, we need to figure out the value of <span class="math inline">\(C\)</span>. We can do that by noticing that <span class="math inline">\(x(0) = C\)</span>. So in the anti-differentiation producing <span class="math inline">\(x()\)</span>, <span class="math inline">\(C = x_0\)</span> giving, altogether the formula for free-fall famous from physics classes <span class="math display">\[x(t) =  - \frac{9.8}{2} t^2 + v_0\ t + x_0\]</span> An important thing to notice about <span class="math inline">\(x(t)\)</span>: it is a polynomial in <span class="math inline">\(t\)</span>. Polynomials can be birthed by successive anti-differentiations of a constant. At each anti-differentiation, each of the previous terms is promoted by one order. That is, the previous constant becomes the first order term. The previous first-order term becomes the second order term, with the division by 2 familiar from anti-differentiating <span class="math inline">\(t\)</span>. A previous second-order term will become the new third-order term, again with the division by 3 familiar from anti-differentiating <span class="math inline">\(t^2\)</span>.</p>
+<p>Acceleration is the derivative with respect to time of velocity. Since we know acceleration, to find velocity we find an anti-derivative of acceleration:</p>
+<p><span class="math display">\[v(t) = \int -9.8\ dt = -9.8\ t + C\]</span></p>
+<p>The constant of integration <span class="math inline">\(C\)</span> is not just a formality. It has physical meaning. In this case, we see that <span class="math inline">\(C=v(0)\)</span>, that is, <span class="math inline">\(C = v_0\)</span>.</p>
+<p>Velocity is the derivative of position: height in this case. So height is an anti-derivative of velocity.</p>
+<p><span class="math display">\[x(t) = \int v(t) dt = \int \left[\strut -9.8\ t + v_0\right]dt = - \frac{9.8}{2} t^2 + v_0\ t + C\]</span></p>
+<p>Why is <span class="math inline">\(C\)</span> back again? it is a convention to use <span class="math inline">\(C\)</span> to denote the constant of integration. Those experienced with this convention know, from context, that the value of <span class="math inline">\(C\)</span> in the integration that produced <span class="math inline">\(v(t)\)</span> has nothing to do with the value of <span class="math inline">\(C\)</span> involved in the production of <span class="math inline">\(x(t)\)</span>. The situation is a bit like the presentation of prices in US stores: to the price of the item itself, you must always add “plus taxes.” Nobody with experience would assume that “taxes” is always the same number. It depends on the price and type of the item itself.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> You won’t have to deal with the taxes at the time you pick the item from the shelf, but eventually you will see them when you check out of the store. Think of <span class="math inline">\(+\ C\)</span> as meaning, “plus some number that we will have to deal with at some point, but not until checkout.”</p>
+<p>Let’s checkout the function <span class="math inline">\(x(t)\)</span> now. For that, we need to figure out the value of <span class="math inline">\(C\)</span>. We can do that by noticing that <span class="math inline">\(x(0) = C\)</span>. So in the anti-differentiation producing <span class="math inline">\(x()\)</span>, <span class="math inline">\(C = x_0\)</span> giving, altogether the formula for free-fall famous from physics classes</p>
+<p><span class="math display">\[x(t) =  - \frac{9.8}{2} t^2 + v_0\ t + x_0\]</span></p>
+<p>An important thing to notice about <span class="math inline">\(x(t)\)</span>: it is a polynomial in <span class="math inline">\(t\)</span>. Polynomials can be birthed by successive anti-differentiations of a constant. At each anti-differentiation, each of the previous terms is promoted by one order. That is, the previous constant becomes the first order term. The previous first-order term becomes the second order term, with the division by 2 familiar from anti-differentiating <span class="math inline">\(t\)</span>. A previous second-order term will become the new third-order term, again with the division by 3 familiar from anti-differentiating <span class="math inline">\(t^2\)</span>.</p>
 <p>Stated generally, the anti-derivative of a polynomial is</p>
-<p><span class="math display">\[{\Large\int} \left[\strut \underbrace{a + b t + ct^2 + \ldots}_\text{original polynomial}\right] dt = \underbrace{C + a\,t + \frac{b}{2} t^2 + \frac{c}{3} t^3 + \ldots}_\text{new polynomial}\]</span> By use of the symbol <span class="math inline">\(C\)</span>, it is easy to spot how the constant of integration fits in with the new polynomial. But if we were to anti-differentiate the new polynomial, we had better replace <span class="math inline">\(C\)</span> with some more specific symbol to that we don’t confuse the old <span class="math inline">\(C\)</span> with the one that is going to be produced in the new anti-differentiation.</p>
+<p><span class="math display">\[{\Large\int} \left[\strut \underbrace{a + b t + ct^2 + \ldots}_\text{original polynomial}\right] dt = \underbrace{C + a\,t + \frac{b}{2} t^2 + \frac{c}{3} t^3 + \ldots}_\text{new polynomial}\]</span></p>
+<p>By use of the symbol <span class="math inline">\(C\)</span>, it is easy to spot how the constant of integration fits in with the new polynomial. But if we were to anti-differentiate the new polynomial, we had better replace <span class="math inline">\(C\)</span> with some more specific symbol to that we don’t confuse the old <span class="math inline">\(C\)</span> with the one that is going to be produced in the new anti-differentiation.</p>
 <div class="intheworld">
 <p>In exercise 26.16, we introduced a Taylor polynomial approximation to the gaussian function. That might have seemed like a mere exercise in high-order differentiation at the time, but there is something more important at work.</p>
-<p>The gaussian is one of those functions for which the anti-derivative cannot be written exactly in terms of what the mathematicians call “elementary functions.” (See Section <a href="#sec-cataloged-functions">Section&nbsp;<span>38.1</span></a>.) Yet integrals of the gaussian are very commonly used in science, especially in statistics where the gaussian is called the <strong><em>normal PDF</em></strong>.</p>
+<p>The gaussian is one of those functions for which the anti-derivative cannot be written exactly in terms of what the mathematicians call “elementary functions.” (See Section <a href="#sec-cataloged-functions"><span class="quarto-unresolved-ref">sec-cataloged-functions</span></a>.) Yet integrals of the gaussian are very commonly used in science, especially in statistics where the gaussian is called the <strong><em>normal PDF</em></strong>.</p>
 <p>The approach we’ve taken in this book is simply to give a name and a computer implementation of the anti-derivative of the gaussian. This is the function we’ve called <span class="math inline">\(\pnorm()\)</span> with the R computer implementation <code>pnorm()</code>.</p>
 <p>We never told you the algorithm contained in <code>pnorm()</code>. Nor do we really need to. We all depend on experts and specialists to design and build the computers we use. The same is true of software implementation of functions like <code>pnorm()</code>. And for that matter, for implementations of functions like <code>exp()</code>, <code>log()</code>, <code>sin()</code>, and so on. You don’t have to know about semi-conductors to use a computer productively, and you don’t need to know about numerical algorithms to use those functions.</p>
 <p>One feasible algorithm for implementing <span class="math inline">\(\pnorm()\)</span> is to integrate the Taylor polynomial. It is very easy integrate polynomials. To ensure accuracy, different Taylor polynomials can be computed for different centers, say <span class="math inline">\(x=0\)</span>, <span class="math inline">\(x=1\)</span>, <span class="math inline">\(x=2\)</span>, and so on.</p>
@@ -957,7 +1041,7 @@
 </div>
 <p>Solve for the answer to the original function and write the function in R notation here:</p>
 <div class="cell" data-layout-align="center" data-exercise="true" data-exercise.cap="Answer to the original problem." data-exercise.nlines="3" data-fig.showtext="false">
-<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">makeFun</span>( ...your stuff here... <span class="sc">~</span> x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">makeFun</span>( ...your stuff here... <span class="sc">~</span> x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
 
@@ -1192,7 +1276,9 @@
 </section>
 <section id="exercise-38.09" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="exercise-38.09">Exercise 38.09</h4>
-<p>Using integration by parts, show that <span class="math display">\[\int x^2 \, e^{-x}\, dx = e^{-x} \left(2 - 2 x - x^2\right)\]</span> Hint: The 2’s in <span class="math inline">\(2 - 2x - x^2\)</span> are a hint that you don’t need to integrate <span class="math inline">\(x^2\)</span>.</p>
+<p>Using integration by parts, show that</p>
+<p><span class="math display">\[\int x^2 \, e^{-x}\, dx = e^{-x} \left(2 - 2 x - x^2\right)\]</span></p>
+<p>Hint: The 2’s in <span class="math inline">\(2 - 2x - x^2\)</span> are a hint that you don’t need to integrate <span class="math inline">\(x^2\)</span>.</p>
 <p>Show your work.</p>
 </section>
 <section id="exercise-38.10" class="level4 unnumbered">
@@ -1213,8 +1299,8 @@
 <p>We will call the left side of the equation “displacement(t)”. Use integration by parts to find displacement(t) as a simple formula in <span class="math inline">\(t\)</span>.</p>
 <p>The tortoise will reach the cabbage at time <span class="math inline">\(t^\star\)</span> such that <span class="math inline">\(\text{displacement}(t^\star) = 65\)</span> meters. In a <a href="https://maa-statprep.shinyapps.io/CalcZ-Sandbox/">SANDBOX</a>, graph your displacement function to find <span class="math inline">\(t^\star\)</span>. Remember that there will be a constant of integration which can be found by noting that <span class="math inline">\(\text{displacement}(0) = 0\)</span>. (Note that the graphics domain given in the example code isn’t necessarily the best choice for answering the question.)</p>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
-<div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>displacement <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="dv">7</span> <span class="sc">*</span> WHAT <span class="sc">+</span> C <span class="sc">~</span> t)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">displacement</span>(t) <span class="sc">~</span> t, <span class="fu">domain</span>(<span class="at">t=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>displacement <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="dv">7</span> <span class="sc">*</span> WHAT <span class="sc">+</span> C <span class="sc">~</span> t)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">displacement</span>(t) <span class="sc">~</span> t, <span class="fu">bounds</span>(<span class="at">t=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-layout-align="center" data-fig.showtext="false">
 <div class="cell-output-display">
@@ -1358,9 +1444,28 @@ people who are considered to be especially well informed about a particular subj
 <li id="fn4" role="doc-endnote"><p>Many jurisdictions tax food and clothing, etc. at a different rate than other items.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
+
 </main> <!-- /main -->
-<script type="application/javascript">
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -1380,7 +1485,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.blur();
     // flash "checked"
     button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
     setTimeout(function() {
+      button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
     // clear code selection
@@ -1443,11 +1551,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="../dynamics-part.html" class="pagination-link">
-        <span class="nav-page-text">Dynamics</span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text">V. Dynamics</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 </body></html>

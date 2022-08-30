@@ -7,7 +7,7 @@ make_rand_fun <- function(seed = NULL , center=0, width=5, aveval=0) {
 }
 
 cone_diagram <- function(f,
-                         dom=list(x=c(0,10)), # endpoints of plot
+                         dom=bounds(x=c(0,10)), # endpoints of plot
                          total_area = 10,
                          events_per_unit_area = 60,
                          startx = 0,

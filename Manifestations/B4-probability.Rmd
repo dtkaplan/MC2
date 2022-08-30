@@ -102,7 +102,7 @@ Take a minute to look at the picture of the jar and draw your function on the ax
 
 Here are contest entries from three competitors. 
 
-```{r echo=FALSE, warning=FALSE} 
+```{r echo=FALSE, warning=FALSE, message=FALSE} 
 #| label: fig-contest-entries
 #| fig-cap: "Three contestants' contest entries."
 P1 <- Money_graph %>% gf_labs(title="Name: Johnny") %>%
@@ -164,8 +164,12 @@ Three commonly used families of probability density functions are:
 ```{r echo=FALSE}
 #| label: fig-three-density-funs
 #| fig-cap: "Three probability density functions that are often used in applied work." 
-#| out-width: "60%" 
-#| fig.show: "hold"
+#| column: page-right
+#| layout-ncol: 3
+#| fig-subcap: 
+#|   - "Uniform density"
+#|   - "Gaussian density"
+#|   - "Exponential density"
 First = tibble(x=seq(-.5,1, by=0.01),
                 bottom = 0, 
                 top = 1/1.5)
@@ -176,7 +180,7 @@ P3 <- slice_plot(ifelse(x < 1 & x>-.5, 1/1.5, 0) ~ x, bounds(x=-2:2.5), npts=301
               breaks=c(0, 0.2, 0.4, 0.6, 0.666), 
               labels = c("0", "0.2", "0.4", "0.6", "2/3"),
               limits=c(0,.8))) %>%
-  gf_labs(y="", subtitle = "Uniform density") %>%
+  gf_labs(y="") %>%
     gf_ribbon(bottom + top ~ x, data = First, 
             color=NA, fill="orange", alpha=0.2, inherit=FALSE) %>%
   gf_text(.3 ~ .25, label= "100%", color="orange", inherit=FALSE)
@@ -200,7 +204,7 @@ P1 <- slice_plot(dnorm(x, 0, 4) ~ x, bounds(x=-15:17)) %>%
   gf_refine(scale_x_continuous(breaks=c(-12, -8, -4, 0, 4, 8, 12, 16),
                                labels = c("-3sd", "-2sd", "-1sd", "mean", "1sd", "2sd", "3sd", "4sd")),
             scale_color_identity()) %>%
-  gf_labs(y="", subtitle="Gaussian distribution") %>%
+  gf_labs(y="") %>%
   gf_ribbon(bottom + top ~ x, data = First, 
             color=NA, fill="magenta", alpha=0.2, inherit=FALSE) %>%
   gf_ribbon(bottom + top ~ x, data = Second, 
@@ -306,10 +310,12 @@ It works out that for an exponential distribution with parameter $k$, the mean i
 Finally, let's look at the mean and variance of a uniform distribution with, say, $a=0$ and $b=10$. We can do this symbolically or numerically. For the mean:
 $$\int_{-\infty}^\infty x\  \text{unif}(x, 0, 10)\, dx = \int_0^{10} \frac{x}{10-0}\, dx = \left.{\Large\strut} \frac{x^2}{20}\right|_{x=0}^{10} \\= \frac{100}{20} - \frac{0}{20} = 5$$
 For the variance, 
-$$\int_{-\infty}^\infty (x-5)^2\  \text{unif}(x, 0, 10)\, dx  
-= \int_0^{10} \frac{(x-5)^2}{10-0}\, dx = 
-\left.{\Large\strut}\frac{(x-5)^3}{30}\right|_{x=0}^{10}\\
-=\frac{5^3}{30} - \frac{(-5)^3}{30} = \frac{125}{30} - \frac{-125}{30} = 8 \tiny{\frac{1}{3}}$$
+\begin{eqnarray}
+\ \ \ & \!\!\!\!\!\!\int_{-\infty}^\infty (x-5)^2\  \text{unif}(x, 0, 10)\, dx\\ 
+& = \int_0^{10} \frac{(x-5)^2}{10-0}\, dx\\
+& = \left.{\Large\strut}\frac{(x-5)^3}{30}\right|_{x=0}^{10}\\
+& =\frac{5^3}{30} - \frac{(-5)^3}{30} = \frac{125}{30} - \frac{-125}{30} = 8 \tiny{\frac{1}{3}}
+\end{eqnarray}
 
 Or, numerically^[Numerical integrals from $-\infty$ to $\infty$ of functions that are zero almost everywhere are challenging. The computer has to figure out where, out of the whole number line, the function has non-zero output. We've given the computer a head start by using 0 in the limits of integration. This would not be a problem for the exponential or gaussian distribution, which are non-zero everywhere (for the gaussian) or for half the number line (for the exponential).]
 

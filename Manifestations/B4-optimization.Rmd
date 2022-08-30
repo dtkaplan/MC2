@@ -348,7 +348,7 @@ Since the purpose of the factory is to make things for sale, a good objective fu
 
 ```{r echo=FALSE}
 #| label: fig-cobb-doug1
-#| fig-cap: "A Cobb-Douglas production function with $p=100$, $b=40$ and $a=0.3$. (Output units in millions of dollars)."
+#| fig-cap: "A Cobb-Douglas production function for factory output with $p=100$, $b=40$ and $a=0.3$. (Output units in millions of dollars)."
 P <- makeFun(p*b*(L^a)*(K^(1-a))/1e6 ~ K & L, a=0.3, p=450, b =40)
 Plot1 <- contour_plot(P(L, K) ~ L & K, bounds(L=300:1000, K=50:250), skip=0)
 Plot1
@@ -359,7 +359,7 @@ Suppose that labor costs $6000 per person-month. Capital, in units of production
 
 ```{r echo=FALSE}
 #| label: fig-cobb-doug2
-#| fig-cap: "The production function with the budget constraint shown in green."
+#| fig-cap: "The production function for factory output with the budget constraint shown in green."
 Plot1 %>%
   inequality_constraint(6000*L + 13000*K <= 5500000 ~ L & K, fill="green",
                       bounds(L=300:1000, K=50:250), alpha=0.6, npts=250)
@@ -368,7 +368,7 @@ Any mixture of labor and capital that falls outside the green zone stays within 
 
 The argmax is right on the frontier of the constraint region. Put into more operational terms: You will want to spend your entire budget to maximize production. This is hardly a surprise to anyone who has to work within a budget. Knowing that you're going to use the whole budget, you might as well have found the argmax by walking along the constraint frontier from left to right. As you start near $K=250$ and $L=380$, the path you walk goes *uphill* in terms of the production function. The path continues uphill until you reach the argmax. Near the argmax, the path is level. After the path crosses the argmax, it is leading downhill. At the argmax, the production function contours are ***parallel*** to the constraint boundary. 
 
-You might like to think of this in terms of bicycling along a path in hilly terrain. When you reach the local high point on the path, you may not be at the top of the hill. But you will be on a flat spot on the path, meaning that the path is parallel to the contour of the hill at that point. 
+You might like to think of this in terms of bicycling along a path in hilly terrain. (The hill is shown in @fig-cobb-doug2 as the contours, the path is the boundary of the green area, running diagonally from top left to bottom right in the graph.) When you reach the local high point on the path, you may not be at the top of the hill. But you will be on a flat spot on the path, meaning that the path is parallel to the contour of the hill at that point. 
 :::
 
 
@@ -386,8 +386,8 @@ The constraint-to-function translated situation is shown in @fig-profit-cube:
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 #| label: fig-profit-cube
-#| fig-cap: "Zooming in on the objective function Profit() and showing the function version of the constraint, cube_box()  with green contours, with the heavy green line being the contour at cube_box(x,y)=1."
-contour_plot(1*x*(y-2*x)^2 - 1 * y^2 ~ x & y,
+#| fig-cap: "Zooming in on the objective function Profit() and showing the function version of the constraint, cube_box() using $\\color{magenta}{\\text{magenta}}$ contours, with the heavy green line being the contour at cube_box(x,y)=1."
+Plot2 <- contour_plot(1*x*(y-2*x)^2 - 1 * y^2 ~ x & y,
                        bounds(x=12:15,y=40:50),
              contours_at=c(100*((-3):3),500, 750, 1000, 1350, 2000, 2500,3500, 4500,5500),
                        skip=0) %>% 
@@ -395,10 +395,13 @@ contour_plot(1*x*(y-2*x)^2 - 1 * y^2 ~ x & y,
   inequality_constraint(y > 2*x ~ x + y, 
                         bounds(x=12:15, y=40:50), 
                               alpha=0.35, npts=200)  %>%
-  contour_plot(y/(3*x) ~ x & y, label_color="magenta", 
+  contour_plot(y/(3*x) ~ x & y, 
+               bounds(x=12:15,y=40:50),
+               label_color="magenta", 
                contour_color="magenta",
                contours_at=c(.85, .9, .95, 1, 1.05, 1.10, 1.15), 
                skip=0, filled=FALSE) 
+Plot2
 ```
 
 
@@ -415,14 +418,14 @@ Modeler: *It might sound surprising, but we find that so long as you are close t
 
 Designer: *What's really important is that the box be perceived as a cube in our sales material. I think that most customers would think "cube" so long as the edge lengths are within about 15% of one another.*
 
-Modeler: *that is  very helpful. Let's see if I can translate that into the cube_box() function.*
+Modeler: *That's  very helpful. Let's see if I can translate that into the cube_box() function.*
 
 [Modeler does some scribbling while mumbling to himself. "$y-2x$ is the base width and depth of the box, and $x$ is the height of the box. So if $y-2x = 1.15 x$ then $y = 3.15 x$.  $\text{cube-box}(x, 3.15 x) = 1.05$.]
 
 
-Modeler: [to Designer] *The 15% deviation corresponds to an output of 1.05 from  $\text{cube-box}()$. 
+Modeler: [to Designer] *The 15% deviation corresponds to an output of 1.05 from  $\text{cube-box}()$.* 
 
-Modeler: [To product manager] *Making that change in shape increases profit per box from $13.50 to $22.50 .
+Modeler: [To product manager] *Making that change in shape increases profit per box from $13.50 to $22.50.*
 
 Product manager: *Good job! How about a 30% deviation? That let's us get up to about $33 in profit.*
 
@@ -434,7 +437,7 @@ Making the constraint negotiable by representing it with a function, broadens th
 
 ::: {.intheworld data-latex=""}
 Let's return to a previous example about determining optimal levels of labor and capital in a factory. In that example, the objective function was the money value of the product produced. There was also a budget constraint. Translating the budget constraint into a function, which we will call expenditure(K, L), we have 
-$\text{expenditure}(K, L) = 4000 L + 15000 K$. Our budget amounts to enforcing  $\text{expenditure}(K, L) = \$5,500,000$.
+$\text{expenditure}(K, L) = 6000 L + 13000 K$. Our budget amounts to enforcing  $\text{expenditure}(K, L) = \$5,500,000$.
 
 A manager presented with a budget knows that she should work within the constraints of that budget. Mathematically, however, it is easy to imagine the budget being changed, either ***relaxed*** or tightened. This mathematical possibility provides the means to extract new information that can be helpful in making decisions at a higher level, that is, above the rank of the manager. This can be helpful to higher management---the people who are responsible for seeing the bigger picture. 
 
@@ -442,15 +445,15 @@ A manager presented with a budget knows that she should work within the constrai
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 #| label: fig-cobb-doug-redux 
-#| fig-cap: "The production function (black, curved lines) and the expenditure function (magenta, straight lines). Contour labels are in millions of dollars. We've drawn contours at levels that happen to be tangent to the expenditure contours."
+#| fig-cap: "The production function for factory output (blue, curved lines) and the labor/capital expenditure function (magenta, straight lines). Contour labels are in millions of dollars. Contour levels for expenditure (magenta: 3.1, 3.9, 4.6, etc.) were selected so that the magenta contours are nearly tangent to the blue factory-output contours. This makes it easy to see the K/L position for optimal factory output for each of the indicated expenditure levels."
+#| fig-cap-location: margin
 Plot1 %>%
   inequality_constraint(6000*L + 13000*K <= 5500000 ~ L & K, fill="green",
                       bounds(L=300:1000, K=50:250), alpha=0.6, npts=250) %>%
   contour_plot((6000*L + 13000*K)/1e6 ~ L & K, contour_color="magenta", 
-               contours_at=c(3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9), labels=FALSE, filled=FALSE) %>%
-  contour_plot((6000*L + 13000*K)/1e6 ~ L & K, contour_color="magenta", 
-               contours_at=c(3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9), 
-               bounds(L=300:1000, K=200:250), skip=0, filled=FALSE)
+               bounds(L=300:1000, K=50:250),
+               contours_at=c(3.1,3.9,4.6, 5.4, 6.2, 7, 7.7, 8.5), 
+               skip=0, filled=FALSE, label_placement=0.1)
 ```
 
 With the budget fixed at $5.5 million---that is, on the $5.5-million contour of the expenditure function---the maximum production was $7.1 million. 
@@ -476,7 +479,7 @@ Generations of calculus students have been taught a method of mathematical optim
 #| fig-cap: "The production and expenditure functions displayed as gradient fields. Expenditure is brown, production is magenta."
 P <- makeFun(p*b*(L^a)*(K^(1-a)) ~ K & L, a=0.3, p=450, b =40)
 Gplot1 <- gradient_plot(P(L, K) ~ L & K, bounds(L=300:600, K=50:250), color="magenta", alpha=1, npts=10)
-Gplot1 %>% gradient_plot(-(6000*L + 13000*K) ~ L & K, color="brown", alpha=.8, npts=10) %>%
+Gplot1 %>% gradient_plot(-(6000*L + 13000*K) ~ L & K, color="brown", alpha=.8, npts=10, bounds(L=300:600, K=50:250)) %>%
   gf_text(250 ~ 300, label="(a)") %>%
   gf_text(100 ~ 450, label="(b)") %>%
   gf_refine(coord_fixed())

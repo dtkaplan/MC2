@@ -1,4 +1,3 @@
-library(Zcalc) # New, catch-all package
 library(Znotes)
 library(here) # for file locations
 library(thematic)
