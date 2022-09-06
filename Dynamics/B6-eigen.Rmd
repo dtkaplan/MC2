@@ -26,8 +26,10 @@ Result: The simple car-following control system oscillates. That is not a very g
 ## Vector solutions to linear differential equations
 
 The form in which we have been writing linear differential equations in two state variables is
-$$\partial_t x = a x + b y\\
-\partial_t y = c x + d y$$
+\begin{eqnarray}
+\partial_t x & = a x + b y\\
+\partial_t y & = c x + d y\ .
+\end{eqnarray}
 
 A key part of constructing a theory of stability is finding a set of mathematical ideas that enable us to view dynamics in a simpler way. The idea we will introduce here is thinking about the state and trajectory of a differential equation in terms of ***vectors***. We will work here with systems with a two-variable dynamical state, but the results apply just as well to higher dimensional states. That is important in applied work, where the systems being modeled are complicated with many state components. 
 
@@ -43,8 +45,10 @@ For the moment, we won't worry about how best to choose $\vec{u_1}$ and $\vec{u_
 $\ $
 
 As a running example, we will work with the pair of first-order differential equations
-$$\partial_t x = x + y\\
-\partial_t y = 2 x \ \ \ \ $$
+\begin{eqnarray}
+\partial_t x &= x + y\\
+\partial_t y &= 2 x \ ,\\
+\end{eqnarray}
 which, in vector/matrix form are
 $$\partial_t \vec{w(t)} = \left[\begin{array}{cc}1&1\\2&0\end{array}\right] \vec{w(t)}\ .$$
 Imagine that we choose, arbitrarily, $$\vec{u_1} = \color{magenta}{\left[\begin{array}{r}1\\-3\end{array}\right]}\ \ \ \text{and}\ \ \ \vec{u_2} = \color{blue}{\left[\begin{array}{r}1.0\\0\end{array}\right]}\ .$$
@@ -105,7 +109,7 @@ traj_plot(y(t) ~ x(t), traj_u1, bounds(t=0:1),  color="magenta", nt=1) %>%
   gf_refine(coord_fixed())
 ```
 
-At first glance, the two trajectories $\vec{u_1(t)}$ and $\vec{u_2(t)}$ in @fig-vec-example2 that start from $\vec{u_1}$ and $\vec{u_2}$ might not look much like the trajectory in @fig-vec-example-1 that starts from $\vec{w(0)} = -0.7 \vec{u_1} - 0.4 \vec{u_2}$. But in fact there is a very simple relationship between the trajectories:
+At first glance, the two trajectories $\vec{u_1(t)}$ and $\vec{u_2(t)}$ in @fig-vec-example-2 that start from $\vec{u_1}$ and $\vec{u_2}$ might not look much like the trajectory in @fig-vec-example-1 that starts from $\vec{w(0)} = -0.7 \vec{u_1} - 0.4 \vec{u_2}$. But in fact there is a very simple relationship between the trajectories:
 $$\vec{w(t)} = -0.7 \vec{u_1(t)} - 0.4 \vec{u_2(t)}\ .$$
 To state the situation more generally, any solution to the differential equations can be written as a linear combination of the solutions starting at $\vec{u_1}$ and $\vec{u_2}$, regardless of how $\vec{u_1}$ and $\vec{u_2}$ were chosen.
 
@@ -175,14 +179,17 @@ traj_plot(y(t) ~ t, traj_eigen1, color="magenta") %>%
   gf_refine(scale_y_log10(
     breaks=c(0.3290, 0.7071, 0.8944, 5.2248)))
 ```
-We've marked the $y$ axis with the starting and ending values of each function, so that you can find the exponential parameter $k$ for each function.
+We have marked the $y$ axis with the starting and ending values of each function, so that you can find the exponential parameter $k$ for each function.
 
-$$\color{magenta}{y_1(t) = 0.7071 e^{k_1 t}}\\
-\color{blue}{y_2(t)} = 0.8944 e^{k_2 t}$$
+$\color{magenta}{y_1(t) = 0.7071 e^{k_1 t}}$
+
+$\color{blue}{y_2(t)} = 0.8944 e^{k_2 t}$.
+
 To find $k_1$ and $k_2$, plug in $t=1$ to the solution:
 
-$$\color{magenta}{y_1(1) = 5.2248 = 0.7071 e^{k_1}} \implies k_1=2\\
-\color{blue}{y_2(1) = 0.3290 = 0.8944 e^{k_2}} \implies k_2 = -1$$
+$\color{magenta}{y_1(1) = 5.2248 = 0.7071 e^{k_1}} \implies k_1=2$
+
+$\color{blue}{y_2(1) = 0.3290 = 0.8944 e^{k_2}} \implies k_2 = -1$
 
 Look back at the results from the `eigen(M)` calculation. These values for $k_1$ and $k_2$ are exactly the ***eigenvalues*** that were computed from the matrix `M`. In standard notation, rather than $k_1$ and $k_2$, the notation $\lambda_1 = k_1$ and $\lambda_2 = k_2$ is preferred. (Remember, $\lambda$ is the Greek letter "lambda" in it is lower-case form.)
 Every solution to the differential equation has the form

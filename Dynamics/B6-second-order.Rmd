@@ -25,11 +25,13 @@ where $C$ captures the constants of integration from both integrals into one num
 
 It is worth noticing how much mathematics needs to be understood before this method of solution makes sense. The ***fundamental theorem of calculus*** is what tells us that $\int \partial_t v\, dt = v(t) + B$, and you have to know about how to anti-differentiate a constant function to make sense of $\int g\, dt = -g\,t + D$. You also need to know why constants of integration, such as $B$ and $D$, get included when writing the function that results from an anti-differentiation. (You might need to revisit Block 3 to refresh your memory about such things.)
 
-There is also some physical context to be considered. By setting $t=0$ in $v(t) = -g\,t + C$, for instance, we can identify $C$ as the velocity at time zero, which we might write $v(0)$ or $v_0$ for short. And what about the position of the object? The solution $v(t) = -g\,t + v_0$ has nothing to say directly about the position $x(t)$ of the object as a function of time. We can work position $x(t)$ into things by recognizing that $v(t) = \partial_t x(t)$, which is the definition of velocity.
+There is also physical context to be considered. By setting $t=0$ in $v(t) = -g\,t + C$, for instance, we can identify $C$ as the velocity at time zero, which we might write $v(0)$ or $v_0$ for short. And what about the position of the object? The solution $v(t) = -g\,t + v_0$ has nothing to say directly about the position $x(t)$ of the object as a function of time. We can work position $x(t)$ into things by recognizing that $v(t) = \partial_t x(t)$, which is the definition of velocity.
 
 Anti-differentiating both sides of $v(t) = -g\, t + v_0$ gives us a more complete story that include both initial velocity $v_0$ and initial position $x_0$:
-$$\int v(t)\, dt = \int \left(\strut -g\, t + v_0\right)\ dt \implies x(t) = -\frac{1}{2} g\,t^2 + v_0\,t + x_0\ ,
-$$
+
+$\int v(t)\, dt = \int \left(\strut -g\, t + v_0\right)\ dt \implies x(t) = -\frac{1}{2} g\,t^2 + v_0\,t + x_0\ ,
+$
+
 where $x_0$ is the constant of integration from this second stage of anti-differentiation. (Plug in $t=0$ to see why we are justified in taking $x_0$ as the initial position.)^[Another bit of physics which is still not included in the differential equation is that it will only hold until the object hits the ground, at which point the force of gravity will be counter-acted by the force of the ground on the object.]
 
 Still one more way to write the dynamics of falling under the influence of gravity .... Recognizing that $v(t) = \partial_t x(t)$, we can see that $\partial_t v(t) = \partial_{tt} x(t)$. So the original differential equation could be written:
@@ -82,14 +84,14 @@ To illustrate, we will solve this set of four first-order equations numerically.
 
 Here's the trajectory:
 
-```{r results="hide"}
+```{r results="hide", warning=FALSE, message=FALSE}
 traj <- integrateODE(
   dx ~ u, dy ~ v, du ~ 0, dv ~ -9.8, #dynamics
   x=0, y=100, u = 250, v=0, #initial conditions
   bounds(t=0:5)
 ) 
-traj_plot(y(t) ~ x(t), traj)
-traj_plot(v(t) ~ u(t), traj)
+# traj_plot(y(t) ~ x(t), traj)
+# traj_plot(v(t) ~ u(t), traj) 
 ```
 
 ```{r echo=FALSE}
@@ -97,12 +99,13 @@ traj_plot(v(t) ~ u(t), traj)
 #| fig-cap: "Trajectory of the cannon ball shot with an initial horizontal velocity and no initial vertical velocity. The trajectory is plotted in slices of state space: position $(x, y)$ and velocity $(u, v)$. The time at which the ball reaches the points marked on the trajectory give the time."
 P1 <- traj_plot(y(t) ~ x(t), traj) %>%
   gf_hline(yintercept=~0, color="brown") %>%
-  gf_labs(subtitle="(x, y) position as a function of time")
+  gf_labs(subtitle="(x, y) position")
 P2 <- traj_plot(v(t) ~ u(t), traj) %>%
-  gf_labs(subtitle="(u, v) velocity as a function of time")
+  gf_labs(subtitle="(u, v) velocity") %>%
+  gf_lims(x=c(0,250))
 gridExtra::grid.arrange(P1, P2, nrow=1)
 ```
-The left panel in @fig-cannon-shot-1 shows that the trajectory is a parabola. At about $t=4.4$ secs the $y$ position is zero. If zero is the location of the ground, the part of the trajectory for $4.4 < t$ is invalid, since the ball has already hit the ground. The ball travels a little more than 1100 meters horizontally before hitting the ground.
+The left panel in @fig-cannon-shot-1 shows that the trajectory is a parabola. At about $t=4.4$ secs the $y$ position is zero. Since zero is the location of the ground, the part of the trajectory for $4.4 < t$ is invalid, since the ball has already hit the ground. The ball travels a little more than 1100 meters horizontally before hitting the ground.
 
 The right panel might seem somewhat strange. You can see that the vertical component of velocity, $v(t)$ starts out at zero and increases linearly with time, becoming more and more negative as gravity continuous to accelerate the ball downward. The vertical velocity, $u(t)$, stays constant at $u(t) = 250$ meters per second. This is because there is no horizontal force on the ball.
 
@@ -117,36 +120,41 @@ The ballistics of real world artillery shells is more complex than the simple mo
 
 The velocity vector is simply $\left[\begin{array}{c}u\\v\end{array}\right]$. The air resistence force will be $$-\alpha\sqrt{\strut u^2 + v^2} \left[\begin{array}{c}u\\v\end{array}\right]\ .$$ Consequently, the horizontal component of the air-resistence vector is $-\alpha\, u \sqrt{\strut u^2 + v^2}$ and the vertical component is $-\alpha\, v \sqrt{\strut u^2 + v^2}$. 
 
-Incorporating air resistence into the model can be done like this:
-$$r(u, v) \equiv \alpha \sqrt{\strut u^2 + v^2}\\
-\partial_t x = u\\
-\partial_t y = v\\
-\partial_t u = -u\, r(u,v)\\
-\partial_t v = -g - v\, r(u,v)$$
-ENIAC would have been programmed to carry out the calculation we now do with `integrateODE()`:
+Representing air resistence by the function $r(u, v)  \equiv \alpha \sqrt{\strut u^2 + v^2}$, the dynamics are 
+\begin{eqnarray}
+\partial_t x & = u\\
+\partial_t y & = v\\
+\partial_t u & = -u\ r(u,v)\\
+\partial_t v &= -g - v\ r(u,v)\\
+\end{eqnarray}
+`integrateODE()` carries out the calculation in R/mosaic. 
 
-```{r}
+```{r warning=FALSE, message=FALSE, results="hide"}
 r <- makeFun(alpha*sqrt(u^2 + v^2) ~ u & v, alpha=0.003)
 traj2 <- integrateODE(
   dx ~ u, dy ~ v, du ~ -u*r(u,v), dv ~ -9.8 - v*r(u,v), #dynamics
   x=0, y=100, u = 250, v=0, #initial conditions
   bounds(t=0:6)
 )
-traj_plot(y(t) ~ x(t), traj)
-traj_plot(v(t) ~ u(t), traj)
+# traj_plot(y(t) ~ x(t), traj2)
+# traj_plot(v(t) ~ u(t), traj2)
 ```
 
-```{r cannon-shot-2, fig-cap: "Adding air resistence to the model changes the trajectory. For reference, the trajectory *without air resistence* is plotted in $\\color{orange}{\\text{orange}}$.", warning=FALSE}
+```{r cannon-shot-2, echo=FALSE, warning=FALSE}
+#| label: fig-cannon-shot-2
+#| fig-cap: "Adding air resistence to the model changes the trajectory. For reference, the trajectory *without air resistence* is plotted in $\\color{orange}{\\text{orange}}$."
 P1 <- 
   gf_hline(yintercept=~0, color="brown") %>%
   traj_plot(y(t) ~ x(t), traj, nt=2, color="orange") %>%
   traj_plot(y(t) ~ x(t), traj2) %>%
-  gf_labs(subtitle="(x, y) position as a function of time")
+  gf_labs(subtitle="(x, y) position")
 P2 <- traj_plot(v(t) ~ u(t), traj2) %>%
-  gf_labs(subtitle="(u, v) velocity as a function of time")
+  traj_plot(v(t) ~ u(t), traj, nt=2, color="orange") %>%
+  gf_labs(subtitle="(u, v) velocity") %>%
+  gf_lims(x=c(0,250))
 gridExtra::grid.arrange(P1, P2, nrow=1)
 ```
-Air resistance causes the cannon ball to travel a shorter horizontal distance and to arrive with a much reduced velocity.
+Air resistance causes the cannon ball to travel a shorter horizontal distance before hitting the ground and to arrive with a much reduced velocity.
 :::
 
 ## The harmonic oscillator

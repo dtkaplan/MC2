@@ -72,9 +72,9 @@ Better than a picture of a summer melon, pick up a hardcover book and place it o
 
 If melons and basketballs are not your style, you can play the same game on an interactive graph of a function with two inputs. The snapshot below is a link to an applet that shows the graph of a function as a **blue** surface. You can specify a point on the surface by setting the value of the (x, y) input using the sliders. Display the tangent plane (which will be **green**) at that point by check-marking the "Tangent plane" input. (Acknowledgments to Alfredo Sánchez Alberca who wrote the applet using the GeoGebra math visualization system.) 
 
-::: {asis eval=knitr::is_html_output()}
+``` {asis eval=knitr::is_html_output()}
 <a href="https://www.geogebra.org/m/wTh7KKd3" target="_blank"><img src="www/geogebra-tangent-app.png" width="70%"></a>
-:::
+```
  
 ```{r echo=FALSE, eval=knitr::is_latex_output()}
 #| label: fig-tangent-app
@@ -163,24 +163,33 @@ One clue comes from the formula for a function whose graph is a plane oriented i
 
 $$\text{plane}(x,y) \equiv a + b x + cy$$
 
-::: {.scaffolding  data-latex=""}
-To explore the roles of the parameters $b$ and $c$ in setting the orientation of the line, open a `r sandbox_link()`. The scaffolding code generates a particular instance of $\text{plane}(x,y)$ and plots it in two ways: a contour plot and a surface plot. Change the numerical values of $b$ and $c$ and observe how the orientation of the planar surface changes in the graphs. You can also see that the value of $a$ is irrelevant to the orientation of the plane, just as the intercept of a straight-line graph is irrelevant to the slope of that line. 
+::: {.callout-tip icon=false  data-latex=""}
+## R/mosaic: Orientation of a plane
+To explore the roles of the parameters $b$ and $c$ in setting the orientation of the line, open an R/mosaic session. The R/mosaic code below generates a particular instance of $\text{plane}(x,y)$ and plots it in two ways: a contour plot and a surface plot. Change the numerical values of $b$ and $c$ and observe how the orientation of the planar surface changes in the graphs. You can also see that the value of $a$ is irrelevant to the orientation of the plane, just as the intercept of a straight-line graph is irrelevant to the slope of that line.[Note: The `gf_refine(coord_fixed())` part of the contour-plot command makes numerical intervals on the horizontal and vertical axes have the same length.)]{.aside}
 
 ```{r}
 plane <- makeFun(a + b*x + c*y ~ x + y, a = 1, b = -2.5, c = 1.6)
-if (knitr::is_html_output()) {
-  interactive_plot(plane(x, y) ~ x + y, bounds(x=c(-2, 2), y=c(-2, 2)))
-} else {
+contour_plot(plane(x, y) ~ x + y, 
+             bounds(x=c(-2, 2), y=c(-2, 2))) %>%
+  gf_refine(coord_fixed())
+```
+
+```{r eval=FALSE}
+interactive_plot(plane(x, y) ~ x + y, 
+                 bounds(x=c(-2, 2), y=c(-2, 2)))
+```
+
+```{r echo=FALSE}
+if (knitr::is_html_output()){
+  interactive_plot(plane(x, y) ~ x + y, 
+                   bounds(x=c(-2, 2), y=c(-2, 2)))
+  } else {
   knitr::include_graphics("www/plane-3d.png")
 }
-contour_plot(plane(x, y) ~ x + y, bounds(x=c(-2, 2), y=c(-2, 2))) %>%
-  gf_refine(coord_fixed())
 ```
 
 As always it can be difficult to extract quantitative information from a surface plot. For the example here, you can see that the high-point on the surface is when $x$ is most negative and $y$ is most positive. Compare that to the contour plot to verify that two modes are displaying the same surface. 
 
-
-(Note: The `gf_refine(coord_fixed())` part of the contour-plot command makes numerical intervals on the horizontal and vertical axes have the same length.)
 :::
 
 An instructive experience is to pick up a rigid, flat object, for instance a smartphone or hardcover book. Hold the object level with pinched fingers at the mid-point of each of the short ends, as shown in @fig-hold-book (left).  

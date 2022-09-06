@@ -32,20 +32,19 @@ $${\Large  F(t) = \int f(t) dt}\ \ \ \ \ \text{or}\ \ \ \ \ {\Large G(t) = \int 
 
 The remaining steps in such calculations are to work with the CAPITAL LETTER function to compute such things as the amount of that quantity, or the change in that quantity as it is accumulated over an interval of $t$.
 
-::: {.why data-latex=""}
-Sometimes you're writing the capital letter functions in **bold-face**, e.g. ${\mathbf F}(t)$ and other times you aren't, e.g. $F(t)$. What's going on?
+::: {.callout-note icon=false data-latex=""}
+## Why capital letters?
+Sometimes we write capital letter functions in **bold-face**, e.g. ${\mathbf F}(t)$ and other times you aren't, e.g. $F(t)$. What's going on?
 
 This is a convention we are adopting for this chapter, which is when we need it the most to introduce the concepts.
 
 **Bold-face** is being used in this chapter to represent the real-world quantity of interest. So ${\mathbf F}(t)$ is the actual amount of fuel in the tank, ${\mathbf M}(t)$ is the actual momentum of the car, and ${\mathbf S}(t)$ is the actual amount of money on hand. The regular-face functions, $F(t)$ and $M(t)$ and $S(t)$ are the functions that we get by applying anti-differentiation to $f(t)$ or $m(t)$ or $s(t)$.
 
-Our broad interest is to construct the **bold-face** function knowing just the derivative of that function, which we are writing in *lower-case*. So, $f(t) \equiv \partial_t {\mathbf F}(t)$. Similarly, $m(t) \equiv \partial_t {\mathbf M}(t)$ and $s(t) \equiv \partial_t {\mathbf S}(t)$.
+Our broad interest is to construct the **bold-face** function knowing just the derivative of that function, which we are writing in *lower-case*. So, $f(t) \equiv \partial_t {\mathbf F}(t)$. Similarly, $m(t) \equiv \partial_t {\mathbf M}(t)$ and $s(t) \equiv \partial_t {\mathbf S}(t)$. We are in the situation where we know $f(t)$ but not ${\mathbf F}(t)$, or we know $m(t)$ but not ${\mathbf M}(t)$, and so on.
 
-If we knew ${\mathbf F}(t)$ or ${\mathbf M}(t)$ or ${\mathbf S}(t)$, that would be the end of the matter, since our interest is in the quantity ${\mathbf F}$ or ${\mathbf V}$ or ${\mathbf M}$. But we are working with a situation where we know $f(t)$ but not ${\mathbf F}(t)$, or we know $m(t)$ but not ${\mathbf M}(t)$, and so on.
+How could such a situation arise in the real world? Suppose the car's fuel gauge is broken, leaving us without direct knowledge of $\mathbf F$ (liters).  But there is a dashboard readout of the instantaneous rate of fuel consumption (say, liters per 100 km). So, we know $f(t)$ but not ${\mathbf F}(t)$. Or suppose you are in charge of day-to-day running of a business, collecting the income each day and paying the daily expenses. Thus, each day you know $s(t)$---the cash flow. But it is your boss who has access to the bank account; you merely deposit money as you get it and authorize electronic funds transfers to suppliers. Your boss knows ${\mathbf S}(t)$ but you know only $s(t)$.
 
-How could such a situation arise in the real world? Suppose the car's fuel gauge is broken, depriving us of direct knowledge of $\mathbf F$, but that we have a dashboard readout of the rate of fuel consumption. Then we would know $f(t)$ but not ${\mathbf F}(t)$. Or suppose you are in charge of day-to-day running of a business, collecting the income each day and paying the daily expenses. Thus, each day you know $s(t)$---the cash flow. But it is your boss who has access to the bank account; you merely deposit money as you get it and write checks or Venmo suppliers (or however it is that your business operates day to day). So your boss knows ${\mathbf S}(t)$ but you know only $s(t)$.
-
-Since you know about anti-differentiation, you can try to reconstruct the fuel level ${\mathbf F}(t)$ from the known $f(t)$, or to figure out the bank balance ${\mathbf S}(t)$ from your records of $s(t)$.
+Anti-differentiation is part of the way to reconstruct the fuel level ${\mathbf F}(t)$ from the known $f(t)$, or to figure out the bank balance ${\mathbf S}(t)$ from your records of $s(t)$.
 
 But anti-differentiation, while part of the solution, is only just a part. You can apply anti-differentiation to $f(t)$, but what you get back will be $F(t)$, not ${\mathbf F}(t)$. 
 
@@ -192,8 +191,8 @@ Let's imagine the ghost of Galileo returned to Pisa in 1690 after reading Newton
 
 Although Newton famously demonstrated that gravitational attraction is a function of the distance between to objects, he also knew that at a fixed distance---the surface of the Earth---gravitational acceleration was constant. So Galileo was vindicated by Newton. But, although gravitational acceleration is constant from top to bottom of the Tower of Pisa, Galileo's ball was part of a more complex system: a hand holding the ball still until release. Acceleration of the ball versus time is therefore approximately a Heaviside function:
 
-$$\text{accel}(t) \equiv \left\{\begin{array}{rl}0 & \text{for}\ t \leq 3\\
-{-9.8}  & \text{otherwise}\end{array}\right.$$
+$\text{accel}(t) \equiv \left\{\begin{array}{rl}0 & \text{for}\ t \leq 3\\
+{-9.8}  & \text{otherwise}\end{array}\right.$
 
 ```{r}
 accel <- makeFun(ifelse(t <= 3, 0, -9.8) ~ t)
@@ -250,10 +249,12 @@ In the (fictional) account of the 1690 experiment, we had Galileo release the ba
 A remarkable feature of integrals is that it does not matter what we use as the lower bound of integration, so long as we set the initial value to correspond to that bound. 
 
 
-::: {.why}
+::: {.callout-note icon=false data-latex=""}
+## Why $\int f(x) dx$ instead of $\int f(t) dt$?
+
 For a while you were writing integrals like this: $\int_a^b f(t) dt$. Then you replaced $b$ with the input name $t$ to get $\int_a^t f(t) dt$. But then you switched everything up by writing $\int_a^t f(x) dx$. Is that the same as $\int_a^t f(t) dt$? If so, why do you get to replace the $t$ with $x$ in some places but not in others?
 
-Recall from Chapter `r Chaps$fun_notation` that the names used for inputs to a function definition don't matter so long as they are used consistently on the left and right sides of $\equiv$. For instance, all these are the same function:
+Recall from @sec-notation that the names used for inputs to a function definition don't matter so long as they are used consistently on the left and right sides of $\equiv$. For instance, all these are the same function:
 
 - $f(x) \equiv m x + b$
 - $g(t) \equiv m t + b$
@@ -262,7 +263,7 @@ Recall from Chapter `r Chaps$fun_notation` that the names used for inputs to a f
 Now think about the integral $\int_a^b f(t) dt$:
 $$\int_a^b f(t) dt = F(b) - F(a)\ .$$
 
-On the left-hand side, the input name $t$ is prominant, appearing in two places: $f(\color{magenta}{t}) d\color{magenta}{t}$. But $t$ is nowhere on the right-hand side. We could have equally well written this as $\int_a^b f(x) dx$ or $\int_a^b f(\text{wind}) d\text{wind}$. The name we use for the input to $f()$ does not matter so long as it is consistent with the name used in the $d\_\_$ part of the notation. Often, the name placed in the blanks in $\int f(\_\_) d\_\_$ is called a ***dummy variable***.
+On the left-hand side, the input name $t$ is prominent, appearing in two places: $f(\color{magenta}{t}) d\color{magenta}{t}$. But $t$ is nowhere on the right-hand side. We could have equally well written this as $\int_a^b f(x) dx$ or $\int_a^b f(\text{wind}) d\text{wind}$. The name we use for the input to $f()$ does not matter so long as it is consistent with the name used in the $d\_\_$ part of the notation. Often, the name placed in the blanks in $\int f(\_\_) d\_\_$ is called a ***dummy variable***.
 
 Writing $\int_a^t f(t) dt$ is perfectly reasonable, but many authors dislike the multiple appearance of $t$. So they write something like $\int_a^t f(x) dx$ instead.
 :::

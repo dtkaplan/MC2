@@ -49,17 +49,10 @@ gf_path(y ~ x, data = Robot_stations, size = 2) %>%
 
 Even so, functions can be a useful way of describing the $(x,y)$ path. The key is the plural: function**s**. For the path in @fig-robot-points  we need *two* quantities varying with time in a coordinated way. One approach, familiar to navigators, is to specify direction of movement and velocity at each instant of time. Perhaps not as familiar, but more fundamental mathematically, is to specify $x$ as a function of time and, separately, $y$ as a function of time. Using this formalism, the trajectory of the robot arm will consist of two functions, $x(t)$ and $y(t)$. To build those functions, well start with the waypoints stored in the data frame `Robot_stations`.
 
-```{r echo=FALSE, eval=knitr::is_html_output()}
-TAB <- if (knitr::is_html_output()) {
-  Znotes::and_so_on(Robot_stations)
-} else {
-  Znotes::and_so_on(Robot_stations)
-}
-TAB # %>% kableExtra::kable_paper("hover", full_width = FALSE)
-```
+```{r echo=FALSE}
+TAB <- Znotes::and_so_on(Robot_stations)
 
-```{asis eval=knitr::is_latex_output()}
-GET THE TABLE HERE IN PDF mode
+TAB # %>% kableExtra::kable_paper("hover", full_width = FALSE)
 ```
 
 The $x(t)$ and $y(t)$ functions in this table aren't complete enough to operate the robot. We need to provide the $x,y$-location data in the form of two **continuous** functions of $t$ so that the robot, at any time $t$, can look up where it is supposed to be, what its velocity should be, and how that velocity should be changing in time (acceleration).
@@ -347,17 +340,13 @@ slice_plot(xfun(t) ~ t, bounds(t=1:16), npts=500) %>%
 
 We saw that using a line-segment interpolation produces discontinuity in the derivative of the function. Mathematically, discontinuity in the velocity can be thought of as an infinite acceleration, requiring an infinite force. In the physical world, accelerations must be finite. Even if a force is large, there is often slack in connections between components and the components are not perfectly rigid.
 
-The videos show motion of a robotic dog. In the left video, the motors in the robot are being asked to make a straight-line transition between waypoints. The result is vibration and a tremor-like movement. The right video shows the same robot, but with smoothly interpolated waypoints. This produces a gentle and vibration-free movement.
+The video shows motion of a robotic dog. At the start, the motors in the robot are being asked to make a straight-line transition between waypoints. The result is vibration and a tremor-like movement. 
 
-```{asis eval=knitr::is_html_output()}
-<table>
-<tr><th>Without interpolation</th><th>With interpolation</th></tr>
-<tr>
-<td><iframe width="400" height="225" src="https://www.youtubetrimmer.com/view/?v=SgJcj2Gd0Rc&start=695&end=719&loop=0" title="Motion without interpolation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></td>
-<td><iframe width="400" height="225" src="https://www.youtubetrimmer.com/view/?v=SgJcj2Gd0Rc&start=782&end=800&loop=0" title="Motion with interpolation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></td>
-</tr>
-</table>
-```
+Then the motors are given a smoothly interpolated signal. (Much of the video hows the programming involved. You can skip directly to time 13:02 to see the motion with smoothly interpolated waypoints.) The smooth interpolation produces a gentle and vibration-free movement.
+
+<iframe width="600" height="337" src="https://www.youtubetrimmer.com/view/?v=SgJcj2Gd0Rc&start=695&end=800&loop=0" title="Motion without interpolation" frameborder="0" allow="accelerometer;  clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
 
 ```{asis eval=knitr::is_latex_output()}
 WHAT SHOULD GO HERE IN PDF?
