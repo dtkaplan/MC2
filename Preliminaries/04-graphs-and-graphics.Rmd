@@ -4,62 +4,118 @@
 source("../starter.R")
 ```
 
-In Chapter @sec-quantity-function-space we encouraged you to think of a function in terms of the space of possible inputs---the domain---and another space of outputs. In this chapter, we introduce ways to visualize the input and output space of a function together.
+![](www/Both-axes.png)
 
-Let's start with a space suitable for representing a single quantity. That is, of course, the familiar number line.
 
+![](www/Input-space.png)
+
+![](www/Output-space.png)
+
+
+Most readers will have encounted **graphs** of functions in high-school or earlier. @fig-function-graph-1 shows an example of a function we'll call `g()`.
+
+::: {#fig-function-graph-1}
 ```{r echo=FALSE}
-#| column: page-right
-knitr::include_graphics("www/number-line2.png") 
+g <- mosaic::rfun( ~ x, seed = 120)
+slice_plot(g(x) ~ x, domain(x=1:7), npts=1000) + 
+  xlab("Input") + ylab("Output")  + geom_point() +
+  theme_light()
 ```
 
-The number line is just the horizontal line. The vertical tick marks, like ![](www/vertical-tick.png), are merely aids for human interpretation.
+Graph of `g()`, a function with one input. It's often impractical to show the whole of the input space, so we make do by showing a region of interest.
+:::
 
-On the number line, any specific quantity is a single point. For instance, let's use the number line to show the two quantities $\color{blue}{6.3}$ and $\color{magenta}{-4.5}$.
+As you know, humans can use the function graph as the scaffold of an algorithm for finding the output corresponding to any given input. Your skills at this may already be quite strong, but for the sake of completeness I provide this description of the algorithm:
+
+1. Find the horizontal location that corresponds to the given input and draw a vertical line through that location.
+2. Mark the point where the vertical line in (1) intersects the curve.
+3. Read off the vertical location of the point in (2).
+
+(If the algorithm is unclear to you, the drill section provides opportunities to practice, as in @drl-04-reading-graph-1.)
+
+## Drawing function graphs with R
+
+
+## Investigation other possible graphical formats
+
+Let's take apart the familiar graphic in @fig-function-graph-1 so that you can see the basic components of a display of a function. We will need this particularly when we design visual displays for functions with more than one input. (Remember, our Calculus functions will *always* have only a single quantity as *output*.)
+
+The three basic components are:
+
+1. A display of the input space. In @fig-function-graph-1 the input space is ![](www/Input-space.png){width=3cm}, but there are other formats.
+2. A display of the output space. For @fig-function-graph-1 this is ![](www/Output-space.png){width=4cm}. Again, there are other possible formats.
+3. A way to show what is the location in the output space that corresponds to a given location in the input space. There are many ways of doing this
+
+I want you to think graphs of functions in a particular way
 
 ```{r echo=FALSE}
-#| column: page-right
-knitr::include_graphics("www/number-line3.png") 
+Pts <- tibble::tribble(
+  ~ x, ~ y, ~ color,
+  0, 0, "magenta",
+  2, 3, "green",
+  -3, 1, "red",
+  -1.5, -2.5, "blue"
+) |> mutate(y = y+4, x=x+4)
+ggplot(Pts, aes(x=x, y=y)) +
+  geom_point(size=2) +
+  theme_linedraw() +
+  xlim(c(-1,6)) + ylim(c(0,8)) +
+  xlab("Interest rate (%)") + ylab("GDP ($trillion)")
+
 ```
 
-A ***function*** connects each point in the input space to a corresponding point in the output space.  @fig-show-lines-function gives a sketch of an arbitrary function where the input and output spaces are shown one above the other. Arrows are drawn for several input values, showing where those values are mapped to in the output space. (There are infinitely more arrows to be drawn in between those shown, but the graphic would become illegible.)
 
 
-```{r echo=FALSE}
-#| label: fig-show-lines-function
-#| column: page-right
-#| fig-cap: "A function is a mapping from an input space to an output space."
-knitr::include_graphics("www/number-line-function.png")
+We will be building and using functions extensively in constructing models of situations of interest, for instance, the functioning of a nerve cell or an economy. A model let's us explore and manipulate in ways that would be inconvenient, impractical, or impossible for the real-world situation itself.
+
+In order to build a function for a model, we need to turn our knowledge of the situation into a design for the function. It's extremely helpful to be able to sketch a design and compare to other possible designs. The time-honored strategy is to draw a picture of the function. One of the most important kinds of such pictures is the "**graph**." @sec-graphs-R-mosaic shows how to perform this task in R.
+
+But we will also be dealing with functions with two, three, or many inputs. We will find that graphics can help to form our intuition about such functions, but aren't always sufficient for representing them. Other tools will come in handy here, particularly the idea of spaces. And so this Chapter will also discuss spaces. 
+
+
+
+## Function graphs in R/mosaic {#sec-graphs-R-mosaic}
+
+Given a function, it is easy to draw the corresponding relationship as a graphic. This section describes how to do that for functions that have one or two inputs. Another common task---given a relationship, represent it using functions---is usually not so easy and will require modeling techniques to be introduced in Chapters 9-16.
+
+Contemporary practice is to draw graphs of functions using a computer. R/mosaic provides several functions that do this, you need only learn how to use them.
+
+There are two essential arguments shared by all of the R/mosaic functions drawing a graph:
+
+::: {.column-margin}
+![](www/tilde-medium.png)
+
+A tilde. Make sure you can find it on your keyboard.
+:::
+
+1. The function that is to be graphed. This is to be written as an R ***tilde expression***. Some examples of tilde expressions are shown in the table below. The essential feature of a tilde expression is the ![](www/tilde-small.png) mark, called a "tilde," which serves as punctuation dividing a left side of the expression from a right side. 
+2. The ***bounds***. The domain of many functions reaches infinity, but our computer screens are not so big! Making a graph requires choosing a finite interval for each of the input quantities. 
+
+The tilde expression for a function with one input will have only one name on the right-hand side of the ![](www/tilde-small.png). The domain interval specification must use the same name:
+
+Tilde expression     |  Domain interval specification
+---------------------|----------------------------
+`x^2 ~ x`            |  `bounds(x = -3:3)`
+`y * exp(y) ~ y`     |  `bounds(y = 0:10)`
+`log(y) / exp(y) ~ y`|  `bounds(y = -5:5)`
+`sin(z) / z ~ z`     |  `bounds(y = -3*pi:3*pi)`
+
+### Slice plot
+
+To draw a graph of a function with one input, use `slice_plot()`. The tilde expression is the first argument; the domain interval specification is the second argument. For instance,
+
+```{r}
+#| label: fig-first-slice-plot
+#| fig.cap: "Graph of the function $f(t) \\equiv t e^t$."
+#| column: margin
+slice_plot(t * exp(t) ~ t, bounds(t=0:10))
 ```
 
 
 
-@fig-show-lines-function gives information about the function, but it is in a format that is almost impossible to interpret. Renė Descartes (1596–1650) proposed a better visualization: place the input and output spaces at right angles to one another and, instead of the head and tail of the arrows [In everyday speech, the word "graphic" refers to any drawing. In mathematics, a "graph" is a drawing made in the Cartesian plane, with the input values marked by the horizontal axis and the function output marked by the vertical axis.]{.aside} connecting corresponding positions on the input and on the output spaces, use the head and tail values as coordinates in the joint input/output space. This setup is shown in @fig-graph1 and is called, as you know, the ***graph*** of the function. 
+Recall the situation seen in @fig-fhn-model which shows a two-dimensional space of all possible (voltage, current) pairs for nerve cells. The experimental data identified many possible pairs---marked by the dots in @fig-fhn-model ---that are consistent with the relationships of the nerve-cell system.
 
-
-
-```{r echo=FALSE}
-#| label: fig-graph1
-#| fig-cap: "The mapping from @fig-show-lines-function translated into the form of a graph. The input space is marked by the horizontal axis and the output space by the vertical axis. Each of the arrows in @fig-show-lines-function is represented by a point, whose x-coordinate is the position of the tail of the arrow in the input space and whose y-coordinate is the position of the head of the arrow in the output space. This is the ***graph*** of the function."
-Mapping <- tibble(
-  x = c(-4.8, -4.4,  -3.5, -2.7, -0.9, -0.4, -0.3, 0.3,  0.7, 0.9,  1.5, 2.3, 3.5,  5.6,  5.7, 6.0 ),
-  y = c(-4.8, -4.65, -4.5, -2.4, -2.4, -2.4, -1.5,-0.9, -0.3, 0.25, 0.5, 2.1, 3.5, -5.8, -1.2, 0),
-  hue = c("red", "green", "blue", "tan", "green", "purple", "orange", "red", "blue", "purple", "brown", "blue", "magenta", "purple", "red", "purple")
-)
-
-fun <- spliner(y ~ x, data = Mapping)
-
-gf_point(y ~ x, data = Mapping, color=~ hue, size=2, alpha=0.5) %>%
-  gf_vline(xintercept=~ x, data = Mapping, color=~ hue, size=.1) %>%
-  gf_hline(yintercept=~ y, data = Mapping, color=~ hue, size=.1) %>%
-  slice_plot(fun(x) ~ x, bounds(x=-5:6.1), npts=500) %>%
-  gf_labs(x="input", y="output") %>%
-  gf_refine(scale_color_identity(), 
-            scale_y_continuous(breaks=seq(-6, 6, by=1), limits=c(-6.5, 6.5)),
-            scale_x_continuous(breaks=seq(-5, 6, by=1)))
-```
-
-A major advantage of this format is that the function output can be displayed not just at a discrete set of input values, but at every point in the continuous input space. @fig-graph1 shows one function consistent with the discrete points, but there are many such functions. That is, the discrete arrows shown in @fig-show-lines-function do not *completely* specify a unique function. 
+The same is true of @fig-first-slice-plot, the graph of a function with a single input. The two-dimensional space shown in the @fig-first-slice-plot contains (input, output) pairs, only a small fraction of which are consistent with the relationship described by the function. [The ***graphics frame*** in @fig-first-slice-plot is a 2-dimensional area for drawing. The function graphed in the frame, $f(t) \equiv y e^y$, has a ***domain*** consisting of the entire number line, that is, the space of all real numbers. The plot, however, shows only a finite interval $0 \leq t \leq 10$ of that domain.]{.aside} The points in that small fraction could be marked by individual dots, but instead of dots, we draw a continuous curve connecting the dots. Every point on the curve is consistent with the relationship between input and output represented by the function. 
 
 
 
@@ -104,48 +160,31 @@ On the other hand, functions cannot represent all types of relationships. For in
 
 Care needs to be taken in using functions to represent relationships. For the nerve-cell current-voltage relationship, for instance, we can construct a function current(voltage) to represent the relationship. That is because for any given value of voltage there is just one corresponding current. But there is no voltage(current) function, even though knowing the current tells you a lot about the voltage.
 
-## Function graphs in R/mosaic
+The space of all possibilities (y, z, output) is three-dimensional, but very few of those possibilities are consistent with the function to be graphed. You can imagine our putting dots at all of those consistent-with-the-function points, or our drawing lots and lots of continuous curves through those dots, but the cloud of dots forms a ***surface***; a continuous cloud of points floating over the (y, z) input space.
 
-Given a function, it is easy to draw the corresponding relationship as a graphic. This section describes how to do that for functions that have one or two inputs. Another common task---given a relationship, represent it using functions---is usually not so easy and will require modeling techniques that we will develop in Block 1.
+@fig-first-surface displays this surface. Since the image is drawn on a two-dimensional screen, we have to use painters' techniques of perspective and shading. In the interactive version of the plot, you can move the viewpoint for the image which gives many people a more solid understanding of the surface.
 
-Contemporary practice is to draw graphs of functions using a computer. R/mosaic provides several functions that do this, you need only learn how to use them.
 
-There are two essential arguments shared by all of the R/mosaic functions drawing a graph:
-
-::: {.column-margin}
-![](www/tilde-medium.png)
-
-A tilde. Make sure you can find it on your keyboard.
-:::
-
-1. The function that is to be graphed. This is to be written as an R ***tilde expression***. Some examples of tilde expressions are shown in the table below. The essential feature of a tilde expression is the ![](www/tilde-small.png) mark, called a "tilde," which serves as punctuation dividing a left side of the expression from a right side. 
-2. The ***bounds***. The domain of many functions reaches infinity, but our computer screens are not so big! Making a graph requires choosing a finite interval for each of the input quantities. 
-
-The tilde expression for a function with one input will have only one name on the right-hand side of the ![](www/tilde-small.png). The domain interval specification must use the same name:
-
-Tilde expression     |  Domain interval specification
----------------------|----------------------------
-`x^2 ~ x`            |  `bounds(x = -3:3)`
-`y * exp(y) ~ y`     |  `bounds(y = 0:10)`
-`log(y) / exp(y) ~ y`|  `bounds(y = -5:5)`
-`sin(z) / z ~ z`     |  `bounds(y = -3*pi:3*pi)`
-
-### Slice plot
-
-To draw a graph of a function with one input, use `slice_plot()`. The tilde expression is the first argument; the domain interval specification is the second argument. For instance,
-
-```{r}
-#| label: fig-first-slice-plot
-#| fig.cap: "Graph of the function $f(t) \\equiv t e^t$."
-#| column: margin
-slice_plot(t * exp(t) ~ t, bounds(t=0:10))
+```{r results="hide", eval=FALSE}
+  surface_plot(exp(-z)*sin(y) ~ y & z, bounds(y=-6:6, z=0:2))
 ```
 
 
+```{r echo=FALSE}
+#| label: fig-first-surface
+#| fig-cap: "Displaying $g(y,z) \\equiv e^{-z}\\sin(y)$ as a surface plot annotated with contour lines."
+#| fig-cap-location: margin
+if (!knitr::is_html_output()) {
+  knitr::include_graphics("www/surface-plot1.png")
+} else {
+  surface_plot(exp(-z)*sin(y) ~ y & z, bounds(y=-6:6, z=0:2))
+}
+```
 
-Recall the situation seen in @fig-fhn-model which shows a two-dimensional space of all possible (voltage, current) pairs for nerve cells. The experimental data identified many possible pairs---marked by the dots in @fig-fhn-model ---that are consistent with the relationships of the nerve-cell system.
+Note that the surface plot is made with the R/mosaic `surface_plot()`, which takes arguments in the same way as `contour_plot()`.
 
-The same is true of @fig-first-slice-plot, the graph of a function with a single input. The two-dimensional space shown in the @fig-first-slice-plot contains (input, output) pairs, only a small fraction of which are consistent with the relationship described by the function. [The ***graphics frame*** in @fig-first-slice-plot is a 2-dimensional area for drawing. The function graphed in the frame, $f(t) \equiv y e^y$, has a ***domain*** consisting of the entire number line, that is, the space of all real numbers. The plot, however, shows only a finite interval $0 \leq t \leq 10$ of that domain.]{.aside} The points in that small fraction could be marked by individual dots, but instead of dots, we draw a continuous curve connecting the dots. Every point on the curve is consistent with the relationship between input and output represented by the function. 
+
+
 
 
 ### Contour plot
@@ -183,28 +222,78 @@ Contour plots will be a preferred format for displaying functions with two input
 
 There is another way to think about graphing functions with two inputs. There are in such a situation **three** quantities involved in the relationship. Two of these are the inputs, the third is the output. A three-dimensional space consists of all the possible coordinate triples; the relationship between the inputs and the output is marked by ruling out almost all of the potential triples and marking those points in the space that are consistent with the function.
 
-the space of all possibilities (y, z, output) is three-dimensional, but very few of those possibilities are consistent with the function to be graphed. You can imagine our putting dots at all of those consistent-with-the-function points, or our drawing lots and lots of continuous curves through those dots, but the cloud of dots forms a ***surface***; a continuous cloud of points floating over the (y, z) input space.
+## Spaces
 
-@fig-first-surface displays this surface. Since the image is drawn on a two-dimensional screen, we have to use painters' techniques of perspective and shading. In the interactive version of the plot, you can move the viewpoint for the image which gives many people a more solid understanding of the surface.
+A graph consists of two main components: 1) a shape (as drawn by a pencil) and 2) a space (such as the paper to which the pencil is applied). You probably already know that not all shapes are allowed, just the ones that are thin curves drawn by moving the pencil from left to right. 
 
+### The "number" line
 
-```{r results="hide", eval=FALSE}
-  surface_plot(exp(-z)*sin(y) ~ y & z, bounds(y=-6:6, z=0:2))
+A function, as you recall, is a kind of machine that takes one or more inputs and produces a corresponding output. This being a book about Calculus, those inputs will be *quantities* (as opposed to other sorts of things such as words or a pieces of wire or a laundry bag of dirty clothing). Similarly, the output for our purposes is also a quantity.
+
+In order to depict a function, we need to show the output for any possible inputs. 
+
+For now, let's consider the space. By "space," we mean a set of possible values. For a single quantity, the input to a function for example, a suitable space can be drawn as a line, each position on the line corresponding to a particular value of the quantity. Such a space is often called the "**number line**." 
+
+@fig-number-line shows a number line in its conventional graphical form. It contains several graphical components intended for the human reader, but which are not strictly part of the space being depicted.
+
+```{r echo=FALSE}
+#| label: fig-number-line
+#| fig-cap: A number line drawn in the conventional style. 
+#| column: page-right
+knitr::include_graphics("www/number-line3.png") 
 ```
+The main graphical element is a horizontal line segment. Other marks in the drawing include arrowheads pointing left and right, tick marks intersecting the horizontal segment, and a sequence of numbers labeling the tick marks.
+
+The space shows the entire set of possible values of the quantity. A particular value of the quantity is merely a single point on the line. For instance, in @fig-number-line I've drawn colored dots for two specific quantities: 
+$\color{blue}{6.3}$ and $\color{magenta}{-4.5}$.
+
+Two things are missing from the drawing: a name for the quantity whose possible values are shown and the units in which the quantity is measured. Convention usually places this information below or besides the line.
+
+## Spaces and functions
+
+To draw a picture of a function, say $g()$, we need **two different spaces.**. One space contains the possible input values for $g()$. The other space contains the outputs corresponding to each possible input.
+
+@fig-show-lines-function is one kind of drawing for a function $g()$. The drawing shows the input and output spaces, depicted as number lines and marked as such. The function $g()$ itself is drawn as a set of colored line segments. Each segment connects a point on the input space to a point on the output space. 
 
 
 ```{r echo=FALSE}
-#| label: fig-first-surface
-#| fig-cap: "Displaying $g(y,z) \\equiv e^{-z}\\sin(y)$ as a surface plot annotated with contour lines."
-#| fig-cap-location: margin
-if (!knitr::is_html_output()) {
-  knitr::include_graphics("www/surface-plot1.png")
-} else {
-  surface_plot(exp(-z)*sin(y) ~ y & z, bounds(y=-6:6, z=0:2))
-}
+#| label: fig-show-lines-function
+#| column: page-right
+#| fig-cap: "A function relates points from the input space to their corresponding location in output space."
+knitr::include_graphics("www/number-line-function.png")
 ```
 
-Note that the surface plot is made with the R/mosaic `surface_plot()`, which takes arguments in the same way as `contour_plot()`.
+@fig-show-lines-function gives information about the function, but it is in a format that is almost impossible to interpret. Renė Descartes (1596–1650) proposed a better visualization: place the input and output spaces at right angles to one another and, instead of the head and tail of the arrows [In everyday speech, the word "graphic" refers to any drawing. In mathematics, a "graph" is a drawing made in the Cartesian plane, with the input values marked by the horizontal axis and the function output marked by the vertical axis.]{.aside} connecting corresponding positions on the input and on the output spaces, use the head and tail values as coordinates in the joint input/output space. This setup is shown in @fig-graph1 and is called, as you know, the ***graph*** of the function. 
+
+
+::: {#fig-graph1}
+```{r echo=FALSE}
+#| label: fig-graph1
+
+Mapping <- tibble(
+  x = c(-4.8, -4.4,  -3.5, -2.7, -0.9, -0.4, -0.3, 0.3,  0.7, 0.9,  1.5, 2.3, 3.5,  5.6,  5.7, 6.0 ),
+  y = c(-4.8, -4.65, -4.5, -2.4, -2.4, -2.4, -1.5,-0.9, -0.3, 0.25, 0.5, 2.1, 3.5, -5.8, -1.2, 0),
+  hue = c("red", "green", "blue", "tan", "green", "purple", "orange", "red", "blue", "purple", "brown", "blue", "magenta", "purple", "red", "purple")
+)
+
+fun <- spliner(y ~ x, data = Mapping)
+
+gf_point(y ~ x, data = Mapping, color=~ hue, size=2, alpha=0.5) %>%
+  gf_vline(xintercept=~ x, data = Mapping, color=~ hue, size=.1) %>%
+  gf_hline(yintercept=~ y, data = Mapping, color=~ hue, size=.1) %>%
+  slice_plot(fun(x) ~ x, bounds(x=-5:6.1), npts=500) %>%
+  gf_labs(x="input", y="output") %>%
+  gf_refine(scale_color_identity(), 
+            scale_y_continuous(breaks=seq(-6, 6, by=1), limits=c(-6.5, 6.5)),
+            scale_x_continuous(breaks=seq(-5, 6, by=1)))
+```
+
+The mapping from @fig-show-lines-function translated into the form of a graph. The input space is marked by the horizontal axis and the output space by the vertical axis. Each of the arrows in @fig-show-lines-function is represented by a point, whose x-coordinate is the position of the tail of the arrow in the input space and whose y-coordinate is the position of the head of the arrow in the output space. This is the ***graph*** of the function.
+:::
+
+A major advantage of this format is that the function output can be displayed not just at a discrete set of input values, but at every point in the continuous input space.
+
+@fig-graph1 shows one function consistent with the discrete points, but there are many such functions. That is, the discrete arrows shown in @fig-show-lines-function do not *completely* specify a unique function. 
 
 
 
@@ -328,6 +417,9 @@ gridExtra::grid.arrange(Pleft, Pright, ncol=2)
 :::
 
 ## Drill
+
+{{< include  Exercises/04-Graphics/drl-04-reading-graph-1.qmd >}}
+
 
 `r Znotes:::MC_counter$reset(labels="numbers")`
 
