@@ -2,21 +2,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.36">
+<meta name="generator" content="quarto-1.5.55">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>MOSAIC Calculus - 30&nbsp; Projection &amp; residual</title>
+<title>30&nbsp; Projection &amp; residual – MOSAIC Calculus</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -27,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -41,43 +47,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -100,12 +76,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
-  "location": "sidebar",
+  "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "start",
-  "type": "textbox",
-  "limit": 20,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -114,12 +96,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 <script async="" src="https://hypothes.is/embed.js"></script>
-</head><body class="nav-sidebar floating"><span class="math inline" style="display: none;">
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+</head><body class="nav-sidebar floating nav-fixed"><span class="math inline" style="display: none;">
 \(\newcommand{\line}{\text{line}}
 \newcommand{\hump}{\text{hump}}
 \newcommand{\sigmoid}{\text{sigmoid}}
@@ -148,7 +137,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </span>
 
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../mosaic-calc-style.css">
 
@@ -157,393 +174,459 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../www/Cover-1.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">MOSAIC Calculus</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+    <a href="https://github.com/dtkaplan/MC2/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../linear-combinations-part.html">BLOCK III. Vectors and linear combinations</a></li><li class="breadcrumb-item"><a href="../Linear-combinations/B5-projection.html"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
     </div>
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="../" class="sidebar-logo-link">
-      <img src="../www/Cover-1.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
-      </a>
-    <div class="sidebar-title mb-0 py-0">
-      <a href="../">MOSAIC Calculus</a> 
-        <div class="sidebar-tools-main">
-    <a href="https://github.com/dtkaplan/MC2/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
-</div>
-    </div>
-      </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
-        <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
-        </div>
-      </div>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">PRELIMINARIES</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PRELIMINARIES</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Preliminaries/01-modeling-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></a>
+  <a href="../Preliminaries/01-quant-fun-space.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></a>
+  <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></a>
+  <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></a>
+  <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></a>
+  <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></a>
+  <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></a>
+  <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">BLOCK I. Modeling</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK I. Modeling</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Modeling/01-parameters.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></a>
+  <a href="../Modeling/01-parameters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Modeling/02-assembling-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></a>
+  <a href="../Modeling/02-assembling-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Modeling/03-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></a>
+  <a href="../Modeling/03-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></a>
+  <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Modeling/05-low-order-polynomials.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></a>
+  <a href="../Modeling/05-low-order-polynomials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Modeling/06-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  <a href="../Modeling/06-operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Modeling/07-magnitudes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></a>
+  <a href="../Modeling/07-magnitudes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Modeling/08-dimensions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></a>
+  <a href="../Modeling/08-dimensions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Modeling/09-modeling-cycle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling cycle [DRAFT]</span></a>
+  <a href="../Modeling/09-modeling-cycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling cycle [DRAFT]</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Modeling/Modeling-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
+  <a href="../Modeling/Modeling-projects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Projects</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">BLOCK II. Differentiation</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK II. Differentiation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Differentiation/16-continuous-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Continuous change</span></a>
+  <a href="../Differentiation/16-continuous-change.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Continuous change</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Differentiation/17-rate-of-change.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rate of change</span></a>
+  <a href="../Differentiation/17-rate-of-change.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rate of change</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Differentiation/18-evanescent-h.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></a>
+  <a href="../Differentiation/18-evanescent-h.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Differentiation/19-computing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Constructing derivatives</span></a>
+  <a href="../Differentiation/19-computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Constructing derivatives</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Differentiation/20-concavity.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></a>
+  <a href="../Differentiation/20-concavity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Differentiation/21-cont-and-smooth.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></a>
+  <a href="../Differentiation/21-cont-and-smooth.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Differentiation/22-rules.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></a>
+  <a href="../Differentiation/22-rules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Differentiation/23-optim.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></a>
+  <a href="../Differentiation/23-optim.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Differentiation/24-partial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></a>
+  <a href="../Differentiation/24-partial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Differentiation/25-approximation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations [DRAFT]</span></a>
+  <a href="../Differentiation/25-approximation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations [DRAFT]</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Differentiation/26-taylor.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></a>
+  <a href="../Differentiation/26-taylor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Differentiation/Differentiation-projects.html" class="sidebar-item-text sidebar-link">Projects</a>
+  <a href="../Differentiation/Differentiation-projects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Projects</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">BLOCK III. Vectors and linear combinations</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK III. Vectors and linear combinations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Linear-combinations/B5-Vectors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Vectors</span></a>
+  <a href="../Linear-combinations/B5-Vectors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Vectors</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Linear-combinations/B5-linear-combinations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></a>
+  <a href="../Linear-combinations/B5-linear-combinations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Linear-combinations/B5-projection.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></a>
+  <a href="../Linear-combinations/B5-projection.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Linear-combinations/B5-target-problem.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></a>
+  <a href="../Linear-combinations/B5-target-problem.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Linear-combinations/B5-stat-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></a>
+  <a href="../Linear-combinations/B5-stat-modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Linear-combinations/B5-functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></a>
+  <a href="../Linear-combinations/B5-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Functions as vectors</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">BLOCK IV. Accumulation</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK IV. Accumulation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Accumulation/27-intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></a>
+  <a href="../Accumulation/27-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Accumulation/28-visualizing.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></a>
+  <a href="../Accumulation/28-visualizing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Accumulation/29-integration.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></a>
+  <a href="../Accumulation/29-integration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Accumulation/30-euler.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></a>
+  <a href="../Accumulation/30-euler.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Accumulation/31-symbolic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></a>
+  <a href="../Accumulation/31-symbolic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">BLOCK V. Dynamics</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK V. Dynamics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Dynamics/B6-diff-eq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Differential equations</span></a>
+  <a href="../Dynamics/B6-diff-eq.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Differential equations</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Dynamics/B6-solution.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Finding a “solution”</span></a>
+  <a href="../Dynamics/B6-solution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Finding a “solution”</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Dynamics/B6-flow-on-line.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Flows on the line</span></a>
+  <a href="../Dynamics/B6-flow-on-line.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Flows on the line</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Dynamics/B6-flow-on-plane.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the plane</span></a>
+  <a href="../Dynamics/B6-flow-on-plane.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the plane</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Dynamics/B6-modeling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></a>
+  <a href="../Dynamics/B6-modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Dynamics/B6-equilibria.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></a>
+  <a href="../Dynamics/B6-equilibria.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Dynamics/B6-eigen.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></a>
+  <a href="../Dynamics/B6-eigen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Dynamics/B6-second-order.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Force-balance equations</span></a>
+  <a href="../Dynamics/B6-second-order.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Force-balance equations</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">BLOCK VI. Manifestations</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK VI. Manifestations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Manifestations/B4-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Operations on functions</span></a>
+  <a href="../Manifestations/B4-operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Operations on functions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Manifestations/B4-splines.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Data-driven functions</span></a>
+  <a href="../Manifestations/B4-splines.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Data-driven functions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Manifestations/B4-optimization.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></a>
+  <a href="../Manifestations/B4-optimization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Manifestations/B4-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">50</span>&nbsp; <span class="chapter-title">Probability and evidence</span></a>
+  <a href="../Manifestations/B4-probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">50</span>&nbsp; <span class="chapter-title">Probability and evidence</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Manifestations/B4-future-value.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">51</span>&nbsp; <span class="chapter-title">Present and future value</span></a>
+  <a href="../Manifestations/B4-future-value.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">51</span>&nbsp; <span class="chapter-title">Present and future value</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Manifestations/B4-mechanics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">52</span>&nbsp; <span class="chapter-title">Mechanics</span></a>
+  <a href="../Manifestations/B4-mechanics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">52</span>&nbsp; <span class="chapter-title">Mechanics</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">Appendices</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../R-mosaic-setup.html" class="sidebar-item-text sidebar-link">Setting up R/mosaic</a>
+  <a href="../R-mosaic-setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setting up R/mosaic</span></a>
   </div>
 </li>
       </ul>
@@ -551,26 +634,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </ul>
     </div>
 </nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
+        <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#projection-terminology" id="toc-projection-terminology" class="nav-link active" data-scroll-target="#projection-terminology"> <span class="header-section-number">30.1</span> Projection terminology</a></li>
-  <li><a href="#sec-proj-single-vector" id="toc-sec-proj-single-vector" class="nav-link" data-scroll-target="#sec-proj-single-vector"> <span class="header-section-number">30.2</span> Projection onto a single vector</a></li>
-  <li><a href="#projection-onto-a-set-of-vectors" id="toc-projection-onto-a-set-of-vectors" class="nav-link" data-scroll-target="#projection-onto-a-set-of-vectors"> <span class="header-section-number">30.3</span> Projection onto a set of vectors</a></li>
-  <li><a href="#a-becomes-q" id="toc-a-becomes-q" class="nav-link" data-scroll-target="#a-becomes-q"> <span class="header-section-number">30.4</span> A becomes Q</a></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"> <span class="header-section-number">30.5</span> Exercises</a></li>
+  <li><a href="#projection-terminology" id="toc-projection-terminology" class="nav-link active" data-scroll-target="#projection-terminology"><span class="header-section-number">30.1</span> Projection terminology</a></li>
+  <li><a href="#sec-proj-single-vector" id="toc-sec-proj-single-vector" class="nav-link" data-scroll-target="#sec-proj-single-vector"><span class="header-section-number">30.2</span> Projection onto a single vector</a></li>
+  <li><a href="#projection-onto-a-set-of-vectors" id="toc-projection-onto-a-set-of-vectors" class="nav-link" data-scroll-target="#projection-onto-a-set-of-vectors"><span class="header-section-number">30.3</span> Projection onto a set of vectors</a></li>
+  <li><a href="#a-becomes-q" id="toc-a-becomes-q" class="nav-link" data-scroll-target="#a-becomes-q"><span class="header-section-number">30.4</span> A becomes Q</a></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">30.5</span> Exercises</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/dtkaplan/MC2/edit/main/Linear-combinations/B5-projection.Rmd" class="toc-action">Edit this page</a></p></div></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Linear-combinations/B5-projection.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../linear-combinations-part.html">BLOCK III. Vectors and linear combinations</a></li><li class="breadcrumb-item"><a href="../Linear-combinations/B5-projection.html"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span id="sec-projection-residual" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></span></h1>
+<h1 class="title"><span id="sec-projection-residual" class="quarto-section-identifier"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></span></h1>
 </div>
 
 
@@ -578,37 +662,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-title-meta">
 
     
+  
     
   </div>
   
 
+
 </header>
 
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
 
-</div>
-<p>Many problems in physics and engineering involve the task of <strong><em>decomposing</em></strong> a vector <span class="math inline">\(\vec{b}\)</span> into two perpendicular component vectors <span class="math inline">\(\hat{b}\)</span> and <span class="math inline">\(\vec{r}\)</span>, such that <span class="math inline">\(\hat{b} + \vec{r} = \vec{b}\)</span> and <span class="math inline">\(\hat{b} \cdot \vec{r} = 0\)</span>. There are infinite ways to accomplish such a decomposition, one for each way or orienting <span class="math inline">\(\hat{b}\)</span> relative to <span class="math inline">\(\vec{b}\)</span>. <a href="#fig-decompose-1">Figure&nbsp;<span>30.1</span></a> shows a few examples.</p>
+<p>Many problems in physics and engineering involve the task of <strong><em>decomposing</em></strong> a vector <span class="math inline">\(\vec{b}\)</span> into two perpendicular component vectors <span class="math inline">\(\hat{b}\)</span> and <span class="math inline">\(\vec{r}\)</span>, such that <span class="math inline">\(\hat{b} + \vec{r} = \vec{b}\)</span> and <span class="math inline">\(\hat{b} \cdot \vec{r} = 0\)</span>. There are infinite ways to accomplish such a decomposition, one for each way or orienting <span class="math inline">\(\hat{b}\)</span> relative to <span class="math inline">\(\vec{b}\)</span>. <a href="#fig-decompose-1" class="quarto-xref">Figure&nbsp;<span>30.1</span></a> shows a few examples.</p>
 <div class="takenote">
 <p>The hat-shaped crown in <span class="math inline">\(\hat{b}\)</span>, pronounced “b-hat,” often appears in statistics and machine learning. The hat indicates that the quantity is an <em>estimate</em> made from data.</p>
 </div>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-decompose-1" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="www/decompose-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
-<p></p><figcaption class="figure-caption">Figure 30.1: A few ways of decomposing <span class="math inline">\(\vec{b}\)</span> into perpendicular components <span class="math inline">\(\hat{b}\)</span> and <span class="math inline">\(\vec{r}\)</span></figcaption><p></p>
+<div id="fig-decompose-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-decompose-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="www/decompose-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-decompose-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;30.1: A few ways of decomposing <span class="math inline">\(\vec{b}\)</span> into perpendicular components <span class="math inline">\(\hat{b}\)</span> and <span class="math inline">\(\vec{r}\)</span>
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <div class="example">
-<p>The gravitational force on an object always points downward toward the center of the Earth. For an isolated object—often the word “mass” is used instead of “object”—acceleration is in the same downward direction. However, often the mass is just one component in a mechanically interconnected system, such as the three systems shown in <a href="#fig-gravity-settings">Figure&nbsp;<span>30.2</span></a>: a ramp, a pendulum, and an inclined plane. The other components of the system counteract, to some extent, the gravitational force on the mass. The net force on the mass—taking into account gravity and the forces imposed by the other elements of the system—is in a direction <span class="math inline">\(\vec{s}\)</span> determined by the system, respectively pointing down the ramp or perpendicular to the pendulum strut or aligned with the gradient vector of the inclined plane.</p>
-<div class="cell" data-layout-align="center" data-fig.cap.location="margin" data-fig.showtext="false">
+<p>The gravitational force on an object always points downward toward the center of the Earth. For an isolated object—often the word “mass” is used instead of “object”—acceleration is in the same downward direction. However, often the mass is just one component in a mechanically interconnected system, such as the three systems shown in <a href="#fig-gravity-settings" class="quarto-xref">Figure&nbsp;<span>30.2</span></a>: a ramp, a pendulum, and an inclined plane. The other components of the system counteract, to some extent, the gravitational force on the mass. The net force on the mass—taking into account gravity and the forces imposed by the other elements of the system—is in a direction <span class="math inline">\(\vec{s}\)</span> determined by the system, respectively pointing down the ramp or perpendicular to the pendulum strut or aligned with the gradient vector of the inclined plane.</p>
+<div class="cell" data-layout-align="center" data-fig.cap.location="margin">
 <div class="cell-output-display">
-<div id="fig-gravity-settings" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="www/gravity-settings.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<p></p><figcaption class="figure-caption">Figure 30.2: Three different mechanical systems consisting of a mass (in black) constrained in its movement by the other components of a system: left: a mass on a ramp; center: a mass as part of a pendulum; right: a round mass constrained to roll on a planar surface.</figcaption><p></p>
+<div id="fig-gravity-settings" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gravity-settings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="www/gravity-settings.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gravity-settings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;30.2: Three different mechanical systems consisting of a mass (in black) constrained in its movement by the other components of a system: left: a mass on a ramp; center: a mass as part of a pendulum; right: a round mass constrained to roll on a planar surface.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -627,48 +719,53 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <p><strong><em>Projection</em></strong> is the process of finding, from all the vectors in the model subspace, the particular vector <span class="math inline">\(\hat{b}\)</span> that is as close as possible to the target vector <span class="math inline">\(\vec{b}\)</span>. To state things another way: projection is the process of finding the model vector that makes the residual vector as short as possible.</p>
 <div class="example">
-<p><a href="#fig-b-onto-u-v2">Figure&nbsp;<span>30.3</span></a> shows a solved projection problem in 3-dimensional space. The figure can be rotated or set spinning, which makes it much easier to interpret the diagram as a three-dimensional object. In addition to the target vector <span class="math inline">\(\vec{b}\)</span> and the vectors <span class="math inline">\(\vec{u}\)</span> and <span class="math inline">\(\vec{b}\)</span> that constitute the matrix <span class="math inline">\(\mathit{A}\)</span>, the diagram includes a translucent plane marking <span class="math inline">\(span(\mathit{A})\)</span>. The goal of projection is, given <span class="math inline">\(\vec{b}\)</span> and <span class="math inline">\(\mathit{A}\)</span>, to find the model vector (shown in light green). Once the model vector <span class="math inline">\(\vec{x}\)</span> is known, the residual vector is easy to calculate <span class="math display">\[\vec{r} \equiv \vec{b} - \hat{b}\ .\]</span> Another approach to the problem is to find the residual vector <span class="math inline">\(r\)</span> first, then use that to find the model vector as <span class="math display">\[\hat{b} \equiv \vec{b} - \vec{r}\ .\]</span></p>
+<p><a href="#fig-b-onto-u-v2" class="quarto-xref">Figure&nbsp;<span>30.3</span></a> shows a solved projection problem in 3-dimensional space. The figure can be rotated or set spinning, which makes it much easier to interpret the diagram as a three-dimensional object. In addition to the target vector <span class="math inline">\(\vec{b}\)</span> and the vectors <span class="math inline">\(\vec{u}\)</span> and <span class="math inline">\(\vec{b}\)</span> that constitute the matrix <span class="math inline">\(\mathit{A}\)</span>, the diagram includes a translucent plane marking <span class="math inline">\(span(\mathit{A})\)</span>. The goal of projection is, given <span class="math inline">\(\vec{b}\)</span> and <span class="math inline">\(\mathit{A}\)</span>, to find the model vector (shown in light green). Once the model vector <span class="math inline">\(\vec{x}\)</span> is known, the residual vector is easy to calculate <span class="math display">\[\vec{r} \equiv \vec{b} - \hat{b}\ .\]</span> Another approach to the problem is to find the residual vector <span class="math inline">\(r\)</span> first, then use that to find the model vector as <span class="math display">\[\hat{b} \equiv \vec{b} - \vec{r}\ .\]</span></p>
 <p style="text-align:center">
 <iframe frameborder="0" height="480px" src="https://c3d.libretexts.org/CalcPlot3D/dynamicFigure/index.html?type=jaxlabel;position=middle;math=.;textonly=false&amp;type=vector;vector=%3C2,1,0%3E;visible=true;color=rgb(17,109,192);size=2;initialpt=(0,0,0)&amp;type=vector;vector=%3C-1,1,0%3E;visible=true;color=rgb(208,20,240);size=2;initialpt=(0,0,0)&amp;type=vector;vector=%3C1/2,2,2.5%3E;visible=true;color=rgb(106,168,79);size=2;initialpt=(0,0,0)&amp;type=z;z=0;visible=true;umin=-3;umax=3;vmin=-3;vmax=3;grid=30;format=normal;alpha=40;hidemyedges=true;constcol=rgb(255,0,0);view=0;contourcolor=red;fixdomain=true;contourplot=true;showcontourplot=false;firstvalue=-1;stepsize=0.2;numlevels=11;list=;xnum=46;ynum=46;show2d=false;hidesurface=false;hidelabels=true;showprojections=false;surfacecontours=true;projectioncolor=rgba(255,0,0,1);showxygrid=false;showxygridonbox=true;showconstraint=false&amp;type=vector;vector=%3C.5,2,0%3E;visible=true;color=rgb(173,255,0);size=2;initialpt=(0,0,0)&amp;type=vector;vector=%3C0,0,2.5%3E;visible=true;color=rgb(255,0,0);size=2;initialpt=(.5,2,0)&amp;type=text;text=Target%3A%20b;visible=true;point=(1/2,1,1.4);color=rgb(106,168,79);font=Arial;fontsize=14pt;bold=true;italic=false;fontmath=true;align=Lower-right&amp;type=text;text=Residual;visible=true;point=(.5,2,1);color=rgb(255,0,0);font=Arial;fontsize=11pt;bold=false;italic=false;fontmath=true;align=Upper-right&amp;type=text;text=u;visible=true;point=(1,.6,0);color=rgb(17,109,192);font=Arial;fontsize=14pt;bold=true;italic=false;fontmath=true;align=Upper-right&amp;type=text;text=v;visible=true;point=(-.6,.4,.1);color=rgb(208,20,240);font=Arial;fontsize=14pt;bold=true;italic=false;fontmath=true;align=Upper-right&amp;type=window;hsrmode=0;nomidpts=true;anaglyph=-1;center=8.22100580440146,3.2942359740980485,4.64360559381492,1;focus=0,0,0,1;up=0.5692808110442982,-0.48760415187116424,-0.6619377230939093,1;transparent=false;alpha=140;twoviews=false;unlinkviews=false;axisextension=0.7;xaxislabel=x;yaxislabel=y;zaxislabel=z;edgeson=true;faceson=true;showbox=false;showaxes=false;showticks=true;perspective=false;centerxpercent=0.5;centerypercent=0.5;rotationsteps=30;autospin=true;xygrid=false;yzgrid=false;xzgrid=false;gridsonbox=true;gridplanes=true;gridcolor=rgb(128,128,128);xmin=-2;xmax=2;ymin=-2;ymax=2;zmin=-2;zmax=2;xscale=1;yscale=1;zscale=1;zcmin=-4;zcmax=4;xscalefactor=1;yscalefactor=1;zscalefactor=1;tracemode=0;keep2d=false;zoom=0.67" width="90%">
 </iframe>
 </p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-b-onto-u-v2" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="www/tiny-blank.png" class="img-fluid figure-img" style="width:1.0%"></p>
-<p></p><figcaption class="figure-caption">Figure 30.3: A three-dimensional diagram showing the target vector <span class="math inline">\(\vec{b}\)</span> and the vectors <span class="math inline">\(\vec{u}\)</span> and <span class="math inline">\(\vec{v}\)</span>. The subspace spanned by <span class="math inline">\(\vec{u}\)</span> and <span class="math inline">\(\vec{v}\)</span> is indicated with a translucent plane. The model vector (green) is the result produced in solving the projection problem.</figcaption><p></p>
+<div id="fig-b-onto-u-v2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-b-onto-u-v2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="www/tiny-blank.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:1.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-b-onto-u-v2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;30.3: A three-dimensional diagram showing the target vector <span class="math inline">\(\vec{b}\)</span> and the vectors <span class="math inline">\(\vec{u}\)</span> and <span class="math inline">\(\vec{v}\)</span>. The subspace spanned by <span class="math inline">\(\vec{u}\)</span> and <span class="math inline">\(\vec{v}\)</span> is indicated with a translucent plane. The model vector (green) is the result produced in solving the projection problem.
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>Interpreting such three-dimensional diagrams on a printed page can be difficult. Better to rotate them interactively. For instance, to see that the translucent plane in <a href="#fig-b-onto-u-v2">Figure&nbsp;<span>30.3</span></a> contains <span class="math inline">\(\vec{u}\)</span> and <span class="math inline">\(\vec{v}\)</span>, rotate the diagram to look edge-on at the plane so that the plane appears as a line on the screen. At such times, vectors <span class="math inline">\(\vec{u}\)</span> and <span class="math inline">\(\vec{v}\)</span> disappear. There is no component to <span class="math inline">\(\vec{u}\)</span> and <span class="math inline">\(\vec{v}\)</span> that sticks out from the plane; they are entirely embedded in the plane.</p>
+<p>Interpreting such three-dimensional diagrams on a printed page can be difficult. Better to rotate them interactively. For instance, to see that the translucent plane in <a href="#fig-b-onto-u-v2" class="quarto-xref">Figure&nbsp;<span>30.3</span></a> contains <span class="math inline">\(\vec{u}\)</span> and <span class="math inline">\(\vec{v}\)</span>, rotate the diagram to look edge-on at the plane so that the plane appears as a line on the screen. At such times, vectors <span class="math inline">\(\vec{u}\)</span> and <span class="math inline">\(\vec{v}\)</span> disappear. There is no component to <span class="math inline">\(\vec{u}\)</span> and <span class="math inline">\(\vec{v}\)</span> that sticks out from the plane; they are entirely embedded in the plane.</p>
 </div>
 </section>
 <section id="sec-proj-single-vector" class="level2" data-number="30.2">
 <h2 data-number="30.2" class="anchored" data-anchor-id="sec-proj-single-vector"><span class="header-section-number">30.2</span> Projection onto a single vector</h2>
 <p>As we said, projection involves a vector <span class="math inline">\(\vec{b}\)</span> and a matrix <span class="math inline">\(\mathit{A}\)</span> that defines the model space. We will start with the simplest case, where <span class="math inline">\(\mathit{A}\)</span> has only one column. That column is, of course, a vector. We will call that vector <span class="math inline">\(\vec{a}\)</span>, so the projection problem is to project <span class="math inline">\(\vec{b}\)</span> onto the subspace spanned by <span class="math inline">\(\vec{a}\)</span>.</p>
-<p><a href="#fig-b-onto-a">Figure&nbsp;<span>30.4</span></a> diagrams the situation of projecting the target vector <span class="math inline">\(\vec{b}\)</span> onto the model space <span class="math inline">\(\vec{a}\)</span>.</p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<p><a href="#fig-b-onto-a" class="quarto-xref">Figure&nbsp;<span>30.4</span></a> diagrams the situation of projecting the target vector <span class="math inline">\(\vec{b}\)</span> onto the model space <span class="math inline">\(\vec{a}\)</span>.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-b-onto-a" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="www/project-b-onto-a.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<p></p><figcaption class="figure-caption">Figure 30.4: The geometry of projecting <span class="math inline">\(\vec{b}\)</span> onto <span class="math inline">\(\vec{a}\)</span> to produce the model vector <span class="math inline">\(\hat{b}\)</span>.</figcaption><p></p>
+<div id="fig-b-onto-a" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-b-onto-a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="www/project-b-onto-a.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-b-onto-a-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;30.4: The geometry of projecting <span class="math inline">\(\vec{b}\)</span> onto <span class="math inline">\(\vec{a}\)</span> to produce the model vector <span class="math inline">\(\hat{b}\)</span>.
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>The angle between <span class="math inline">\(\vec{a}\)</span> and <span class="math inline">\(\vec{b}\)</span> is labelled <span class="math inline">\(\theta\)</span>. As shown in <a href="B5-Vectors.html#sec-angles-dot-product"><span>Section&nbsp;28.5</span></a>, calculating an angle such as <span class="math inline">\(\theta\)</span> from <span class="math inline">\(\vec{b}\)</span> and <span class="math inline">\(\vec{a}\)</span> with a dot product:</p>
-<p><span class="math display">\[\cos(\theta) = \frac{\vec{b} \bullet \vec{a}}{\len{b}\, \len{a}}\ .\]</span></p>
-<p>Knowing <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\len{b}\)</span>, you can calculate the length of the model vector <span class="math inline">\(\hat{b}\)</span>:</p>
-<p><span class="math display">\[\len{s} = \len{b} \cos(\theta) = \vec{b} \bullet \vec{a} / \len{a}\ .\]</span></p>
+<p>The angle between <span class="math inline">\(\vec{a}\)</span> and <span class="math inline">\(\vec{b}\)</span> is labelled <span class="math inline">\(\theta\)</span>. As shown in <a href="B5-Vectors.html#sec-angles-dot-product" class="quarto-xref"><span>Section 28.5</span></a>, calculating an angle such as <span class="math inline">\(\theta\)</span> from <span class="math inline">\(\vec{b}\)</span> and <span class="math inline">\(\vec{a}\)</span> with a dot product:</p>
+<p><span class="math display">\[\cos(\theta) = \frac{\vec{b} \bullet \vec{a}}{\len{b}\, \len{a}}\ .\]</span> Knowing <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\len{b}\)</span>, you can calculate the length of the model vector <span class="math inline">\(\hat{b}\)</span>: <span class="math display">\[\len{s} = \len{b} \cos(\theta) = \vec{b} \bullet \vec{a} / \len{a}\ .\]</span></p>
 <p>Scaling <span class="math inline">\(\vec{a}\)</span> by <span class="math inline">\(\len{a}\)</span> would produce a vector oriented in the model subspace, but it would have the wrong length: length <span class="math inline">\(\len{a} \len{s}\)</span>. So we need to divide <span class="math inline">\(\vec{a}\)</span> by <span class="math inline">\(\len{a}\)</span> to get a <strong><em>unit length vector</em></strong> oriented along <span class="math inline">\(\vec{a}\)</span>:</p>
-<p><span class="math display">\[\text{model vector:}\ \ \hat{b} = \left[\vec{b} \bullet \vec{a}\right] \,\vec{a} / {\len{a}^2} = \frac{\vec{b} \bullet \vec{a}}{\vec{a} \bullet \vec{a}}\  \vec{a}.\]</span></p>
-<p>. <!-- must have some text before a <div> --></p>
+<p><span class="math display">\[\text{model vector:}\ \ \hat{b} = \left[\vec{b} \bullet \vec{a}\right] \,\vec{a} / {\len{a}^2} = \frac{\vec{b} \bullet \vec{a}}{\vec{a} \bullet \vec{a}}\  \vec{a}.\]</span> . <!-- must have some text before a <div> --></p>
 <div class="rmosaic">
 <p>In R/mosaic, calculate the projection of <span class="math inline">\(\vec{b}\)</span> onto <span class="math inline">\(\vec{a}\)</span> using <code>%onto%</code>. For instance</p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">2</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="sc">-</span><span class="fl">0.8</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> b <span class="sc">%onto%</span> a</span>
@@ -678,7 +775,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="do">## [2,] -0.1044993</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Having found <span class="math inline">\(\hat{b}\)</span>, the residual vector <span class="math inline">\(\vec{r}\)</span> can be calculated as <span class="math inline">\(\vec{b}- \hat{b}\)</span>.</p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> b <span class="sc">-</span> s</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>r</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="do">##            [,1]</span></span>
@@ -689,14 +786,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ol type="1">
 <li>The residual vector is perpendicular to each and every vector in <span class="math inline">\(\mathit{A}\)</span>. Since in this example, <span class="math inline">\(\mathit{A}\)</span> contains only the one vector <span class="math inline">\(\vec{a}\)</span>, we need only look at <span class="math inline">\(\vec{r} \cdot \vec{a}\)</span> and confirm that it is zero.</li>
 </ol>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>r <span class="sc">%dot%</span> a</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] -2.220446e-16</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol start="2" type="1">
 <li>The residual vector plus the model vector exactly equals the target vector. Since we computed <code>r &lt;- b - s</code>, we know this must be true, but still …</li>
 </ol>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(r<span class="sc">+</span>s) <span class="sc">-</span> b</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="do">##      [,1]</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="do">## [1,]    0</span></span>
@@ -707,16 +804,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="projection-onto-a-set-of-vectors" class="level2" data-number="30.3">
 <h2 data-number="30.3" class="anchored" data-anchor-id="projection-onto-a-set-of-vectors"><span class="header-section-number">30.3</span> Projection onto a set of vectors</h2>
-<p>As we have just seen, projecting a target <span class="math inline">\(\vec{b}\)</span> onto a single vector is a matter of arithmetic. Now we will expand the technique to project the target vector <span class="math inline">\(\vec{b}\)</span> onto multiple vectors collected into a matrix <span class="math inline">\(\mathit{A}\)</span>. Whereas in <a href="#sec-proj-single-vector"><span>Section&nbsp;30.2</span></a> we used trigonometry to find the component of <span class="math inline">\(\vec{b}\)</span> aligned with the single vector <span class="math inline">\(\vec{a}\)</span>, now we have to deal with multiple vectors <strong>at the same time</strong>. The result will be the component of <span class="math inline">\(\vec{b}\)</span> aligned with the <strong>subspace</strong> sponsored by <span class="math inline">\(\mathit{A}\)</span>.</p>
-<p>In one situation, projection is easy: when the vectors in <span class="math inline">\(\mathit{A}\)</span> are <strong>mutually orthogonal</strong>. In this situation, carry out several one-vector-at-a-time projections:</p>
-<p><span class="math display">\[
+<p>As we have just seen, projecting a target <span class="math inline">\(\vec{b}\)</span> onto a single vector is a matter of arithmetic. Now we will expand the technique to project the target vector <span class="math inline">\(\vec{b}\)</span> onto multiple vectors collected into a matrix <span class="math inline">\(\mathit{A}\)</span>. Whereas in <a href="#sec-proj-single-vector" class="quarto-xref"><span>Section 30.2</span></a> we used trigonometry to find the component of <span class="math inline">\(\vec{b}\)</span> aligned with the single vector <span class="math inline">\(\vec{a}\)</span>, now we have to deal with multiple vectors <strong>at the same time</strong>. The result will be the component of <span class="math inline">\(\vec{b}\)</span> aligned with the <strong>subspace</strong> sponsored by <span class="math inline">\(\mathit{A}\)</span>.</p>
+<p>In one situation, projection is easy: when the vectors in <span class="math inline">\(\mathit{A}\)</span> are <strong>mutually orthogonal</strong>. In this situation, carry out several one-vector-at-a-time projections: <span class="math display">\[
 \vec{p_1} \equiv \modeledby{\vec{b}}{\vec{v_1}}\ \ \ \ \
 \vec{p_2} \equiv \modeledby{\vec{b}}{\vec{v_2}}\ \ \ \ \
 \vec{p_3} \equiv \modeledby{\vec{b}}{\vec{v_3}}\ \ \ \ \
 \text{and so on}\]</span> The projection of <span class="math inline">\(\vec{b}\)</span> onto <span class="math inline">\(\mathit{A}\)</span> will be the sum <span class="math inline">\(\vec{p_1} + \vec{p2} + \vec{p3}\)</span>.</p>
 <div class="example">
 <p>Consider the following matrix <span class="math inline">\(\mathit{A}\)</span> made up of mutually orthogonal vectors:</p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>b  <span class="ot">&lt;-</span> <span class="fu">rbind</span>( <span class="dv">1</span>,  <span class="dv">1</span>,  <span class="dv">1</span>, <span class="dv">1</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>v1 <span class="ot">&lt;-</span> <span class="fu">rbind</span>( <span class="dv">1</span>,  <span class="dv">2</span>,  <span class="dv">0</span>, <span class="dv">0</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>v2 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="sc">-</span><span class="dv">2</span>,  <span class="dv">1</span>,  <span class="dv">3</span>, <span class="dv">1</span>)</span>
@@ -724,21 +820,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">cbind</span>(v1, v2, v3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>To confirm that <code>v1</code>, <code>v2</code>, and <code>v3</code> are mutually orthogonal, calculate the dot product between any two of them and observe that, in each case, the result is zero.</p>
-<p>Now construct the one-at-a-time projections: ::: {.cell layout-align=“center” fig.showtext=‘false’}</p>
+<p>Now construct the one-at-a-time projections:</p>
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> b <span class="sc">%onto%</span> v1</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> b <span class="sc">%onto%</span> v2</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> b <span class="sc">%onto%</span> v3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>To find the projection of <span class="math inline">\(\vec{b}\)</span> onto the subspace spanned by <span class="math inline">\(\mathit{A}\)</span>, add up the one-at-a-time projections:</p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>b_on_A <span class="ot">&lt;-</span> p1 <span class="sc">+</span> p2 <span class="sc">+</span> p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now we will confirm that <code>b_on_A</code> is the projection of <code>b</code> onto <code>A</code>. The strategy is to construct the residual from the projection.</p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>resid <span class="ot">&lt;-</span> b <span class="sc">-</span> b_on_A</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>All that is needed is to confirm that the residual is perpendicular to each and every vector in <code>A</code>:</p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>resid <span class="sc">%dot%</span> v1</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 7.771561e-16</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>resid <span class="sc">%dot%</span> v2</span>
@@ -746,32 +843,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>resid <span class="sc">%dot%</span> v3</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 6.661338e-16</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>:::</p>
+</div>
 </section>
 <section id="a-becomes-q" class="level2" data-number="30.4">
 <h2 data-number="30.4" class="anchored" data-anchor-id="a-becomes-q"><span class="header-section-number">30.4</span> A becomes Q</h2>
 <p>Now that we have a satisfactory method for projecting <span class="math inline">\(\vec{b}\)</span> onto a matrix <span class="math inline">\(\mathit{A}\)</span> consisting of mutually orthogonal vectors, we need to develop a method for the projection when the vectors in <span class="math inline">\(\mathit{A}\)</span> are <strong><em>not mutually orthogonal</em></strong>. The big picture here is that we will construct a new matrix <span class="math inline">\(\mathit{Q}\)</span> that spans the same space as <span class="math inline">\(\mathit{A}\)</span> but whose vectors are mutually orthogonal. We will construct <span class="math inline">\(\mathit{Q}\)</span> out of linear combinations of the vectors in <span class="math inline">\(\mathit{A}\)</span>, so we can be sure that <span class="math inline">\(span(\mathit{Q}) = span(\mathit{A})\)</span>.</p>
 <p>We introduce the process with an example involving vectors in a 4-dimensional space. <span class="math inline">\(\mathit{A}\)</span> will be a matrix with two columns, <span class="math inline">\(\vec{v_1}\)</span> and <span class="math inline">\(\vec{v_2}\)</span>. Here is the setup for the example vectors and model matrix:</p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>v1 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>v2 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="sc">-</span><span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">1</span>)</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">cbind</span>(v1, v2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We start the construction of the <span class="math inline">\(\mathit{Q}\)</span> matrix by pulling in the first vector in <span class="math inline">\(\mathit{A}\)</span>. We will call that vector <span class="math inline">\(\vec{q_1}\)</span></p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>q1 <span class="ot">&lt;-</span> v1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The next <span class="math inline">\(\mathit{Q}\)</span> vector will be constructed to be perpendicular to <span class="math inline">\(\vec{q_1}\)</span> but still in the subspace spanned by <span class="math inline">\(\left[{\Large\strut}\vec{v_1}\ \ \vec{v_2}\right]\)</span>. We can guarantee this will be the case by making the <span class="math inline">\(\mathit{Q}\)</span> vector entirely as a linear combination of <span class="math inline">\(\vec{v_1}\)</span> and <span class="math inline">\(\vec{v_2}\)</span>.</p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>q2 <span class="ot">&lt;-</span> v2 <span class="sc">%perp%</span> v1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Since <span class="math inline">\(\vec{q_1}\)</span> and <span class="math inline">\(\vec{q_2}\)</span> are orthogonal and define the same subspace as <span class="math inline">\(\mathit{A}\)</span>, we can construct the projection of <span class="math inline">\(\vec{b}\)</span> onto <span class="math inline">\(\vec{A}\)</span> by adding up the projections of <span class="math inline">\(\vec{b}\)</span> onto the individual vectors in <span class="math inline">\(\mathit{Q}\)</span>, like this:</p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>bhat <span class="ot">&lt;-</span> (b <span class="sc">%onto%</span> q1) <span class="sc">+</span> (b <span class="sc">%onto%</span> q2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>To confirm that this calculation of <span class="math inline">\(\widehat{\strut b}\)</span> is correct, construct the residual vector and show that it is perpendicular to every vector in <span class="math inline">\(\mathit{Q}\)</span> (and therefore in <span class="math inline">\(\mathit{A}\)</span>, which spans the same space).</p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> b <span class="sc">-</span> bhat</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>r <span class="sc">%dot%</span> v1</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 1.110223e-15</span></span>
@@ -789,7 +886,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <div class="example">
 <p>Project a <span class="math inline">\(\vec{b}\)</span> that lives in 10-dimensional space onto the subspace sponsored by five vectors that are not mutually orthogonal:</p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">7</span>,<span class="dv">3</span>,<span class="sc">-</span><span class="dv">6</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>, <span class="dv">8</span>, <span class="dv">2</span>) <span class="co"># or any set of 10 numbers</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>v1 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="dv">4</span>, <span class="dv">7</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">6</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>v2 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="dv">8</span>, <span class="dv">8</span>, <span class="dv">4</span>, <span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">4</span>, <span class="dv">9</span>, <span class="dv">6</span>, <span class="dv">0</span>)</span>
@@ -800,7 +897,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>Confirm using dot products that the <code>v</code>-vectors are <strong>not</strong> mutually orthogonal.</p>
 <p>Now to construct the vectors in <span class="math inline">\(\mathit{Q}\)</span>.</p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>q1 <span class="ot">&lt;-</span> v1</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>q2 <span class="ot">&lt;-</span> v2 <span class="sc">%perp%</span> q1</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>q3 <span class="ot">&lt;-</span> v3 <span class="sc">%perp%</span> <span class="fu">cbind</span>(q1, q2)</span>
@@ -809,7 +906,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>Q <span class="ot">&lt;-</span> <span class="fu">cbind</span>(q1, q2, q3, q4, q5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Since <code>Q</code> consists of mutually orthogonal vectors, the projection of <code>b</code> onto <code>Q</code> can be made one vector at a time.</p>
-<div class="cell" data-layout-align="center" data-fig.showtext="false">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> b <span class="sc">%onto%</span> q1</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> b <span class="sc">%onto%</span> q2</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> b <span class="sc">%onto%</span> q3</span>
@@ -838,10 +935,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 </section>
-<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1" role="doc-endnote"><p>The motivation for these names will become apparent in later chapters.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>The motivation for these names will become apparent in later chapters.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
@@ -873,12 +970,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
     }
-  });
-  clipboard.on('success', function(e) {
+    return false;
+  }
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -887,17 +987,73 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
     button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
     setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/dtkaplan\.github\.io\/MC2\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -907,50 +1063,314 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
   var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
   for (var i=0; i<bibliorefs.length; i++) {
     const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
       });
-      return popup.innerHTML;
-    });
+    }
   }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../Linear-combinations/B5-linear-combinations.html" class="pagination-link">
+      <a href="../Linear-combinations/B5-linear-combinations.html" class="pagination-link" aria-label="Linear combinations of vectors">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../Linear-combinations/B5-target-problem.html" class="pagination-link">
+      <a href="../Linear-combinations/B5-target-problem.html" class="pagination-link" aria-label="The target problem">
         <span class="nav-page-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">The target problem</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -959,4 +1379,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-</body></html>
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Linear-combinations/B5-projection.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
