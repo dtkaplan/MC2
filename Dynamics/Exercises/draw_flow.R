@@ -7,8 +7,8 @@ draw_flow <- function(seed=1996, center = c(0,0), width=5,
   # This one is always the same, so zooming in will work
   Grid2 <- expand.grid(x = seq(-7, 7), y = seq(-7, 7))
   dom <- bounds(x=!!xrange, y=!!yrange)
-  xraw <- rfun(~ x + y, seed = seed)
-  yraw <- rfun(~ x + y, seed = seed + 1)
+  xraw <- doodle_fun(~ x + y, seed = seed)
+  yraw <- doodle_fun(~ x + y, seed = seed + 1)
   Stats <- Grid2 %>%
     mutate(xvals = xraw(x,y),
            yvals = yraw(x,y)) %>%

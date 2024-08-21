@@ -3,14 +3,15 @@ library(mosaic)
 library(mosaicCalc)
 library(ggformula)
 library(here) # for file locations
-library(thematic)
+# library(thematic)
 library(gridExtra) # for arranging plots.
 library(kableExtra)
 library(Znotes)
 
 
 # theme the plots to match the document
-thematic_rmd(bg="#8F8F8C", fg=NA, accent=NA)
+# thematic_rmd(bg="#8F8F8C", fg=NA, accent=NA)
+
 ggplot2::theme_set(theme_bw(base_size = 16))
 
 

@@ -4,22 +4,38 @@
 source("../starter.R")
 ```
 
-People accomplish a familiar mathematical task with hardly any mental effort: comparing two numbers to determine which is bigger. This is easy because we have adopted a system for writing numbers that makes it easy.  For the Romans and Europeans up through the 13th century, numbers were hard to work with. For instance, which of these three numbers is bigger?
-$$\text{MLI or CXII or XXXIII}$$
+Consider a mathematical task that is a routine part of everyday life: comparing two numbers to determine which is bigger or selecting the biggest from a set of numbers. For instance: 
 
+> Which is the biggest? 512 or 33 or 1051.
 
-```{r echo=FALSE}
-#| label: fig-liber-abaci
-#| fig-cap: "An excerpt from Fibonacci's *Liber Abaci* (1202) introducing to European readers the \"Hindu\" numerals. [Source](https://chalkdustmagazine.com/features/roots-legacy-of-fibonacci/)"
-#| fig-cap-location: margin
-knitr::include_graphics("www/hindu2.png")
-```
+You can see the answer at a glance; the task requires hardly any mental effort. 
 
+But for the Romans and Europeans up through the 13th century, numbers were hard to work with. For instance, 
 
-Now try the same task with Arabic numerals: Which is bigger?
+> Which is the biggest?  MLI or CXII or XXXIII
 
-$$\text{512 or 33 or 1051}$$
-You can see the answer at a glance. The algorithm is straightforward:  select the number with the largest number of digits. If there is a tie, refer to the first digit. If there is still a tie, refer to the next digit. In contrast, it takes much more work with Roman numerals. For instance, IC is about fifteen times bigger than VI, even though I is much smaller than V.
+In Arabic notation, a number with more digits is always larger than another number that requires fewer digits. Consequently, the printed form of a number gives a visual clue about the numbers' relative sizes. 
+
+For the Roman numerals, the length of the printed form gives no good hint about the size of the number. Indeed, the number represented by MLI is almost fifty times bigger than the number denoted by XXXIII.
+
+Even with Arabic numerals, the comparison task becomes harder when the numbers are either very small or very big. For instance:
+
+> Which is bigger? 4820423052.2352 or 68382829893.2
+
+> Which is bigger? 0.00000000000073 or 0.0000000000013
+
+Counting the digits before the decimal point (for large numbers) or counting the leading zeros after the decimal point (for small numbers) is tedious and error prone.
+
+For this reason, people who have routinely to deal with very large or very small numbers learn a different notation for writing numbers called **scientific notation**. Here is just about the same problem as the above, but with the numbers written in scientific notation.
+
+> Which is bigger? 4.82 $\times$ 10^9^ or 6.84 $\times$ 10^10^
+
+> Which is bigger? 7.3 $\times$ 10^-13^ or 1.3 $\times$ 10^-10^
+
+In scientific notation, the first step in the comparison process involves just the exponent in 10^?^. Whichever of the two numbers has the larger exponent is the larger number. Only if the exponents are the same is there any need to look at the digits preceeding $\times$10^?^$.
+
+The exponent in a scientific-notation number can be called the "order of magnitude" of that number. As you will see in the following sections, "order of magnitude" is closely connected to one of our pattern-book functions: the logarithm. This is one reason that the logarithm is important in applied work.
+
 
 ## Order of magnitude
 
@@ -60,7 +76,7 @@ Military jet takeoff | 140 dB
 : Energy density of sound in various situations. Sound at 85 dB, for extended periods, can cause permanent hearing loss. Exposure to sound at 120 dB over 30 seconds is dangerous. {#tbl-sound-energy}
 :::
 
-6, 60, 600, and 6000 miles-per-hour are quantities that differ in size by ***orders of magnitude***. Such differences often point to a substantial change in context. A jog is 6 mph, a car on a highway goes 60 mph, a cruising commercial jet goes 600 mph, and a rocket passes through 6000 mph on its way to orbital velocity. From an infant's crawl to highway cruising is 2 orders of magnitude in speed.
+6, 60, 600, and 6000 miles-per-hour are quantities that differ in size by ***orders of magnitude***. Such differences often point to a substantial change in context. A jog is 6 mph, a car on a highway goes 60 mph, a cruising commercial jet goes 600 mph, and a rocket passes through 6000 mph on its way to orbital velocity. From an infant's crawl to highway cruising is 3 orders of magnitude in speed.
 
 Of course, many phenomena are **not** well represented in terms of orders of magnitudes. For example, the difference between normal body temperature and high fever is 0.01 orders of magnitude in temperature.^[we are using the Kelvin scale, which is the only meaningful scale for a *ratio* of temperatures.] An increase of 1 order of magnitude in blood pressure from the normal level would cause instant death! The difference between a very tall adult and a very short adult is about 1/4 of an order of magnitude. 
 
@@ -70,29 +86,57 @@ One clue that thinking in terms of orders of magnitude is appropriate is when yo
 
 Another clue is whether "zero" means "nothing." Daily temperatures in the winter are often near "zero" on the Fahrenheit or Celcius scales, but that in no way means there is a complete absence of heat. Those scales are arbitrary. Another way to think about this clue is whether ***negative values*** are meaningful. If so, thinking in terms of orders of magnitude is not likely to be useful.
 
-## Counting digits
+## Counting digits {#sec-counting-digits}
 
-Imagine having a digit counting function called digit(). It takes a number as input and produces a number as output. We don't have a ***formula*** for digit(), but for some inputs, the output can be calculated just by counting. For example:
+Imagine having a digit counting function called digits(). It takes a number as input and produces a number as output. We have not yet presented a ***formula*** for digits(), but for some inputs, the output can be calculated just by counting. For numbers like 0.01 or 10 or 100000, we will define the number of digits to be the count of zeros before For example:
 
-- digit(10) $\equiv$ 1
-- digit(100) $\equiv$ 2
-- digit(1000) $\equiv$ 3
+- digits(10) $\equiv$ 1
+- digits(100) $\equiv$ 2
+- digits(1000) $\equiv$ 3
 - ... and so on ...
-- digit(1,000,000) $\equiv$ 6
+- digits(1,000,000) $\equiv$ 6
 - ... and on.
 
-The digit() function easily can be applied to the product of two numbers. For instance:
+For numbers smaller than 1, like 0.01 or 0.0001, we define the number of digits to be the *negative* of the number of zeros *before* the 1.
 
-- digit(1000 $\times$ 100) = digit(1000) + digit(100) = 3 + 2 = 5.
+- digits(0.1) $\equiv$ -1
+- digits(0.01) $\equiv$ -2
+- digits(0.0001) $\equiv$ -4
 
-Similarly, applying digit() to a ratio gives the difference of the digits of the numerator and denominator, like this:
+The digits() function easily can be applied to the product of two numbers. For instance:
 
-- digit(1,000,000 $\div$ 10) = digit(1,000,000) - digit(10) = 6 - 1 = 4
+- digits(1000 $\times$ 100) = digits(1000) + digits(100) = 3 + 2 = 5.
 
-[It is not clear that $\ln()$ is a better user interface as a pattern-book function than digit(), or, as it is written, $\log_{10}()$ and `log10()`. People find it much easier to count by magnitudes of 10 than by the natural logarithm's 2.718282....]{.aside}
+Similarly, applying digits() to a ratio gives the difference of the digits of the numerator and denominator, like this:
 
-In practice, digit() is so useful that it could well have been one of our basic modeling functions: 
-$$\text{digit(x)} = 2.302585 \ln(x)$$ or, in R, `log10()`. We elected the natural logarithm $\ln()$ rather than digit() for reasons that will be seen when we study ***differentiation***.
+- digits(1,000,000 $\div$ 10) = digits(1,000,000) - digits(10) = 6 - 1 = 4
+
+In practice, digits() is so useful that it could well have been one of our basic modeling functions. Actually, this is very nearly the case: the logarithm is proportional to the number of digits. 
+
+To illustrate, consider these three calculations of logarithms:
+
+::: {#lst-digits-proportionality}
+```{r}
+0.4342945 * log(100) 
+0.4342945 * log(1000) 
+0.4342945 * log(10000)
+```
+
+The output is the order of magnitude of the number given as an argument to `log()`.
+:::
+
+Here is a formula definition of the digits() function.
+
+ 
+$$\text{digits}(x) \equiv \ln(x) / \ln(10)$${#eq-digits-math-def}
+
+In R/mosaic, the analogous definition is:
+
+::: {#lst-digits-R-def}
+```{r}
+digits <- makeFun(log(x) / log(10) ~ x)
+```
+:::
 
 You may have guessed that `digits()` is handy for computing differences in terms of orders of magnitude. Here's how:   
 
@@ -114,7 +158,37 @@ So, about 3 orders of magnitude difference in speed. To a snail, we walking huma
 
 The use of factors of 10 in counting orders of magnitude is arbitrary. A person walking and a person jogging are on the edge of being qualitatively different, although their speeds differ by a factor of only 2. Aircraft that cruise at 600 mph and 1200 mph are qualitatively different in design, although the speeds are only a factor of 2 apart. A professional basketball player (height 2 meters or more) is qualitatively different from a third grader (height about 1 meter).
 
+::: {.callout-note icon=false} 
+## Math in the World: The "natural" logarithm
 
+You may have noticed in @eq-digits-math-def or @lst-digits-R-def the terms $1/\ln(10)$ and `/ log(10)` are used as a conversion factor. Similarly, in @lst-digits-proportionality the conversion factor `0.4342945` is used. Actually, `0.4342945` and `1 / log(10)` are the same number:
+
+```{webr-r}
+1 / log(10)
+```
+
+
+But why is a conversion factor needed for the digits() calculation?
+
+The point of the conversion factor is to have the "units" of the output of `digits()` correspond to a factor of 10. Such units are called "**decades**." The unit of decade is dimensionless, just as the unit for angles---rads or degrees, as you preferr---is dimensionless. 
+
+Naturally, we use decades because of our human habit of writing numbers in base 10, using the digits 0 to 9. I say "naturally" because base 10 is familiar to us. But different people have different notions of what is "natural."
+
+We could have used $1/\ln(2)$ as the conversion factor in `digits()` in which case each multiple of 2 in the input corresponds to a change in the output of 1. Or, I should say, "1 bit" because "bit" is the name given to the unit when $1/\ln(2)$ (that is, `1.442695`) is used as the conversion factor.
+
+An aesthetic widely admired in the field of mathematics is that having any such conversion factor at all is "unnatural." The only mathematically pretty conversion factor is 1, that is, no conversion factor at all. If we had used 1 instead of $1/\ln(10)$ in digits(), the output would be in different units, not in decades. 
+
+The name mathematicians have given to the version of digits() where the conversion factor is 1 is the **natural logarithm**. It's hard to understand the advantages of the natural logarithm until we get further into Calculus. For the natural logarithm, each increase in the input by a factor of 2.7182818281828... leads to an increase in the output by 1. 
+To illustrate, run the code in @rcd-nat-log-multiple.
+
+::: {#rcd-nat-log-multiple}
+```{r}
+log(63)
+log(2.718281828 * 63)
+```
+:::
+
+:::
 
 ## Magnitude graphics {#sec-magnitude-graphics}
 

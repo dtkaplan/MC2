@@ -136,6 +136,1493 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 \newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
 </span>
 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs/editor/editor.main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+<style type="text/css">
+.monaco-editor pre {
+  background-color: unset !important;
+}
+
+.qwebr-editor-toolbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.qwebr-editor-toolbar-left-buttons, .qwebr-editor-toolbar-right-buttons {
+  display: flex;
+}
+
+.qwebr-non-interactive-loading-container.qwebr-cell-needs-evaluation, .qwebr-non-interactive-loading-container.qwebr-cell-evaluated {
+  justify-content: center;
+  display: flex;
+  background-color: rgba(250, 250, 250, 0.65);
+  border: 1px solid rgba(233, 236, 239, 0.65);
+  border-radius: 0.5rem;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.qwebr-r-project-logo {
+  color: #2767B0; /* R Project's blue color */
+}
+
+.qwebr-icon-status-spinner {
+  color: #7894c4;
+}
+
+.qwebr-icon-run-code {
+  color: #0d9c29
+}
+
+body.quarto-light .qwebr-output-code-stdout {
+  color: #111;
+}
+
+body.quarto-dark .qwebr-output-code-stdout {
+  color: #EEE;
+}
+
+.qwebr-output-code-stderr {
+  color: #db4133;
+}
+
+body.quarto-light .qwebr-editor {
+  border: 1px solid #EEEEEE;
+}
+
+body.quarto-light .qwebr-editor-toolbar {
+  background-color: #EEEEEE;
+  padding: 0.2rem 0.5rem;
+}
+
+body.quarto-dark .qwebr-editor {
+  border: 1px solid #111;
+}
+
+body.quarto-dark .qwebr-editor-toolbar {
+  background-color: #111;
+  padding: 0.2rem 0.5rem;
+}
+
+.qwebr-button {
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1;
+  text-decoration: none;
+  text-align: center;
+  padding: 0.375rem 0.75rem;
+  font-size: .9rem;
+  border-radius: 0.25rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+body.quarto-light .qwebr-button {
+  background-color: #EEEEEE;
+  color: #000;
+  border-color: #dee2e6;
+  border: 1px solid rgba(0,0,0,0);
+}
+
+body.quarto-dark .qwebr-button {
+  background-color: #111;
+  color: #EEE;
+  border-color: #dee2e6;
+  border: 1px solid rgba(0,0,0,0);
+}
+
+body.quarto-light .qwebr-button:hover {
+  color: #000;
+  background-color: #d9dce0;
+  border-color: #c8ccd0;
+}
+
+body.quarto-dark .qwebr-button:hover {
+  color: #d9dce0;
+  background-color: #323232;
+  border-color: #d9dce0;
+}
+
+.qwebr-button:disabled,.qwebr-button.disabled,fieldset:disabled .qwebr-button {
+  pointer-events: none;
+  opacity: .65
+}
+
+.qwebr-button-reset {
+  color: #696969; /*#4682b4;*/
+}
+
+.qwebr-button-copy {
+  color: #696969;
+}
+
+/* Style the code highlight lines */
+body.quarto-light .qwebr-editor-highlight-line {
+  background-color: lightblue;
+}
+
+body.quarto-dark .qwebr-editor-highlight-line {
+  background-color: darkblue;
+}
+
+/* Style the modal pop-up */
+
+/* The Modal (background) */
+.qwebr-modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  padding-top: 60px;
+}
+
+/* Modal Content */
+.qwebr-modal-content {
+  background-color: #fefefe;
+  margin: 5% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+.qwebr-modal-content-code {
+  max-height: 50vh;
+  min-height: 5vh;
+  overflow: scroll;
+  border: 1px solid #888;
+}
+
+/* The Close Button */
+.qwebr-modal-close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.qwebr-modal-close:hover,
+.qwebr-modal-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.qwebr-download-btn {
+  margin-top: 10px;
+  text-decoration: none !important;
+}
+
+/* Styling to download image that is created */
+
+.qwebr-canvas-image {
+  position: relative;
+  display: inline-block;
+  margin: 10px;
+}
+
+.qwebr-canvas-image-download-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: none;
+}
+
+figure:hover .qwebr-canvas-image-download-btn {
+  display: block;
+}
+
+/* Custom styling for RevealJS Presentations*/
+
+/* Reset the style of the interactive area */
+.reveal div.qwebr-interactive-area {
+  display: block;
+  box-shadow: none;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
+  padding: 0;
+} 
+
+/* Provide space to entries */
+.reveal div.qwebr-output-code-area pre div {
+  margin: 1px 2px 1px 10px;
+}
+
+/* Collapse the inside code tags to avoid extra space between line outputs */
+.reveal pre div code.qwebr-output-code-stdout, .reveal pre div code.qwebr-output-code-stderr {
+  padding: 0;
+  display: contents;
+}
+
+body.reveal.quarto-light pre div code.qwebr-output-code-stdout {
+  color: #111;
+}
+
+body.reveal.quarto-dark pre div code.qwebr-output-code-stdout {
+  color: #EEEEEE;
+}
+
+.reveal pre div code.qwebr-output-code-stderr {
+  color: #db4133;
+}
+
+
+/* Create a border around console and output (does not effect graphs) */
+body.reveal.quarto-light div.qwebr-console-area {
+  border: 1px solid #EEEEEE;
+  box-shadow: 2px 2px 10px #EEEEEE;
+}
+
+body.reveal.quarto-dark div.qwebr-console-area {
+  border: 1px solid #111;
+  box-shadow: 2px 2px 10px #111;
+}
+
+
+/* Cap output height and allow text to scroll */
+/* TODO: Is there a better way to fit contents/max it parallel to the monaco editor size? */
+.reveal div.qwebr-output-code-area pre {
+  max-height: 400px;
+  overflow: scroll;
+}
+
+</style>
+<script type="module">
+// Document level settings ----
+
+// Determine if we need to install R packages
+globalThis.qwebrInstallRPackagesList = ['ggplot2', 'mosaicCalc'];
+
+// Specify possible locations to search for the repository
+globalThis.qwebrPackageRepoURLS = ['https://repo.r-wasm.org/'];
+
+// Check to see if we have an empty array, if we do set to skip the installation.
+globalThis.qwebrSetupRPackages = !(qwebrInstallRPackagesList.indexOf("") !== -1);
+globalThis.qwebrAutoloadRPackages = true;
+
+// Display a startup message?
+globalThis.qwebrShowStartupMessage = true;
+globalThis.qwebrShowHeaderMessage = false;
+
+// Describe the webR settings that should be used
+globalThis.qwebrCustomizedWebROptions = {
+  "baseURL": "https://webr.r-wasm.org/v0.4.0/",
+  "serviceWorkerUrl": "",
+  "homedir": "/home/web_user", 
+  "channelType": "ChannelType.Automatic"
+};
+
+// Store cell data
+globalThis.qwebrCellDetails = [{"id":1,"code":"1 / log(10)","options":{"output":"true","fig-cap":"","read-only":"false","editor-word-wrap":"true","out-height":"","editor-font-scale":"1","context":"interactive","results":"markup","warning":"true","comment":"","editor-quick-suggestions":"false","label":"unnamed-chunk-1","dpi":72,"fig-width":7,"autorun":"false","out-width":"700px","fig-height":5,"editor-max-height":"","message":"true","classes":""}},{"id":2,"code":"gf_point(mortality ~ age, color = ~ sex, data = SSA_2007)","options":{"output":"true","fig-cap":"","read-only":"false","editor-word-wrap":"true","out-height":"","editor-font-scale":"1","context":"interactive","results":"markup","warning":"true","comment":"","editor-quick-suggestions":"false","label":"tiger-have-fork-graph","dpi":72,"fig-width":7,"autorun":"false","out-width":"700px","fig-height":5,"editor-max-height":"","message":"true","classes":""}}];
+
+</script>
+<script type="module">
+// Declare startupMessageQWebR globally
+globalThis.qwebrStartupMessage = document.createElement("p");
+
+// Verify if OffScreenCanvas is supported
+globalThis.qwebrOffScreenCanvasSupport = function() {
+  return typeof OffscreenCanvas !== 'undefined'
+}
+
+// Function to set the button text
+globalThis.qwebrSetInteractiveButtonState = function(buttonText, enableCodeButton = true) {
+  document.querySelectorAll(".qwebr-button-run").forEach((btn) => {
+    btn.innerHTML = buttonText;
+    btn.disabled = !enableCodeButton;
+  });
+}
+
+// Function to update the status message in non-interactive cells
+globalThis.qwebrUpdateStatusMessage = function(message) {
+  document.querySelectorAll(".qwebr-status-text.qwebr-cell-needs-evaluation").forEach((elem) => {
+    elem.innerText = message;
+  });
+}
+
+// Function to update the status message
+globalThis.qwebrUpdateStatusHeader = function(message) {
+  qwebrStartupMessage.innerHTML = `
+    <i class="fa-solid fa-spinner fa-spin qwebr-icon-status-spinner"></i>
+    <span>${message}</span>`;
+}
+
+// Function to return true if element is found, false if not
+globalThis.qwebrCheckHTMLElementExists = function(selector) {
+  const element = document.querySelector(selector);
+  return !!element;
+}
+
+// Function that detects whether reveal.js slides are present
+globalThis.qwebrIsRevealJS = function() {
+  // If the '.reveal .slides' selector exists, RevealJS is likely present
+  return qwebrCheckHTMLElementExists('.reveal .slides');
+}
+
+// Initialize the Quarto sidebar element
+function qwebrSetupQuartoSidebar() {
+  var newSideBarDiv = document.createElement('div');
+  newSideBarDiv.id = 'quarto-margin-sidebar';
+  newSideBarDiv.className = 'sidebar margin-sidebar';
+  newSideBarDiv.style.top = '0px';
+  newSideBarDiv.style.maxHeight = 'calc(0px + 100vh)';
+
+  return newSideBarDiv;
+}
+
+// Position the sidebar in the document
+function qwebrPlaceQuartoSidebar() {
+  // Get the reference to the element with id 'quarto-document-content'
+  var referenceNode = document.getElementById('quarto-document-content');
+
+  // Create the new div element
+  var newSideBarDiv = qwebrSetupQuartoSidebar();
+
+  // Insert the new div before the 'quarto-document-content' element
+  referenceNode.parentNode.insertBefore(newSideBarDiv, referenceNode);
+}
+
+function qwebrPlaceMessageContents(content, html_location = "title-block-header", revealjs_location = "title-slide") {
+
+  // Get references to header elements
+  const headerHTML = document.getElementById(html_location);
+  const headerRevealJS = document.getElementById(revealjs_location);
+
+  // Determine where to insert the quartoTitleMeta element
+  if (headerHTML || headerRevealJS) {
+    // Append to the existing "title-block-header" element or "title-slide" div
+    (headerHTML || headerRevealJS).appendChild(content);
+  } else {
+    // If neither headerHTML nor headerRevealJS is found, insert after "webr-monaco-editor-init" script
+    const monacoScript = document.getElementById("qwebr-monaco-editor-init");
+    const header = document.createElement("header");
+    header.setAttribute("id", "title-block-header");
+    header.appendChild(content);
+    monacoScript.after(header);
+  }
+}
+
+
+
+function qwebrOffScreenCanvasSupportWarningMessage() {
+  
+  // Verify canvas is supported.
+  if(qwebrOffScreenCanvasSupport()) return;
+
+  // Create the main container div
+  var calloutContainer = document.createElement('div');
+  calloutContainer.classList.add('callout', 'callout-style-default', 'callout-warning', 'callout-titled');
+
+  // Create the header div
+  var headerDiv = document.createElement('div');
+  headerDiv.classList.add('callout-header', 'd-flex', 'align-content-center');
+
+  // Create the icon container div
+  var iconContainer = document.createElement('div');
+  iconContainer.classList.add('callout-icon-container');
+
+  // Create the icon element
+  var iconElement = document.createElement('i');
+  iconElement.classList.add('callout-icon');
+
+  // Append the icon element to the icon container
+  iconContainer.appendChild(iconElement);
+
+  // Create the title container div
+  var titleContainer = document.createElement('div');
+  titleContainer.classList.add('callout-title-container', 'flex-fill');
+  titleContainer.innerText = 'Warning: Web Browser Does Not Support Graphing!';
+
+  // Append the icon container and title container to the header div
+  headerDiv.appendChild(iconContainer);
+  headerDiv.appendChild(titleContainer);
+
+  // Create the body container div
+  var bodyContainer = document.createElement('div');
+  bodyContainer.classList.add('callout-body-container', 'callout-body');
+
+  // Create the paragraph element for the body content
+  var paragraphElement = document.createElement('p');
+  paragraphElement.innerHTML = 'This web browser does not have support for displaying graphs through the <code>quarto-webr</code> extension since it lacks an <code>OffScreenCanvas</code>. Please upgrade your web browser to one that supports <code>OffScreenCanvas</code>.';
+
+  // Append the paragraph element to the body container
+  bodyContainer.appendChild(paragraphElement);
+
+  // Append the header div and body container to the main container div
+  calloutContainer.appendChild(headerDiv);
+  calloutContainer.appendChild(bodyContainer);
+
+  // Append the main container div to the document depending on format
+  qwebrPlaceMessageContents(calloutContainer, "title-block-header"); 
+
+}
+
+
+// Function that attaches the document status message and diagnostics
+function displayStartupMessage(showStartupMessage, showHeaderMessage) {
+  if (!showStartupMessage) {
+    return;
+  }
+
+  // Create the outermost div element for metadata
+  const quartoTitleMeta = document.createElement("div");
+  quartoTitleMeta.classList.add("quarto-title-meta");
+
+  // Create the first inner div element
+  const firstInnerDiv = document.createElement("div");
+  firstInnerDiv.setAttribute("id", "qwebr-status-message-area");
+
+  // Create the second inner div element for "WebR Status" heading and contents
+  const secondInnerDiv = document.createElement("div");
+  secondInnerDiv.setAttribute("id", "qwebr-status-message-title");
+  secondInnerDiv.classList.add("quarto-title-meta-heading");
+  secondInnerDiv.innerText = "WebR Status";
+
+  // Create another inner div for contents
+  const secondInnerDivContents = document.createElement("div");
+  secondInnerDivContents.setAttribute("id", "qwebr-status-message-body");
+  secondInnerDivContents.classList.add("quarto-title-meta-contents");
+
+  // Describe the WebR state
+  qwebrStartupMessage.innerText = "🟡 Loading...";
+  qwebrStartupMessage.setAttribute("id", "qwebr-status-message-text");
+  // Add `aria-live` to auto-announce the startup status to screen readers
+  qwebrStartupMessage.setAttribute("aria-live", "assertive");
+
+  // Append the startup message to the contents
+  secondInnerDivContents.appendChild(qwebrStartupMessage);
+
+  // Add a status indicator for COOP and COEP Headers if needed
+  if (showHeaderMessage) {
+    const crossOriginMessage = document.createElement("p");
+    crossOriginMessage.innerText = `${crossOriginIsolated ? '🟢' : '🟡'} COOP & COEP Headers`;
+    crossOriginMessage.setAttribute("id", "qwebr-coop-coep-header");
+    secondInnerDivContents.appendChild(crossOriginMessage);
+  }
+
+  // Combine the inner divs and contents
+  firstInnerDiv.appendChild(secondInnerDiv);
+  firstInnerDiv.appendChild(secondInnerDivContents);
+  quartoTitleMeta.appendChild(firstInnerDiv);
+
+  // Place message on webpage
+  qwebrPlaceMessageContents(quartoTitleMeta); 
+}
+
+function qwebrAddCommandHistoryModal() {
+  // Create the modal div
+  var modalDiv = document.createElement('div');
+  modalDiv.id = 'qwebr-history-modal';
+  modalDiv.className = 'qwebr-modal';
+
+  // Create the modal content div
+  var modalContentDiv = document.createElement('div');
+  modalContentDiv.className = 'qwebr-modal-content';
+
+  // Create the span for closing the modal
+  var closeSpan = document.createElement('span');
+  closeSpan.id = 'qwebr-command-history-close-btn';
+  closeSpan.className = 'qwebr-modal-close';
+  closeSpan.innerHTML = '&times;';
+
+  // Create the h1 element for the modal
+  var modalH1 = document.createElement('h1');
+  modalH1.textContent = 'R History Command Contents';
+
+  // Create an anchor element for downloading the Rhistory file 
+  var downloadLink = document.createElement('a');
+  downloadLink.href = '#';
+  downloadLink.id = 'qwebr-download-history-btn';
+  downloadLink.className = 'qwebr-download-btn';
+
+  // Create an 'i' element for the icon
+  var icon = document.createElement('i');
+  icon.className = 'bi bi-file-code';
+
+  // Append the icon to the anchor element
+  downloadLink.appendChild(icon);
+
+  // Add the text 'Download R History' to the anchor element
+  downloadLink.appendChild(document.createTextNode(' Download R History File'));
+
+  // Create the pre for command history contents
+  var commandContentsPre = document.createElement('pre');
+  commandContentsPre.id = 'qwebr-command-history-contents';
+  commandContentsPre.className = 'qwebr-modal-content-code';
+
+  // Append the close span, h1, and history contents pre to the modal content div
+  modalContentDiv.appendChild(closeSpan);
+  modalContentDiv.appendChild(modalH1);
+  modalContentDiv.appendChild(downloadLink);
+  modalContentDiv.appendChild(commandContentsPre);
+
+  // Append the modal content div to the modal div
+  modalDiv.appendChild(modalContentDiv);
+
+  // Append the modal div to the body
+  document.body.appendChild(modalDiv);
+}
+
+function qwebrRegisterRevealJSCommandHistoryModal() {
+  // Select the <ul> element inside the <div> with data-panel="Custom0"
+  let ulElement = document.querySelector('div[data-panel="Custom0"] > ul.slide-menu-items');
+
+  // Find the last <li> element with class slide-tool-item
+  let lastItem = ulElement.querySelector('li.slide-tool-item:last-child');
+
+  // Calculate the next data-item value
+  let nextItemValue = 0;
+  if (lastItem) {
+      nextItemValue = parseInt(lastItem.dataset.item) + 1;
+  }
+
+  // Create a new <li> element
+  let newListItem = document.createElement('li');
+  newListItem.className = 'slide-tool-item';
+  newListItem.dataset.item = nextItemValue.toString(); // Set the next available data-item value
+
+  // Create the <a> element inside the <li>
+  let newLink = document.createElement('a');
+  newLink.href = '#';
+  newLink.id = 'qwebrRHistoryButton'; // Set the ID for the new link
+  
+  // Create the <kbd> element inside the <a>
+  let newKbd = document.createElement('kbd');
+  newKbd.textContent = ' '; // Set to empty as we are not registering a keyboard shortcut
+
+  // Create text node for the link text
+  let newText = document.createTextNode(' View R History');
+
+  // Append <kbd> and text node to <a>
+  newLink.appendChild(newKbd);
+  newLink.appendChild(newText);
+
+  // Append <a> to <li>
+  newListItem.appendChild(newLink);
+
+  // Append <li> to <ul>
+  ulElement.appendChild(newListItem);
+}
+
+// Handle setting up the R history modal
+function qwebrCodeLinks() {
+
+  if (qwebrIsRevealJS()) {
+    qwebrRegisterRevealJSCommandHistoryModal();
+    return;
+  }
+
+  // Create the container div
+  var containerDiv = document.createElement('div');
+  containerDiv.className = 'quarto-code-links';
+
+  // Create the h2 element
+  var h2 = document.createElement('h2');
+  h2.textContent = 'webR Code Links';
+
+  // Create the ul element
+  var ul = document.createElement('ul');
+
+  // Create the li element
+  var li = document.createElement('li');
+
+  // Create the a_history_btn element
+  var a_history_btn = document.createElement('a');
+  a_history_btn.href = 'javascript:void(0)';
+  a_history_btn.setAttribute('id', 'qwebrRHistoryButton');
+
+  // Create the i_history_btn element
+  var i_history_btn = document.createElement('i');
+  i_history_btn.className = 'bi bi-file-code';
+
+  // Create the text node for the link text
+  var text_history_btn = document.createTextNode('View R History');
+
+  // Append the icon element and link text to the a element
+  a_history_btn.appendChild(i_history_btn);
+  a_history_btn.appendChild(text_history_btn);
+
+  // Append the a element to the li element
+  li.appendChild(a_history_btn);
+
+  // Append the li element to the ul element
+  ul.appendChild(li);
+
+  // Append the h2 and ul elements to the container div
+  containerDiv.appendChild(h2);
+  containerDiv.appendChild(ul);
+
+  // Append the container div to the element with the ID 'quarto-margin-sidebar'
+  var sidebar = document.getElementById('quarto-margin-sidebar');
+    
+  // If the sidebar element is not found, create it
+  if(!sidebar) {
+    qwebrPlaceQuartoSidebar();
+  }
+  
+  // Re-select the sidebar element (if it was just created)
+  sidebar = document.getElementById('quarto-margin-sidebar');   
+
+
+  // If the sidebar element exists, append the container div to it
+  if(sidebar) {
+    // Append the container div to the sidebar
+    sidebar.appendChild(containerDiv);
+    // Force the sidebar to be clickable by removing the 'zindex-bottom' class
+    // added in pre-release: https://github.com/quarto-dev/quarto-cli/commit/f0c53a1ffcaa1de4eccbf07803b096898248adcc
+    sidebar.className = 'sidebar margin-sidebar';
+  } else {
+    // Get a debugger ...
+    console.warn('Element with ID "quarto-margin-sidebar" not found.');
+  }
+}
+
+// Call the function to append the code links for qwebR into the right sidebar
+qwebrCodeLinks();
+
+// Add the command history modal
+qwebrAddCommandHistoryModal();
+
+displayStartupMessage(qwebrShowStartupMessage, qwebrShowHeaderMessage);
+qwebrOffScreenCanvasSupportWarningMessage();
+</script>
+<script type="module">
+// Define a global storage and retrieval solution ----
+
+// Store commands executed in R
+globalThis.qwebrRCommandHistory = [];
+
+// Function to retrieve the command history
+globalThis.qwebrFormatRHistory = function() {
+   return qwebrRCommandHistory.join("\n\n");
+}
+
+// Retrieve HTML Elements ----
+
+// Get the command modal
+const command_history_modal = document.getElementById("qwebr-history-modal");
+
+// Get the button that opens the command modal
+const command_history_btn = document.getElementById("qwebrRHistoryButton");
+
+// Get the <span> element that closes the command modal
+const command_history_close_span = document.getElementById("qwebr-command-history-close-btn");
+
+// Get the download button for r history information
+const command_history_download_btn = document.getElementById("qwebr-download-history-btn");
+
+// Plug in command history into modal/download button ----
+
+// Function to populate the modal with command history
+function populateCommandHistoryModal() {
+    document.getElementById("qwebr-command-history-contents").innerHTML = qwebrFormatRHistory() || "No commands have been executed yet.";
+}
+
+// Function to format the current date and time to
+// a string with the format YYYY-MM-DD-HH-MM-SS
+function formatDateTime() {
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day}-${hours}-${minutes}-${seconds}`;
+}
+
+
+// Function to convert document title with datetime to a safe filename
+function safeFileName() {
+    // Get the current page title
+    let pageTitle = document.title;
+
+    // Combine the current page title with the current date and time
+    let pageNameWithDateTime = `Rhistory-${pageTitle}-${formatDateTime()}`;
+
+    // Replace unsafe characters with safe alternatives
+    let safeFilename = pageNameWithDateTime.replace(/[\\/:\*\?! "<>\|]/g, '-');
+
+    return safeFilename;
+}
+
+
+// Function to download list contents as text file
+function downloadRHistory() {
+    // Get the current page title + datetime and use it as the filename
+    const filename = `${safeFileName()}.R`;
+
+    // Get the text contents of the R History list
+    const text = qwebrFormatRHistory();
+
+    // Create a new Blob object with the text contents
+    const blob = new Blob([text], { type: 'text/plain' });
+  
+    // Create a new anchor element for the download
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+
+    // Append the anchor to the body, click it, and remove it
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+// Register event handlers ----
+
+// When the user clicks the View R History button, open the command modal
+command_history_btn.onclick = function() {
+    populateCommandHistoryModal();
+    command_history_modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the command modal
+command_history_close_span.onclick = function() {
+    command_history_modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the command modal, close it
+window.onclick = function(event) {
+    if (event.target == command_history_modal) {
+        command_history_modal.style.display = "none";
+    }
+}
+
+// Add an onclick event listener to the download button so that
+// the user can download the R history as a text file
+command_history_download_btn.onclick = function() {
+    downloadRHistory();
+};
+</script>
+<script type="module">
+// Supported Evaluation Types for Context
+globalThis.EvalTypes = Object.freeze({
+  Interactive: 'interactive',
+  Setup: 'setup',
+  Output: 'output',
+});
+
+// Function that obtains the font size for a given element 
+globalThis.qwebrCurrentFontSizeOnElement = function(element, cssProperty = 'font-size') {
+
+  const currentFontSize = parseFloat(
+    window
+    .getComputedStyle(element)
+    .getPropertyValue(cssProperty)
+  );
+  
+  return currentFontSize;
+}
+
+// Function to determine font scaling
+globalThis.qwebrScaledFontSize = function(div, qwebrOptions) {
+  // Determine if we should compute font-size using RevealJS's `--r-main-font-size` 
+  // or if we can directly use the document's `font-size`.
+  const cssProperty = document.body.classList.contains('reveal') ? 
+    "--r-main-font-size" : "font-size";
+  
+  // Get the current font size on the div element
+  const elementFontSize = qwebrCurrentFontSizeOnElement(div, cssProperty);
+
+  // Determine the scaled font size value
+  const scaledFontSize = ((qwebrOptions['editor-font-scale'] ?? 1) * elementFontSize) ?? 17.5;
+
+  return scaledFontSize;
+}
+
+
+// Function that dispatches the creation request
+globalThis.qwebrCreateHTMLElement = function (
+  cellData
+) {
+
+  // Extract key components
+  const evalType = cellData.options.context;
+  const qwebrCounter = cellData.id;
+
+  // We make an assumption that insertion points are defined by the Lua filter as:
+  // qwebr-insertion-location-{qwebrCounter} 
+  const elementLocator = document.getElementById(`qwebr-insertion-location-${qwebrCounter}`);
+
+  // Figure out the routine to use to insert the element.
+  let qwebrElement;
+  switch ( evalType ) {
+    case EvalTypes.Interactive:
+      qwebrElement = qwebrCreateInteractiveElement(qwebrCounter, cellData.options);
+      break;
+    case EvalTypes.Output: 
+      qwebrElement = qwebrCreateNonInteractiveOutputElement(qwebrCounter, cellData.options);
+      break;
+    case EvalTypes.Setup: 
+      qwebrElement = qwebrCreateNonInteractiveSetupElement(qwebrCounter, cellData.options);
+      break;
+    default: 
+      qwebrElement = document.createElement('div');
+      qwebrElement.textContent = 'Error creating `quarto-webr` element';
+  }
+
+  // Insert the dynamically generated object at the document location.
+  elementLocator.appendChild(qwebrElement);
+};
+
+// Function that setups the interactive element creation
+globalThis.qwebrCreateInteractiveElement = function (qwebrCounter, qwebrOptions) {
+
+  // Create main div element
+  var mainDiv = document.createElement('div');
+  mainDiv.id = 'qwebr-interactive-area-' + qwebrCounter;
+  mainDiv.className = `qwebr-interactive-area`;
+  if (qwebrOptions.classes) {
+    mainDiv.className += " " + qwebrOptions.classes
+  }
+
+  // Add a unique cell identifier that users can customize
+  if (qwebrOptions.label) {
+    mainDiv.setAttribute('data-id', qwebrOptions.label);
+  }
+
+  // Create toolbar div
+  var toolbarDiv = document.createElement('div');
+  toolbarDiv.className = 'qwebr-editor-toolbar';
+  toolbarDiv.id = 'qwebr-editor-toolbar-' + qwebrCounter;
+
+  // Create a div to hold the left buttons
+  var leftButtonsDiv = document.createElement('div');
+  leftButtonsDiv.className = 'qwebr-editor-toolbar-left-buttons';
+
+  // Create a div to hold the right buttons
+  var rightButtonsDiv = document.createElement('div');
+  rightButtonsDiv.className = 'qwebr-editor-toolbar-right-buttons';
+
+  // Create Run Code button
+  var runCodeButton = document.createElement('button');
+  runCodeButton.className = 'btn btn-default qwebr-button qwebr-button-run';
+  runCodeButton.disabled = true;
+  runCodeButton.type = 'button';
+  runCodeButton.id = 'qwebr-button-run-' + qwebrCounter;
+  runCodeButton.textContent = '🟡 Loading webR...';
+  runCodeButton.title = `Run code (Shift + Enter)`;
+
+  // Append buttons to the leftButtonsDiv
+  leftButtonsDiv.appendChild(runCodeButton);
+
+  // Create Reset button
+  var resetButton = document.createElement('button');
+  resetButton.className = 'btn btn-light btn-xs qwebr-button qwebr-button-reset';
+  resetButton.type = 'button';
+  resetButton.id = 'qwebr-button-reset-' + qwebrCounter;
+  resetButton.title = 'Start over';
+  resetButton.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i>';
+
+  // Create Copy button
+  var copyButton = document.createElement('button');
+  copyButton.className = 'btn btn-light btn-xs qwebr-button qwebr-button-copy';
+  copyButton.type = 'button';
+  copyButton.id = 'qwebr-button-copy-' + qwebrCounter;
+  copyButton.title = 'Copy code';
+  copyButton.innerHTML = '<i class="fa-regular fa-copy"></i>';
+
+  // Append buttons to the rightButtonsDiv
+  rightButtonsDiv.appendChild(resetButton);
+  rightButtonsDiv.appendChild(copyButton);
+
+  // Create console area div
+  var consoleAreaDiv = document.createElement('div');
+  consoleAreaDiv.id = 'qwebr-console-area-' + qwebrCounter;
+  consoleAreaDiv.className = 'qwebr-console-area';
+
+  // Create editor div
+  var editorDiv = document.createElement('div');
+  editorDiv.id = 'qwebr-editor-' + qwebrCounter;
+  editorDiv.className = 'qwebr-editor';
+
+  // Create output code area div
+  var outputCodeAreaDiv = document.createElement('div');
+  outputCodeAreaDiv.id = 'qwebr-output-code-area-' + qwebrCounter;
+  outputCodeAreaDiv.className = 'qwebr-output-code-area';
+  outputCodeAreaDiv.setAttribute('aria-live', 'assertive');
+
+  // Create pre element inside output code area
+  var preElement = document.createElement('pre');
+  preElement.style.visibility = 'hidden';
+  outputCodeAreaDiv.appendChild(preElement);
+
+  // Create output graph area div
+  var outputGraphAreaDiv = document.createElement('div');
+  outputGraphAreaDiv.id = 'qwebr-output-graph-area-' + qwebrCounter;
+  outputGraphAreaDiv.className = 'qwebr-output-graph-area';
+
+  // Append buttons to the toolbar
+  toolbarDiv.appendChild(leftButtonsDiv);
+  toolbarDiv.appendChild(rightButtonsDiv);
+
+  // Append all elements to the main div
+  mainDiv.appendChild(toolbarDiv);
+  consoleAreaDiv.appendChild(editorDiv);
+  consoleAreaDiv.appendChild(outputCodeAreaDiv);
+  mainDiv.appendChild(consoleAreaDiv);
+  mainDiv.appendChild(outputGraphAreaDiv);
+
+  return mainDiv;
+}
+
+// Function that adds output structure for non-interactive output
+globalThis.qwebrCreateNonInteractiveOutputElement = function(qwebrCounter, qwebrOptions) {
+  // Create main div element
+  var mainDiv = document.createElement('div');
+  mainDiv.id = 'qwebr-noninteractive-area-' + qwebrCounter;
+  mainDiv.className = `qwebr-noninteractive-area`;
+  if (qwebrOptions.classes) {
+    mainDiv.className += " " + qwebrOptions.classes
+  }
+  
+  // Add a unique cell identifier that users can customize
+  if (qwebrOptions.label) {
+    mainDiv.setAttribute('data-id', qwebrOptions.label);
+  }
+  
+  // Create a status container div
+  var statusContainer = createLoadingContainer(qwebrCounter);
+
+  // Create output code area div
+  var outputCodeAreaDiv = document.createElement('div');
+  outputCodeAreaDiv.id = 'qwebr-output-code-area-' + qwebrCounter;
+  outputCodeAreaDiv.className = 'qwebr-output-code-area';
+  outputCodeAreaDiv.setAttribute('aria-live', 'assertive');
+
+  // Create pre element inside output code area
+  var preElement = document.createElement('pre');
+  preElement.style.visibility = 'hidden';
+  outputCodeAreaDiv.appendChild(preElement);
+
+  // Create output graph area div
+  var outputGraphAreaDiv = document.createElement('div');
+  outputGraphAreaDiv.id = 'qwebr-output-graph-area-' + qwebrCounter;
+  outputGraphAreaDiv.className = 'qwebr-output-graph-area';
+
+  // Append all elements to the main div
+  mainDiv.appendChild(statusContainer);
+  mainDiv.appendChild(outputCodeAreaDiv);
+  mainDiv.appendChild(outputGraphAreaDiv);
+
+  return mainDiv;
+};
+
+// Function that adds a stub in the page to indicate a setup cell was used.
+globalThis.qwebrCreateNonInteractiveSetupElement = function(qwebrCounter, qwebrOptions) {
+  // Create main div element
+  var mainDiv = document.createElement('div');
+  mainDiv.id = `qwebr-noninteractive-setup-area-${qwebrCounter}`;
+  mainDiv.className = `qwebr-noninteractive-setup-area`;
+  if (qwebrOptions.classes) {
+    mainDiv.className += " " + qwebrOptions.classes
+  }
+
+
+  // Add a unique cell identifier that users can customize
+  if (qwebrOptions.label) {
+    mainDiv.setAttribute('data-id', qwebrOptions.label);
+  }
+
+  // Create a status container div
+  var statusContainer = createLoadingContainer(qwebrCounter);
+
+  // Append status onto the main div
+  mainDiv.appendChild(statusContainer);
+
+  return mainDiv;
+}
+
+
+// Function to create loading container with specified ID
+globalThis.createLoadingContainer = function(qwebrCounter) {
+
+  // Create a status container
+  const container = document.createElement('div');
+  container.id = `qwebr-non-interactive-loading-container-${qwebrCounter}`;
+  container.className = 'qwebr-non-interactive-loading-container qwebr-cell-needs-evaluation';
+
+  // Create an R project logo to indicate its a code space
+  const rProjectIcon = document.createElement('i');
+  rProjectIcon.className = 'fa-brands fa-r-project fa-3x qwebr-r-project-logo';
+
+  // Setup a loading icon from font awesome
+  const spinnerIcon = document.createElement('i');
+  spinnerIcon.className = 'fa-solid fa-spinner fa-spin fa-1x qwebr-icon-status-spinner';
+
+  // Add a section for status text
+  const statusText = document.createElement('p');
+  statusText.id = `qwebr-status-text-${qwebrCounter}`;
+  statusText.className = `qwebr-status-text qwebr-cell-needs-evaluation`;
+  statusText.innerText = 'Loading webR...';
+
+  // Incorporate an inner container
+  const innerContainer = document.createElement('div');
+
+  // Append elements to the inner container
+  innerContainer.appendChild(spinnerIcon);
+  innerContainer.appendChild(statusText);
+
+  // Append elements to the main container
+  container.appendChild(rProjectIcon);
+  container.appendChild(innerContainer);
+
+  return container;
+}
+</script>
+<script type="module">
+// Function to install a single package
+async function qwebrInstallRPackage(packageName) {
+  await mainWebR.evalRVoid(`webr::install('${packageName}');`);
+}
+
+// Function to load a single package
+async function qwebrLoadRPackage(packageName) {
+  await mainWebR.evalRVoid(`require('${packageName}', quietly = TRUE)`);
+}
+
+// Generic function to process R packages
+async function qwebrProcessRPackagesWithStatus(packages, processType, displayStatusMessageUpdate = true) {
+  // Switch between contexts
+  const messagePrefix = processType === 'install' ? 'Installing' : 'Loading';
+
+  // Modify button state
+  qwebrSetInteractiveButtonState(`🟡 ${messagePrefix} package ...`, false);
+
+  // Iterate over packages
+  for (let i = 0; i < packages.length; i++) {
+    const activePackage = packages[i];
+    const formattedMessage = `${messagePrefix} package ${i + 1} out of ${packages.length}: ${activePackage}`;
+
+    // Display the update in header
+    if (displayStatusMessageUpdate) {
+      qwebrUpdateStatusHeader(formattedMessage);
+    }
+
+    // Display the update in non-active areas
+    qwebrUpdateStatusMessage(formattedMessage);
+
+    // Run package installation
+    if (processType === 'install') {
+      await qwebrInstallRPackage(activePackage);
+    } else {
+      await qwebrLoadRPackage(activePackage);
+    }
+  }
+
+  // Clean slate
+  if (processType === 'load') {
+    await mainWebR.flush();
+  }
+}
+
+// Start a timer
+const initializeWebRTimerStart = performance.now();
+
+// Encase with a dynamic import statement
+globalThis.qwebrInstance = import(qwebrCustomizedWebROptions.baseURL + "webr.mjs").then(
+  async ({ WebR, ChannelType }) => {
+    // Populate WebR options with defaults or new values based on `webr` meta
+    globalThis.mainWebR = new WebR(qwebrCustomizedWebROptions);
+
+    // Initialization WebR
+    await mainWebR.init();
+
+    // Setup a shelter
+    globalThis.mainWebRCodeShelter = await new mainWebR.Shelter();
+
+    // Setup a pager to allow processing help documentation 
+    await mainWebR.evalRVoid('webr::pager_install()'); 
+
+    // Override the existing install.packages() to use webr::install()
+    await mainWebR.evalRVoid('webr::shim_install()'); 
+
+    // Specify the repositories to pull from
+    // Note: webR does not use the `repos` option, but instead uses `webr_pkg_repos`
+    // inside of `install()`. However, other R functions still pull from `repos`.
+    await mainWebR.evalRVoid(`
+      options(
+        webr_pkg_repos = c(${qwebrPackageRepoURLS.map(repoURL => `'${repoURL}'`).join(',')}),
+        repos = c(${qwebrPackageRepoURLS.map(repoURL => `'${repoURL}'`).join(',')})
+      )
+    `);
+
+    // Check to see if any packages need to be installed
+    if (qwebrSetupRPackages) {
+      // Obtain only a unique list of packages
+      const uniqueRPackageList = Array.from(new Set(qwebrInstallRPackagesList));
+
+      // Install R packages one at a time (either silently or with a status update)
+      await qwebrProcessRPackagesWithStatus(uniqueRPackageList, 'install', qwebrShowStartupMessage);
+
+      if (qwebrAutoloadRPackages) {
+        // Load R packages one at a time (either silently or with a status update)
+        await qwebrProcessRPackagesWithStatus(uniqueRPackageList, 'load', qwebrShowStartupMessage);
+      }
+    }
+  }
+);
+
+// Stop timer
+const initializeWebRTimerEnd = performance.now();
+
+</script>
+<script type="module">
+// Function to verify a given JavaScript Object is empty
+globalThis.qwebrIsObjectEmpty = function (arr) {
+    return Object.keys(arr).length === 0;
+}
+
+// Global version of the Escape HTML function that converts HTML 
+// characters to their HTML entities.
+globalThis.qwebrEscapeHTMLCharacters = function(unsafe) {
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  };
+
+// Passthrough results
+globalThis.qwebrIdentity = function(x) {
+    return x;
+};
+
+// Append a comment
+globalThis.qwebrPrefixComment = function(x, comment) {
+    return `${comment}${x}`;
+};
+
+// Function to store the code in the history
+globalThis.qwebrLogCodeToHistory = function(codeToRun, options) {
+    qwebrRCommandHistory.push(
+        `# Ran code in ${options.label} at ${new Date().toLocaleString()} ----\n${codeToRun}`
+    );
+}
+
+// Function to attach a download button onto the canvas
+// allowing the user to download the image.
+function qwebrImageCanvasDownloadButton(canvas, canvasContainer) {
+
+    // Create the download button
+    const downloadButton = document.createElement('button');
+    downloadButton.className = 'qwebr-canvas-image-download-btn';
+    downloadButton.textContent = 'Download Image';
+    canvasContainer.appendChild(downloadButton);
+
+    // Trigger a download of the image when the button is clicked
+    downloadButton.addEventListener('click', function() {
+        const image = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = image;
+        link.download = 'qwebr-canvas-image.png';
+        link.click();
+    });
+  }
+  
+
+// Function to parse the pager results
+globalThis.qwebrParseTypePager = async function (msg) { 
+
+    // Split out the event data
+    const { path, title, deleteFile } = msg.data; 
+
+    // Process the pager data by reading the information from disk
+    const paged_data = await mainWebR.FS.readFile(path).then((data) => {
+        // Obtain the file content
+        let content = new TextDecoder().decode(data);
+
+        // Remove excessive backspace characters until none remain
+        while(content.match(/.[\b]/)){
+        content = content.replace(/.[\b]/g, '');
+        }
+
+        // Returned cleaned data
+        return content;
+    });
+
+    // Unlink file if needed
+    if (deleteFile) { 
+        await mainWebR.FS.unlink(path); 
+    } 
+
+    // Return extracted data with spaces
+    return paged_data;
+} 
+
+// Function to run the code using webR and parse the output
+globalThis.qwebrComputeEngine = async function(
+    codeToRun, 
+    elements, 
+    options) {
+
+    // Call into the R compute engine that persists within the document scope.
+    // To be prepared for all scenarios, the following happens: 
+    // 1. We setup a canvas device to write to by making a namespace call into the {webr} package
+    // 2. We use values inside of the options array to set the figure size.
+    // 3. We capture the output stream information (STDOUT and STERR)
+    // 4. We disable the current device's image creation.
+    // 5. Piece-wise parse the results into the different output areas
+
+    // Create a pager variable for help/file contents
+    let pager = [];
+
+    // Handle how output is processed
+    let showMarkup = options.results === "markup" && options.output !== "asis";
+    let processOutput;
+
+    if (showMarkup) {
+        processOutput = qwebrEscapeHTMLCharacters;
+    } else {
+        processOutput = qwebrIdentity;
+    }
+
+    // ---- 
+    // Convert from Inches to Pixels by using DPI (dots per inch)
+    // for bitmap devices (dpi * inches = pixels)
+    let fig_width = options["fig-width"] * options["dpi"]
+    let fig_height = options["fig-height"] * options["dpi"]
+
+    // Initialize webR
+    await mainWebR.init();
+
+    // Configure capture output
+    let captureOutputOptions = {
+        withAutoprint: true,
+        captureStreams: true,
+        captureConditions: false,
+        // env: webR.objs.emptyEnv, // maintain a global environment for webR v0.2.0
+    };
+    
+    // Determine if the browser supports OffScreen
+    if (qwebrOffScreenCanvasSupport()) {
+        // Mirror default options of webr::canvas()
+        // with changes to figure height and width.
+        captureOutputOptions.captureGraphics = {
+            width: fig_width,
+            height: fig_height,
+            bg: "white", // default: transparent
+            pointsize: 12,
+            capture: true
+        };
+    }  else {
+        // Disable generating graphics
+        captureOutputOptions.captureGraphics = false;
+    }
+
+    // Store the code to run in history
+    qwebrLogCodeToHistory(codeToRun, options);
+
+    // Setup a webR canvas by making a namespace call into the {webr} package
+    // Evaluate the R code
+    // Remove the active canvas silently
+    const result = await mainWebRCodeShelter.captureR(
+        `${codeToRun}`,
+        captureOutputOptions
+    );
+
+    // -----
+
+    // Start attempting to parse the result data
+    processResultOutput:try {
+        
+        // Avoid running through output processing
+        if (options.results === "hide" || options.output === "false") { 
+            break processResultOutput; 
+        }
+
+        // Merge output streams of STDOUT and STDErr (messages and errors are combined.)
+        // Require both `warning` and `message` to be true to display `STDErr`. 
+        const out = result.output
+        .filter(
+            evt => evt.type === "stdout" || 
+            ( evt.type === "stderr" && (options.warning === "true" && options.message === "true")) 
+        )
+        .map((evt, index) => {
+            const className = `qwebr-output-code-${evt.type}`;
+            const outputResult = qwebrPrefixComment(processOutput(evt.data), options.comment);
+            return `<code id="${className}-editor-${elements.id}-result-${index + 1}" class="${className}">${outputResult}</code>`;
+        })
+        .join("\n");
+
+
+        // Clean the state
+        // We're now able to process pager events.
+        // As a result, we cannot maintain a true 1-to-1 output order 
+        // without individually feeding each line
+        const msgs = await mainWebR.flush();
+
+        // Use `map` to process the filtered "pager" events asynchronously
+        const pager = await Promise.all(
+            msgs.filter(msg => msg.type === 'pager').map(
+                async (msg) => {
+                    return await qwebrParseTypePager(msg);
+                }
+            )
+        );
+
+        // Nullify the output area of content
+        elements.outputCodeDiv.innerHTML = "";
+        elements.outputGraphDiv.innerHTML = "";
+
+        // Design an output object for messages
+        const pre = document.createElement("pre");
+        if (/\S/.test(out)) {
+            // Display results as HTML elements to retain output styling
+            const div = document.createElement("div");
+            div.innerHTML = out;
+
+            // Calculate a scaled font-size value
+            const scaledFontSize = qwebrScaledFontSize(
+                elements.outputCodeDiv, options);
+
+            // Override output code cell size
+            pre.style.fontSize = `${scaledFontSize}px`;
+            pre.appendChild(div);
+        } else {
+            // If nothing is present, hide the element.
+            pre.style.visibility = "hidden";
+        }
+
+        elements.outputCodeDiv.appendChild(pre);
+
+        // Determine if we have graphs to display
+        if (result.images.length > 0) {
+
+            // Create figure element
+            const figureElement = document.createElement("figure");
+            figureElement.className = "qwebr-canvas-image";
+
+            // Place each rendered graphic onto a canvas element
+            result.images.forEach((img) => {
+
+                // Construct canvas for object
+                const canvas = document.createElement("canvas");
+
+                // Add an image download button
+                qwebrImageCanvasDownloadButton(canvas, figureElement);
+
+                // Set canvas size to image
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                // Apply output truncations
+                canvas.style.width = options["out-width"] ? options["out-width"] : `${fig_width}px`;
+                if (options["out-height"]) {
+                    canvas.style.height = options["out-height"];
+                }
+
+                // Apply styling
+                canvas.style.display = "block";
+                canvas.style.margin = "auto";
+
+                // Draw image onto Canvas
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, img.width, img.height);
+          
+                // Append canvas to figure output area
+                figureElement.appendChild(canvas);
+
+            });
+            
+            if (options['fig-cap']) {
+                // Create figcaption element
+                const figcaptionElement = document.createElement('figcaption');
+                figcaptionElement.innerText = options['fig-cap'];
+                // Append figcaption to figure
+                figureElement.appendChild(figcaptionElement);    
+            }
+        
+            elements.outputGraphDiv.appendChild(figureElement);
+
+        }
+
+        // Display the pager data
+        if (pager) {
+        // Use the `pre` element to preserve whitespace.
+        pager.forEach((paged_data, index) => {
+            let pre_pager = document.createElement("pre");
+            pre_pager.innerText = paged_data;
+            pre_pager.classList.add("qwebr-output-code-pager");
+            pre_pager.setAttribute("id", `qwebr-output-code-pager-editor-${elements.id}-result-${index + 1}`);
+            elements.outputCodeDiv.appendChild(pre_pager);
+        });
+        }
+    } finally {
+        // Clean up the remaining code
+        mainWebRCodeShelter.purge();
+    }
+}
+
+// Function to execute the code (accepts code as an argument)
+globalThis.qwebrExecuteCode = async function (
+    codeToRun,
+    id,
+    options = {}) {
+
+    // If options are not passed, we fall back on the bare minimum to handle the computation
+    if (qwebrIsObjectEmpty(options)) {
+        options = { 
+            "context": "interactive", 
+            "fig-width": 7, "fig-height": 5, 
+            "out-width": "700px", "out-height": "", 
+            "dpi": 72,
+            "results": "markup", 
+            "warning": "true", "message": "true",
+        };
+    }
+
+    // Next, we access the compute areas values
+    const elements = {
+        runButton: document.getElementById(`qwebr-button-run-${id}`),
+        outputCodeDiv: document.getElementById(`qwebr-output-code-area-${id}`),
+        outputGraphDiv: document.getElementById(`qwebr-output-graph-area-${id}`),
+        id: id,
+    }
+
+    // Disallowing execution of other code cells
+    document.querySelectorAll(".qwebr-button-run").forEach((btn) => {
+        btn.disabled = true;
+    });
+
+    if (options.context == EvalTypes.Interactive) {
+        // Emphasize the active code cell
+        elements.runButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin qwebr-icon-status-spinner"></i> <span>Run Code</span>';
+    }
+
+    // Evaluate the code and parse the output into the document
+    await qwebrComputeEngine(codeToRun, elements, options);
+
+    // Switch to allowing execution of code
+    document.querySelectorAll(".qwebr-button-run").forEach((btn) => {
+        btn.disabled = false;
+    });
+
+    if (options.context == EvalTypes.Interactive) {
+        // Revert to the initial code cell state
+        elements.runButton.innerHTML = '<i class="fa-solid fa-play qwebr-icon-run-code"></i> <span>Run Code</span>';
+    }
+}
+
+</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -642,7 +2129,7 @@ window.Quarto = {
    
   <ul>
   <li><a href="#order-of-magnitude" id="toc-order-of-magnitude" class="nav-link active" data-scroll-target="#order-of-magnitude"><span class="header-section-number">14.1</span> Order of magnitude</a></li>
-  <li><a href="#counting-digits" id="toc-counting-digits" class="nav-link" data-scroll-target="#counting-digits"><span class="header-section-number">14.2</span> Counting digits</a></li>
+  <li><a href="#sec-counting-digits" id="toc-sec-counting-digits" class="nav-link" data-scroll-target="#sec-counting-digits"><span class="header-section-number">14.2</span> Counting digits</a></li>
   <li><a href="#sec-magnitude-graphics" id="toc-sec-magnitude-graphics" class="nav-link" data-scroll-target="#sec-magnitude-graphics"><span class="header-section-number">14.3</span> Magnitude graphics</a></li>
   <li><a href="#sec-reading-log-axes" id="toc-sec-reading-log-axes" class="nav-link" data-scroll-target="#sec-reading-log-axes"><span class="header-section-number">14.4</span> Reading logarithmic scales</a></li>
   <li><a href="#drill" id="toc-drill" class="nav-link" data-scroll-target="#drill"><span class="header-section-number">14.5</span> Drill</a></li>
@@ -653,6 +2140,290 @@ window.Quarto = {
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs/loader.js"></script>
+<script type="module" id="qwebr-monaco-editor-init">
+
+  // Configure the Monaco Editor's loader
+  require.config({
+    paths: {
+      'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs'
+    }
+  });
+</script>
+<script type="module">
+// Function to update Monaco Editors when body class changes
+function updateMonacoEditorsOnBodyClassChange() {
+    // Select the body element
+    const body = document.querySelector('body');
+
+    // Options for the observer (which mutations to observe)
+    const observerOptions = {
+        attributes: true,  // Observe changes to attributes
+        attributeFilter: ['class'] // Only observe changes to the 'class' attribute
+    };
+
+    // Callback function to execute when mutations are observed
+    const bodyClassChangeCallback = function(mutationsList, observer) {
+        for(let mutation of mutationsList) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                // Class attribute has changed
+                // Update all Monaco Editors on the page
+                updateMonacoEditorTheme();
+            }
+        }
+    };
+
+    // Create an observer instance linked to the callback function
+    const observer = new MutationObserver(bodyClassChangeCallback);
+
+    // Start observing the target node for configured mutations
+    observer.observe(body, observerOptions);
+}
+
+// Function to update all instances of Monaco Editors on the page
+function updateMonacoEditorTheme() {
+    // Determine what VS Theme to use
+    const vsThemeToUse = document.body.classList.contains("quarto-dark") ? 'vs-dark' : 'vs' ;
+
+    // Iterate through all initialized Monaco Editors
+    qwebrEditorInstances.forEach( function(editorInstance) { 
+        editorInstance.updateOptions({ theme: vsThemeToUse }); 
+    });
+}
+
+// Call the function to start observing changes to body class
+updateMonacoEditorsOnBodyClassChange();
+</script>
+<script type="module">
+// Global array to store Monaco Editor instances
+globalThis.qwebrEditorInstances = [];
+
+function isValidCodeLineNumbers(stringCodeLineNumbers) {
+  // Regular expression to match valid input strings
+  const regex = /^(\d+(-\d+)?)(,\d+(-\d+)?)*$/;
+  return regex.test(stringCodeLineNumbers);
+}
+
+// Function that builds and registers a Monaco Editor instance    
+globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
+
+  const initialCode = cellData.code;
+  const qwebrCounter = cellData.id;
+  const qwebrOptions = cellData.options;
+
+  // Retrieve the previously created document elements
+  let runButton = document.getElementById(`qwebr-button-run-${qwebrCounter}`);
+  let resetButton = document.getElementById(`qwebr-button-reset-${qwebrCounter}`);
+  let copyButton = document.getElementById(`qwebr-button-copy-${qwebrCounter}`);
+  let editorDiv = document.getElementById(`qwebr-editor-${qwebrCounter}`);
+
+  // Load the Monaco Editor and create an instance
+  let editor;
+  require(['vs/editor/editor.main'], function () {
+    editor = monaco.editor.create(editorDiv, {
+      value: initialCode,
+      language: 'r',
+      theme: 'vs-light',
+      automaticLayout: true,           // Works wonderfully with RevealJS
+      scrollBeyondLastLine: false,
+      minimap: {
+        enabled: false
+      },
+      fontSize: qwebrScaledFontSize(editorDiv, qwebrOptions),         
+      renderLineHighlight: "none",      // Disable current line highlighting
+      hideCursorInOverviewRuler: true,  // Remove cursor indictor in right hand side scroll bar
+      readOnly: qwebrOptions['read-only'] ?? false,
+      quickSuggestions: qwebrOptions['editor-quick-suggestions'] ?? false,
+      wordWrap: (qwebrOptions['editor-word-wrap'] == 'true' ? "on" : "off")
+    });
+
+    // Store the official counter ID to be used in keyboard shortcuts
+    editor.__qwebrCounter = qwebrCounter;
+
+    // Store the official div container ID
+    editor.__qwebrEditorId = `qwebr-editor-${qwebrCounter}`;
+
+    // Store the initial code value and options
+    editor.__qwebrinitialCode = initialCode;
+    editor.__qwebrOptions = qwebrOptions;
+
+    // Set at the model level the preferred end of line (EOL) character to LF.
+    // This prevent `\r\n` from being given to the webR engine if the user is on Windows.
+    // See details in: https://github.com/coatless/quarto-webr/issues/94
+    // Associated error text: 
+    // Error: <text>:1:7 unexpected input
+
+    // Retrieve the underlying model
+    const model = editor.getModel();
+    // Set EOL for the model
+    model.setEOL(monaco.editor.EndOfLineSequence.LF);
+    
+    // Dynamically modify the height of the editor window if new lines are added.
+    let ignoreEvent = false;
+    const updateHeight = () => {
+      // Increment editor height by 2 to prevent vertical scroll bar from appearing
+      const contentHeight = editor.getContentHeight() + 2;
+
+      // Retrieve editor-max-height option
+      const maxEditorHeight = qwebrOptions['editor-max-height'];
+
+      // If editor-max-height is missing, allow infinite growth. Otherwise, threshold.
+      const editorHeight = !maxEditorHeight ?  contentHeight : Math.min(contentHeight, maxEditorHeight);
+
+      // We're avoiding a width change
+      //editorDiv.style.width = `${width}px`;
+      editorDiv.style.height = `${editorHeight}px`;
+      try {
+        ignoreEvent = true;
+
+        // The key to resizing is this call
+        editor.layout();
+      } finally {
+        ignoreEvent = false;
+      }
+    };
+
+    // Function to generate decorations to highlight lines
+    // in the editor based on input string.
+    function decoratorHighlightLines(codeLineNumbers) {
+      // Store the lines to be lighlight
+      let linesToHighlight = [];
+      
+      // Parse the codeLineNumbers string to get the line numbers to highlight
+      // First, split the string by commas
+      codeLineNumbers.split(',').forEach(part => {
+        // Check if we have a range of lines
+        if (part.includes('-')) {
+            // Handle range of lines (e.g., "6-8")
+            const [start, end] = part.split('-').map(Number);
+            for (let i = start; i <= end; i++) {
+                linesToHighlight.push(i);
+            }
+        } else {
+            // Handle single line (e.g., "7")
+            linesToHighlight.push(Number(part));
+        }
+      });
+  
+      // Create monaco decorations for the lines to highlight
+      const decorations = linesToHighlight.map(lineNumber => ({
+          range: new monaco.Range(lineNumber, 1, lineNumber, 1),
+          options: {
+              isWholeLine: true,
+              className: 'qwebr-editor-highlight-line'
+          }
+      }));
+  
+      // Return decorations to be applied to the editor
+      return decorations;
+    }
+
+    // Ensure that the editor-code-line-numbers option is set and valid
+    // then apply styling
+    if (qwebrOptions['editor-code-line-numbers']) {
+      // Remove all whitespace from the string
+      const codeLineNumbers = qwebrOptions['editor-code-line-numbers'].replace(/\s/g,'');
+      // Check if the string is valid for line numbers, e.g., "1,3-5,7"
+      if (isValidCodeLineNumbers(codeLineNumbers)) {
+        // Apply the decorations to the editor
+        editor.createDecorationsCollection(decoratorHighlightLines(codeLineNumbers));
+      } else {
+        // Warn the user that the input is invalid
+        console.warn(`Invalid "editor-code-line-numbers" value in code cell ${qwebrOptions['label']}: ${codeLineNumbers}`);
+      }
+    }
+
+    // Helper function to check if selected text is empty
+    function isEmptyCodeText(selectedCodeText) {
+      return (selectedCodeText === null || selectedCodeText === undefined || selectedCodeText === "");
+    }
+
+    // Registry of keyboard shortcuts that should be re-added to each editor window
+    // when focus changes.
+    const addWebRKeyboardShortCutCommands = () => {
+      // Add a keydown event listener for Shift+Enter to run all code in cell
+      editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Enter, () => {
+
+        // Retrieve all text inside the editor
+        qwebrExecuteCode(editor.getValue(), editor.__qwebrCounter, editor.__qwebrOptions);
+      });
+
+      // Add a keydown event listener for CMD/Ctrl+Enter to run selected code
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+
+        // Get the selected text from the editor
+        const selectedText = editor.getModel().getValueInRange(editor.getSelection());
+        // Check if no code is selected
+        if (isEmptyCodeText(selectedText)) {
+          // Obtain the current cursor position
+          let currentPosition = editor.getPosition();
+          // Retrieve the current line content
+          let currentLine = editor.getModel().getLineContent(currentPosition.lineNumber);
+
+          // Propose a new position to move the cursor to
+          let newPosition = new monaco.Position(currentPosition.lineNumber + 1, 1);
+
+          // Check if the new position is beyond the last line of the editor
+          if (newPosition.lineNumber > editor.getModel().getLineCount()) {
+            // Add a new line at the end of the editor
+            editor.executeEdits("addNewLine", [{
+            range: new monaco.Range(newPosition.lineNumber, 1, newPosition.lineNumber, 1),
+            text: "\n", 
+            forceMoveMarkers: true,
+            }]);
+          }
+          
+          // Run the entire line of code.
+          qwebrExecuteCode(currentLine, editor.__qwebrCounter, editor.__qwebrOptions);
+
+          // Move cursor to new position
+          editor.setPosition(newPosition);
+        } else {
+          // Code to run when Ctrl+Enter is pressed with selected code
+          qwebrExecuteCode(selectedText, editor.__qwebrCounter, editor.__qwebrOptions);
+        }
+      });
+    }
+
+    // Register an on focus event handler for when a code cell is selected to update
+    // what keyboard shortcut commands should work.
+    // This is a workaround to fix a regression that happened with multiple
+    // editor windows since Monaco 0.32.0 
+    // https://github.com/microsoft/monaco-editor/issues/2947
+    editor.onDidFocusEditorText(addWebRKeyboardShortCutCommands);
+
+    // Register an on change event for when new code is added to the editor window
+    editor.onDidContentSizeChange(updateHeight);
+
+    // Manually re-update height to account for the content we inserted into the call
+    updateHeight();
+
+    // Store the editor instance in the global dictionary
+    qwebrEditorInstances[editor.__qwebrCounter] = editor;
+
+  });
+
+  // Add a click event listener to the run button
+  runButton.onclick = function () {
+    qwebrExecuteCode(editor.getValue(), editor.__qwebrCounter, editor.__qwebrOptions);
+  };
+
+  // Add a click event listener to the reset button
+  copyButton.onclick = function () {
+    // Retrieve current code data
+    const data = editor.getValue();
+    
+    // Write code data onto the clipboard.
+    navigator.clipboard.writeText(data || "");
+  };
+  
+  // Add a click event listener to the copy button
+  resetButton.onclick = function () {
+    editor.setValue(editor.__qwebrinitialCode);
+  };
+  
+}
+</script>
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../modeling-part.html">BLOCK I. Modeling</a></li><li class="breadcrumb-item"><a href="../Modeling/07-magnitudes.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></a></li></ol></nav>
 <div class="quarto-title">
@@ -673,23 +2444,34 @@ window.Quarto = {
 </header>
 
 
-<p>People accomplish a familiar mathematical task with hardly any mental effort: comparing two numbers to determine which is bigger. This is easy because we have adopted a system for writing numbers that makes it easy. For the Romans and Europeans up through the 13th century, numbers were hard to work with. For instance, which of these three numbers is bigger? <span class="math display">\[\text{MLI or CXII or XXXIII}\]</span></p>
-<div class="cell page-columns page-full" data-layout-align="center">
-<div class="cell-output-display page-columns page-full">
-<div id="fig-liber-abaci" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-cap-location="margin" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure page-columns page-full">
-<div aria-describedby="fig-liber-abaci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="www/hindu2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
-</div>
-<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-liber-abaci-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14.1: An excerpt from Fibonacci’s <em>Liber Abaci</em> (1202) introducing to European readers the “Hindu” numerals. <a href="https://chalkdustmagazine.com/features/roots-legacy-of-fibonacci/">Source</a>
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>Now try the same task with Arabic numerals: Which is bigger?</p>
-<p><span class="math display">\[\text{512 or 33 or 1051}\]</span> You can see the answer at a glance. The algorithm is straightforward: select the number with the largest number of digits. If there is a tie, refer to the first digit. If there is still a tie, refer to the next digit. In contrast, it takes much more work with Roman numerals. For instance, IC is about fifteen times bigger than VI, even though I is much smaller than V.</p>
+<p>Consider a mathematical task that is a routine part of everyday life: comparing two numbers to determine which is bigger or selecting the biggest from a set of numbers. For instance:</p>
+<blockquote class="blockquote">
+<p>Which is the biggest? 512 or 33 or 1051.</p>
+</blockquote>
+<p>You can see the answer at a glance; the task requires hardly any mental effort.</p>
+<p>But for the Romans and Europeans up through the 13th century, numbers were hard to work with. For instance,</p>
+<blockquote class="blockquote">
+<p>Which is the biggest? MLI or CXII or XXXIII</p>
+</blockquote>
+<p>In Arabic notation, a number with more digits is always larger than another number that requires fewer digits. Consequently, the printed form of a number gives a visual clue about the numbers’ relative sizes.</p>
+<p>For the Roman numerals, the length of the printed form gives no good hint about the size of the number. Indeed, the number represented by MLI is almost fifty times bigger than the number denoted by XXXIII.</p>
+<p>Even with Arabic numerals, the comparison task becomes harder when the numbers are either very small or very big. For instance:</p>
+<blockquote class="blockquote">
+<p>Which is bigger? 4820423052.2352 or 68382829893.2</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Which is bigger? 0.00000000000073 or 0.0000000000013</p>
+</blockquote>
+<p>Counting the digits before the decimal point (for large numbers) or counting the leading zeros after the decimal point (for small numbers) is tedious and error prone.</p>
+<p>For this reason, people who have routinely to deal with very large or very small numbers learn a different notation for writing numbers called <strong>scientific notation</strong>. Here is just about the same problem as the above, but with the numbers written in scientific notation.</p>
+<blockquote class="blockquote">
+<p>Which is bigger? 4.82 <span class="math inline">\(\times\)</span> 10<sup>9</sup> or 6.84 <span class="math inline">\(\times\)</span> 10<sup>10</sup></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Which is bigger? 7.3 <span class="math inline">\(\times\)</span> 10<sup>-13</sup> or 1.3 <span class="math inline">\(\times\)</span> 10<sup>-10</sup></p>
+</blockquote>
+<p>In scientific notation, the first step in the comparison process involves just the exponent in 10<sup>?</sup>. Whichever of the two numbers has the larger exponent is the larger number. Only if the exponents are the same is there any need to look at the digits preceeding $<span class="math inline">\(10^?^\)</span>.</p>
+<p>The exponent in a scientific-notation number can be called the “order of magnitude” of that number. As you will see in the following sections, “order of magnitude” is closely connected to one of our pattern-book functions: the logarithm. This is one reason that the logarithm is important in applied work.</p>
 <section id="order-of-magnitude" class="level2 page-columns page-full" data-number="14.1">
 <h2 data-number="14.1" class="anchored" data-anchor-id="order-of-magnitude"><span class="header-section-number">14.1</span> Order of magnitude</h2>
 <p>We will refer to judging the size of numbers by their count of digits as reading the <strong><em>magnitude</em></strong> of the number. To get started, consider numbers that start with 1 followed by zeros, e.g.&nbsp;100 or 1000. We will quantify the magnitude as the number of zeros: 100 has a magnitude of 2 and 1000 has a magnitude of 3. In comparing numbers by magnitude, we way things like, “1000 is an <strong><em>order of magnitude</em></strong> greater than 100,” or “1,000,000” is five orders of magnitude larger than 10.</p>
@@ -796,33 +2578,71 @@ Table&nbsp;14.1: Energy density of sound in various situations. Sound at 85 dB, 
 </div>
 </figure>
 </div>
-</div></div><p>6, 60, 600, and 6000 miles-per-hour are quantities that differ in size by <strong><em>orders of magnitude</em></strong>. Such differences often point to a substantial change in context. A jog is 6 mph, a car on a highway goes 60 mph, a cruising commercial jet goes 600 mph, and a rocket passes through 6000 mph on its way to orbital velocity. From an infant’s crawl to highway cruising is 2 orders of magnitude in speed.</p>
+</div></div><p>6, 60, 600, and 6000 miles-per-hour are quantities that differ in size by <strong><em>orders of magnitude</em></strong>. Such differences often point to a substantial change in context. A jog is 6 mph, a car on a highway goes 60 mph, a cruising commercial jet goes 600 mph, and a rocket passes through 6000 mph on its way to orbital velocity. From an infant’s crawl to highway cruising is 3 orders of magnitude in speed.</p>
 <p>Of course, many phenomena are <strong>not</strong> well represented in terms of orders of magnitudes. For example, the difference between normal body temperature and high fever is 0.01 orders of magnitude in temperature.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> An increase of 1 order of magnitude in blood pressure from the normal level would cause instant death! The difference between a very tall adult and a very short adult is about 1/4 of an order of magnitude.</p>
 <p>Orders of magnitude are used when the relevant comparison is a <strong>ratio</strong>. “A car is 10 times faster than a person,” refers to the ratio of speeds. In contrast, quantities such as body temperature, blood pressure, and adult height are compared using a <strong>difference</strong>. Fever is 2<span class="math inline">\(^\circ\)</span>C higher in temperature than normal. A 30 mmHg increase in blood pressure will likely correspond to developing hypertension. A very tall and a very short adult differ by about 2 feet.</p>
 <p>One clue that thinking in terms of orders of magnitude is appropriate is when you are working with a set of objects whose range of sizes spans one or many factors of 2. Comparing baseball and basketball players? Probably no need for orders of magnitudes. Comparing infants, children, and adults in terms of height or weight? Orders of magnitude may be useful. Comparing bicycles? Mostly they fit within a range of 2 in terms of size, weight, and speed (but not expense!). Comparing cars, SUVs, and trucks? Differences by a factor of 2 are routine, so thinking in terms of order of magnitude is likely to be appropriate.</p>
 <p>Another clue is whether “zero” means “nothing.” Daily temperatures in the winter are often near “zero” on the Fahrenheit or Celcius scales, but that in no way means there is a complete absence of heat. Those scales are arbitrary. Another way to think about this clue is whether <strong><em>negative values</em></strong> are meaningful. If so, thinking in terms of orders of magnitude is not likely to be useful.</p>
 </section>
-<section id="counting-digits" class="level2 page-columns page-full" data-number="14.2">
-<h2 data-number="14.2" class="anchored" data-anchor-id="counting-digits"><span class="header-section-number">14.2</span> Counting digits</h2>
-<p>Imagine having a digit counting function called digit(). It takes a number as input and produces a number as output. We don’t have a <strong><em>formula</em></strong> for digit(), but for some inputs, the output can be calculated just by counting. For example:</p>
+<section id="sec-counting-digits" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="sec-counting-digits"><span class="header-section-number">14.2</span> Counting digits</h2>
+<p>Imagine having a digit counting function called digits(). It takes a number as input and produces a number as output. We have not yet presented a <strong><em>formula</em></strong> for digits(), but for some inputs, the output can be calculated just by counting. For numbers like 0.01 or 10 or 100000, we will define the number of digits to be the count of zeros before For example:</p>
 <ul>
-<li>digit(10) <span class="math inline">\(\equiv\)</span> 1</li>
-<li>digit(100) <span class="math inline">\(\equiv\)</span> 2</li>
-<li>digit(1000) <span class="math inline">\(\equiv\)</span> 3</li>
+<li>digits(10) <span class="math inline">\(\equiv\)</span> 1</li>
+<li>digits(100) <span class="math inline">\(\equiv\)</span> 2</li>
+<li>digits(1000) <span class="math inline">\(\equiv\)</span> 3</li>
 <li>… and so on …</li>
-<li>digit(1,000,000) <span class="math inline">\(\equiv\)</span> 6</li>
+<li>digits(1,000,000) <span class="math inline">\(\equiv\)</span> 6</li>
 <li>… and on.</li>
 </ul>
-<p>The digit() function easily can be applied to the product of two numbers. For instance:</p>
+<p>For numbers smaller than 1, like 0.01 or 0.0001, we define the number of digits to be the <em>negative</em> of the number of zeros <em>before</em> the 1.</p>
 <ul>
-<li>digit(1000 <span class="math inline">\(\times\)</span> 100) = digit(1000) + digit(100) = 3 + 2 = 5.</li>
+<li>digits(0.1) <span class="math inline">\(\equiv\)</span> -1</li>
+<li>digits(0.01) <span class="math inline">\(\equiv\)</span> -2</li>
+<li>digits(0.0001) <span class="math inline">\(\equiv\)</span> -4</li>
 </ul>
-<p>Similarly, applying digit() to a ratio gives the difference of the digits of the numerator and denominator, like this:</p>
+<p>The digits() function easily can be applied to the product of two numbers. For instance:</p>
 <ul>
-<li>digit(1,000,000 <span class="math inline">\(\div\)</span> 10) = digit(1,000,000) - digit(10) = 6 - 1 = 4</li>
+<li>digits(1000 <span class="math inline">\(\times\)</span> 100) = digits(1000) + digits(100) = 3 + 2 = 5.</li>
 </ul>
-<div class="page-columns page-full"><p></p><div class="no-row-height column-margin column-container"><span class="margin-aside">It is not clear that <span class="math inline">\(\ln()\)</span> is a better user interface as a pattern-book function than digit(), or, as it is written, <span class="math inline">\(\log_{10}()\)</span> and <code>log10()</code>. People find it much easier to count by magnitudes of 10 than by the natural logarithm’s 2.718282….</span></div></div>
-<p>In practice, digit() is so useful that it could well have been one of our basic modeling functions: <span class="math display">\[\text{digit(x)} = 2.302585 \ln(x)\]</span> or, in R, <code>log10()</code>. We elected the natural logarithm <span class="math inline">\(\ln()\)</span> rather than digit() for reasons that will be seen when we study <strong><em>differentiation</em></strong>.</p>
+<p>Similarly, applying digits() to a ratio gives the difference of the digits of the numerator and denominator, like this:</p>
+<ul>
+<li>digits(1,000,000 <span class="math inline">\(\div\)</span> 10) = digits(1,000,000) - digits(10) = 6 - 1 = 4</li>
+</ul>
+<p>In practice, digits() is so useful that it could well have been one of our basic modeling functions. Actually, this is very nearly the case: the logarithm is proportional to the number of digits.</p>
+<p>To illustrate, consider these three calculations of logarithms:</p>
+<div id="lst-digits-proportionality" class="listing quarto-float quarto-figure quarto-figure-left anchored">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-digits-proportionality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;14.1: The output is the order of magnitude of the number given as an argument to <code>log()</code>.
+</figcaption>
+<div aria-describedby="lst-digits-proportionality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fl">0.4342945</span> <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">100</span>) </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 2</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fl">0.4342945</span> <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">1000</span>) </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 3</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fl">0.4342945</span> <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">10000</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</figure>
+</div>
+<p>Here is a formula definition of the digits() function.</p>
+<p><span id="eq-digits-math-def"><span class="math display">\[\text{digits}(x) \equiv \ln(x) / \ln(10) \tag{14.1}\]</span></span></p>
+<p>In R/mosaic, the analogous definition is:</p>
+<div id="lst-digits-R-def" class="listing quarto-float quarto-figure quarto-figure-left anchored">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst quarto-uncaptioned" id="lst-digits-R-def-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;14.2
+</figcaption>
+<div aria-describedby="lst-digits-R-def-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>digits <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">log</span>(x) <span class="sc">/</span> <span class="fu">log</span>(<span class="dv">10</span>) <span class="sc">~</span> x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</figure>
+</div>
 <p>You may have guessed that <code>digits()</code> is handy for computing differences in terms of orders of magnitude. Here’s how:</p>
 <ol type="1">
 <li>Make sure that the quantities are expressed in the same <strong><em>units</em></strong>.</li>
@@ -833,18 +2653,54 @@ Table&nbsp;14.1: Energy density of sound in various situations. Sound at 85 dB, 
 \left[10^6 \frac{mm}{km}\right] \left[\frac{1}{3600} \frac{hr}{sec}\right] 5 \frac{km}{hr} &amp;=&amp; 1390 \frac{mm}{sec}
 \end{eqnarray}\]</span> Calculating the difference in <code>digits()</code> between 1 and 1390:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">log10</span>(<span class="dv">1390</span>) <span class="sc">-</span> <span class="fu">log10</span>(<span class="dv">1</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 3.143015</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">log10</span>(<span class="dv">1390</span>) <span class="sc">-</span> <span class="fu">log10</span>(<span class="dv">1</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 3.143015</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>So, about 3 orders of magnitude difference in speed. To a snail, we walking humans must seem like rockets on their way to orbit!</p>
 </div>
 <p>The use of factors of 10 in counting orders of magnitude is arbitrary. A person walking and a person jogging are on the edge of being qualitatively different, although their speeds differ by a factor of only 2. Aircraft that cruise at 600 mph and 1200 mph are qualitatively different in design, although the speeds are only a factor of 2 apart. A professional basketball player (height 2 meters or more) is qualitatively different from a third grader (height about 1 meter).</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Math in the World: The “natural” logarithm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You may have noticed in <a href="#eq-digits-math-def" class="quarto-xref">Equation&nbsp;<span>14.1</span></a> or <a href="#lst-digits-R-def" class="quarto-xref">Listing&nbsp;<span>14.2</span></a> the terms <span class="math inline">\(1/\ln(10)\)</span> and <code>/ log(10)</code> are used as a conversion factor. Similarly, in <a href="#lst-digits-proportionality" class="quarto-xref">Listing&nbsp;<span>14.1</span></a> the conversion factor <code>0.4342945</code> is used. Actually, <code>0.4342945</code> and <code>1 / log(10)</code> are the same number:</p>
+<div id="qwebr-insertion-location-1"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>But why is a conversion factor needed for the digits() calculation?</p>
+<p>The point of the conversion factor is to have the “units” of the output of <code>digits()</code> correspond to a factor of 10. Such units are called “<strong>decades</strong>.” The unit of decade is dimensionless, just as the unit for angles—rads or degrees, as you preferr—is dimensionless.</p>
+<p>Naturally, we use decades because of our human habit of writing numbers in base 10, using the digits 0 to 9. I say “naturally” because base 10 is familiar to us. But different people have different notions of what is “natural.”</p>
+<p>We could have used <span class="math inline">\(1/\ln(2)\)</span> as the conversion factor in <code>digits()</code> in which case each multiple of 2 in the input corresponds to a change in the output of 1. Or, I should say, “1 bit” because “bit” is the name given to the unit when <span class="math inline">\(1/\ln(2)\)</span> (that is, <code>1.442695</code>) is used as the conversion factor.</p>
+<p>An aesthetic widely admired in the field of mathematics is that having any such conversion factor at all is “unnatural.” The only mathematically pretty conversion factor is 1, that is, no conversion factor at all. If we had used 1 instead of <span class="math inline">\(1/\ln(10)\)</span> in digits(), the output would be in different units, not in decades.</p>
+<p>The name mathematicians have given to the version of digits() where the conversion factor is 1 is the <strong>natural logarithm</strong>. It’s hard to understand the advantages of the natural logarithm until we get further into Calculus. For the natural logarithm, each increase in the input by a factor of 2.7182818281828… leads to an increase in the output by 1. To illustrate, run the code in <a href="#rcd-nat-log-multiple" class="quarto-xref">Active R chunk&nbsp;<span>14.1</span></a>.</p>
+<div id="rcd-nat-log-multiple" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-rcd figure">
+<div aria-describedby="rcd-nat-log-multiple-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">log</span>(<span class="dv">63</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 4.143135</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">log</span>(<span class="fl">2.718281828</span> <span class="sc">*</span> <span class="dv">63</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 5.143135</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-rcd quarto-uncaptioned" id="rcd-nat-log-multiple-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Active R chunk&nbsp;14.1
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="sec-magnitude-graphics" class="level2 page-columns page-full" data-number="14.3">
 <h2 data-number="14.3" class="anchored" data-anchor-id="sec-magnitude-graphics"><span class="header-section-number">14.3</span> Magnitude graphics</h2>
-<p>To display a variable from data that varies over multiple orders of magnitude, it helps to plot the <strong><em>logarithm</em></strong> rather than the variable itself. Let’s illustrate using the <code>Engine</code> data frame, which contains measurements of many different internal combustion engines of widely varying sizes. For instance, we can graph engine RPM (revolutions per second) versus engine mass, as in <a href="#fig-rpm-mass" class="quarto-xref">Figure&nbsp;<span>14.2</span></a>.</p>
+<p>To display a variable from data that varies over multiple orders of magnitude, it helps to plot the <strong><em>logarithm</em></strong> rather than the variable itself. Let’s illustrate using the <code>Engine</code> data frame, which contains measurements of many different internal combustion engines of widely varying sizes. For instance, we can graph engine RPM (revolutions per second) versus engine mass, as in <a href="#fig-rpm-mass" class="quarto-xref">Figure&nbsp;<span>14.1</span></a>.</p>
 <div class="cell page-columns page-full" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(RPM <span class="sc">~</span> mass, <span class="at">data =</span> Engines)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(RPM <span class="sc">~</span> mass, <span class="at">data =</span> Engines)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 <div class="no-row-height column-margin column-container"><div class="cell-output-display">
 <div id="fig-rpm-mass" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -853,16 +2709,16 @@ Table&nbsp;14.1: Energy density of sound in various situations. Sound at 85 dB, 
 <img src="07-magnitudes_files/figure-html/fig-rpm-mass-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rpm-mass-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14.2: Engine RPM versus mass for 39 different enginges plotted on the standard linear axis.
+Figure&nbsp;14.1: Engine RPM versus mass for 39 different enginges plotted on the standard linear axis.
 </figcaption>
 </figure>
 </div>
 </div></div></div>
 <p>In the graph, most of the engines have a mass that is … zero. At least that is what it appears to be. The horizontal scale is dominated by the two huge 100,000-pound monster engines plotted at the right end of the graph.</p>
-<p>Plotting the logarithm of the engine mass spreads things out, as in <a href="#fig-rpm-mass-log" class="quarto-xref">Figure&nbsp;<span>14.3</span></a>.</p>
+<p>Plotting the logarithm of the engine mass spreads things out, as in <a href="#fig-rpm-mass-log" class="quarto-xref">Figure&nbsp;<span>14.2</span></a>.</p>
 <div class="cell page-columns page-full" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(RPM <span class="sc">~</span> mass, <span class="at">data =</span> Engines) <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_x_log10</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(RPM <span class="sc">~</span> mass, <span class="at">data =</span> Engines) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_x_log10</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 <div class="no-row-height column-margin column-container"><div class="cell-output-display">
 <div id="fig-rpm-mass-log" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -871,19 +2727,19 @@ Figure&nbsp;14.2: Engine RPM versus mass for 39 different enginges plotted on th
 <img src="07-magnitudes_files/figure-html/fig-rpm-mass-log-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rpm-mass-log-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14.3: Engine RPM versus mass on semi-log axes.
+Figure&nbsp;14.2: Engine RPM versus mass on semi-log axes.
 </figcaption>
 </figure>
 </div>
 </div></div></div>
 <p>Note that the horizontal axis has been labeled with the actual mass (in pounds), with the labels evenly spaced in terms of their logarithm. This presentation, with the horizontal axis constructed this way, is called a <strong><em>semi-log</em></strong> plot.</p>
-<p>When both axes are labeled this way, we have a <strong><em>log-log</em></strong> plot, as shown in <a href="#fig-rpm-mass-log-log" class="quarto-xref">Figure&nbsp;<span>14.4</span></a>.</p>
+<p>When both axes are labeled this way, we have a <strong><em>log-log</em></strong> plot, as shown in <a href="#fig-rpm-mass-log-log" class="quarto-xref">Figure&nbsp;<span>14.3</span></a>.</p>
 <div class="cell page-columns page-full" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(RPM <span class="sc">~</span> mass, <span class="at">data =</span> Engines) <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_log10</span>(),</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_log10</span>()</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(RPM <span class="sc">~</span> mass, <span class="at">data =</span> Engines) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_log10</span>(),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_log10</span>()</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 <div class="no-row-height column-margin column-container"><div class="cell-output-display">
 <div id="fig-rpm-mass-log-log" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -892,12 +2748,12 @@ Figure&nbsp;14.3: Engine RPM versus mass on semi-log axes.
 <img src="07-magnitudes_files/figure-html/fig-rpm-mass-log-log-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rpm-mass-log-log-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14.4: Engine RPM versus mass on log-log axes.
+Figure&nbsp;14.3: Engine RPM versus mass on log-log axes.
 </figcaption>
 </figure>
 </div>
 </div></div></div>
-<p>Semi-log and log-log axes are widely used in science and economics, whenever data spanning several orders of magnitude need to be displayed. In the case of the engine RPM and mass, the log-log axis shows that there is a graphically simple relationship between the variables. Such axes are very useful for displaying data but can be hard for the newcomer to read quantitatively. For example, calculating the slope of the evident straight-line relationship in <a href="#fig-rpm-mass-log-log" class="quarto-xref">Figure&nbsp;<span>14.4</span></a> is extremely difficult for a human reader and requires translating the labels into their logarithms.</p>
+<p>Semi-log and log-log axes are widely used in science and economics, whenever data spanning several orders of magnitude need to be displayed. In the case of the engine RPM and mass, the log-log axis shows that there is a graphically simple relationship between the variables. Such axes are very useful for displaying data but can be hard for the newcomer to read quantitatively. For example, calculating the slope of the evident straight-line relationship in <a href="#fig-rpm-mass-log-log" class="quarto-xref">Figure&nbsp;<span>14.3</span></a> is extremely difficult for a human reader and requires translating the labels into their logarithms.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled page-columns page-full" data-latex="">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -910,7 +2766,7 @@ Math in the World: Boyle’s Law
 <div class="callout-body-container callout-body page-columns page-full">
 <p>Robert Boyle (1627-1691) was a founder of modern chemistry and the scientific method in general. As any chemistry student already knows, Boyle sought to understand the properties of gasses. His results are summarized in <em>Boyle’s Law</em>.</p>
 <p>The data frame <code>Boyle</code> contains two variables from one of Boyle’s experiments as reported in his lab notebook: pressure in a bag of air and volume of the bag. The units of pressure are mmHg and the units of volume are cubic inches.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
-<p>Famously, Boyle’s Law states that, at a constant temperature, the pressure of a constant mass of gas is inversely proportional to the volume occupied by the gas. <a href="#fig-boyle-movie" class="quarto-xref">Figure&nbsp;<span>14.5</span></a> shows a cartoon of the relationship.</p>
+<p>Famously, Boyle’s Law states that, at a constant temperature, the pressure of a constant mass of gas is inversely proportional to the volume occupied by the gas. <a href="#fig-boyle-movie" class="quarto-xref">Figure&nbsp;<span>14.4</span></a> shows a cartoon of the relationship.</p>
 <div class="cell page-columns page-full" data-layout-align="center">
 <div class="cell-output-display page-columns page-full">
 <div id="fig-boyle-movie" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-cap-location="margin" data-fig-align="center">
@@ -919,25 +2775,25 @@ Math in the World: Boyle’s Law
 <img src="www/Boyles_Law_animated.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
 </div>
 <figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-boyle-movie-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14.5: A cartoon illustrating Boyle’s Law. Source: <a href="https://www.grc.nasa.gov/WWW/K-12/airplane/aboyle.html">NASA Glenn Research Center</a>
+Figure&nbsp;14.4: A cartoon illustrating Boyle’s Law. Source: <a href="https://www.grc.nasa.gov/WWW/K-12/airplane/aboyle.html">NASA Glenn Research Center</a>
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p><a href="#fig-boyle-data" class="quarto-xref">Figure&nbsp;<span>14.6</span></a> plots out Boyle’s actual experimental data. I</p>
+<p><a href="#fig-boyle-data" class="quarto-xref">Figure&nbsp;<span>14.5</span></a> plots out Boyle’s actual experimental data. I</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(pressure <span class="sc">~</span> volume, <span class="at">data =</span> Boyle) <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_lm</span>()</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Warning: Using the `size` aesthetic with geom_line was deprecated in ggplot2 3.4.0.</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="do">## ℹ Please use the `linewidth` aesthetic instead.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(pressure <span class="sc">~</span> volume, <span class="at">data =</span> Boyle) <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_lm</span>()</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Warning: Using the `size` aesthetic with geom_line was deprecated in ggplot2 3.4.0.</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="do">## ℹ Please use the `linewidth` aesthetic instead.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <p>You can see a clear relationship between pressure and volume, but it is hardly a linear relationship.</p>
 <p>Plotting Boyle’s data on log-log axes reveals that, in terms of the logarithm of pressure and the logarithm of volume, the relationship is linear.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(<span class="fu">log</span>(pressure) <span class="sc">~</span> <span class="fu">log</span>(volume), <span class="at">data =</span> Boyle) <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(<span class="fu">log</span>(pressure) <span class="sc">~</span> <span class="fu">log</span>(volume), <span class="at">data =</span> Boyle) <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 </div>
@@ -948,7 +2804,7 @@ Figure&nbsp;14.5: A cartoon illustrating Boyle’s Law. Source: <a href="https:/
 <img src="07-magnitudes_files/figure-html/fig-boyle-data-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-boyle-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14.6: A plot of Boyle’s pressure vs volume data on linear axes. The straight line model is a poor representation of the pattern seen in the data.
+Figure&nbsp;14.5: A plot of Boyle’s pressure vs volume data on linear axes. The straight line model is a poor representation of the pattern seen in the data.
 </figcaption>
 </figure>
 </div>
@@ -959,12 +2815,12 @@ Figure&nbsp;14.6: A plot of Boyle’s pressure vs volume data on linear axes. Th
 <img src="07-magnitudes_files/figure-html/fig-boyle-data-log-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-boyle-data-log-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14.7: Plotting the logarithm of pressure against the logarithm of volume reveals a straight-line relationship.
+Figure&nbsp;14.6: Plotting the logarithm of pressure against the logarithm of volume reveals a straight-line relationship.
 </figcaption>
 </figure>
 </div>
 </div></div>
-<p><a href="#fig-boyle-data-log" class="quarto-xref">Figure&nbsp;<span>14.7</span></a> shows that Boyle’s log-pressure and log-volume data are a straight-line function. In other words:</p>
+<p><a href="#fig-boyle-data-log" class="quarto-xref">Figure&nbsp;<span>14.6</span></a> shows that Boyle’s log-pressure and log-volume data are a straight-line function. In other words:</p>
 <p><span class="math display">\[\ln(\text{Pressure}) = a + b \ln(\text{Volume})\]</span></p>
 <p>You can find the slope <span class="math inline">\(b\)</span> and intercept <span class="math inline">\(a\)</span> from the graph. For now, we want to point out the consequences of the straight-line relationship between logarithms.</p>
 <p>Exponentiating both sides gives <span class="math display">\[e^{\ln(\text{Pressure})} = \text{Pressure} = e^{a + b \ln(\text{Volume})} = e^a\  \left[e^{ \ln(\text{Volume})}\right]^b = e^a\, \text{Volume}^b\]</span> or, more simply (and writing the number <span class="math inline">\(e^a\)</span> as <span class="math inline">\(A\)</span>)</p>
@@ -973,7 +2829,7 @@ Figure&nbsp;14.7: Plotting the logarithm of pressure against the logarithm of vo
 <section id="sec-reading-log-axes" class="level2 page-columns page-full" data-number="14.4">
 <h2 data-number="14.4" class="anchored" data-anchor-id="sec-reading-log-axes"><span class="header-section-number">14.4</span> Reading logarithmic scales</h2>
 <p>Plotting the logarithm of a quantity gives a visual display of the magnitude of the quantity and labels the axis as that magnitude. A useful graphical technique is to label the axis with the original quantity, letting the position on the axis show the magnitude.</p>
-<p>To illustrate, <a href="#fig-mag-scales-1" class="quarto-xref">Figure&nbsp;<span>14.8</span></a>(left) is a log-log graph of horsepower versus displacement for the internal combustion engines reported in the <code>Engines</code> data frame. The points are admirably evenly spaced, but it is hard to translate the scales to the physical quantity. The right panel in <a href="#fig-mag-scales-1" class="quarto-xref">Figure&nbsp;<span>14.8</span></a> shows <em>the same data points</em>, but now the scales are labeled using the original quantity.</p>
+<p>To illustrate, <a href="#fig-mag-scales-1" class="quarto-xref">Figure&nbsp;<span>14.7</span></a>(left) is a log-log graph of horsepower versus displacement for the internal combustion engines reported in the <code>Engines</code> data frame. The points are admirably evenly spaced, but it is hard to translate the scales to the physical quantity. The right panel in <a href="#fig-mag-scales-1" class="quarto-xref">Figure&nbsp;<span>14.7</span></a> shows <em>the same data points</em>, but now the scales are labeled using the original quantity.</p>
 <div class="cell page-columns page-full" data-layout-align="center">
 <div class="cell-output-display page-columns page-full">
 <div id="fig-mag-scales-1" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-fig-align="center">
@@ -982,7 +2838,7 @@ Figure&nbsp;14.7: Plotting the logarithm of pressure against the logarithm of vo
 <img src="07-magnitudes_files/figure-html/fig-mag-scales-1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img column-page-inset-right" style="width:90.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mag-scales-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14.8: Horsepower versus displacement from the <code>Engines</code> data.frame plotted with log-log scales.
+Figure&nbsp;14.7: Horsepower versus displacement from the <code>Engines</code> data.frame plotted with log-log scales.
 </figcaption>
 </figure>
 </div>
@@ -1006,7 +2862,7 @@ Figure&nbsp;14.8: Horsepower versus displacement from the <code>Engines</code> d
 <img src="07-magnitudes_files/figure-html/fig-exponential-neg-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-exponential-neg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14.9: .
+Figure&nbsp;14.8: .
 </figcaption>
 </figure>
 </div>
@@ -1044,7 +2900,7 @@ Figure&nbsp;14.9: .
 <img src="07-magnitudes_files/figure-html/fig-power-law-neg-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-power-law-neg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14.10: .
+Figure&nbsp;14.9: .
 </figcaption>
 </figure>
 </div>
@@ -1069,7 +2925,7 @@ Figure&nbsp;14.10: .
 <img src="07-magnitudes_files/figure-html/fig-power-law-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-power-law-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14.11: .
+Figure&nbsp;14.10: .
 </figcaption>
 </figure>
 </div>
@@ -1095,7 +2951,7 @@ Figure&nbsp;14.11: .
 <img src="07-magnitudes_files/figure-html/fig-scales-base2-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scales-base2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14.12: .
+Figure&nbsp;14.11: .
 </figcaption>
 </figure>
 </div>
@@ -1119,7 +2975,7 @@ Figure&nbsp;14.12: .
 <img src="07-magnitudes_files/figure-html/fig-scales-semidecade-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scales-semidecade-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14.13: .
+Figure&nbsp;14.12: .
 </figcaption>
 </figure>
 </div>
@@ -1144,7 +3000,7 @@ Figure&nbsp;14.13: .
 <img src="07-magnitudes_files/figure-html/fig-scales-bogus-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scales-bogus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14.14: .
+Figure&nbsp;14.13: .
 </figcaption>
 </figure>
 </div>
@@ -1168,13 +3024,13 @@ Figure&nbsp;14.14: .
 <h4 class="unnumbered anchored" data-anchor-id="exercise-14.02">Exercise 14.02</h4>
 <p>Using your R console, make the following log-log plot of horsepower (<code>BHP</code>) versus displacement (in cc, cubic-centimeters) of the internal combustion engines listed in the <code>Engines</code> data frame.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(BHP <span class="sc">~</span> displacement, <span class="at">data =</span> Engines) <span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_x_log10</span>(), <span class="fu">scale_y_log10</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"Displacement (cc)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(BHP <span class="sc">~</span> displacement, <span class="at">data =</span> Engines) <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_x_log10</span>(), <span class="fu">scale_y_log10</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"Displacement (cc)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
@@ -1196,19 +3052,19 @@ Figure&nbsp;14.14: .
 </section>
 <section id="exercise-14.05" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="exercise-14.05">Exercise 14.05</h4>
-<p>In this exercise, you will use your R console to carry out some calculations with Boyle’s data as shown in <a href="#fig-boyle-data" class="quarto-xref">Figure&nbsp;<span>14.6</span></a>. To see how the data frame is organized, use the <code>head(Boyle)</code> and <code>names(Boyle)</code> commands.</p>
+<p>In this exercise, you will use your R console to carry out some calculations with Boyle’s data as shown in <a href="#fig-boyle-data" class="quarto-xref">Figure&nbsp;<span>14.5</span></a>. To see how the data frame is organized, use the <code>head(Boyle)</code> and <code>names(Boyle)</code> commands.</p>
 <p>The following R/mosaic commands plot out Boyle’s data and includes a command, <code>gf_lm()</code>, that will add a graph of the best straight-line model to the plotted points. Recall that the <code>#</code> symbol turns what follows on the line into a <em>comment</em>, which is ignored by R. By removing the <code>#</code> selectively you can turn on the display of log axes.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(pressure <span class="sc">~</span> volume, <span class="at">data =</span> Boyle) <span class="sc">%&gt;%</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>     <span class="co"># scale_x_log10(),</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>     <span class="co"># scale_y_log10()</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(pressure <span class="sc">~</span> volume, <span class="at">data =</span> Boyle) <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>     <span class="co"># scale_x_log10(),</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>     <span class="co"># scale_y_log10()</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
@@ -1225,9 +3081,9 @@ Figure&nbsp;14.14: .
 <p>Recall Robert Boyle’s data on pressure and volume of a fixed mass of gas held at constant pressure. In Chapter <a href="#sec-magnitude-graphics" class="quarto-xref"><span>Section 14.3</span></a> of the text you saw a graphical analysis that enables you to identify Boyle’s Law with a power-law relationship between pressure and volume: <span class="math display">\[P(V) = a V^n\]</span> On log-log axes, a power-law relationship shows up as a straight-line graphically.</p>
 <p>Taking logarithms translates the relationship to a straight-line function:<span class="math display">\[\text{lnP(lnV)} = \ln(a) + n\,  \ln(V)\]</span> To find the parameter <span class="math inline">\(n\)</span>, you can fit the model to the data. This R command will do the job:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitModel</span>(</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log</span>(pressure) <span class="sc">~</span> <span class="fu">log</span>(a) <span class="sc">+</span> n<span class="sc">*</span><span class="fu">log</span>(volume), <span class="at">data =</span> Boyle) <span class="sc">%&gt;%</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coefficients</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fitModel</span>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log</span>(pressure) <span class="sc">~</span> <span class="fu">log</span>(a) <span class="sc">+</span> n<span class="sc">*</span><span class="fu">log</span>(volume), <span class="at">data =</span> Boyle) <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coefficients</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Run the model-fitting command in your R console. Then, interpret the parameters.</p>
 <div class="cell" data-layout-align="center">
@@ -1270,14 +3126,14 @@ Figure&nbsp;14.14: .
 <h4 class="unnumbered anchored" data-anchor-id="exercise-14.07">Exercise 14.07</h4>
 <p>Here is a plot of the power output (BHP) versus displacement (in cc) of 39 internal combustion engines.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  BHP <span class="sc">~</span> displacement, <span class="at">data =</span> Engines</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_lims</span>(<span class="at">y  =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">30000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  BHP <span class="sc">~</span> displacement, <span class="at">data =</span> Engines</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_lims</span>(<span class="at">y  =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">30000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
@@ -1296,14 +3152,14 @@ Figure&nbsp;14.14: .
 <p><strong>Semi-log scales</strong></p>
 <p>The next command will make a graph of the same engine data as before, but with a log scale on the horizontal axis. The vertical axis is still linear.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  BHP <span class="sc">~</span> displacement, <span class="at">data =</span> Engines</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_x_log10</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  BHP <span class="sc">~</span> displacement, <span class="at">data =</span> Engines</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_x_log10</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
@@ -1321,7 +3177,7 @@ Figure&nbsp;14.14: .
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
@@ -1344,7 +3200,85 @@ Figure&nbsp;14.14: .
 <p>semi-log log-log linear-linear</p>
 </div>
 </div>
-<p>Problem with Modeling Exercises/tiger-have-fork.Rmd</p>
+</section>
+<section id="exercise-14.09" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-14.09">Exercise 14.09</h4>
+<p>The data frame <code>SSA_2007</code> comes from the <a href="https://www.ssa.gov/oact/STATS/table4c6.html">US Social Security Administration</a> and contains mortality in the US as a function of age and sex. (“Mortality” refers to the probability of dying in the next year.)</p>
+<p>Run the following commands in your R console to see the organization of the data.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(SSA_2007)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Once you understand the data organization, try this command to make a plot of mortality versus age:</p>
+<div id="qwebr-insertion-location-2"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>An error message! That’s because there is a <em>slight</em> mistake in the way the command is written. To figure out what’s wrong, read the error message, check the variable names, and so on until you successfully make the plot.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part A**  What was the mistake in the plotting command in the above code box? </code></pre>
+<ol type="a">
+<li>Variable names didn’t match the ones in the data.</li>
+<li>The <em>tilde</em> in the argument <code>color = ~ sex</code></li>
+<li>The data frame name is spelled wrong.</li>
+<li>There is no function <code>gf_point()</code>.</li>
+</ol>
+</div>
+</div>
+<p><strong>Essay</strong>: What’s the obvious (simple) message about mortality and age shown by graphic?</p>
+<p>Now you will use semi-log and log-log scales to look at the mortality data again. To do this, you will use the <code>gf_refine()</code> function.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>( __and_so_on__) <span class="sc">%&gt;%</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_log10</span>(),</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_log10</span>()</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Fill in the <code>__and_so_on__</code> details correctly and run the command in your sandbox.</p>
+<p>As written, both vertical and horizontal axes will be on log scales. This may not be what you want in the end.</p>
+<p>Arrange the plotting command to make a semi-log plot of mortality versus age. Interpret the plot to answer the following questions. Note that labels such as those along the vertical axis are often called “decade labels.”</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part B**  The level of mortality in year 0 of life is how much greater than in year 1 and after? </code></pre>
+<ol type="a">
+<li>About twice as large.</li>
+<li>About five times as large</li>
+<li>About 10 times as large</li>
+<li>About 100 times as large</li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part C**  Near age 20, the mortality of males is how much compared to females? </code></pre>
+<ol type="a">
+<li>Less than twice as large.</li>
+<li>A bit more than three times as large</li>
+<li>About 8 times as large</li>
+<li>About 12 times as large</li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part D**  Between the ages of about 40 and 80, how does mortality change with age? </code></pre>
+<ol type="a">
+<li>It stays about the same.</li>
+<li>It increases as a straight line.</li>
+<li>It increases exponentially.</li>
+<li>It increases, then decreases, then increases again.</li>
+</ol>
+</div>
+</div>
+<p>Remake the plot of mortality vs age once again, but this time put it on log-log axes. The sign of a power-law relationship is that it shows up as a straight line on log-log axes.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part E**  Between the ages of about 40 and 80 is the increase in mortality better modeled by an exponential or a power-law process? </code></pre>
+<ol type="a">
+<li>Power-law</li>
+<li>Exponential</li>
+<li>No reason to prefer one or the other.</li>
+</ol>
+</div>
+</div>
 </section>
 <section id="exercise-14.10" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="exercise-14.10">Exercise 14.10</h4>
@@ -1359,7 +3293,7 @@ Figure&nbsp;14.14: .
 <img src="www/rismat-mortality.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mort-age-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14.15: Mortality rates for people aged 50+ in the US in 2009. The mortality rate is the probability of dying in one year. It is shown here as a function of age and sex.
+Figure&nbsp;14.14: Mortality rates for people aged 50+ in the US in 2009. The mortality rate is the probability of dying in one year. It is shown here as a function of age and sex.
 </figcaption>
 </figure>
 </div>
@@ -1415,9 +3349,111 @@ Figure&nbsp;14.15: Mortality rates for people aged 50+ in the US in 2009. The mo
 </ol>
 </div>
 </div>
-<p>Problem with Modeling Exercises/seahorse-ride-sheet.Rmd</p>
-<p>Problem with Modeling Exercises/buck-spend-saw.Rmd</p>
-<p>Problem with Modeling Exercises/child-sleep-bed.Rmd</p>
+</section>
+<section id="exercise-14.15" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-14.15">Exercise 14.15</h4>
+<p>Transistors are one of the basic building blocks of modern electronics. (Here is a <a href="https://youtu.be/voRQSDyPIaM">2:00 min Video: Inside a Microchip, YouTube</a>.)</p>
+<p>The graphic shows the number of transistors on various microchips dating back to 1970.</p>
+<div class="cell" data-layout-align="center">
+<pre><code>## Warning in normalizePath("www/Moore_s_Law_Transistor_Count_1970-2020.png"):
+## path[1]="www/Moore_s_Law_Transistor_Count_1970-2020.png": No such file or
+## directory</code></pre>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="www/Moore_s_Law_Transistor_Count_1970-2020.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part A**  What sort of frame is the data being plotted in? </code></pre>
+<p>linear log-log semi-log</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part B**  How many decades are shown on the vertical axis? </code></pre>
+<p>2.5 4.3 7.7 9.1</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part C**  Seeing the data as roughly a straight line in the graphics frame, what sort of function is appropriate to model the number of chips versus year? </code></pre>
+<p>linear exponential power-law</p>
+</div>
+</div>
+<p>Roughly speaking, there were about 5000 transistors per chip in 1970 compared to about 10,000,000,000 in 2020.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part D**  How many doublings are involved in going from 5000 to 10,000,000,000 transistors. (Hint: `log2()` is an appropriate function to use in the calculation.) </code></pre>
+<p>16.8 20.9 26.2 31.5</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part E**  How many years per doubling in going from 5000 to 10,000,000,000 transistors over the 50 years from 1970 to 2020? </code></pre>
+<p>1.7 2.0 2.4 2.7</p>
+</div>
+</div>
+<p>Credit: Math 141Z/142Z 2021-2022 Development team</p>
+</section>
+<section id="exercise-14.16" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-14.16">Exercise 14.16</h4>
+<p>Consider this infographic about the planets displaying solar irradiation (<span class="math inline">\(SI\)</span>) versus distance from the Sun (<span class="math inline">\(D\)</span>). (Hint: pay careful attention to the axes.)</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part A**  Which of the following is the most appropriate form for modeling the relationship? </code></pre>
+<ol type="a">
+<li><span class="math inline">\(SI\equiv mD+b\)</span></li>
+<li><span class="math inline">\(\ln (SI\equiv  mD+b\)</span></li>
+<li><span class="math inline">\(SI \equiv  m\ln (D)+b\)</span></li>
+<li><span class="math inline">\(\ln (SI)\equiv  m\ln (D)+b\)</span></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="exercise-14.17" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="exercise-14.17">Exercise 14.17</h4>
+<p>The two figures both show the power (BHP) and displacement for three dozen internal combustion engines.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-36-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part A**  What relationship is shown in Figure (A) above? </code></pre>
+<ol type="a">
+<li><span class="math inline">\(BHP\equiv m\cdot displacement+b\)</span></li>
+<li><span class="math inline">\(\ln (BHP)\equiv m\cdot displacement+b\)</span></li>
+<li><span class="math inline">\(BHP \equiv m\cdot \ln (displacement) +b\)</span></li>
+<li><span class="math inline">\(\ln (BHP)\equiv m\cdot \ln (displacement) +b\)</span></li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part B**  What's the key difference between Figure (A) and Figure (B)? </code></pre>
+<ol type="a">
+<li>Figure (A) is a semi-log plot, and Figure (B) is a log-log plot.</li>
+<li>Figure (A) uses linear axes to show the log-transformed data, while Figure (B) uses log-log to show the original data.</li>
+<li>There is no difference!</li>
+</ol>
+</div>
+</div>
 </section>
 </section>
 <section id="mini-project" class="level2" data-number="14.7">
@@ -1429,16 +3465,16 @@ Figure&nbsp;14.15: Mortality rates for people aged 50+ in the US in 2009. The mo
 <p>Perhaps the simplest display is to show the number of cumulative cases (the <code>confirmed</code> variable) and deaths as a function of time. We will focus on the data up to June 30, 2020.</p>
 <p>Copy the R/mosaic commands below into your R console to produce a graph of confirmed cases in blue and deaths in tan.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_line</span>(</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  deaths <span class="sc">~</span> date, </span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> Covid_US <span class="sc">%&gt;%</span> </span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(date <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">"2020-06-30"</span>)), </span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">color =</span> <span class="st">"orange3"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_line</span>(confirmed <span class="sc">~</span> date, <span class="at">color =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_line</span>(</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  deaths <span class="sc">~</span> date, </span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> Covid_US <span class="sc">%&gt;%</span> </span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(date <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">"2020-06-30"</span>)), </span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">color =</span> <span class="st">"orange3"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_line</span>(confirmed <span class="sc">~</span> date, <span class="at">color =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
@@ -1451,16 +3487,16 @@ Figure&nbsp;14.15: Mortality rates for people aged 50+ in the US in 2009. The mo
 </div>
 <p>This code makes the same graphic as above, but taking the <em>logarithm</em> (base 10) of the number of cases (that is, <code>confirmed</code>) and of the number of deaths. Since we are taking the logarithm of only the y-variable, this is called a “semi-log” plot.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log10</span>(confirmed) <span class="sc">~</span> date, </span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> Covid_US <span class="sc">%&gt;%</span> </span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(date <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">"2020-06-30"</span>)), </span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">color =</span> <span class="st">"dodgerblue"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_point</span>(<span class="fu">log10</span>(deaths) <span class="sc">~</span> date, <span class="at">color =</span> <span class="st">"orange3"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log10</span>(confirmed) <span class="sc">~</span> date, </span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> Covid_US <span class="sc">%&gt;%</span> </span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(date <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">"2020-06-30"</span>)), </span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">color =</span> <span class="st">"dodgerblue"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_point</span>(<span class="fu">log10</span>(deaths) <span class="sc">~</span> date, <span class="at">color =</span> <span class="st">"orange3"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
@@ -1489,15 +3525,15 @@ Figure&nbsp;14.15: Mortality rates for people aged 50+ in the US in 2009. The mo
 </div>
 <p>In many applications, people use semi-log plots to see whether a pattern is exponential or to compare very small and very large numbers. Often, people find it easier if the vertical scale is written in the original units rather than the log units. To accomplish both, the vertical scale can be ruled with raw units spaced logarithmically, like this:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(confirmed <span class="sc">~</span> date, </span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> Covid_US <span class="sc">%&gt;%</span> <span class="fu">filter</span>(date <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">"2020-06-30"</span>)), </span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">color =</span> <span class="st">"dodgerblue"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_point</span>(deaths <span class="sc">~</span> date, <span class="at">color =</span> <span class="st">"orange3"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_log10</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(confirmed <span class="sc">~</span> date, </span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> Covid_US <span class="sc">%&gt;%</span> <span class="fu">filter</span>(date <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">"2020-06-30"</span>)), </span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">color =</span> <span class="st">"dodgerblue"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_point</span>(deaths <span class="sc">~</span> date, <span class="at">color =</span> <span class="st">"orange3"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_log10</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+<p><img src="07-magnitudes_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
@@ -1957,8 +3993,124 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Modeling/07-magnitudes.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer><script type="module">
+// Handle cell initialization initialization
+qwebrCellDetails.map(
+  (entry) => {
+    // Handle the creation of the element
+    qwebrCreateHTMLElement(entry);
+    // In the event of interactive, initialize the monaco editor
+    if (entry.options.context == EvalTypes.Interactive) {
+      qwebrCreateMonacoEditorInstance(entry);
+    }
+  }
+);
+
+// Identify non-interactive cells (in order)
+const filteredEntries = qwebrCellDetails.filter(entry => {
+  const contextOption = entry.options && entry.options.context;
+  return ['output', 'setup'].includes(contextOption) || (contextOption == "interactive" && entry.options && entry.options.autorun === 'true');
+});
+
+// Condition non-interactive cells to only be run after webR finishes its initialization.
+qwebrInstance.then(
+  async () => {
+    const nHiddenCells = filteredEntries.length;
+    var currentHiddenCell = 0;
+
+
+    // Modify button state
+    qwebrSetInteractiveButtonState(`🟡 Running hidden code cells ...`, false);
+
+    // Begin processing non-interactive sections
+    // Due to the iteration policy, we must use a for() loop.
+    // Otherwise, we would need to switch to using reduce with an empty
+    // starting promise
+    for (const entry of filteredEntries) {
+
+      // Determine cell being examined
+      currentHiddenCell = currentHiddenCell + 1;
+      const formattedMessage = `Evaluating hidden cell ${currentHiddenCell} out of ${nHiddenCells}`;
+
+      // Update the document status header
+      if (qwebrShowStartupMessage) {
+        qwebrUpdateStatusHeader(formattedMessage);
+      }
+
+      // Display the update in non-active areas
+      qwebrUpdateStatusMessage(formattedMessage);
+
+      // Extract details on the active cell
+      const evalType = entry.options.context;
+      const cellCode = entry.code;
+      const qwebrCounter = entry.id;
+
+      if (['output', 'setup'].includes(evalType)) {
+        // Disable further global status updates
+        const activeContainer = document.getElementById(`qwebr-non-interactive-loading-container-${qwebrCounter}`);
+        activeContainer.classList.remove('qwebr-cell-needs-evaluation');
+        activeContainer.classList.add('qwebr-cell-evaluated');
+
+        // Update status on the code cell
+        const activeStatus = document.getElementById(`qwebr-status-text-${qwebrCounter}`);
+        activeStatus.innerText = " Evaluating hidden code cell...";
+        activeStatus.classList.remove('qwebr-cell-needs-evaluation');
+        activeStatus.classList.add('qwebr-cell-evaluated');
+      }
+
+      switch (evalType) {
+        case 'interactive':
+          // TODO: Make this more standardized.
+          // At the moment, we're overriding the interactive status update by pretending its
+          // output-like. 
+          const tempOptions = entry.options;
+          tempOptions["context"] = "output"
+          // Run the code in a non-interactive state that is geared to displaying output
+          await qwebrExecuteCode(`${cellCode}`, qwebrCounter, tempOptions);
+          break;
+        case 'output':
+          // Run the code in a non-interactive state that is geared to displaying output
+          await qwebrExecuteCode(`${cellCode}`, qwebrCounter, entry.options);
+          break;
+        case 'setup':
+          const activeDiv = document.getElementById(`qwebr-noninteractive-setup-area-${qwebrCounter}`);
+
+          // Store code in history
+          qwebrLogCodeToHistory(cellCode, entry.options);
+
+          // Run the code in a non-interactive state with all output thrown away
+          await mainWebR.evalRVoid(`${cellCode}`);
+          break;
+        default: 
+          break; 
+      }
+
+      if (['output', 'setup'].includes(evalType)) {
+        // Disable further global status updates
+        const activeContainer = document.getElementById(`qwebr-non-interactive-loading-container-${qwebrCounter}`);
+        // Disable visibility
+        activeContainer.style.visibility = 'hidden';
+        activeContainer.style.display = 'none';
+      }
+    }
+  }
+).then(
+  () => {
+    // Release document status as ready
+
+    if (qwebrShowStartupMessage) {
+      qwebrStartupMessage.innerText = "🟢 Ready!"
+    }
+  
+    qwebrSetInteractiveButtonState(
+      `<i class="fa-solid fa-play qwebr-icon-run-code"></i> <span>Run Code</span>`, 
+      true
+    );  
+  }
+);
+</script>
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Modeling/07-magnitudes.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
+</body></html>

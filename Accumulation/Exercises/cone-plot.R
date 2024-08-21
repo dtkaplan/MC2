@@ -1,7 +1,7 @@
 # Drawing the cone layout diagram
 
 make_rand_fun <- function(seed = NULL , center=0, width=5, aveval=0) {
-  rawf <- rfun(~ x, seed = seed)
+  rawf <- doodle_fun(~ x, seed = seed)
   offset <- mean(rawf(seq(-3,3,100)))
   function(x) { rawf((x - center)/(width/7)) - offset + aveval}
 }
