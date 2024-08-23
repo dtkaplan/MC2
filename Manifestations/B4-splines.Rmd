@@ -53,7 +53,7 @@ Even so, functions can be a useful way of describing the $(x,y)$ path. The key i
 ```{r echo=FALSE}
 TAB <- Znotes::and_so_on(Robot_stations)
 
-TAB # %>% kableExtra::kable_paper("hover", full_width = FALSE)
+TAB # |> kableExtra::kable_paper("hover", full_width = FALSE)
 ```
 
 The $x(t)$ and $y(t)$ functions in this table aren't complete enough to operate the robot. We need to provide the $x,y$-location data in the form of two **continuous** functions of $t$ so that the robot, at any time $t$, can look up where it is supposed to be, what its velocity should be, and how that velocity should be changing in time (acceleration).
@@ -65,8 +65,8 @@ One strategy is to construct the functions as piecewise linear functions of $t$,
 #| fig-cap: "Two functions $x(t)$ and $y(t)$ which describe the path shown in @fig-robot-points."
 xl <- mosaic::connector(x ~ t, data = Robot_stations)
 yl <- mosaic::connector(y ~ t, data = Robot_stations)
-P1 <- slice_plot(xl(t) ~ t, bounds(t=1:16), npts=500) %>% gf_labs(y="x(t) (mm)", x="")
-P2 <- slice_plot(yl(t) ~ t, bounds(t=1:16), npts=500) %>% gf_labs(y="y(t) (mm)", x = "t (sec)")
+P1 <- slice_plot(xl(t) ~ t, bounds(t=1:16), npts=500) |> gf_labs(y="x(t) (mm)", x="")
+P2 <- slice_plot(yl(t) ~ t, bounds(t=1:16), npts=500) |> gf_labs(y="y(t) (mm)", x = "t (sec)")
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
 It can be difficult at first glance to see the relationship between the $x(t)$ and $y(t)$ functions and the path shown in @fig-robot-points. As an exercise, look specifically at the segment $9 \leq t \leq 10$. In @fig-piecewise-linear-path, this is the segment connecting points 9 and 10. In the path view, you can see that on this segment $x$ changes a lot while $y$ changes only a little. Correspondingly, in the function view, $\partial_t x(t)$ is large in magnitude compared to $\partial_t y(t)$.
@@ -82,7 +82,7 @@ For instance, let's look at $\partial_t y(t)$. Since $y$ is a position along the
 labels <- latex2exp::TeX(c('\\partial_t x(t)  (mm/s)', "\\partial_t y(t)  (mm/s)"))
 dt_xl <- D(xl(t) ~ t)
 dt_yl <- D(yl(t) ~ t)
-P1 <- slice_plot(dt_xl(t) ~ t, bounds(t=1:16), npts=901, singularities = 1:16) %>% 
+P1 <- slice_plot(dt_xl(t) ~ t, bounds(t=1:16), npts=901, singularities = 1:16) |> 
   gf_labs(y=labels[[1]], x="")
 P2 <- slice_plot(dt_yl(t) ~ t, bounds(t=1:16), npts=901, singularities = 1:16) %>%
   gf_labs(y=labels[[2]], x="t (sec)")
@@ -97,7 +97,7 @@ Think about what it is that causes the change from one velocity step to another.
 ```{r fig-x-acceleration, echo=FALSE}
 ddt_xl <- D(xl(t) ~ t & t, .h=0.1)
 ddt_yl <- D(yl(t) ~ t & t, .h=0.1)
-P1 <- slice_plot(ddt_xl(t) ~ t, bounds(t=1:16), npts=901) %>% gf_labs(y="x-accel (mm/s^2)", x="")
+P1 <- slice_plot(ddt_xl(t) ~ t, bounds(t=1:16), npts=901) |> gf_labs(y="x-accel (mm/s^2)", x="")
 P2 <- slice_plot(ddt_yl(t) ~ t, bounds(t=1:16), npts=901) %>%
   gf_labs(y="y-accel (mm/s^2)", x = "t (time)")
 gridExtra::grid.arrange(P1, P2, nrow=2)
@@ -113,7 +113,7 @@ As an accommodation to the physical existence of the robot hand, we've softened 
 #| fig-cap-location: margin
 vx <- antiD(ddt_xl(t) ~ t)
 xx <- antiD(vx(t) ~ t)
-slice_plot(xx(t) + 500 ~ t, bounds(t=1.9:2.1)) %>% 
+slice_plot(xx(t) + 500 ~ t, bounds(t=1.9:2.1)) |> 
   gf_point(x ~ t, data = Robot_stations[2,]) %>%
   gf_labs(y="x(t) (mm)", x="t (sec)")
 ```
@@ -166,7 +166,7 @@ $$\left[\begin{array}{c}\left(t_1, x_1\right)\\
 \end{array}\right]$$ which you can think of as two columns of a data frame, one with the $t$-coordinates of the knots and the other with the $y$-coordinates. For the knots in @fig-quadratic-spline the data table is
 
 ```{r echo=FALSE}
-Pts %>% kable()
+Pts |> kable()
 ```
 
 Constructing the interpolating function is a matter of making good choices for $a_1,$ $a_2,$ $a_3,$ $b_1,$ $b_2,$ $b_3,$ $c_1,$ $c_2,$ and $c_3$.
@@ -443,15 +443,15 @@ Pts <- tibble(
 )
 
 bezier <- function(Pts, npts=100) {
-  p0 <- Pts[1,1:2] %>% as.numeric()
-  p1 <- Pts[1,3:4] %>% as.numeric()
-  p3 <- Pts[2,1:2] %>% as.numeric()
-  p2 <- Pts[2,3:4] %>% as.numeric()
+  p0 <- Pts[1,1:2] |> as.numeric()
+  p1 <- Pts[1,3:4] |> as.numeric()
+  p3 <- Pts[2,1:2] |> as.numeric()
+  p2 <- Pts[2,3:4] |> as.numeric()
   t <- seq(0,1,length=npts)
   B <- outer((1-t)^3, p0) +
     3*outer((1-t)^2 * t, p1) +
     3*outer((1-t)*t^2, p2) +
-    outer(t^3, p3) %>% 
+    outer(t^3, p3) |> 
     as_tibble()
   names(B) <- names(Pts)[1:2]
   

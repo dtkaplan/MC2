@@ -55,128 +55,72 @@ On the other hand, functions cannot represent all types of relationships. For in
 
 ## Start here
 
-The decade of the 1660s was hugely significant in the emergence of science, although no one realized it at the time. 1665 was a plague year, the last major outbreak of bubonic plague in England. The University of Cambridge closed to wait out the plague. Isaac Newton, then a 24-year old Cambridge student, returned home to Woolsthorpe where he lived and worked in isolation for two years. Biographer James Gleich wrote: "The plague year was his transfiguration. Solitary and almost incommunicado, he became the world’s paramount mathematician." During his years of isolation, Newton developed what we now call "calculus" and, associated with that, his theory of Universal Gravitation. He wrote a tract on his work in 1669, but withheld it from publication until 1711.
+The decade of the 1660s was hugely significant in the emergence of science, although no one realized it at the time. 1665 was a plague year, the last major outbreak of bubonic plague in England. The University of Cambridge closed to wait out the plague. 
 
-```{r echo=FALSE}
-#| label: fig-newton-first-pub
-#| fig-cap: "Newton's first tract (1669) on the roots of calculus: *On Analysis by Equations with an infinite number of terms*."
-#| column: margin
-knitr::include_graphics("www/Newton-infinite-terms.png")
-```
+Isaac Newton, then a 24-year old Cambridge student, returned home to Woolsthorpe where he lived and worked in isolation for two years. Biographer James Gleich wrote: "The plague year was his transfiguration. Solitary and almost incommunicado, he became the world’s paramount mathematician." During his years of isolation, Newton developed what we now call "calculus" and, associated with that, his theory of Universal Gravitation. He wrote a tract on his work in 1669, but withheld it from publication until 1711.
 
-Plague was the motivating factor in another important work, published in 1661, *Natural and Political Observations ... Made upon the Bills of Mortality* by [John Graunt](https://en.wikipedia.org/wiki/John_Graunt) (1620-1674). [Bills of mortality](https://en.wikipedia.org/wiki/Bills_of_mortality), listings of the number and causes of deaths in London, had been published intermittently starting in in the plague year of 1532, and then continuously from the onset of plague in 1603. Graunt, a haberdasher by profession, performed what we might now call ***data science***, the extraction of information from data. For instance, Graunt was the first to observe the high rate of child mortality and that the number of deaths attributed to plague was underestimated by about one quarter. Graunt's work led to his election to the Royal Society, the same august group of scientists of which Isaac Newton was a member (and later president). Graunt is considered the first demographer and epidemiologist.
+Newton (1642-1726) was elected to the prestigious Royal Society at an early age. There, he may well have met another member of the Society, John Graunt(1620-1674). Graunt was well known for collecting data on causes of death in London. @fig-bill-of-mortality shows his data for one week in 1665.
 
-```{r echo=FALSE}
-#| label: fig-graunt-cover
-#| fig-cap: "The title page of John Graunt's *Natural and Political Observations ... upon the Bills of Mortality*"
-#| column: margin
-knitr::include_graphics("www/Graunt_Natural_and_political_observations.png")
+::: {#fig-bill-of-mortality}
+![](../Special_topics/www/graunt-bill-1665.png)
 
-```
+Tables from the August 15-22, 1665 Bill of Mortality for London. [source](https://www.lindahall.org/about/news/scientist-of-the-day/john-graunt/) Notice the large number of deaths from plague. A major purpose for the Bill of Mortality was to track the outbreak of the epidemic over time, so that people could decide whether to flee London for the countryside, or whether it was safe to come back.
+:::
 
-Graunt's publication marks the start of ***statistics***. He built upon a century of work by the city of London, collecting and tabulating data on a quarter of a million deaths. Indeed the word "statistics" stems from "state," the only entity large enough to collect data on populations and the economy. 
+Neither Newton nor Graunt could have anticipated the situation today. Masses of data are collected and analyzed. Mathematical functions are essential to the analysis of complex data. To give one example: Artificial intelligence products such as large-language models (e.g. Chat-GPT) are based on the construction of mathematical functions (called "neural nets") that take large numbers of inputs and process them into an output. The construction methods are rooted in optimization, one of the topics in Newton's first calculus book.
 
------
+Since data is so important, and since Calculus underlies data analysis techniques, it makes sense that a course on Calculus should engage data analysis as a core topic. This book emphasizes data-related aspects of Calculus although traditional books, (even in the 21st century) mainly follow an old, data-free curriculum.
 
-Whereas advances in calculus over the next two centuries could be accomplished by the creativity of individuals, statistics could only develop based on the development of the infrastructure of government data collection, a process that took almost two centuries.  But in the last 50 years, extensive data collection has entered non-state domains, such as genetic sequencing, remote sensing of Earth, commercial records, and the vast data warehouses of the social media giants, among others. 
-
-The ability to draw conclusions from masses of data---shown originally by John Graunt---is now an essential skill throughout science, government, and commerce. As you will see, particularly in Block 5, many of those skills are mathematical, effectively a part of calculus.
-
-This chapter introduces some pre-calculus basics of working with data which we will use extensively in later Blocks of *MOSAIC Calculus*.
+This chapter introduces some basic techniques for working with data. This will enable you to apply important data-oriented methods of Calculus that we will encounter in later chapters.
 
 ## Data frames {#sec-data-frames}
 
-```{r echo=FALSE}
-#| label: fig-bill-of-mortality
-#| fig-cap: "Tables of data from the 1665 Bill of Mortality for London."
-#| column: margin
-knitr::include_graphics("www/Bill_of_Mortality.jpeg")
-```
+The organization of data as a *table* (as in @fig-bill-of-mortality) is almost intuitive. However, data science today draws on much more sophisticated structures that are amenable to computer processing. 
 
-Most people encounter data in the form of printed tables, such as the 1665 Bill of Mortality shown below. These tables were developed to be legible to humans and to be compact when printed. 
+Data science is strikingly modern. Relational databases, the prime organization of data used in science, commerce, medicine, and government was invented in the 1960s. All data scientists have to master working with relational databases, but we will use only one component of them, the **data frame**.
 
+Let's consider what Graunt's 1665 data might look like in a modern data frame. Remember that the data in @fig-bill-of-mortality covers only one week (Aug 15-22, 1665) in only one place (London). A more comprehensive data frame might include data from other weeks and other places:
 
-Although published more than 350 years ago, it is still possible for a literate human to sort out what the table is saying. But the volume of data has exploded beyond any possibility of putting it in print. Instead, today's data are stored and accessed electronically. But the process of accessing such data is very much rooted in the notation of "table," albeit tables that follow a strict set of principles. We will call such tables ***data frames*** and it is important for you to learn a few of the core principles of data organization.
+::: {#tbl-bill-data-frame}
 
-First, recognize that the data shown in  @fig-bill-of-mortality consist of several different tables.  The first table, just under the title, starts with
+condition | deaths | begins | stops | location
+----------|--------|------|----------
+kingsevil | 10     | 1665-08-15 | 1665-08-22 | London
+lethargy  | 1      | 1665-08-15 | 1665-08-22 | London
+palsie    | 2      | 1665-08-15 | 1665-08-22 | London
+plague    | 3880   | 1665-08-15 | 1665-08-22 | London
+*spotted feaver* | *190* | *1665-07-12* | *1665-07-19* | *Paris* 
+*consumption* | *219*  | *1665-07-12* | *1665-07-19* | *Paris* 
+*cancer* | *5*  | *1665-07-12* | *1665-07-19* | *Paris* 
 
-::: {.column-page-right}
-$\ $   | Buried | Plague | $\ $ | Buried | Plague | $\cdots$   
------------------------|-----|-----|------------------------|----|----|-----
-S^t^ Albans Woodstreet | 100 | 121 | S^t^ Clemens Eastcheap | 18 | 20 | $\cdots$
-S^t^ Alhallowes Barking| 514 | 330 | S^t^ Diones Back-church| 78 | 27 | $\cdots$
-
-: The first two lines of the main table from the Bill of Mortality {#tbl-top-lines}
+A data frame organization of some data from @fig-bill-of-mortality. Additional imagined "data" (in *italics*) has been added to illustrate why so many columns are needed, rather than Graunt's two-column layout.
 :::
 
+As you can see, the data frame is organized into columns and rows. Each column is called a **variable** and contains entries that are all the same kind of thing. For example, the *location* variable has city names. The *deaths* variable has numbers.
 
+Each row of the table corresponds to a unique kind of thing called a *unit of observation.* It's not essential that you understand exactly what this means. It suffices to say that the unit of observation is a "condition of death during a time interval in a place." Various everyday words are used for a single row: *instance*, *case*, *specimen* (my favorite), *tupple*, or just plane *row*. In a data frame, all the rows must be the same kind of unit of observation.
 
-The modern form of this is not spread out across the width of the page. It has a single set of columns rather than sets repeated side by side as in @tbl-top-lines.
+The modern conception of data makes a clear distinction between data and the construction of summaries of that data for human consumption. Such summaries might be graphical, or in the form of model functions, or even in the form of a set of tables, such as seen in the Bill of Mortality. Learning how to generate such summaries is an essential task in ***statistics*** and data science. The automatic construction of model functions (without much human intervention) is a field called **machine learning**, one kind of "artificial intelligence."
 
-::: {.column-margin}
-parish          | buried | plague
-----------------|--------|------
-S^t^ Albans Woodstreet   | 100 | 121  
-S^t^ Clemens Eastcheap   | 18  | 20 
-S^t^ Alhallowes Barking  | 514 | 330  
-S^t^ Diones Back-church  | 78  | 27 
-$\vdots$              |$\vdots$| $\vdots$
+A data scientist would know how to process (or, "*wrangle*") such data, for instance to use the *begins* and *stops* variables to calculate the duration of the interval covered. She would also be able to "join" the data table to others that contain information such as the population of the city or the mean temperature during the interval.
 
-: In a modern format, all the parishes are listed in one column, so that each row of the table corresponds to a single parish. {#tbl-narrow-parish}
-:::
+Technology allows us to store very massive data frames along with allied data. For example, a modern "bill of mortality" might have as a unit of observation the death of an individual person, including date, age, sex, occupation, and so on. Graunt's bill of mortality encompasses 5319 deaths. Given that the population of the world in the 1660s was about 550 million, a globally comprehensive data frame on deaths covering only one year would have about 20 million rows. (Even today, there is no such globally comprehensive data, and in many countries births and deaths are not uniformly recorded.)
 
-Each ***column*** of the modern table is called a ***variable***. So there is a variable "buried" that contains the number buried and another variable "plague" containing the number who died of plague. 
+A modern data wrangler would have no problem with 20 million rows, and would easily be able to pull out the data Graunt needed for his Aug. 15-22, 1665 report, summarizing it by the different causes of death and even breaking it down by age group. Such virtuosity is not needed for our purposes.
 
-Each row of the table is called a ***case***, but often simply ***row*** is used. For each table, all the cases are the same kind of thing, for instance, here, a parish.
+The basics that you need for our work with data are:
 
-Another table displayed on the sheet is entitled, "The diseases and casualities this year." In this table, the case is a disease or other cause of death, which we've put under the name "condition." 
-
-condition | deaths     | year
-----------|------------|-----
-Abortive and Stilborne | 617  | 1665
-Aged                   | 1545 | 1665
-Ague and Feaver        | 5257 | 1665
-Appoplex and Suddenly  | 116  | 1665
-Bedrid                 | 10   | 1665
-
-
-We've added the variable "year" with an eye toward consolidating many years of the Bills into one table.
-
-\newpage
-
-A modern organization for the data being presented in the Bill of Mortality would go back to the raw records that were collected in the field, stacking them into just two tables: Deaths and Births. The Deaths table might look like @tbl-deaths.
-
-::: {.column-screen-right}
-
-name | date | parish | sex | age  | cause
---------------|-------------|------------|--|--|------
-Percivell Bullingham | 1665-06-01 | S^t^ Mary le Bow    | M | 29 | plague
-Owin Swancott        | 1665-08-13 | Trinitie            | M | 2  | plague
-Winifred Romford     | 1665-11-09 | S^t^ Swithings      | F | 19 | childbed
-Elsebeth Cook        | 1665-06-29 | S^t^ Ethelborough   | F | 5  | plague
-Humfray Langham      | 1665-06-05 | S^t^ Bennet Fynch   | M | 53 | aged
-Agnes Kirkwood       | 1665-11-22 | S^t^ Mary Hill      | F | 21 | ague
-Katherine Murton     | 1665-12-01 | S^t^ Alholowes Lesse| F | 24 | childbed
-Bainbridge Fletcher  | 1665-03-17 | S^t^ Martins        | M | 2  | plague
-Cicely Ouston        | 1665-03-08 | S^t^ Austins        | F | 35 | plague
-
-: An imagined re-organization of the data that went into the Bill of Mortality report. {#tbl-deaths}
-
-::: 
-
-The modern conception of data makes a clear distinction between data and the construction of summaries of that data for human consumption. Such summaries might be graphical, or in the form model functions, or even in the form of a set of tables, such as seen in the Bill of Mortality. Learning how to generate such summaries is an essential task in ***statistics*** and data science. The automatic construction of model functions (without much human intervention) is a field called ***machine learning***
-
-In the Deaths table, which would have 97,306 rows for 1665, the each case is "a person who died." Such a table could nowadays be re-tabulated into the "diseases and casualities" table, or the breakdown of burials by sex, or the parish-by-parish breakdown. But there are many other possibilities: looking at cause of death by age and season of year, or broken down by sex, etc. 
+- Data frames are accessed by a file name.
+- Individual columns are accessed by a variable name.
+- We will use tilde expressions to identify one variable as the "**response**" variable and other variables as "**explanatory variables**." The response corresponds to the *output* of a function, the explanatory variables are the *inputs*.
+- We will use software to construct functions that capture important patterns in the data, but that is a topic for later chapters.
 
 ## Accessing data tables
 
-In a data science course you will learn several ways of storing and accessing tables of data. One of the most important in professional use is a ***relational database***. ("Relation" is another word for "table," just as functions are about the relationship between inputs and output.)
-
-***Data wrangling*** is a term used to describe working with and summarizing data. This includes merging multiple data frames. In *MOSAIC Calculus* our uses of data will be focused on constructing functions that show the patterns in data and plotting data to reveal those patterns to the eye. 
 
 For our work, you can access the data frames we need directly in R by name. For instance, the `Engines` data frame (@tbl-engine-table) records the characteristics of several internal combustion engines of various sizes:
 
-::: {.column-page-right}
+::: {#tbl-engine-table.column-page-right}
 Engine | mass | BHP | RPM | bore | stroke
 :------|-----:|----:|----:|-----:|---------:
 Webra Speed 20 | 0.25 | 0.78 | 22000 | 16.5 | 16
@@ -189,10 +133,10 @@ Nordberg | 5260.00 | 3000.00 | 400 | 356.0 | 407
 Cooper-Bessemer V-250 | 13500.00 | 7250.00 | 330 | 457.0 | 508
 
 
-: Various attributes of internal combustion engines, from the very small to the very large. {#tbl-engine-table}
+Various attributes of internal combustion engines, from the very small to the very large. `Engines` has 39 rows; only 8 are seen here.
 :::
 
-## Variable names
+
 
 The fundamental questions to ask first about any data frame are:
 
@@ -213,35 +157,36 @@ head(Engines) # the first several rows
 nrow(Engines) # how many rows
 ```
 
-In RStudio, the command `View(Engines)` is useful for showing a complete table of data.
+In RStudio, the command `View(Engines)` is useful for showing a complete table of data in printed format. This may be useful for our work in this book, but is only viable for data frames of moderate size.
 
 ## Plotting data
 
 We will use just one graphical format for displaying data: the ***point plot***. In a point plot, also known as a "scatterplot," two variables are displayed, one on each graphical axis. Each case is presented as a dot, whose horizontal and vertical coordinates are the values of the variables for that case. For instance:
 
-```{r echo=FALSE}
-#| label: fig-stroke-vs-bore
-#| fig-cap: "A point plot showing the relationship between engine `stroke` and `bore`. Each individual point is one row of the data frame SHOWN IN GIVE TABLE A NAME"
-#| fig-cap-location: margin
-gf_point(stroke ~ bore, data = Engines)
+::: {#lst-stroke-vs-bore}
+```{webr-r}
+Engines |> gf_point(stroke ~ bore, data = Engines)
 ```
 
-The data plotted here show a relationship between the stroke length of a piston and the diameter of the cylinder in which the piston moves. This relationships, however, is not being presented in the form of a function, that is, a single stroke value for each value of the bore diameter. 
+Running the code will create a point plot showing the relationship between engine `stroke` and `bore`. Each individual point is one row of the data frame
+:::
+
+The data plotted by the code in @lst-stroke-vs-bore show a relationship between the stroke length of a piston and the diameter of the cylinder in which the piston moves. This relationships, however, is not being presented in the form of a function, that is, a single stroke value for each value of the bore diameter. 
 
 For many modeling purposes, it is important to be able to represent a relationship as a function. At one level, this is straightforward: draw a smooth curve through the data and use that curve for the function. 
 
 Later in *MOSAIC Calculus*, we will discuss ways to construct functions that are a good match to data using the pattern-book functions. Here, our concern is graphing such functions on top of a point plot. So, without explanation (until later chapters), we will construct a power-law function, called, stroke(bore), that might be a good match to the data. The we will add a second layer to the point-plot graphic: a slice-plot of the function we've constructed.
 
-```{r}
-#| label: fig-first-two-layers
-#| fig-cap: "A graphic composed of two layers: 1) a point plot; 2) a slice plot of a function fitted to the data in (1)."
-#| fig-cap-location: margin
+::: {#lst-first-two-layers}
+```{webr-r}
 stroke <- fitModel(stroke ~ A*bore^b, data = Engines)
-gf_point(stroke ~ bore, data = Engines) %>%
+gf_point(stroke ~ bore, data = Engines) |>
   slice_plot(stroke(bore) ~ bore, color="blue")
 ```
 
-The second layer is made with an ordinary `slice_plot()` command. To place it on top of the point plot we connect the two commands with a bit of punctuation called a "pipe": `%>%`.
+Code to make a graphic composed of two layers: 1) a point plot; 2) a slice plot of a power-law function named `stroke()` fitted to the data i 
+
+The second layer is made with an ordinary `slice_plot()` command. To place it on top of the point plot we connect the two commands with a bit of punctuation called a "pipe": `|>`.
 
 [The pipe punctuation can never go at the start of a line. Usually, we will use the pipe at the very end of a line; think of the pipe as connecting one line to the next.]{.aside}
 
@@ -252,6 +197,8 @@ slice_plot(stroke(bore) ~ bore, bounds(bore=0:1000))
 ```
 
 You can do that also when `slice_plot()` is the second layer in a graphics command. But `slice_plot()` can also infer the interval of the domain from previous layers.
+
+YOU WERE HERE
 
 ## Functions as data {#sec-functions-as-data}
 

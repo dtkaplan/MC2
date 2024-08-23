@@ -87,7 +87,7 @@ slope_rose <- function(P=NULL, x0=0, y0=0, xradius=1,
     slope_label = paste(slope, units),
     x0 = x0,
     y0 = y0
-  ) %>% 
+  ) |> 
     mutate(dx = xradius,
            dy = slope * dx,
            xend = x0 + dx,
@@ -110,7 +110,7 @@ slope_rose <- function(P=NULL, x0=0, y0=0, xradius=1,
 #| label: fig-car-rose
 #| column: margin
 #| fig-cap: "Adding a scale for slope to the graph."
-FigA2 %>% slope_rose(x0=.2, y0=6.2, color="tomato", units="miles/hr",
+FigA2 |> slope_rose(x0=.2, y0=6.2, color="tomato", units="miles/hr",
                      slopes = seq(-10, 60, by=10), xradius=.25)
 ```
 
@@ -129,7 +129,7 @@ Using the slope scale in @fig-car-rose2, estimate the function's slope at input 
 #| label: fig-car-rose2
 #| column: margin
 #| fig-cap: "Adding a scale for slope to the graph."
-FigA1 %>% slope_rose(x0=.5, y0=0, color="tomato", units="miles/hr",
+FigA1 |> slope_rose(x0=.5, y0=0, color="tomato", units="miles/hr",
                      slopes = seq(-10, 60, by=10), xradius=.25) %>%
   gf_refine(scale_x_continuous(breaks=seq(0, 1, by=.2)))
 ```
@@ -158,7 +158,7 @@ where $h$ is the length of the interval used to compute the rate of change. We w
 Segs <- Znotes::create_segments(position(t) ~ t, bounds(t=0:1), nsegs=30)
 
 gf_segment(y + yend ~ x + xend, data = Segs,
-            alpha=.9) %>% 
+            alpha=.9) |> 
   slope_rose(x0=0, y0=0, color="tomato", units="miles/hr",
                      slopes = seq(-5, 20, by=5), xradius=.1) %>%
   gf_theme(
@@ -230,7 +230,7 @@ Pts <- tibble::tibble(
 P %>%
   gf_text(0 ~ harvest, data = Pts, label = ~ label, parse=TRUE ) %>%
   gf_segment(0 + amount ~ 0 + harvest, data = Pts, color="green") %>%
-  gf_point(amount ~ harvest, data = Pts, size=3, color="green", alpha=0.5) %>% 
+  gf_point(amount ~ harvest, data = Pts, size=3, color="green", alpha=0.5) |> 
   gf_abline(intercept=0, slope=40, color="magenta") %>%
   gf_segment(0 + amount ~ harvest + harvest, data = Pts, color="gray")
 ```

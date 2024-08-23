@@ -135,15 +135,15 @@ theta <- pi/15
 rotmat <- matrix(c(cos(theta), sin(theta), -sin(theta), cos(theta)), nrow=2)
 rotPts <- as_tibble(as.matrix(bottomPts) %*% rotmat)
 names(rotPts) <- names(bottomPts)
-gf_point(y ~ x, data = rotPts %>% mutate(y=-y)) %>%
+gf_point(y ~ x, data = rotPts |> mutate(y=-y)) %>%
   gf_refine(coord_fixed())
 
 bottom <- spliner(y ~ x, data=rotPts)
-very_bottom <- rotPts %>% filter(y == max(y)) %>%
+very_bottom <- rotPts |> filter(y == max(y)) %>%
   filter(row_number()==1)
 
-fLeft <- spliner(x ~ y, data = rotPts %>% filter(x <= very_bottom$x))
-fRight <- spliner(x ~ y, data = rotPts %>% filter(x >= very_bottom$x))
+fLeft <- spliner(x ~ y, data = rotPts |> filter(x <= very_bottom$x))
+fRight <- spliner(x ~ y, data = rotPts |> filter(x >= very_bottom$x))
 
 boat_width <- makeFun(fRight(y) - fLeft(y) ~ y)
 

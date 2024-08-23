@@ -51,7 +51,7 @@ output$boxstats <- renderText({
     "<p>Left: {signif(input$Fbrush$xmin,3)}      Right: {signif(input$Fbrush$xmax, 3)}      Width: {signif(width,3)}</p>
     <p>F(left): {signif(yvals[1], 3)}       F(right): {signif(yvals[2], 3)}       ∆F: {signif(deltaF,3)}</p>
     <p>Slope: {signif(deltaF/width, 3)} </p>"
-  ) %>% HTML()
+  ) |> HTML()
 })
 
 output[["littlef"]] <- renderPlot({
@@ -69,12 +69,12 @@ output[["littlef"]] <- renderPlot({
       t = seq(input$Fbrush$xmin, input$Fbrush$xmax, length=100),
       y = f(t)
     )
-    Neg_area <- Area %>% filter(y < 0)
-    P <- P %>% gf_ribbon(0 + y ~ t, data = Area, inherit=FALSE,
+    Neg_area <- Area |> filter(y < 0)
+    P <- P |> gf_ribbon(0 + y ~ t, data = Area, inherit=FALSE,
                          fill = "dodgerblue", color=NA, alpha = 0.3) 
     if (nrow(Neg_area) > 0)
       P <- P %>%
-      gf_ribbon(0 + y ~ t, data=Neg_area %>% filter(y < 0), inherit = FALSE,
+      gf_ribbon(0 + y ~ t, data=Neg_area |> filter(y < 0), inherit = FALSE,
                 fill = "orange3", color = NA, alpha = 0.3)
   }
   P

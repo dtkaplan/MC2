@@ -382,7 +382,7 @@ Imagine that we have a long, thin pipe filled with still air and we inject at po
 
 ```{r echo=FALSE, warning=FALSE}
 top <- max(C_funs[[1]]$y)
-gf_line(y ~ x, data = C_funs[[1]] %>% filter(abs(x) < 25)) %>%
+gf_line(y ~ x, data = C_funs[[1]] |> filter(abs(x) < 25)) %>%
   gf_labs(y="Temperature (deg C)", x="Position along bar", title="Initial condition C(x,t=0)") %>%
   gf_hline(yintercept = exp(-.5)*top, color="orange3")
 ```
@@ -407,22 +407,22 @@ Here is the solution $C(x, t=0.5)$ shown with $C(x, t=0)$ superimposed in blue. 
 
 ```{r echo=FALSE, warning=FALSE}
 draw_C <- function(n, compare_n=1, show_sd=TRUE, domain=5) {
-  Dat <- C_funs[[n]] %>% filter(abs(x) < domain)
+  Dat <- C_funs[[n]] |> filter(abs(x) < domain)
   ylab <- glue::glue("C(x, t={(n-1)*0.1}) in deg C.")
   title <- glue::glue("C(x, t={(n-1)*0.1})")
   redline <- exp(-0.5) * max(Dat$y)
-  P <- gf_line(y ~ x, data = C_funs[[n]] %>% filter(abs(x) < domain)) %>%
+  P <- gf_line(y ~ x, data = C_funs[[n]] |> filter(abs(x) < domain)) %>%
     gf_labs(y=ylab, 
                   x="Position along bar", title=title) 
   
   if (compare_n > 0) {
-    P <- P %>% 
+    P <- P |> 
       gf_line(y ~ x, alpha=0.5, color="dodgerblue", 
-            data = C_funs[[compare_n]] %>% filter(abs(x) < domain)) 
+            data = C_funs[[compare_n]] |> filter(abs(x) < domain)) 
   }
   
   if (show_sd) {
-    P %>% gf_hline(yintercept=redline, color="orange3")
+    P |> gf_hline(yintercept=redline, color="orange3")
   } else {
     P
   }
@@ -436,13 +436,13 @@ Here is the function $C(x,t)$ at $t=1, 2, 3, 4$. You can see the function spread
 
 ```{r echo=FALSE, out-width: "50%", fig.show="hold", warning=FALSE}
 axis5 <- function(P, xlim=5, dxlim=xlim/50) {
-  P %>% gf_refine(scale_x_continuous(breaks=(-xlim):xlim, 
+  P |> gf_refine(scale_x_continuous(breaks=(-xlim):xlim, 
                                minor_breaks = seq(-xlim,xlim,by=dxlim)))
 }
-draw_C(11, domain=5, show_sd=TRUE) %>% axis5()
-draw_C(21, domain=5, show_sd=TRUE) %>% axis5()
-draw_C(31, domain=5, show_sd=TRUE) %>% axis5()
-draw_C(41, domain=5, show_sd=TRUE) %>% axis5()
+draw_C(11, domain=5, show_sd=TRUE) |> axis5()
+draw_C(21, domain=5, show_sd=TRUE) |> axis5()
+draw_C(31, domain=5, show_sd=TRUE) |> axis5()
+draw_C(41, domain=5, show_sd=TRUE) |> axis5()
 ```
 
 
@@ -461,10 +461,10 @@ askMC(
 Here is a similar set of graphs for $t=10, 20, 30, 40$:
 
 ```{r echo=FALSE, fig.height=2, fig.width=6, warning=FALSE}
-draw_C(101,0, domain=15, show_sd=TRUE) %>% axis5(xlim=15, dxlim=0.5)
-draw_C(201,0, domain=15, show_sd=TRUE) %>% axis5(xlim=15, dxlim=0.5)
-draw_C(301,0, domain=15, show_sd=TRUE) %>% axis5(xlim=15, dxlim=0.5)
-draw_C(401,0, domain=15, show_sd=TRUE) %>% axis5(xlim=15, dxlim=0.5)
+draw_C(101,0, domain=15, show_sd=TRUE) |> axis5(xlim=15, dxlim=0.5)
+draw_C(201,0, domain=15, show_sd=TRUE) |> axis5(xlim=15, dxlim=0.5)
+draw_C(301,0, domain=15, show_sd=TRUE) |> axis5(xlim=15, dxlim=0.5)
+draw_C(401,0, domain=15, show_sd=TRUE) |> axis5(xlim=15, dxlim=0.5)
 ```
 
 ```{r vd1-2, echo=FALSE, results="markup"}
@@ -587,7 +587,7 @@ gf_line(x ~ t, data = bind_rows(Trajs),  color= ~ color, alpha=0.1) %>%
           color= ~ color) %>%
   gf_line(x ~ t, data = deterministic, color=~ color) %>%
   gf_line(xrand ~ t, data = deterministic, color="dodgerblue") %>%
-  gf_refine(scale_color_identity()) %>% #, scale_y_log10()) %>%
+  gf_refine(scale_color_identity()) |> #, scale_y_log10()) %>%
   gf_labs(x="Time (years)", y="Value of investment")
 ```
 

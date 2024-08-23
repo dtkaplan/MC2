@@ -4,17 +4,38 @@
 source("../starter.R")
 ```
 
+Each pattern-book function is like a unique Lego block. With Lego, you build a castle or an airplane by combining the basic blocks together. Similarly, Chapters [-@sec-parameters] and [-@sec-assembling] introduce ways to build customized functions out of the pattern-book functions. 
+
+Before we start to build such customized functions, it is helpful to have a word vocabulary for describing the various features we might want to include in a customized function.
 Knowing and correctly using a handful of phrases about functions with a single input goes a long way in being able to communicate with other people . Often, the words make sense in everyday speech ("steep", "growing", "decaying", "goes up", "goes down", "flat").
 
 Sometimes the words are used in everyday speech but the casual person isn't sure exactly what they mean. For instance, you will often hear the phrase "growing exponentially." The graph of the exponential function illustrates exactly this sort of growth: flat for small $x$ and growing steadily steeper and steeper as $x$ increases. 
 
 Still other words are best understood by those who learn calculus. "Concave up," "concave down", "approaching 0 asymptotically," "continuous", "discontinuous", "smooth", "having a minimum **at** ...," "having a minimum **of** ...", "approaching $\infty$ asymptotically," "having a vertical asymptote."
 
-The next short sections describe seven simple function-shape concepts: slope, concavity, continuity, monotonicity,  periodicity, asymptotes, and local extrema. Each of these concepts has the idea of a function at the core, because each one depends on how the function output changes as the input is changed.
+The next short sections describe seven simple function-shape concepts: 
 
-I'll illustrate these concepts using three pattern-book functions graphed in @fig-for-words. 
+i. slope
+ii. concavity
+iii. continuity 
+iv. monotonicity  
+v. periodicity
+vi. asymptotes
+vii. local extrema. 
 
-```{r echo=FALSE}
+Each of these concepts has the idea of a function at the core, because each one depends on how the function output changes as the input is changed.
+
+For the sake of illustration, I'll use the three pattern-book functions @fig-three-for-illustration. Keep in mind, however, that the shape words can be applied to almost every function you will see in this book. (To be more precise, the shape words apply to every *continuous* function in this book. See @sec-continuity-intro.) 
+
+::: {#fig-three-for-illustration}
+reciprocal | sinusoid | exponential
+:--:|:--:|:--:
+![](www/pb-recip-gg.png)| ![](www/pb-gauss-gg.png) | ![](www/pb-log-gg.png) 
+
+Three pattern-book functions used to illustrate the function-shape words. 
+:::
+
+```{r eval=FALSE, echo=FALSE}
 #| label: fig-for-words
 #| fig-cap: "Three of the pattern-book functions: (a) exponential, (b) sinusoid, (c) power-law $x^{-1}$."
 #| fig-cap-location: margin
@@ -37,24 +58,26 @@ The slope describes whether the output goes up or down, and to what extent, as t
 
 @fig-slope-at-point graphs the sinusoid function (black curve). At numerous points in the domain, the function has been overlaid with a straight-line segment that has the same slope as does the function itself.  For $x$ near $-3$ the slope is negative; for $x$ near zero the slope is positive, then swings back to negative again for $x$ near $3$.
 
+::: {#fig-slope-at-point}
 ```{r echo=FALSE}
-#| label: fig-slope-at-point
-#| fig-cap: "Short straight-line segments laid over a graph of the sinusoid. The slope of each line segment is selected to match the local slope of the sinusoid."
-#| fig-cap-location: margin
-Segs <- Znotes::create_segments(sin(x) ~ x, bounds(x=c(-5,5)), nsegs=100) %>%
+Segs <- Znotes::create_segments(sin(x) ~ x, bounds(x=c(-6,5)), nsegs=20) |>
   mutate(y2end = 2.15*yend)
 
-Small <- Segs[seq(2,nrow(Segs), by=3),]
-slice_plot(sin(x) ~ x, bounds(x=c(-5, 5))) %>%
-gf_segment(yf + yfend ~ x + xend, 
-           data = Small, 
-           color=~slope,
-           alpha=0.65, size=3, lineend="round") %>%
-    gf_labs(subtitle="sin(x)", y="output") %>%
-    gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
-  gf_theme(theme(legend.position = "none"))
-
+Small <- Segs[seq(2,nrow(Segs), by=2),]
+slice_plot(sin(x) ~ x, bounds(x=c(-6, 5))) %>%
+  gf_segment(yf + yfend ~ x + xend, 
+             data = Small, 
+             color=~slope,
+             alpha=0.65, linewidth=3, lineend="round") |>
+    gf_labs(subtitle="sin(x)", y="output") |>
+    gf_refine(scale_color_viridis_c(begin=.3, end=1)) |>
+  gf_theme(theme(legend.position = "none")) |>
+  LSTbook::add_slope_rose(x = -6, y = -0.75, scale=1/6)
 ```
+
+Short straight-line segments laid over a graph of the sinusoid. The slope of each line segment is selected to match the local slope of the sinusoid. The red annotations show several different slopes quantitatively.
+:::
+
 When we speak of the slope of the sinusoid, or any other function, we mean the local slope as a function of the input. The value of the function does not enter into it, just the slope. @fig-slope-at-point2 shows only the slope of the sinusoid, without the sinusoid output at all. Each line segment has a horizontal "run" of $0.1$, so you can measure the slope of each segment---rise over run---as the vertical extent $\Delta y$ of the segment divided by $0.1$. 
 
 ```{r echo=FALSE}
@@ -98,21 +121,19 @@ The slope of a function at a given input tells how fast the function **output** 
 
 Concavity has a very clear appearance in a function graph. If a function is positive concave in a region, the graph looks like a smile or cup.  Negative concavity looks like a frown. Zero concavity is a straight line.  
 
-Referring to the three function examples in @fig-for-words, we will use the traditional terms ***concave up*** and ***concave down*** to refer to positive and negative concavity respectively.
+Referring to the three function examples in @fig-three-for-illustration, we will use the traditional terms ***concave up*** and ***concave down*** to refer to positive and negative concavity respectively.
 
 a. The exponential is ***concave up*** everywhere in its domain.
 b. The sinusoid alternates back and forth between ***concave up*** and ***concave down***.
 c. This particular power law $x^{-1}$ is ***concave up*** for $0 < x$ and ***concave down*** for $x < 0$.
 
-When a function switches between positive concavity and negative concavity, as does the sinusoid as well as the gaussian and sigmoid functions, there is an input value where the switch occurs and the function has zero concavity. (Continuous functions that pass from negative to positive or *vice versa* must always cross zero.) Such in-between points of zero concavity are called ***inflection points***. A function can have zero, one, or many inflection points. For instance, the sinusoid has inflection points at $x = \ldots, -\pi, 0, \pi, 2\pi, \ldots$, the cubic power function $f(x)\equiv x^3$ has one, and the exponential has none.
+When a function switches between positive concavity and negative concavity, as does the sinusoid as well as the gaussian and sigmoid functions, there is an input value where the switch occurs and the function has zero concavity. (Continuous functions that pass from negative to positive or *vice versa* must always cross zero.) Such in-between points of zero concavity are called ***inflection points***. A function can have zero, one, or many inflection points. For instance, the sinusoid has inflection points at $x = \ldots, -\pi, 0, \pi, 2\pi, \ldots$. In contrast, the exponential and the reciprocal functions do not have any inflection points. 
 
-```{r echo=FALSE}
-#| fig-cap: "A cubic function which is concave up until a point of inflection and concave down thereafter. [Source: Maj. Austin Davis]"
-#| fig-cap-location: margin
-#| out-width: "70%" 
-#| fig-align: "center"
-knitr::include_graphics("www/Concavity-diagram.png")
-```
+::: {#fig-concave-diagram}
+![](www/Concavity-diagram.png){width="70%"}
+
+Mnemonics for remembering the meaning of "concave up" and "concave down." In functions like the sinusoid, which have adjacent concave up and concave down regions, there is a point inbetween where the slope doesn't change. This is called the "inflection point."
+:::
 
 "Inflection point" appears in news stories, so it is important to know what it means in context. The mathematical definition is about the change in the direction of curvature of a graph. In business, however, it generally means something less esoteric, "a time of significant change in a situation" or "a turning point."^[Google dictionary, provided by Oxford Languages] The business sense effectively means that the function---say profits as a function of time, or unemployment as a function of time---has a non-zero concavity, up or down. It is about the *existence* of concavity rather than about the change in the sign of concavity. 
 
@@ -121,9 +142,11 @@ One of the benefits of learning calculus is to gain a way to think about the pre
 
 ## Continuity {#sec-continuity-intro}
 
-A function is ***continuous*** if you can trace out the graph of the function without lifting pencil from the page. A function is ***continuous on an interval (a,b)*** if you can trace the function over that whole interval. All of the pattern-book functions are continuous over any interval in their domain except for power-law functions with negative exponents. (This includes the reciprocal since it is a power-law with a negative exponent:  $1/x = x^{-1}$.) Those exceptions are not defined at $x=0$. 
+A function is ***continuous*** if you can trace out the graph of the function without lifting pencil from the page. A function is ***continuous on an interval (a,b)*** if you can trace the function over that whole interval. 
 
-To illustrate, consider the power-law function graphed in @fig-for-words. On any interval (a,b) that does **not include 0**, the function is continuous.  For inputs $x < 0$, the function is negative. For inputs $0 < x$, the function is positive. So, on an interval that includes $x=0$ the function jumps discontinuously from negative to positive. 
+All of the pattern-book functions are continuous over any interval in their domain except for power-law functions with negative exponents. (This includes the reciprocal since it is a power-law with a negative exponent:  $1/x = x^{-1}$.) Those exceptions are not defined at $x=0$. 
+
+On any interval (a,b) that does **not include 0**, the reciprocal function is continuous.  For inputs $x < 0$, the function is negative. For inputs $0 < x$, the function is positive. But, on an interval that includes $x=0$ the function jumps discontinuously from negative to positive. 
 
 ## Monotonicity {#sec-monotonicity}
 
@@ -131,7 +154,7 @@ A function is ***monotonic*** on a domain when the *sign* of the slope never cha
 
 Another way of thinking about monotonicity is to consider the order of inputs and outputs compared to a number line. If a function is monotonically increasing then it will preserve the order of inputs along the number line when it maps inputs to outputs, whereas a monotonically decreasing function will reverse the order. For instance, if the input $x$ comes before an input $y$ (i.e., $x<y$), then $f(x)<f(y)$ for monotonically *increasing* functions (the order is preserved), but $f(y)<f(x)$ for monotonically *decreasing* functions (the order of outputs is reversed).
 
-Of the pattern-book functions in @fig-for-words: both the exponential and the logarithm function are monotonic: the exponential grows monotonically as does the logarithm. The sinusoid is not monotonic over any domain longer than half a cycle: the function switchs between positive slope and negative slope in different parts of the cycle. 
+Of the pattern-book functions in @fig-three-for-illustration: both the exponential and the logarithm function are monotonic: the exponential grows monotonically as does the logarithm. The sinusoid is not monotonic over any domain longer than half a cycle: the function switchs between positive slope and negative slope in different parts of the cycle. 
     
 ## Periodicity
 
@@ -147,7 +170,7 @@ The idea of representing with sinusoids phenomena that are almost but not exactl
 
 1. When the **input** to a function gets bigger and bigger in size, going to $\infty$ or $-\infty$. If, as the input changes in this way the output gets closer and closer to a specific value, the function is said to have a ***horizontal asymptote*** of that value.
 
-An example in @fig-for-words is the exponential function. As $x \rightarrow -\infty$, that is, as $x$ goes more and more to the left of the domain, the output tends asymptotically to zero.
+Look at the graph of the exponential function in @fig-three-for-illustration. As $x \rightarrow -\infty$, that is, as $x$ goes more and more to the left of the domain, the output of the exponential function tends asymptotically to zero.
 
 2. When the **output** of a function gets bigger and bigger in size, going to $\infty$ or $-\infty$ without the input doing likewise. The visual appearance on a graph is like a sky-rocket: the output changes tremendously fast even though the input changes only a little. The vertical line that the skyrocket approaches is called a ***vertical asymptote***. The power-law function $x^{-1}$ has a ***vertical asymptote*** at $x=0$. If you were to consider inputs closer and closer to $x=0$, the outputs would grow larger and larger is magnitude, tending toward $\infty$ or $-\infty$.
 

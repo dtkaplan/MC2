@@ -54,7 +54,7 @@ We will start the visualization with a simple graph of $f(t)$, which is called t
 raw <- doodle_fun( ~ t, seed=541)
 f <- makeFun((raw(t)+10)/2 ~ t) 
 
-gf_rect(0 + 4.384 ~ 1.25 + 1.60, color=NA, fill="brown", alpha=0.25) %>%  
+gf_rect(0 + 4.384 ~ 1.25 + 1.60, color=NA, fill="brown", alpha=0.25) |>  
 slice_plot(f(t) ~ t, bounds(t=-.5:4)) %>%
   gf_hline(yintercept = ~ 0, color="brown") %>%
   gf_refine(scale_x_continuous(breaks=c(-1,0,1, 1.25, 1.60, 2, 3, 4),
@@ -143,7 +143,7 @@ raw <- doodle_fun( ~ t, seed=541)
 g <- makeFun((raw(-t)+10)/2 ~ t) 
 Bars3 <- Znotes::Riemann_bars(g(t) ~ t, h=0.0333, bounds(t=-2:3))
 gf_text(2 ~ -1, label="+7.4", color="blue", size=10) %>%
-  gf_text(-3 ~ 2, label="-18.1", color="orange", size=10) %>% 
+  gf_text(-3 ~ 2, label="-18.1", color="orange", size=10) |> 
   gf_rect(ymin + ymax ~ xmin + xmax, 
           data = Bars3, color= NA, fill=~color, alpha=0.3 ) %>%
   gf_hline(yintercept = ~ 0, color="brown") %>%
@@ -264,7 +264,7 @@ P2 <- P1 %>%
              arrow = arrow(length=unit(.06, "inches"), ends="both"))
 P3 <- P2 %>%
   gf_rect(0 + val ~ t + neighbor, data = Pts, fill="brown", color=NA, alpha = 0.3)
-AntiD <- Pts %>% select(t, F) %>% mutate(t=t+dt)
+AntiD <- Pts |> select(t, F) |> mutate(t=t+dt)
 prepend <- tibble(t = min(Pts$t), F=0)
 AntiD <- rbind(prepend, AntiD)
 P4 <- P3 %>%
@@ -277,11 +277,11 @@ P4 <- P3 %>%
 ```{r echo=FALSE, fig.height=8, warning=FALSE}
 #| label: fig-euler-integration1,
 gridExtra::grid.arrange(
-  P1 %>% 
+  P1 |> 
     gf_labs(title="1. Create the picket", y="f(t)"), 
-  P2 %>% 
+  P2 |> 
     gf_labs(title="2. Eval function f(x) at picket locations to set height.", y="f(t)"),
-  P3 %>% 
+  P3 |> 
     gf_labs(title = "3. Multiply picket height by width", y = "f(t)"), 
   nrow=3
   )
@@ -290,7 +290,7 @@ gridExtra::grid.arrange(
 ```{r echo=FALSE, warning=FALSE}
 #| label: fig-euler-integration2
 #| fig.cap: "Steps in a numerical construction of an anti-derivative. (1) Create a set of picket locations over the domain of interest. The locations are spread horizontally by amount dt, so each picket will be dt units wide. (2) evaluate the original function at the picket points to give picket heights. (3) Multiply the picket height by the picket width to create an \"area\". (4) Starting at zero for the left-most picket, add in successive picket areas to construct the points on the anti-derivative function (green). Note that the vertical axis in (4) has a different dimension and units than in steps (1)-(3). In (4) the vertical scale is in the units of the anti-derivative function output."
-P4 %>% gf_labs(title = "4. Cumulative sum of areas versus t", y="F(t)")
+P4 |> gf_labs(title = "4. Cumulative sum of areas versus t", y="F(t)")
 ```
 
 @fig-dynamic-anti-d shows a dynamic version of the process of constructing an anti-derivative by Euler steps. The integrand $f(t)$ is shown in the top panel, the anti-derivative $F(t)$ is shown being built up in the bottom panel. The $\color{magenta}{\text{magenta}}$ bar in the top plot is the current Euler step. That step is added to the previously accumulated steps to construct $F(t)$.

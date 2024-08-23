@@ -63,7 +63,7 @@ In the cooling water example, we are using only a subset of the data collected b
 ```{r results="hide"}
 # reconstruct the sample
 set.seed(101)
-Stans_data <- CoolingWater %>% sample_n(20)
+Stans_data <- CoolingWater |> sample_n(20)
 # Plot the sample and overlay a model
 gf_point(temp ~ time, data=Stans_data) %>%
   gf_lims(y = c(20, NA)) %>%
@@ -78,7 +78,7 @@ Later in this course, we will study ***optimization***. There are optimization t
 
 ```{r echo=FALSE}
 set.seed(101)
-Stans_data <- CoolingWater %>% sample_n(20)
+Stans_data <- CoolingWater |> sample_n(20)
 ```
 
 ```{r}
@@ -133,12 +133,12 @@ The new parameter, $t_0$, should be set to be the time of a positive-going cross
 mod1 <- makeFun(1.05 + 0.55*sin(2*pi*hour/13) ~ hour)
 mod2 <- makeFun(1.05 + 0.55*sin(2*pi*(hour-17)/13) ~ hour)
 gf_line(level ~ hour,
-         data = RI_tide %>% filter(hour < 25)) %>%
+         data = RI_tide |> filter(hour < 25)) %>%
   slice_plot(mod2(hour) ~ hour, color="dodgerblue") %>%
   gf_labs(y="Water level (meters)", x="Time (hours)") %>%
   gf_lims(y =c(0, 2))
 gf_line(level ~ hour,
-         data = RI_tide %>% filter(hour > 90)) %>%
+         data = RI_tide |> filter(hour > 90)) %>%
   slice_plot(mod2(hour) ~ hour, color="dodgerblue") %>%
   gf_labs(y="Water level (meters)", x="Time (hours)")%>%
   gf_lims(y =c(0, 2))

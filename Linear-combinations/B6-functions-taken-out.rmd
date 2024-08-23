@@ -129,12 +129,12 @@ gf_line(resid ~ hour)
 
 ```{r}
 # Fill in the missing data
-Raw <- Anchorage_tide %>% select(hour, level) %>%
+Raw <- Anchorage_tide |> select(hour, level) %>%
   mutate(hour = round(hour, 1))
 Even <- tibble(hour=seq(min(Raw$hour), max(Raw$hour), by=0.1))
-Both <- Even %>% full_join(Raw)
+Both <- Even |> full_join(Raw)
 # fill in the missing data
-Fix1 <- Both %>% 
+Fix1 <- Both |> 
   mutate(level = ifelse(is.na(level), lag(level), level)) %>%
   mutate(level = ifelse(is.na(level), lag(level), level)) %>%
   mutate(level = ifelse(is.na(level), lag(level), level)) %>%
@@ -149,5 +149,5 @@ FFT2 <-
   mutate(period = 24/freq) %>%
   mutate(amp = ifelse(amp < .3e4, 0, amp)) %>%
   mutate(speed = 360/period)
-gf_line(amp ~ period, size=.1,data = FFT2 %>% filter(period<100)) %>% gf_lims(x=c(10, 14))
+gf_line(amp ~ period, size=.1,data = FFT2 |> filter(period<100)) |> gf_lims(x=c(10, 14))
 ```

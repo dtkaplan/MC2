@@ -39,7 +39,7 @@ make_shape <- function(f, min, max, file_name = NULL,
   Pts <- tibble(
     x = setdiff(seq(min, max, length=300),0), # kill zero
     y = f(x)
-  ) # %>% mutate(ifelse(abs(x) > 0.05, y, NaN))
+  ) # |> mutate(ifelse(abs(x) > 0.05, y, NaN))
   # plot(Pts$x, Pts$y, type="l", xaxt="n", yaxt="n", 
   #   xlab="", ylab="", bty="n", lwd=12)
   P <- ggplot(Pts, aes(x=x, y=y, group=x>0)) + 
@@ -57,6 +57,7 @@ make_shape <- function(f, min, max, file_name = NULL,
 make_shape(function(x) 1, -5, 5, "pb-const-gg.png",
            ylim = c(-.5, 2)) 
 make_shape(function(x) x, -5, 5, "pb-proportional-gg.png")
+make_shape(function(x) x, -2, 2, "pb-cubic-gg.png")
 make_shape(function(x) x^2, -3, 3, "pb-square-gg.png",
            ylim=c(-2, 9))
 make_shape(function(x) 1/x, -3, 3, "pb-recip-gg.png",
@@ -112,7 +113,7 @@ P1 <- slice_plot(pmax(-100, pmin(x^-1, 100)) ~ x, dom, npts=751, singularities=0
   gf_hline(yintercept=~0, color="magenta", linetype="dashed") %>%
   gf_segment(95 + 100 ~  .0105 + .01, arrow=my_arrow) %>%
   gf_segment(-95 + -100 ~  -.0105 + -.01, arrow=my_arrow)
-Psquare <- slice_plot(x^2 ~ x, dom) %>% gf_labs(subtitle="Square function", x="input") %>%
+Psquare <- slice_plot(x^2 ~ x, dom) |> gf_labs(subtitle="Square function", x="input") %>%
   slice_plot(-x^2 ~ x, alpha=0) %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed") %>%
   gf_segment(8.7 + 9 ~  2.95 + 3, arrow=my_arrow) %>%
@@ -288,24 +289,24 @@ my_arrow <- grid::arrow(angle = 30,
                         length = grid::unit(0.15, "inches"), 
                         ends = "last", type = "open")
 dom <- domain(x=c(-1.25, 1.25))
-P0 <- slice_plot(1 ~ x, dom) %>% gf_labs(subtitle=expression(m[0](x) %==% x^0), x="input") %>%
+P0 <- slice_plot(1 ~ x, dom) |> gf_labs(subtitle=expression(m[0](x) %==% x^0), x="input") %>%
   gf_lims(y=c(-1, 2)) %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
 
-P1 <-slice_plot(x ~ x, dom) %>% gf_labs(subtitle=expression(m[1](x) %==% x^1), x="input") %>%
+P1 <-slice_plot(x ~ x, dom) |> gf_labs(subtitle=expression(m[1](x) %==% x^1), x="input") %>%
   gf_lims(y=c(-2,2)) %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
-P2 <- slice_plot(x^2 ~ x, dom) %>% gf_labs(subtitle=expression(m[2](x) %==% x^2), x="input") %>%
+P2 <- slice_plot(x^2 ~ x, dom) |> gf_labs(subtitle=expression(m[2](x) %==% x^2), x="input") %>%
   slice_plot(-x^2 ~ x, alpha=0) %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
-P3 <- slice_plot(x^3 ~ x, dom) %>% gf_labs(subtitle=expression(m[3](x) %==% x^3), x="input") %>%
+P3 <- slice_plot(x^3 ~ x, dom) |> gf_labs(subtitle=expression(m[3](x) %==% x^3), x="input") %>%
   slice_plot(-x^2 ~ x, alpha=0) %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
-P4 <- slice_plot(x^4 ~ x, dom) %>% gf_labs(subtitle=expression(m[4](x) %==% x^4), x="input") %>%
+P4 <- slice_plot(x^4 ~ x, dom) |> gf_labs(subtitle=expression(m[4](x) %==% x^4), x="input") %>%
   slice_plot(-x^2 ~ x, alpha=0) %>%
   gf_lims(y=c(-2.5,2.5)) %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
-P5 <- slice_plot(x^5 ~ x, dom) %>% gf_labs(subtitle=expression(m[5](x) %==% x^5), x="input") %>%
+P5 <- slice_plot(x^5 ~ x, dom) |> gf_labs(subtitle=expression(m[5](x) %==% x^5), x="input") %>%
   slice_plot(-x^2 ~ x, alpha=0) %>%
   gf_lims(y=c(-2.5,2.5)) %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
@@ -333,7 +334,7 @@ P1 <- slice_plot(x^-1 ~ x, dom, npts=281, singularities=0) %>%
   gf_segment(-95 + -100 ~  -.0105 + -.01, arrow=my_arrow)
 P2 <- slice_plot(x^-2 ~ x, dom, npts=501, singularities=0) %>%
   gf_labs(subtitle=expression(x^{-2}), y="") %>%
-  gf_lims(y=c(-100, 100)) %>% 
+  gf_lims(y=c(-100, 100)) |> 
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")%>%
   gf_segment(95 + 100 ~  -.1026 + -.1, arrow=my_arrow) %>%
   gf_segment(95 + 100 ~  .1026 + .1, arrow=my_arrow)

@@ -58,9 +58,9 @@ cone_diagram <- function(f,
     Keepers <- tibble::tibble(
       x = seq(left, right, length = 500),
       y = rate_fun(x))
-    P1 <- P1 %>% gf_ribbon(0 + y ~ x, data = Keepers, inherit=FALSE,
+    P1 <- P1 |> gf_ribbon(0 + y ~ x, data = Keepers, inherit=FALSE,
                            fill = "dodgerblue", color=NA, alpha = 0.3) %>%
-      gf_ribbon(0 + y ~ x, data = Keepers %>% filter(y < 0),
+      gf_ribbon(0 + y ~ x, data = Keepers |> filter(y < 0),
                 color = NA, fill = "orange3", alpha = 0.3, inherit = FALSE)
   }
 
@@ -88,7 +88,7 @@ cone_diagram <- function(f,
           is.null(right) || is.na(right))) {
      Dots <- tibble::tibble(x = c(left, right),
                             y = F2(x))
-     P3 <- P3 %>% gf_point(y ~ x, data = Dots, color="dodgerblue")
+     P3 <- P3 |> gf_point(y ~ x, data = Dots, color="dodgerblue")
     }
 
     return(list(fplot = P1, eplot = P2, Fplot = P3, f = rate_fun,

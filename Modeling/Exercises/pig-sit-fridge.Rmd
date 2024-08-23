@@ -77,7 +77,7 @@ input | output | Why?
 #tic()
 start <- tibble::tibble(input = 10^{-5:6}, output = -5:6)
 for (k in 1:6) {
-  root <- start %>% 
+  root <- start |> 
     mutate(input = sqrt(input), output = output/2)
   root2 <- start %>%
     mutate(input = sqrt(sqrt(input)), output = output/4)
@@ -91,13 +91,13 @@ for (k in 1:6) {
     mutate(input = input/10, output = output - 1)
   tens <- start %>%
     mutate(input = input*10, output = output + 1)
-  start <- rbind(start, root, root2, root3, square, cube, tenths, tens) %>% unique() %>% 
+  start <- rbind(start, root, root2, root3, square, cube, tenths, tens) |> unique() |> 
     arrange(input)
 }
 #toc()
 ```
 
-You can play this game for weeks. We asked the computer to play the game for about half a second and expanded the original digit() table to `r nrow(start %>% filter(output >= -2, output <= 6))` rows.
+You can play this game for weeks. We asked the computer to play the game for about half a second and expanded the original digit() table to `r nrow(start |> filter(output >= -2, output <= 6))` rows.
 
 @fig-expanded-log plots the expanded digits() function table.
 
@@ -107,7 +107,7 @@ You can play this game for weeks. We asked the computer to play the game for abo
 ticks <- 1:10
 
 gf_point(output ~ input, 
-         data = start %>% filter(output <= 1, output >= 0)) %>%
+         data = start |> filter(output <= 1, output >= 0)) %>%
   gf_refine(scale_x_continuous(breaks=ticks)) %>%
   gf_line()
 ```

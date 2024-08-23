@@ -268,17 +268,17 @@ soln <- integrateODE(dtheta ~ v, dv ~ -sin(theta) - 0.1*2*sign(v)*v^2, theta = p
 Flow <- traj_plot(v(t) ~ theta(t), soln, color="blue") %>%
 vectorfield_plot(theta  ~ v, 
                  v ~ -sin(theta) - 0.1*2*sign(v)*v^2, 
-                 bounds(theta=-(pi/2):(pi/2), v=-1:1), npts=20) %>% 
+                 bounds(theta=-(pi/2):(pi/2), v=-1:1), npts=20) |> 
   gf_point(1 ~ pi/4, color="red", shape="x", size=5) %>%
   #gf_refine(coord_fixed()) %>%
-  gf_labs(y = v_exp, x = theta_exp, subtitle="Flow field in state space") %>% 
+  gf_labs(y = v_exp, x = theta_exp, subtitle="Flow field in state space") |> 
   gf_refine(scale_x_continuous(
     breaks=c(-pi/4, 0, pi/4),
     labels=latex2exp::TeX(c("$-45^o$", 0, "$45^\\o$"))))
   
-TS_theta <- slice_plot(soln$theta(t) ~ t, bounds(t=0:20)) %>% gf_labs(y = theta_exp , subtitle="Time series") %>%
+TS_theta <- slice_plot(soln$theta(t) ~ t, bounds(t=0:20)) |> gf_labs(y = theta_exp , subtitle="Time series") %>%
   gf_refine(scale_y_continuous(breaks=c(-pi/4, 0, pi/4), labels=latex2exp::TeX(c("$-45^o$", 0, "$45^\\o$"))))
-TS_v <- slice_plot(soln$v(t) ~ t, bounds(t=0:20)) %>% gf_labs(y = v_exp, subtitle="Time series")
+TS_v <- slice_plot(soln$v(t) ~ t, bounds(t=0:20)) |> gf_labs(y = v_exp, subtitle="Time series")
 Flow
 gridExtra::grid.arrange(TS_theta, TS_v, nrow=2)
 ```

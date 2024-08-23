@@ -32,7 +32,7 @@ ref_ex <- function(perm_name) {
   # read the roster file 
   Exercises <- readr::read_csv(here::here("exercise-roster.csv"))
   if (perm_name %in% Exercises$hash) {
-    Exercises %>% filter(hash == perm_name) %>% .$number
+    Exercises |> filter(hash == perm_name) |> .$number
   } else {
     paste("NO EXERCISE", perm_name, "IN ROSTER")
   }
@@ -68,7 +68,7 @@ show_objectives <- function() {
 }
 
 # A blank image for spacing
-BlankImage <- gf_blank(hp ~ wt, data=mtcars) %>% gf_theme(theme_void())
+BlankImage <- gf_blank(hp ~ wt, data=mtcars) |> gf_theme(theme_void())
 
 MC_counter <- Znotes::letter_counter()
 
@@ -130,7 +130,7 @@ Exer_roster <-
   filter(status=="passed")
 
 insert_exercises <- function(block_name, chap_name) {
-  Chap_roster <- Exer_roster %>%  
+  Chap_roster <- Exer_roster |>  
     filter(status=="passed",block==block_name,
            chapter==chap_name) %>%
     arrange(number)

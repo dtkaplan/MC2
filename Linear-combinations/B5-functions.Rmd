@@ -57,10 +57,10 @@ The left panel of @fig-fhat-and-resid shows the functions $f(t) \equiv t^2$ and 
 library(latex2exp)
 P1 <- slice_plot(t^2 ~ t, bounds(t=-1:1)) %>%
   slice_plot(1/3 ~ t, color="magenta") %>%
-  gf_lims(y = c(-.34, 1)) %>% 
+  gf_lims(y = c(-.34, 1)) |> 
   gf_labs(title = TeX("$f(t)$ and $\\widehat{f(t)}$"))
 P2 <- slice_plot(t^2 - 1/3 ~ t, bounds(t=-1:1)) %>%
-  gf_lims(y = c(-.34, 1)) %>% 
+  gf_lims(y = c(-.34, 1)) |> 
   gf_labs(title = TeX("Residual: $f(t)-\\widehat{f(t)}$"))
 Pts <- tibble::tibble(
   x = seq(-1, 1, length=200),
@@ -68,7 +68,7 @@ Pts <- tibble::tibble(
 )
 P3 <- slice_plot((t^2 - 1/3)^2 ~ t, bounds(t=-1:1)) %>%
   gf_ribbon(0 + y ~ x, data = Pts, fill="blue", inherit=FALSE) %>%
-  gf_lims(y = c(-.34, 1)) %>% 
+  gf_lims(y = c(-.34, 1)) |> 
   gf_labs(title = TeX("$\\int \\left[f(t) - \\widehat{f(t)}\\right]^{1/2} \\,dt$"))
 gridExtra::grid.arrange(P1, P2, P3, nrow=1)
 ```
@@ -92,10 +92,10 @@ The shapes of the "e" (as in "eel") and "o" (as in "stone") sound waves---in sho
 ```{r echo=FALSE, warning=FALSE}
 #| label: sound-waves
 #| fig-cap: "The waveforms of two vowel sounds. Only about five hundredths of a second is shown."
-P1 <- gf_line(y ~ I(t-.352), data = Vowel_ee) %>% 
+P1 <- gf_line(y ~ I(t-.352), data = Vowel_ee) |> 
   gf_labs(x="time (s)", title="e as in 'eel'") %>%
   gf_lims(x=c(0,0.051))
-P2 <- gf_line(y ~ I(t-.151), data = Vowel_oh) %>% 
+P2 <- gf_line(y ~ I(t-.151), data = Vowel_oh) |> 
   gf_labs(x="time (s)", title="o as in 'stone'") %>%
   gf_lims(x=c(0,0.051))
 gridExtra::grid.arrange(P1, P2, ncol=1)
@@ -127,7 +127,7 @@ P1 <- slice_plot(waveA(t) ~ t, bounds(t=0:1), npts=200) %>%
   gf_vline(xintercept = ~ 0.419, color="magenta") %>%
   gf_labs(y = "Wave A(t)",
           subtitle = "(A)", x="")
-P2 <- slice_plot(waveB(t) ~ t, bounds(t=0:1), npts=200) %>% 
+P2 <- slice_plot(waveB(t) ~ t, bounds(t=0:1), npts=200) |> 
    gf_vline(xintercept = ~ 0.333, color="blue") %>%
   gf_labs(y = "Wave B(t)",
           subtitle = "(B)", x="")
@@ -143,11 +143,11 @@ Since we have a dot product for functions, we can treat each of the three sinuso
 ::: {.column-page-inset-right}
 ```{r}
 ## vector lengths 
-lengthA <- Integrate(waveA(t) * waveA(t) ~ t, bounds(t=0:1)) %>% sqrt() 
+lengthA <- Integrate(waveA(t) * waveA(t) ~ t, bounds(t=0:1)) |> sqrt() 
 lengthA
-lengthB <- Integrate(waveB(t) * waveB(t) ~ t, bounds(t=0:1)) %>% sqrt()
+lengthB <- Integrate(waveB(t) * waveB(t) ~ t, bounds(t=0:1)) |> sqrt()
 lengthB
-lengthC <- Integrate(waveC(t) * waveC(t) ~ t, bounds(t=0:1)) %>% sqrt()
+lengthC <- Integrate(waveC(t) * waveC(t) ~ t, bounds(t=0:1)) |> sqrt()
 lengthC
 ## dot products
 dotAB   <- Integrate(waveA(t) * waveB(t) ~ t, bounds(t=0:1)) 
@@ -220,7 +220,7 @@ A_coef <- dotAC / lengthA^2
 B_coef <- dotBC / lengthB^2
 mod_vec <- makeFun(A_coef*waveA(t) + B_coef*waveB(t) ~ t)
 # length of mod_vec
-Integrate(mod_vec(t)*mod_vec(t) ~ t, bounds(t=0:1)) %>% sqrt()
+Integrate(mod_vec(t)*mod_vec(t) ~ t, bounds(t=0:1)) |> sqrt()
 ```
 
 You can see that the length of the model vector is the same as the length of the vector being projected. This means that waveform C lies exactly in the subspace spanned by waveforms A and B.
@@ -316,7 +316,7 @@ s8a <- with(Pts, sum(s8*y)/sum(s8^2))
 c8a <- with(Pts, sum(c8*y)/sum(c8^2))
 s9a <- with(Pts, sum(s9*y)/sum(s9^2))
 c9a <- with(Pts, sum(c9*y)/sum(c9^2))
-Pts <- Pts %>% 
+Pts <- Pts |> 
   mutate(
     one = (s1a*s1 + c1a*c1),
     two = one + (s2a*s2 + c2a*c2),
@@ -348,10 +348,10 @@ The sinusoid with $\omega = 109.76$ is not the only one that will repeat every 0
 P1 <- gf_line(y ~ t, data=Pts, color="blue", alpha=.5) %>%
   gf_line(two ~ t, data = Pts, inherit=FALSE, color="magenta") %>%
   gf_labs(title=latex2exp::TeX("Projected onto $\\omega$ &  $2\\omega$"))
-P2 <- gf_line(y ~ t, data=Pts, color="blue", alpha=.5) %>% 
+P2 <- gf_line(y ~ t, data=Pts, color="blue", alpha=.5) |> 
   gf_line(four ~ t, data=Pts, color="magenta", alpha=.5) %>%
   gf_labs(title=latex2exp::TeX("Projected onto 1,2,3,4 $\\times\\omega$"))
-P3 <- gf_line(y ~ t, data=Pts, color="blue", alpha=.5) %>% 
+P3 <- gf_line(y ~ t, data=Pts, color="blue", alpha=.5) |> 
   gf_line(nine ~ t, data=Pts, color="magenta", alpha=.5) %>%
   gf_labs(title=latex2exp::TeX("Projected onto 1-9$\\times\\omega$"))
 
