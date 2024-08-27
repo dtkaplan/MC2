@@ -4,29 +4,79 @@
 source("../starter.R")
 ```
 
-We can use ***linear combination*** and ***function multiplication*** to build up custom functions from the basic modeling functions. Similarly, linear combination and function multiplication provide ways to construct functions of multiple inputs. 
+@sec-drawing-contour-plots showed how to construct contour plots of functions taking two inputs. Let's consider an example to motivate why functions taking multiple inputs are important.
+
+@fig-weight-age shows a biological phenomenon with which we are all familiar. There are 10,000 dots, each of which corresponds to a person selected randomly from the US population. The black lines show a model function fitted to the data by methods to be presented in @sec-fitting-by-feature.
+
+::: {#fig-weight-age}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+weight_model <- makeFun(lm(Weight ~ splines::ns(Age,6)*Gender, data=NHANES::NHANES))
+gf_point(Weight ~ Age, data = NHANES::NHANES, color=~Gender, alpha=0.1) +
+  geom_smooth(alpha=1, color = "black", linewidth=2, span=0.9) +
+  facet_wrap(~ Gender) +
+  theme(legend.position = "none") +
+  ylab("Weight (kg)") + xlab("Age (yrs)") + ylim(0, 150)
+```
+
+Data from the `NHANES` data frame showing weight against age for 10,000 individuals. A model function (black) fitted to the data is also shown.
+:::
+
+We all know that children tend to get heavier as they age through childhood and puberty. It's also true that adult women tend to be lighter than adult men, at least for those over 18 years old. The model function in @fig-weight-age takes two inputs: age and gender. 
+
+It's also true that humans differ in weight for reasons beyond age and sex. For example, health condition affects weight, as does height, skeletal size, caloric intake, and energy expenditure, among other factors. A more complete model of weight could take such factors into account, becoming a model taking *multiple inputs*. Such multi-input model functions are often constructed from data using the fitting techniques you will meet in @sec-fitting-by-feature.
+
+Especially in science and engineering, many functions are described by formulas. Consider, for instance, the gravitational force on an object such as a automobile or person. (Another word for this gravitational force is "weight.") Since Isaac Newton's time, we have known that this force is determined by the mass of the Earth, the mass of the object, and the distance of the object from the center of the Earth, that is, three inputs:
+
+$$\text{weight}(M_\text{Earth}, M_\text{object}, \text{dist}) \equiv
+\frac{G M_\text{Earth} M_\text{object}}{\text{dist}^2}$$ {#eq-gravitational-force}
+
+$G$ is a parameter called the "universal gravitational constant": $G = 6.6743 \times 10^{-11} \text{m}^3 \text{kg}^{−1} \text{s}^{−2}$. Thinking about the construction of @eq-gravitational-force as a combination, it is a **multiplication** of two functions, $g_1(x) \equiv x$ and $g_2(x) \equiv x^{-2}$, that is,
+
+$$ \text{weight}(M_\text{Earth}, M_\text{object}, \text{dist}) \equiv G \times g_1(M_\text{Earth}) \times g_1(M_\text{object}) \times g_2(\text{dist})$$ {#eq-three-multiplications}
+
+It happens that the function $g_1()$ plays two roles in $\text{weight}()$, once with $M_\text{Earth}$ as the input and again with $M_\text{object}$ as the input. This use of construction by function multiplication is common in formulas. When the functions being multiplied take different inputs, the overall function becomes one that takes multiple inputs.
+
+In other areas of quantitative work, linear combinations are a valuable way of constructing model functions with multiple inputs.
 
 ## Linear combinations
 
 Housing prices are determined by several (or many!) factors. Translating the previous sentence into the language of functions, we can say that the price is a function of multiple inputs. Plausible inputs to the function include the amount of living area and the number of bedrooms and bathrooms. The inputs may also include quality of the neighborhood, length of commute, and so on.
 
-Often, the starting point for building a function with multiple inputs is a data frame whose variables include the function output (price) and the inputs to the function. Modelers often begin by constructing a function that is a linear combination of the input variables. To demonstrate what such functions look like, we can use the `SaratogaHouses` dataset, which records the sales price of 1728 houses in Saratoga County, New York, USA and 15 other variables for each house, such as `livingArea` and the number of `bedrooms` and `bathrooms`. 
+Often, the starting point for building a function with multiple inputs is a data frame whose variables include the function output (say, price) and the various inputs to the function. 
 
-The techniques for constructing functions from data will be introduced in Block III. For now, let's simply see what such functions look like. From `SaratogaHouses` we constructed this function:
+A large fraction of work in the data-oriented quantitative sciences uses **just the identity function** in the linear combination. Recall that the identify function merely echos as output whatever input is provided, that is, $\text{identity}(x) \equiv x$.
 
-[These are not made-up scalars in the linear combination. They have been derived from the `SaratogaHouses` data using a method called ***linear regression***. The "linear" in the name refers to "linear combination."]{.aside}
+There is no point in constructing a linear combination of identity functions that take the same input. For example, the linear combination 
 
-\begin{eqnarray}
-\mathtt{price}(\mathtt{livingArea}, &&\mathtt{bedrooms}, \mathtt{bathrooms})  \equiv \\  &&21000 + 105\, \mathtt{livingArea}\\ &&- 13000\,\mathtt{bedrooms}\\ &&+ 26000\, \mathtt{bathrooms}
-\end{eqnarray}
+$$4.3\ \text{identity}(x) + 1.7\ \text{identity}(x) - 2.6\ \text{identity}(x)$$
 
-The model function is a simple linear combination, but it effectively quantifies how different aspects of a house contribute to its sales price. The model (which is based on data from two decades ago) indicates that an additional square foot of living area is worth about 105 dollars per foot^2^. An extra bathroom is worth about $25,000. Bedrooms, strangely, are assigned a *negative* value by the model.
+is merely a long-winded way of saying $3.4\ \text{identity}(x)$.
+
+Where a linear combination of identity functions becomes useful is when the inputs to the various functions are different, for example, consider this function of three inputs, $x$, $y$, and $z$.
+
+$$4.3\ \text{identity}(x) + 1.7\ \text{identity}(y) - 2.6\ \text{identity}(z)$$
+
+By convention, we rarely write $\text{identity}()$ preferring instead just to write the name of the input, as with
+
+$$4.3\ x + 1.7\ y - 2.6\ z$${#eq-three-identities}
+
+Even though there are no parentheses used in @eq-three-identities, it is still a linear combination of functions. Thinking of it this way prompts consideration of what other, non-identity function might have been included, for instance, $x^2$ or $x\times y$.
+
+To illustrate the use of linear combinations of identity functions (with different inputs), consider the following model of house prices:
+
+$\text{price}(\text{livingArea}, \text{bedrooms}, \text{bathrooms}) \equiv$
+
+$$\ \ \ 21000 + 105\,\text{livingArea} - 13000\, \text{bedrooms} + 26000\, \text{bathrooms}$$
+
+where each of the coefficients is in units of dollars. These coefficients are based on data in the `SaratogaHouses` data frame which records the sales price of 1728 houses in Saratoga County, New York, USA, in 2006
+
+The model function is a simple linear combination, but it effectively quantifies how different aspects of a house contribute to its sales price. The model indicates that an additional square foot of living area is worth about 105 dollars per foot^2^. An extra bathroom is worth about $25,000. Bedrooms, strangely, are assigned a *negative* value by the model.
 
 Possibly you already understand what is meant by "an additional square foot" or "an extra bathroom." These ideas can be intuitive, but they can be best understood with a grounding in calculus, which we turn to in Block II. For instance, the negative scalar on `bedrooms` will make sense when you understand "partial derivatives," the subject of Chapter @sec-partial-change.
 
-## f(x) times g(t)
+## Function multiplication: f(x) times g(t)
 
-When a guitar string is at rest it forms a straight line connecting its two fixed ends: one set by finger pressure along the neck of the guitar and the other at the bridge near the center of the guitar body. When a guitar string is plucked, its oscillations follow a sinusoid pattern of **displacement**. With the right camera and lighting setup, we can see these oscillations in action:
+When a guitar string is at rest it forms a straight line connecting its two fixed ends: one set by finger pressure along the neck of the guitar and the other at the bridge near the center of the guitar body. When the string is plucked, its oscillations follow a sinusoid pattern of **displacement**. With the right camera and lighting setup, we can see these oscillations in action:
 
 ::: {.column-margin}
 ```{asis echo=knitr::is_html_output()}
@@ -34,101 +84,38 @@ When a guitar string is at rest it forms a straight line connecting its two fixe
 ```
 :::
 
-```{r echo=FALSE, eval=knitr::is_latex_output()}
-#| label: fig-guitar-still
-#| column: margin
-#| fig-cap: The position of a guitar string is a function of both time and space. ([Access the video](https://www.youtube.com/watch?v=F0NsJ7J8rYM) at <https://www.youtube.com/watch?v=F0NsJ7J8rYM>) 
-knitr::include_graphics("www/guitar-still.png")
-```
+::: {#video-guital-still}
+
+![](www/guitar-still.png)
+
+[Access the video](https://www.youtube.com/watch?v=F0NsJ7J8rYM) at <https://www.youtube.com/watch?v=F0NsJ7J8rYM>) 
+
+The displacement of a vibrating guitar string is a function of both time and space. In the still picture, you see a slice of that function taken at a fixed moment of time. The video shows it as a function of both time and space.
+:::
 
 For a string of length $L$, the string displacement is a function of position $x$ along the string and is a linear combination of functions of the form $$g_k(x) \equiv \sin(k \pi x /L)$$ where $k$ is an integer.  A few of these functions are graphed in @fig-guitar-string-modes with $k=1$, $k=2$, and $k=3$.
 
+::: {#fig-guitar-string-modes}
 ```{r echo=FALSE, fig.height=3, fig.width=7}
-slice_plot(sin(pi*x/100) ~ x, bounds(x=c(0, 100)), 
-           label_text = "k=1") |> 
-  slice_plot(sin(2* pi*x/100) ~ x, color="dodgerblue",
-             label_text="k=2", label_x = 0.95) %>%
-  slice_plot(sin(3* pi*x/100) ~ x, color="green",
-             label_text="k=3", label_x = 0.90) %>%
-  gf_labs(x="", y="Displacement (mm)", title="Three modes of a guitar string.")
+#| layout-ncol: 1
 string_shape <- function(x, t) {
-  sin(pi*x/100)*sin(pi*t) - 2*sin(2*pi*x/100)*sin(2*pi*t) - 1.5*sin(3*pi*x/100)*sin(3*pi*t)
+  sin(pi*x/100)*sin(pi*t) - 
+    2*sin(2*pi*x/100)*sin(2*pi*t) - 
+    1.5*sin(3*pi*x/100)*sin(3*pi*t)
 }
+slice_plot(string_shape(x, t=pi/2) ~ x, domain(x=c(0,100))) %>% 
+  gf_labs(x="", y="", title="A complicated string shape")  
+slice_plot(sin(pi*x/100) ~ x, domain(x=c(0, 100))) |>
+  gf_labs(title = "Mode 1", x="", y="")
+slice_plot(sin(2* pi*x/100) ~ x, domain(x=c(0, 100)), color="dodgerblue") |>
+  gf_labs(title = "Mode 2", y = "Displacement (mm)")
+slice_plot(sin(3* pi*x/100) ~ x,  domain(x=c(0, 100)), color="green") |>
+  gf_labs(x="Position along string of guitar", y="", title="Mode 3")
 ```
 
-```{r echo=FALSE, fig.height=3, fig.width=7}
-#| label: fig-guitar-string-modes
-#| fig-cap: "Vibrational modes of a guitar string."
-#| fig-cap-location: margin
-slice_plot(
-  string_shape(x, t=pi/2) ~ x,
-  bounds(x=c(0,100))
-) %>%
-  gf_labs(x="Position along string (%)", y="Displacement (mm) ", title="A linear combination of the modes")
-```
-
-Shapes of the sort in @fig-guitar-string-modes are a stop-motion flash snapshot of the string. The string's shape also changes in time, so the string's displacement is a function of both $x$ and $t$. The displacement itself is a sinusoid whose time period depends on the length and tension of the string as well as the number of cycles of the spatial sine: 
-$$g_k(x, t) \equiv \sin(\frac{k \pi}{L} x) \ \sin(\frac{k \pi}{P}t)$$ @fig-string-motion shows a few snapshots of the 1.5 cycle string at different moments in time, and the motion of the linear combination.
-
-```{r echo=FALSE, fig.height=3, fig.width=7, fig.show="hold"}
-slice_plot(sin(3*pi*x/100) * sin(.5) ~ x, 
-           bounds(x=c(0,100))) %>%
-  slice_plot(sin(3*pi*x/100) * sin(.6) ~ x, alpha = 0.5) %>%
-  slice_plot(sin(3*pi*x/100) * sin(.7) ~ x, alpha = 0.25) %>%
-  gf_labs(title="Shape at three different instants",
-          x = "", y="Side-to-side displacement")
-```
-
-```{r echo=FALSE, fig.height=3, fig.width=7, fig.show="hold"}
-#| label: fig-string-motion 
-#| fig-cap: "String position changes over time."
-#| fig-cap-location: margin
-slice_plot(string_shape(x, .5) ~ x, bounds(x=c(0,100))) %>%
-  slice_plot(string_shape(x, .525) ~ x, alpha = 0.7) %>%
-  slice_plot(string_shape(x, .55) ~ x, alpha = 0.5) %>%
-  slice_plot(string_shape(x, .575) ~ x, alpha = 0.37) %>%
-  slice_plot(string_shape(x, .6) ~ x, alpha = 0.25) %>%
-  gf_labs(y="Displacement (mm)",
-          x = "Position along string (%)",
-          title="Linear combination of vibrating modes at different times.")
-```
-::: {.callout-note icon=false data-latex=""}
-## Why can't composition build multi-input functions?
-
-We left function ***composition*** out of the list of ways to build multi-input functions out of simpler functions with a single input.  
-
-For instance, consider the two functions $f(x)$ and $g(t)$. The composition $f(g(t))$ has only **one** input: $t$. Similarly, $g(f(x))$ has only one input: $x$.
+The overall shape of a guitar string at a fixed instant is complicated. It is a linear combination of three functions, each of which is called a "mode" of the string.
 :::
 
-## Constructing your own from data
-
-Even if you don't yet have a theoretical understanding of how to construct functions with multiple inputs from data, you can R/mosaic operations for doing so. A key function is `fitModel()`, which like `makeFun()`, constructs a function. And, like `makeFun()`, you need to use a tilde expression to specify the model formula. But, unlike `makeFun()`, you can leave it to the computer to find the parameters that will make the function align with data.
-
-To illustrate, we can construct a housing-price model from the `SaratogaHouses` data:
-
-```{r}
-price <- fitModel(price ~ A + B*livingArea + C*bedrooms + D*bathrooms,
-                  data = SaratogaHouses)
-
-```
-
-[Note that in applying the `price()` function to inputs, we are using the names of the inputs explicitly. To write the command `price(2000,3,2)` risks mixing up which input is which.]{.aside}
-
-Use the function in the ordinary way. For instance, here is what the model has to say about the anticipated sales price of a house with 2000 square feet of living area, three bedrooms, and two bathrooms. 
-
-```{r}
-price(livingArea=2000, bedrooms=3, bathrooms=2)
-```
-
-
-
-The units of the output are the same as the units of `price` in the `SaratogaHouses` data frame: dollars.
-
-::: {.column-margin}
-To look at a function, give the function name *without* parentheses, e.g. `price`. In contrast, you will always use parentheses when applying the function to inputs.
-:::
-
-For technical reasons, the functions created by `fitModel()` have a lot of computer-programming jargon in them, as you can see by constructing the model itself and then looking at the function. But you will also see the values of the parameters found by `fitModel()`.
 
 
 ## Exercises

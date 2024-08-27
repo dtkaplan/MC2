@@ -4,59 +4,71 @@
 source("../starter.R")
 ```
 
-When we need a new function for some purpose, we practically always build it out of existing functions. For illustrate, a function like $$f(x) \equiv A \sin\left(\frac{2 \pi}{P}x\right) + B$$ is built by assembling a straight-line input scaling ($2\pi/P$), a pattern-book $\sin()$ function, and another straight-line function $A f(x) + B$ for scaling the output from $\sin()$. 
+When a modeler needs a new function for some purpose, there are three tactics; the best one depends on the circumstances and the availability of data. 
 
-In this chapter, we will review four general frameworks for combining functions: linear combination of functions, function composition, function multiplication, and "piecewise" splitting of the domain. You have almost certainly seen all four of these frameworks in your previous mathematical studies, although you might not have known that they have names.
+1. Assemble the function from combinations of input-scaled pattern-book functions.
+
+This tactic is well represented in Calculus textbooks. I think this is not so much a statement about the power of the tactic, but the general tendency to avoid working with data. For the applications of applied math, data is a valuable resource. When it's available, as is often the case, there are alternatives to (1) that are available.
+
+2. Use the data to guide the input and output scaling of pattern-book functions and their generalizations such as the power-law functions introduced in @sec-power-law-family. This is often called "**fitting the function**". We will study this tactic and its techniques in @sec-fitting-by-feature.
+
+3. Split the domain of the desired function into small pieces. Then, for each piece, use very simple functions to capture the **local behavior** of a function locally. As the simple functions, the lower-order polynomaials `x ~ a x` or `x ~a x + b` or `x ~ a x^ + b x^2` are widely used. The parameters are set entirely by data. This strategy was originally called "statistical learning," then renamed "machine learning." These days, "artificial intelligence" is used to refer to a particular strategy of *iteration* that slowly and gently incorporates data to tease the model parameters into a function that makes good predictions.
+
+This chapter focusses on the mathematical framework for (1). In @sec-fitting-by-feature we will introduce the incorporation of data used in tactic (2). As for (3), we will need several core concepts of calculus as a basis for understanding, so we mainly defer the tactic to @sec-splines. 
 
 ## Linear combination 
 
-One of the most widely used sorts of combination is called a ***linear combination***. The mathematics of linear combination is, it happens, at the core of the use of math in a large variety of real-world applications, whether that be constructing a Google-like search engine or analyzing medical data to see if a treatment has a positive effect.
+@sec-output-scaling introduced the notation of input and output scaling. For instance, @fig-tides-ri2 illustrates how the pattern-book $\sin()$ function can be customized to model a particular situation. Recall that the input scaling involves inserting a straight-line function *inside* the parentheses, as in
 
-[There is a special name for a quantity used to scale the output of a function: a ***scalar***. Scalars are ordinary quantities; the word “scalar” is merely a way to distinguish the quantity from the function it is multiplying.  Scalars generally come with units. So we might well have a metric polynomial and an equivalent traditional-unit polynomial.]{.aside}
+$$f_1(t) \equiv \sin\left( a t + b\right)$${#eq-input-scaled-sin}
+
+You may recognize $at + b$ as a straight-line function. Possibly, your recognition would be easier if we wrote $at + b$ using different names for the input and the first parameter: $m x + b$. You have been trained to pronounce $m$ as the "slope" of the line and $b$ as the "y-intercept."
+
+Using both input and output scaling gives a more general kind of function:
+
+$$f_2(t) \equiv A \sin(a t + b) + B$$ {#eq-input-output-scaled-sin}
+
+@eq-input-output-scaled-sin is an example of a **linear combination** of two functions. The two functions are $g_1(t) \equiv 1$ and $g_2(t) \equiv sin(a t + b)$. 
+
+It might be easier to see @eq-input-output-scaled-sin as a linear combination if the function were written explicitly using the two functions being combined, that is, as
+
+$$f_2 \equiv A g_2(t) + B g_1(t)$$
+
+The combination is made by scaling each of the functions involved then adding the scaled functions together. The two scaling factors, $A$ and $B$, could be called "parameters of $f_2()$," which indeed they are. It would be good to get used to another word that's used specifically for the parameters in a linear combination: "**coefficients**." The advantage of "coefficients" as a name lies in it marking the parameters as those involved in a linear combination, rather than any of the other ways parameters can be used. 
+
+Note that "coefficients" always refers to parameters that are not inside the parentheses of a function. In contrast, often parameters are inside the parentheses as in @eq-input-scaled-sin. The parameters $a$ and $b$ in $\sin(a t + b)$ are *inside* the parentheses. Consequently, $a$ and $b$ shouldn't be called "coefficients." Sometimes, to emphasize this, parameters in parentheses are called "nonlinear parameters" to distinguish them from coefficients like $A$ and $B$. 
+
 
 To illustrate how linear combination is used to create new functions, consider polynomials, for instance, 
 $$f(x) \equiv 3 x^2 + 5 x - 2\ .$$
-There are three pattern-book functions in this polynomial. In  polynomials the functions being combined are all power-law functions: $g_0(x) \equiv 1$, $g_1(x) \equiv x$, and $g_2(x) \equiv x^2$. With these functions defined, we can write the polynomial $f(x)$ as $$f(x) \equiv 3 g_2(x) + 5 g_1(x) - 2 g_0(x)$$
-Each of the functions is being scaled by a quantity: 3, 5, and -2 in this example. Then the scaled functions are added up. That is a linear combination; scale and add. 
+There are three pattern-book functions in this polynomial. In  polynomials the functions being combined are all power-law functions: $g_0(x) \equiv 1$, $g_1(x) \equiv x$, and $g_2(x) \equiv x^2$. With these functions defined, we can write the polynomial $f(x)$ as $$f(x) \equiv 3 g_2(x) + 5 g_1(x) - 2 g_0(x)$$ Each of the functions is being scaled by a quantity: 3, 5, and -2 respectively. Then the scaled functions are added up. That is a linear combination; scale and add. 
 
 [In high school, polynomials are often presented as puzzles---factor them to find the roots! In calculus, however, polynomials are used as functions for modeling. They are a kind of modeling "clay," which can be shaped as needed.]{.aside}
 
-There are other places where you have seen linear combinations: 
-
-[Note that neither the parameterized exponential nor the parameterized sinusoid is a polynomial. A polynomial is always a linear combination of monomials. (As @sec-power-law-family, describes, monomials are the power-law functions $x^0$, $x_1$, $x_2$, and so on.)]{.aside} 
-
-- The parameterized ***sinusoid***  $$A \sin\left(\frac{2 \pi}{P}t\right) + B$$ is a linear combination of the functions $h_1(t) \equiv \sin\left(\frac{2 \pi}{P} t\right)$ and $h_2(t) \equiv 1$. The linear combination is $A\,h_1(t) + B\, h_2(t)$.
-- The parameterized ***exponential*** $$A e^{kt} + B$$ The functions being combined are $e^{kt}$ and $1$. The scalars are, again, $A$ and $C$.
-- The straight-line function, such as $\mbox{output}(x) \equiv A x + B$ and  $\mbox{input}(x) \equiv a x + b$. The functions being combined are $x$ and $1$, the scalars are $a$ and $b$.  
-
-
-
-There are a few reasons for us to be introducing linear combinations here.
-
-1. You will see linear combinations everywhere once you know to look for them.
-2. There is a highly refined mathematical theory of linear combinations that gives us powerful ways to think about them as well as computer software that can quickly find the best scalars to use to match input-output data.
-3. The concept of linear combination generalizes the simple idea that we have been calling "scaling the output." From now on, we will use the linear-combination terminology and avoid the narrower idea of "scaling the output."
-4. Many physical systems are described by linear combinations. For instance, the motion of a vibrating molecule, a helicopter in flight, or a building shaken by an earthquake are described in terms of simple "modes" which are linearly combined to make up the entire motion. More down to Earth, the timbre of a musical instrument is set by the scalars in a linear combination of pure tones.
-5. Many modeling tasks can be put into the framework of choosing an appropriate set of simple functions to combine and then figuring out the best scalars to use in the combination. (Generally, the computer does the figuring.)
+Linear combination is an extremely important tactic that quantitative workers use throughout their careers. For instance, many physical systems are described by linear combinations. For instance, the motion of a vibrating molecule, a helicopter in flight, or a building shaken by an earthquake are described in terms of simple "modes" which are linearly combined to make up the entire motion. More down to Earth, the timbre of a musical instrument is set by the scalars in a linear combination of pure tones. And throughout work with data in science, commerce, government and other fields a primary data analysis method---called "regression"---is about finding the best linear combination of a set of explanatory variables to create a model function of the response variable.
 
 ## Function composition {#sec-function-composition}
 
+**Function composition** refers to combining functions by taking the input of one function and feeding it as input to another.  "$g()$ composed with $h()$" means $g(h(x))$. 
 
-To ***compose*** two functions, $f(x)$ and $g(x)$, means to apply one of the functions to the output of the other. "$f()$ composed with $g()$" means $f(g(x))$. This is generally very different from "$g()$ composed with $f()$" which means $g(f(x))$.
+To illustrate, consider again the function defined in @eq-input-output-scaled-sin:
+$$f(t) \equiv A \sin\left( a t + b\right) + B$$
 
-For instance, suppose you have recorded the outdoor temperature over the course of a day and packaged this into a function $\text{AirTemp}(t)$: temperature as a function of time $t$. Your digital thermometer uses degrees Celsius, but you want the output units to be degrees Kelvin. The conversion function is $$\text{CtoK}(C) \equiv C + 273.15$$
-Notice that CtoK() takes temperature in $^\circ C$ as input. With this, we can write the "Kelvin as a function of time" as $$\text{CtoK}\left(\text{AirTemp}(t)\right)$$
-
-It is important to distinguish the above time $\rightarrow$ Kelvin function from something that looks very much the same but is utterly different: $\text{AirTemp}\left(\text{CtoK}(C)\right)$. In the first, the input is time. In the second, it is temperature in celsius.
-
-
+You've already seen how @eq-input-outout-scaled-sin is a linear combination of two functions $f_1(t) \equiv 1$ and $f_2(t) \equiv sin(a t + b)$. But $f_2()$ is not a linear combination. Instead, it is a function composition. The two functions being composed are $sin(x)$ and $a t + b$, producing $sin(a t + b)$. Here, $\sin()$ is the **outer** function in the composition and $at + b$ is the **inner** function.
 
 
 ## Function multiplication {#sec-function-multiplication}
 
-Multiplication is the third in our repertoire of methods for making new functions. With two functions $f(x)$ and $g(x)$, the product is simply $f(x)g(x)$.
+Multiplication is the third in our repertoire of methods for making new functions. To review, here are the first two methods involving combining a function $f()$ with a function $g():
 
-It is essential to distinguish between function multiplication and function composition:
+1. Linear combinations. Example: $n_1(t) \equiv 5 f(t) + 1.2 g(t)$.
+2. Function composition. There are two possibilities which produce two distinct functions:
+    i. $c_1(t) \equiv f(g(t))$, that is, $g()$ is the *inner function*.
+    ii. $c_2(t) \equiv g(f(t))$, that is, $g()$ is the *outer function*.
+
+Now a new method:
+
+3. Multiplication of the output of two functions. Example: $m(t)\equiv f(t) g(t)$. This is perfectly ordinary multiplication. Multiplication is *commutative*, as illustrated by the equality of $5 \times 2$ and $2 \times 5$. Owing to the commutativity of multiplication, it doesn't matter whether $f()$ is first or $g()$ is first.
 
 ::: {.column-margin}
 In function composition, the order of the functions matters: $f(g(x))$ and $g(f(x))$ are in general completely different functions.
@@ -64,7 +76,7 @@ In function composition, the order of the functions matters: $f(g(x))$ and $g(f(
 In function multiplication, the order does not matter because multiplication is ***commutative***, that is, if $f()$ and $g()$ are the functions to be multiplied $f(x) \times g(x) = g(x)\times f(x)$. 
 :::
 
-$$\underbrace{f(x) g(x)}_\text{multiplication}\ \ \ \ \underbrace{f(g(x)) \ \ \text{or}\ \ \ g(f(x))}_\text{composition}$$
+$$\underbrace{f(x) \times g(x)}_\text{multiplication}\ \ \ \ \underbrace{{\Large f(}g(x){\Large)} \ \ \text{or}\ \ \ {\Large g(}f(x){\Large)}}_\text{composition}$$
 
 In function composition, only one of the functions---the ***interior function*** is applied to the overall input, $x$ in the above example. The ***exterior function*** is fed its input from the output of the interior function. 
 
