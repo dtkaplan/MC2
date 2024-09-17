@@ -4,21 +4,31 @@
 source("../starter.R")
 ```
 
-Chapters -@sec-parameters through -@sec-fitting-by-feature introduced concepts and techniques for constructing functions. This is an important aspect of building models, but it is not the only one. Typically, a modeler, after constructing appropriate functions, will manipulate them in ways that provide the ***information*** required to answer questions that motivated the modeling work.
+@sec-parameters through @sec-fitting-by-feature introduce concepts and techniques for constructing functions. This is an important aspect of building models, but it is not the only one. Typically, a modeler, after constructing appropriate functions, will manipulate them in ways that provide the ***information*** required to answer questions that motivated the modeling work.
 
 This will introduce some of the operations and manipulations used to extract information from model functions.^[We use the phrase "extract information" to reflect the purpose of using the operations discussed in this chapter. You may be more familiar with the phrase "find a solution."] There are five such operations that you will see many times throughout this book. They are:
 
-1. Zero-finding: finding an input that produces the desired output
+1. Zero-finding: finding an input that produces the desired output. This is also called "inversion."
 2. Optimization: finding an input that produces the largest output
 3. Iteration: building a result step-by-step
 4. Differentiation
-5. Integration
+5. Integration (that is, Accumulation)
 
 This chapter will introduce the first three of these. The remaining two---differentiation and integration---are the core operations of calculus. They will be introduced starting in Block II.
 
-We will look at the three operations from two different perspectives: graphical and computational. Often, a graph can let you carry out the operation with sufficient precision for the purpose at hand. Graphs are relatively modern, coming into mainstream use only in the 1700s. Much of mathematics was developed before graphs were invented. One consequence of this is that function tasks that are easy using a graph might be very hard with the previous algebraic ways of implementing functions. 
+We take two different perspectives on the three operations: graphical and computational. Often, a graph lets you carry out an operation with sufficient precision for the purpose at hand. Graphs are relatively modern, coming into mainstream use only in the 1700s. Much of mathematics was developed before graphs were invented. It is often the case that the algebraic ways of implementing the operations are difficult, while graphical approaches can be very easy. This is especially true now that graphics are so easy to make. You can  iterate (operation 3 above), zooming the graphics domain around an approximate answer.
 
-More refined work is done with a computer. We will show you software that will let you direct the computer to do precise calculations. The computing algorithms used for inversion and optimization are often based on concepts from calculus that we have not yet encountered. The magic of software is the way it allows experts in a field to communicate with newbies so that people new to a field can use the operation in practice without necessarily developing a complete theoretical understanding of the algorithm. At this stage, our computational focus will be on how to set up the calculation and how to interpret the results. 
+Graphics connect well with human cognitive strengths, but the computer can also automatically carry out the operations quickly and precisely. The computing algorithms and software used for zero-finding/inversion and optimization are often based on concepts from calculus that we have not yet encountered. Software provides another advantage: Experts in a field can communicate with newbies so that anyone can use the operation in practice without necessarily developing a complete theoretical understanding of the algorithm. At this stage, before the calculus concepts have been introduced, our computational focus will be on how to set up the calculation and how to interpret the results. 
+
+::: {.callout-caution}
+## Functions and operations
+
+In computer languages, the word "function" is used to describe a piece of software which transforms inputs into an output. Examples of such software functions are making slice- and contour graphics, `makeFun()`, `fitModel()`, and so on. As well, we implement mathematical functions (using, for instance, `makeFun()`) as software functions.
+
+Now that we are introducing operations on functions, we have a slight problem of nomenclature. The operations in this chapter are designed to be applied to mathematical functions represented as software functions. The software for these operations is also in the form of computer language functions. So, functions are being applied to functions. This can be confusing.
+
+To avoid unnecessary confusion, we will write `function`, in monospaced font, when we are talking about a software implementation of operations such as those introduced in this chapter. As an example, the next section introduces an operation called "zero finding" to be applied to a function. The R/mosaic software that implements this operation is called `Zeros()`. That is, we apply the `Zeros()` `function` to a mathematical function such as $h(z)$. In other words, for the purpose of extracting information from a function such as $h(z)$, we will use a software `function` that carries out the information-extraction operation.
+:::
 
 ## Zero finding
 
@@ -57,19 +67,22 @@ If none of the high-school approaches are suited to your modeling function, as i
 
 ### Graphical zero-finding
 
+::: {#fig-zero-finding1}
 ```{r echo=FALSE}
-#| label: fig-zero-finding1
-#| fig-cap: "Finding an $x_0$ such that $h(x_0) = 3$"
-#| column: margin
 h <- doodle_fun(~ x, seed=9632)
-slice_plot(h(x) ~ x, bounds(x=-4:4)) %>%
-  gf_hline(yintercept = ~ 3, color="magenta") %>%
-  gf_labs(y="h(x)") %>%
+slice_plot(h(x) ~ x, bounds(x=-4:4)) |>
+  gf_hline(yintercept = ~ 3, color="magenta") |>
+  gf_labs(y="h(x)") |> gf_lims(y=c(0, NA)) |>
   gf_theme(scale_y_continuous(breaks=c(0,3,6,9,12)))
 ```
 
+Finding an $x_0$ such that $h(x_0) = 3$
+:::
 
-Suppose you may have a function $h(x)$ that you constructed by linear combination and/or function multiplication and/or function composition. To illustrate, we will work with the function $h(x)$ graphed in @fig-zero-finding1. And suppose the output for which we want to find a corresponding input is 3, that is, we want to find $x_0$ such that $h(x_0)=3$. 
+
+Consider any function $h(x)$ that you constructed by linear combination and/or function multiplication and/or function composition. To illustrate, we will work with the function $h(x)$ graphed in @fig-zero-finding1. 
+
+Suppose the output for which we want to find a corresponding input is 3, that is, we want to find $x_0$ such that $h(x_0)=3$. 
 
 
 The steps of the process are: 
@@ -98,41 +111,47 @@ Consequently, $t_0 = 1.2$, at least to the precision possible when reading a gra
 
 The graphical approach to zero finding is limited by your ability to locate positions on the vertical and horizontal axis. If you need more precision than the graph provides, you have two options:
 
-1. Take a step-by-step approach. Use the graph to locate a rough value for the result. Then refine that answer by drawing another graph, zooming in on a small region around the result from the first step. You can ***iterate*** this process, repeatedly zooming in on the result you got from the previous step.
+1. Take a step-by-step, *iterative* approach. Use the graph to locate a rough value for the result. Then refine that answer by drawing another graph, zooming in on a small region around the result from the first step. You can ***iterate*** this process, repeatedly zooming in on the result you got from the previous step.
 
 2. Use software implementing a numerical zero-finding algorithm. Such software is available in many different computer languages and a variety of algorithms is available, each with its own merits and demerits.
 
 ### Numerical zero finding
 
-In this book, we will use the R/mosaic `Zeros()` function. The first argument is a tilde expression and the second argument an interval of the domain over which to search.
+In this book, for consistency with our notation, we use the R/mosaic `Zeros()` `function`. The first argument to `Zeros()` is a tilde expression and the second argument an interval of the domain over which to search.
 
-`Zeros()` is set up to find inputs where the function defined in the tilde expression produces zero as an output. But suppose you are dealing with a problem like $f(x) = 10$? You can modify the tilde expression so that it implements a slightly different function: $f(x) - 10$. If we can find $x_0$ such that $f(x_0) - 10 = 0$, that will also be the $x_0$ satisfying $f(x_0) = 10$.
+`Zeros()` is set up to find inputs where the mathematical function defined in the tilde expression produces zero as an output. But suppose you are dealing with a problem like $f(x) = 10$? You can modify the tilde expression so that it implements a slightly different function: $f(x) - 10$. If we can find $x_0$ such that $f(x_0) - 10 = 0$, that will also be the $x_0$ satisfying $f(x_0) = 10$.
 
-::: {.practice data-latex=""}
-The point of this example is to show how to use `Zeros()`, so we will define a function $f(x)$ using `doodle_fun()` from R/mosaic. This constructs a function by taking a linear combination of other functions selected at random. The argument `seed=579` determines which functions will be in the linear combination.
-
-```{r}
-f <- doodle_fun( ~ x, seed=579)
-```
-
-We want to find the zeros of the function $f(x) - 10$ which corresponds to solving $f(x) = 10$.
+::: {.practice}
+The point of this example is to show how to use `Zeros()`, so we will define a function $f(x)$ using `doodle_fun()` from R/mosaic. This constructs a function by taking a linear combination of other functions selected at random. The argument `seed=579` determines which functions will be in the linear combination. The function is graphed in @fig-doodle-579.
 
 ```{r}
-Zeros(f(x) - 10 ~ x, bounds(x=-4:4))
+f <- doodle_fun( ~ z, seed=579)
 ```
-The output produced by `Zeros()` is a data frame with one row for each of the $x_0$ found. Here, two values were found: $x_0 = -2.92$ and $x_0 = 0.0795$. The `.output` column reports $f(x_0)$ which should be zero. It is not always feasible to reach zero exactly, since computer arithmetic is not always exactly precise.
 
-Think about `Zeros()` as a way to refine answers you found graphically. So before using `Zeros()`, make the graph.
-```{r results="hide"}
-#| column: margin
-slice_plot(f(x) ~ x, bounds(x=-4:4)) %>%
-  gf_hline(yintercept = ~ 10, color="magenta")
+We want to find the zeros of the function $f(x) - 10$ which corresponds to solving $f(x) = 10$. The `function` `Zeros()` handles this for us.
+
+```{r}
+Zeros(f(z) - 10 ~ z, domain(z=-4:4))
+```
+
+The output produced by `Zeros()` is a data frame with one row for each of the $x_0$ found. Here, two values were found: $x_0 = -2.92$ and $x_0 = 0.0795$, shown as vertical lines in @fig-doodle-579. The `.output` column reports $f(x_0)$. In principal, this should be exactly zero. However, computer arithmetic is not always exactly precise. Even so, numbers as small as those in the `.output.` column---$-3.4 \times 10^{-8}$ for example---are miniscule compared to the range of values seen in @fig-doodle-579.
+
+
+::: {#fig-doodle-579}
+```{r}
+f <- doodle_fun( ~ z, seed=579)
+slice_plot(f(x) ~ x, bounds(x=-4:4)) |>
+  gf_hline(yintercept = ~ 10, color="magenta") |>
+  gf_vline(xintercept = c(-2.919, 0.0795), color = "red", alpha=0.25)
 ```
 :::
 
+
 ## Optimization
 
-Optimization problems consist of both a modeling phase and a solution phase.
+Optimization problems consist of both a modeling phase and a solution phase (that is, an information extraction phase). We use our knowledge of how the world works for the modeling phase. Then we extract information in the form we want from the solution phase.
+
+In this chapter we will deal only with the solution phase. In real work, the modeling phase is essential
 
 ### Graphical optimization
 
@@ -144,6 +163,7 @@ When it comes to functions, ***maximization*** is the process of finding an inpu
 
 To illustrate, @fig-show-peak1 shows a function with two peaks.
 
+::: {#fig-show-peak1}
 ```{r echo=FALSE}
 #| label: fig-show-peak1
 #| fig-cap: a function with two peaks
@@ -152,9 +172,12 @@ Peaks <- argM(f(x) ~ x, bounds(x=-5:5))
 slice_plot(f(x) ~ x, bounds(x=-5:5)) %>%
   gf_vline(xintercept = ~ 0.173, color="blue", 
            linetype="dotted") %>%
-  gf_vline(xintercept = ~ -3.29, color="green", 
+  gf_vline(xintercept = ~ -1.698, color="brown", 
            linetype="dotted")
 ```
+
+A function with two peaks
+:::
 
 Just as you can see a mountain top from a distance, so you can see where the function takes on its peak values. Draw a vertical line through each of the peaks. The input value corresponding to each vertical line is called an ***argmax***, short for "the argument^[Also known as an ***input***.] at which the function reaches a local maximum value. 
 
@@ -164,11 +187,11 @@ Just as you can see a mountain top from a distance, so you can see where the fun
 
 ### Numerical optimization
 
-The R/mosaic `argM()` function a functions argmax and argmin over a given domain. It works in exactly the same way as `slice_plot()`, but rather than drawing a graphic it returns a data frame giving the argmax in one row and the argmin in another. For instance, the function shown in @fig-show-peak1 is $h()$, generated by `doodle_fun()`:
+The R/mosaic `argM()` `function` finds a mathematical function's argmax and argmin over a given domain. It works in exactly the same way as `slice_plot()`, but rather than drawing a graphic it returns a data frame giving the argmax in one row and the argmin in another. For instance, the function shown in @fig-show-peak1 is $h()$, generated by `doodle_fun()`:
 
 ```{r}
 h <- doodle_fun(~ x, seed=7293)
-argM(h(x) ~ x, bounds(x=-5:5))
+argM(h(x) ~ x, domain(x=-5:5))
 ```
 The `x` column holds the argmax and argmin, the `.output.` column gives the value of the function output for the input `x`. The `concavity` column tells whether the function's concavity at `x` is positive or negative. Near a peak, the concavity will be negative; near a valley, the concavity is positive. Consequently, you can see that the first row of the data frame corresponds to a local minimum and the second row is a local maximum.
 
@@ -257,20 +280,20 @@ ggcobweb <- function(tilde, domain, x0, n=5) {
 
 To iterate graphically, we graph the function to be iterated and mark the initial guess on the horizontal axis. For each iteration step, trace vertically from the current point to the function, then horizontally to the line of identity (blue dots). The result will be the starting point for the next guess.
 
+::: {#fig-cobweb-better}
 ```{r echo=FALSE, warning=FALSE}
-#| label: fig-cobweb-better
 #| column: page-inset-right
-#| out.width: "160%"
-#| fig-cap: "Three steps of iteration of `better()` starting with an initial guess of 1."
+#| layout-ncol: 3
 Pa <- ggcobweb(better(guess, x=55) ~ guess, bounds(x=0:30), x0=1, n=1) %>%
   gf_labs(x="guess", y="better(guess, x=55)")
 Pb <- ggcobweb(better(guess, x=55) ~ guess, bounds(x=0:30), x0=1, n=2) %>%
   gf_labs(x="guess", y="")
 Pc <- ggcobweb(better(guess, x=55) ~ guess, bounds(x=0:30), x0=1, n=3) %>%
   gf_labs(x="guess", y="")
-gridExtra::grid.arrange(Pa, Pb, Pc, ncol=3)
+Pa; Pb; Pc
 ```
 
+Three steps of iteration of `better()` starting with an initial guess of 1.
 ### Numerical iteration
 
 Use the R/mosaic `Iterate()` function. The first argument is a tilde expression defining the function to be iterated. The second is the starting guess. The third is the number of iteration steps. For instance:

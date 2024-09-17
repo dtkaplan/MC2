@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../Modeling/04-fitting-by-eye.html" rel="next">
+<link href="../Modeling/04-fitting-features.html" rel="next">
 <link href="../Modeling/02-assembling-functions.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -260,8 +260,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></span></a>
+  <a href="../Preliminaries/07-data-functions-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data, functions, graphics</span></span></a>
   </div>
 </li>
       </ul>
@@ -295,7 +295,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link">
+  <a href="../Modeling/04-fitting-features.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></span></a>
   </div>
 </li>
@@ -625,6 +625,12 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../Symbolic-manipulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">53</span>&nbsp; <span class="chapter-title">Symbolic manipulations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../R-mosaic-setup.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Setting up R/mosaic</span></a>
   </div>
@@ -642,8 +648,8 @@ window.Quarto = {
    
   <ul>
   <li><a href="#linear-combinations" id="toc-linear-combinations" class="nav-link active" data-scroll-target="#linear-combinations"><span class="header-section-number">10.1</span> Linear combinations</a></li>
-  <li><a href="#fx-times-gt" id="toc-fx-times-gt" class="nav-link" data-scroll-target="#fx-times-gt"><span class="header-section-number">10.2</span> f(x) times g(t)</a></li>
-  <li><a href="#constructing-your-own-from-data" id="toc-constructing-your-own-from-data" class="nav-link" data-scroll-target="#constructing-your-own-from-data"><span class="header-section-number">10.3</span> Constructing your own from data</a></li>
+  <li><a href="#function-multiplication-fx-times-gt" id="toc-function-multiplication-fx-times-gt" class="nav-link" data-scroll-target="#function-multiplication-fx-times-gt"><span class="header-section-number">10.2</span> Function multiplication: f(x) times g(t)</a></li>
+  <li><a href="#multi-input-functions-as-tables-optional" id="toc-multi-input-functions-as-tables-optional" class="nav-link" data-scroll-target="#multi-input-functions-as-tables-optional"><span class="header-section-number">10.3</span> Multi-input functions as tables (optional)</a></li>
   <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises"><span class="header-section-number">10.4</span> Exercises</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Modeling/03-functions-with-multiple-inputs.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
@@ -670,113 +676,130 @@ window.Quarto = {
 </header>
 
 
-<p>We can use <strong><em>linear combination</em></strong> and <strong><em>function multiplication</em></strong> to build up custom functions from the basic modeling functions. Similarly, linear combination and function multiplication provide ways to construct functions of multiple inputs.</p>
-<section id="linear-combinations" class="level2 page-columns page-full" data-number="10.1">
+<p><a href="../Preliminaries/04-graphs-and-graphics.html#sec-drawing-contour-plots" class="quarto-xref"><span>Section 4.2</span></a> showed how to construct contour plots of functions taking two inputs. Let’s consider an example to motivate why functions taking multiple inputs are important.</p>
+<p><a href="#fig-weight-age" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> shows a biological phenomenon with which we are all familiar. There are 10,000 dots, each of which corresponds to a person selected randomly from the US population. The black lines show a model function fitted to the data by methods to be presented in <a href="04-fitting-features.html" class="quarto-xref"><span>Chapter 11</span></a>.</p>
+<div id="fig-weight-age" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-weight-age-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03-functions-with-multiple-inputs_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-weight-age-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.1: Data from the <code>NHANES</code> data frame showing weight against age for 10,000 individuals. A model function (black) fitted to the data is also shown.
+</figcaption>
+</figure>
+</div>
+<p>We all know that children tend to get heavier as they age through childhood and puberty. It’s also true that adult women tend to be lighter than adult men, at least for those over 18 years old. The model function in <a href="#fig-weight-age" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> takes two inputs: age and gender.</p>
+<p>It’s also true that humans differ in weight for reasons beyond age and sex. For example, health condition affects weight, as does height, skeletal size, caloric intake, and energy expenditure, among other factors. A more complete model of weight could take such factors into account, becoming a model taking <em>multiple inputs</em>. Such multi-input model functions are often constructed from data using the fitting techniques you will meet in <a href="04-fitting-features.html" class="quarto-xref"><span>Chapter 11</span></a>.</p>
+<p>Especially in science and engineering, many functions are described by formulas. Consider, for instance, the gravitational force on an object such as a automobile or person. (Another word for this gravitational force is “weight.”) Since Isaac Newton’s time, we have known that this force is determined by the mass of the Earth, the mass of the object, and the distance of the object from the center of the Earth, that is, three inputs:</p>
+<p><span id="eq-gravitational-force"><span class="math display">\[\text{weight}(M_\text{Earth}, M_\text{object}, \text{dist}) \equiv
+\frac{G M_\text{Earth} M_\text{object}}{\text{dist}^2} \tag{10.1}\]</span></span></p>
+<p><span class="math inline">\(G\)</span> is a parameter called the “universal gravitational constant”: <span class="math inline">\(G = 6.6743 \times 10^{-11} \text{m}^3 \text{kg}^{−1} \text{s}^{−2}\)</span>. Thinking about the construction of <a href="#eq-gravitational-force" class="quarto-xref">Math expression&nbsp;<span>10.1</span></a> as a combination, it is a <strong>multiplication</strong> of two functions, <span class="math inline">\(g_1(x) \equiv x\)</span> and <span class="math inline">\(g_2(x) \equiv x^{-2}\)</span>, that is,</p>
+<p><span id="eq-three-multiplications"><span class="math display">\[ \text{weight}(M_\text{Earth}, M_\text{object}, \text{dist}) \equiv G \times g_1(M_\text{Earth}) \times g_1(M_\text{object}) \times g_2(\text{dist}) \tag{10.2}\]</span></span></p>
+<p>It happens that the function <span class="math inline">\(g_1()\)</span> plays two roles in <span class="math inline">\(\text{weight}()\)</span>, once with <span class="math inline">\(M_\text{Earth}\)</span> as the input and again with <span class="math inline">\(M_\text{object}\)</span> as the input. This use of construction by function multiplication is common in formulas. When the functions being multiplied take different inputs, the overall function becomes one that takes multiple inputs.</p>
+<p>In other areas of quantitative work, linear combinations are a valuable way of constructing model functions with multiple inputs.</p>
+<section id="linear-combinations" class="level2" data-number="10.1">
 <h2 data-number="10.1" class="anchored" data-anchor-id="linear-combinations"><span class="header-section-number">10.1</span> Linear combinations</h2>
 <p>Housing prices are determined by several (or many!) factors. Translating the previous sentence into the language of functions, we can say that the price is a function of multiple inputs. Plausible inputs to the function include the amount of living area and the number of bedrooms and bathrooms. The inputs may also include quality of the neighborhood, length of commute, and so on.</p>
-<p>Often, the starting point for building a function with multiple inputs is a data frame whose variables include the function output (price) and the inputs to the function. Modelers often begin by constructing a function that is a linear combination of the input variables. To demonstrate what such functions look like, we can use the <code>SaratogaHouses</code> dataset, which records the sales price of 1728 houses in Saratoga County, New York, USA and 15 other variables for each house, such as <code>livingArea</code> and the number of <code>bedrooms</code> and <code>bathrooms</code>.</p>
-<p>The techniques for constructing functions from data will be introduced in Block III. For now, let’s simply see what such functions look like. From <code>SaratogaHouses</code> we constructed this function:</p>
-<div class="page-columns page-full"><p></p><div class="no-row-height column-margin column-container"><span class="margin-aside">These are not made-up scalars in the linear combination. They have been derived from the <code>SaratogaHouses</code> data using a method called <strong><em>linear regression</em></strong>. The “linear” in the name refers to “linear combination.”</span></div></div>
-<p><span class="math display">\[\begin{eqnarray}
-\mathtt{price}(\mathtt{livingArea}, &amp;&amp;\mathtt{bedrooms}, \mathtt{bathrooms})  \equiv \\  &amp;&amp;21000 + 105\, \mathtt{livingArea}\\ &amp;&amp;- 13000\,\mathtt{bedrooms}\\ &amp;&amp;+ 26000\, \mathtt{bathrooms}
-\end{eqnarray}\]</span></p>
-<p>The model function is a simple linear combination, but it effectively quantifies how different aspects of a house contribute to its sales price. The model (which is based on data from two decades ago) indicates that an additional square foot of living area is worth about 105 dollars per foot<sup>2</sup>. An extra bathroom is worth about $25,000. Bedrooms, strangely, are assigned a <em>negative</em> value by the model.</p>
+<p>Often, the starting point for building a function with multiple inputs is a data frame whose variables include the function output (say, price) and the various inputs to the function.</p>
+<p>A large fraction of work in the data-oriented quantitative sciences uses <strong>just the identity function</strong> in the linear combination. Recall that the identify function merely echos as output whatever input is provided, that is, <span class="math inline">\(\text{identity}(x) \equiv x\)</span>.</p>
+<p>There is no point in constructing a linear combination of identity functions that take the same input. For example, the linear combination</p>
+<p><span class="math display">\[4.3\ \text{identity}(x) + 1.7\ \text{identity}(x) - 2.6\ \text{identity}(x)\]</span></p>
+<p>is merely a long-winded way of saying <span class="math inline">\(3.4\ \text{identity}(x)\)</span>.</p>
+<p>Where a linear combination of identity functions becomes useful is when the inputs to the various functions are different, for example, consider this function of three inputs, <span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span>, and <span class="math inline">\(z\)</span>.</p>
+<p><span class="math display">\[4.3\ \text{identity}(x) + 1.7\ \text{identity}(y) - 2.6\ \text{identity}(z)\]</span></p>
+<p>By convention, we rarely write <span class="math inline">\(\text{identity}()\)</span> preferring instead just to write the name of the input, as with</p>
+<p><span id="eq-three-identities"><span class="math display">\[4.3\ x + 1.7\ y - 2.6\ z \tag{10.3}\]</span></span></p>
+<p>Even though there are no parentheses used in <a href="#eq-three-identities" class="quarto-xref">Math expression&nbsp;<span>10.3</span></a>, it is still a linear combination of functions. Thinking of it this way prompts consideration of what other, non-identity function might have been included, for instance, <span class="math inline">\(x^2\)</span> or <span class="math inline">\(x\times y\)</span>.</p>
+<p>To illustrate the use of linear combinations of identity functions (with different inputs), consider the following model of house prices:</p>
+<p><span class="math inline">\(\text{price}(\text{livingArea}, \text{bedrooms}, \text{bathrooms}) \equiv\)</span></p>
+<p><span class="math display">\[\ \ \ 21000 + 105\,\text{livingArea} - 13000\, \text{bedrooms} + 26000\, \text{bathrooms}\]</span></p>
+<p>where each of the coefficients is in units of dollars. These coefficients are based on data in the <code>SaratogaHouses</code> data frame which records the sales price of 1728 houses in Saratoga County, New York, USA, in 2006</p>
+<p>The model function is a simple linear combination, but it effectively quantifies how different aspects of a house contribute to its sales price. The model indicates that an additional square foot of living area is worth about 105 dollars per foot<sup>2</sup>. An extra bathroom is worth about $25,000. Bedrooms, strangely, are assigned a <em>negative</em> value by the model.</p>
 <p>Possibly you already understand what is meant by “an additional square foot” or “an extra bathroom.” These ideas can be intuitive, but they can be best understood with a grounding in calculus, which we turn to in Block II. For instance, the negative scalar on <code>bedrooms</code> will make sense when you understand “partial derivatives,” the subject of Chapter <a href="../Differentiation/24-partial.html" class="quarto-xref"><span>Chapter 25</span></a>.</p>
 </section>
-<section id="fx-times-gt" class="level2 page-columns page-full" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="fx-times-gt"><span class="header-section-number">10.2</span> f(x) times g(t)</h2>
-<p>When a guitar string is at rest it forms a straight line connecting its two fixed ends: one set by finger pressure along the neck of the guitar and the other at the bridge near the center of the guitar body. When a guitar string is plucked, its oscillations follow a sinusoid pattern of <strong>displacement</strong>. With the right camera and lighting setup, we can see these oscillations in action:</p>
+<section id="function-multiplication-fx-times-gt" class="level2 page-columns page-full" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="function-multiplication-fx-times-gt"><span class="header-section-number">10.2</span> Function multiplication: f(x) times g(t)</h2>
+<p>When a guitar string is at rest it forms a straight line connecting its two fixed ends: one set by finger pressure along the neck of the guitar and the other at the bridge near the center of the guitar body. When the string is plucked, its oscillations follow a sinusoid pattern of <strong>displacement</strong>. With the right camera and lighting setup, we can see these oscillations in action:</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <div class="cell" data-layout-align="center">
 <iframe width="243" height="136" src="https://www.youtube.com/embed/F0NsJ7J8rYM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
 </iframe>
 </div>
-</div><div class="cell" data-layout-align="center">
-
-</div></div>
-<p>For a string of length <span class="math inline">\(L\)</span>, the string displacement is a function of position <span class="math inline">\(x\)</span> along the string and is a linear combination of functions of the form <span class="math display">\[g_k(x) \equiv \sin(k \pi x /L)\]</span> where <span class="math inline">\(k\)</span> is an integer. A few of these functions are graphed in <a href="#fig-guitar-string-modes" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> with <span class="math inline">\(k=1\)</span>, <span class="math inline">\(k=2\)</span>, and <span class="math inline">\(k=3\)</span>.</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="03-functions-with-multiple-inputs_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
-</figure>
+</div></div><div id="video-guital-still">
+<p><img src="www/guitar-still.png" class="img-fluid"></p>
+<p><a href="https://www.youtube.com/watch?v=F0NsJ7J8rYM">Access the video</a> at <a href="https://www.youtube.com/watch?v=F0NsJ7J8rYM" class="uri">https://www.youtube.com/watch?v=F0NsJ7J8rYM</a>)</p>
+<p>The displacement of a vibrating guitar string is a function of both time and space. In the still picture, you see a slice of that function taken at a fixed moment of time. The video shows it as a function of both time and space.</p>
 </div>
-</div>
-</div>
-<div class="cell page-columns page-full" data-layout-align="center">
-<div class="cell-output-display page-columns page-full">
-<div id="fig-guitar-string-modes" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-fig-align="center" data-cap-location="margin">
-<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<p>For a string of length <span class="math inline">\(L\)</span>, the string displacement is a function of position <span class="math inline">\(x\)</span> along the string and is a linear combination of functions of the form <span class="math display">\[g_k(x) \equiv \sin(k \pi x /L)\]</span> where <span class="math inline">\(k\)</span> is an integer. A few of these functions are graphed in <a href="#fig-guitar-string-modes" class="quarto-xref">Figure&nbsp;<span>10.2</span></a> with <span class="math inline">\(k=1\)</span>, <span class="math inline">\(k=2\)</span>, and <span class="math inline">\(k=3\)</span>.</p>
+<div id="fig-guitar-string-modes" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-guitar-string-modes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="03-functions-with-multiple-inputs_files/figure-html/fig-guitar-string-modes-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+<div>
+
 </div>
-<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-guitar-string-modes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;10.1: Vibrational modes of a guitar string.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>Shapes of the sort in <a href="#fig-guitar-string-modes" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> are a stop-motion flash snapshot of the string. The string’s shape also changes in time, so the string’s displacement is a function of both <span class="math inline">\(x\)</span> and <span class="math inline">\(t\)</span>. The displacement itself is a sinusoid whose time period depends on the length and tension of the string as well as the number of cycles of the spatial sine: <span class="math display">\[g_k(x, t) \equiv \sin(\frac{k \pi}{L} x) \ \sin(\frac{k \pi}{P}t)\]</span> <a href="#fig-string-motion" class="quarto-xref">Figure&nbsp;<span>10.2</span></a> shows a few snapshots of the 1.5 cycle string at different moments in time, and the motion of the linear combination.</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
+<div class="cell quarto-layout-panel" data-layout-align="center" data-layout-ncol="1">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="03-functions-with-multiple-inputs_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+<p><img src="03-functions-with-multiple-inputs_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell page-columns page-full" data-layout-align="center">
-<div class="cell-output-display page-columns page-full">
-<div id="fig-string-motion" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-fig-align="center" data-cap-location="margin">
-<figure class="quarto-float quarto-float-fig figure page-columns page-full">
-<div aria-describedby="fig-string-motion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="03-functions-with-multiple-inputs_files/figure-html/fig-string-motion-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03-functions-with-multiple-inputs_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
 </div>
-<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-string-motion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;10.2: String position changes over time.
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03-functions-with-multiple-inputs_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03-functions-with-multiple-inputs_files/figure-html/unnamed-chunk-4-4.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-guitar-string-modes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.2: The overall shape of a guitar string at a fixed instant is complicated. It is a linear combination of three functions, each of which is called a “mode” of the string.
 </figcaption>
 </figure>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled" data-latex="">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Why can’t composition build multi-input functions?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>We left function <strong><em>composition</em></strong> out of the list of ways to build multi-input functions out of simpler functions with a single input.</p>
-<p>For instance, consider the two functions <span class="math inline">\(f(x)\)</span> and <span class="math inline">\(g(t)\)</span>. The composition <span class="math inline">\(f(g(t))\)</span> has only <strong>one</strong> input: <span class="math inline">\(t\)</span>. Similarly, <span class="math inline">\(g(f(x))\)</span> has only one input: <span class="math inline">\(x\)</span>.</p>
-</div>
 </div>
 </section>
-<section id="constructing-your-own-from-data" class="level2 page-columns page-full" data-number="10.3">
-<h2 data-number="10.3" class="anchored" data-anchor-id="constructing-your-own-from-data"><span class="header-section-number">10.3</span> Constructing your own from data</h2>
-<p>Even if you don’t yet have a theoretical understanding of how to construct functions with multiple inputs from data, you can R/mosaic operations for doing so. A key function is <code>fitModel()</code>, which like <code>makeFun()</code>, constructs a function. And, like <code>makeFun()</code>, you need to use a tilde expression to specify the model formula. But, unlike <code>makeFun()</code>, you can leave it to the computer to find the parameters that will make the function align with data.</p>
-<p>To illustrate, we can construct a housing-price model from the <code>SaratogaHouses</code> data:</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>price <span class="ot">&lt;-</span> <span class="fu">fitModel</span>(price <span class="sc">~</span> A <span class="sc">+</span> B<span class="sc">*</span>livingArea <span class="sc">+</span> C<span class="sc">*</span>bedrooms <span class="sc">+</span> D<span class="sc">*</span>bathrooms,</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> SaratogaHouses)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="page-columns page-full"><p></p><div class="no-row-height column-margin column-container"><span class="margin-aside">Note that in applying the <code>price()</code> function to inputs, we are using the names of the inputs explicitly. To write the command <code>price(2000,3,2)</code> risks mixing up which input is which.</span></div></div>
-<p>Use the function in the ordinary way. For instance, here is what the model has to say about the anticipated sales price of a house with 2000 square feet of living area, three bedrooms, and two bathrooms.</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">price</span>(<span class="at">livingArea=</span><span class="dv">2000</span>, <span class="at">bedrooms=</span><span class="dv">3</span>, <span class="at">bathrooms=</span><span class="dv">2</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 242448.1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The units of the output are the same as the units of <code>price</code> in the <code>SaratogaHouses</code> data frame: dollars.</p>
-
-<div class="no-row-height column-margin column-container"><div class="">
-<p>To look at a function, give the function name <em>without</em> parentheses, e.g.&nbsp;<code>price</code>. In contrast, you will always use parentheses when applying the function to inputs.</p>
-</div></div><p>For technical reasons, the functions created by <code>fitModel()</code> have a lot of computer-programming jargon in them, as you can see by constructing the model itself and then looking at the function. But you will also see the values of the parameters found by <code>fitModel()</code>.</p>
+<section id="multi-input-functions-as-tables-optional" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="multi-input-functions-as-tables-optional"><span class="header-section-number">10.3</span> Multi-input functions as tables (optional)</h2>
+<p>In <a href="../Preliminaries/07-data-functions-graphics.html#sec-functions-as-data" class="quarto-xref"><span>Section 7.4</span></a> we painted a picture of a function as a chain of offices. Each office has a stack of paper, all identically printed with the same number on each. Evaluating a function at an input is accomplished by finding the office corresponding to that input and collecting one of the sheets from the office’s stack of pre-printed paper.</p>
+<p>In the sort of function just described, all the offices were along a single corridor. Such functions are said to have <strong><em>one input</em></strong>, or, equivalently, to be “functions of one variable.” To operate the function, you just need one number: the address of the office from which you will collect the output.</p>
+<p>Many functions have more than one input: two, three, four, … tens, hundreds, thousands, millions, …. In this course, we will work mainly with functions of two inputs, but the skills you develop will be applicable to functions of more than two inputs.</p>
+<p>What does a function of two inputs look like in our office analogy? Imagine that the office building has many parallel corridors, each with a numeric ID. To evaluate the function, you need two numeric inputs: the number of the corridor and the number of the door along that corridor. With those two numbers in hand, you locate the appropriate door, knock on it and receive the output number in return.</p>
+<p>Three inputs? Think of a building with many floors. Each floor has a numerical ID so that you can go to the right floor guided by the first input to the function. Once on the right floor, use the second and third input to go to the right corridor and the right door on that corridor. Taken together, the three inputs identify a particular office: floor, corridor, and door.</p>
+<p>Four inputs? A street with many three-input functions along it. Five inputs? A city with many parallel four-input streets. And on and on.</p>
+<p>Interpolation for a function of multiple inputs is a somewhat tedious process, involving visiting several offices: the neighbors along a corridor, the neighboring corridor, the next floor up, the neighboring building along the street, and the building on the next parallel street.</p>
 </section>
 <section id="exercises" class="level2" data-number="10.4">
 <h2 data-number="10.4" class="anchored" data-anchor-id="exercises"><span class="header-section-number">10.4</span> Exercises</h2>
@@ -921,15 +944,15 @@ Why are <span class="math inline">\(a\)</span> and <span class="math inline">\(b
 <p>The details of this regimen are determined largely by the details of whether food inhibits or buffers absorption of the medicine and by the efficiency by which your body metabolizes the medicine and then removes it from your blood via your liver.</p>
 <p>Modeling this process—often called the *<strong>pharmacokinetics</strong> of the drug—is an important step in drug development. A simple but effective model of the drug concentration over time is a piecewise function: zero before you take the pill, then an exponential decay from an initial level of one unit after you take the pill.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pill <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">ifelse</span>(t <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="dv">0</span>, <span class="fu">exp</span>(<span class="sc">-</span>k <span class="sc">*</span> t)) <span class="sc">~</span> t, <span class="at">k =</span> <span class="fu">log</span>(<span class="dv">2</span>)<span class="sc">/</span><span class="fl">1.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>pill <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">ifelse</span>(t <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="dv">0</span>, <span class="fu">exp</span>(<span class="sc">-</span>k <span class="sc">*</span> t)) <span class="sc">~</span> t, <span class="at">k =</span> <span class="fu">log</span>(<span class="dv">2</span>)<span class="sc">/</span><span class="fl">1.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The shape of the <code>pill()</code> function is seen in <a href="#fig-pharma1" class="quarto-xref">Figure&nbsp;<span>10.3</span></a>. Another part of the model is the <strong><em>therapeutic threshold</em></strong>, the minimal concentration for medical effectiveness. Keep in mind that this is a model. In reality, the drug not is absorbed instantaneously as in the model, and the medical effectiveness varies smoothly with concentration rather than being an all-or-nothing affair.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">pill</span>(t) <span class="sc">~</span> t, <span class="fu">bounds</span>(<span class="at">t=</span><span class="sc">-</span><span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> <span class="sc">~</span> <span class="fl">0.25</span>, <span class="at">color=</span><span class="st">"magenta"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_text</span>(<span class="fl">0.25</span> <span class="sc">~</span> <span class="dv">8</span>, <span class="at">label=</span><span class="st">"Therapeutic threshold"</span>, <span class="at">color=</span><span class="st">"magenta"</span>, </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">vjust=</span><span class="dv">0</span>, <span class="at">nudge_y=</span><span class="fl">0.02</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">y=</span><span class="st">"Drug availability"</span>, <span class="at">x =</span> <span class="st">"Time (hrs)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">pill</span>(t) <span class="sc">~</span> t, <span class="fu">bounds</span>(<span class="at">t=</span><span class="sc">-</span><span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> <span class="sc">~</span> <span class="fl">0.25</span>, <span class="at">color=</span><span class="st">"magenta"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_text</span>(<span class="fl">0.25</span> <span class="sc">~</span> <span class="dv">8</span>, <span class="at">label=</span><span class="st">"Therapeutic threshold"</span>, <span class="at">color=</span><span class="st">"magenta"</span>, </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">vjust=</span><span class="dv">0</span>, <span class="at">nudge_y=</span><span class="fl">0.02</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">y=</span><span class="st">"Drug availability"</span>, <span class="at">x =</span> <span class="st">"Time (hrs)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-pharma1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
@@ -959,16 +982,16 @@ Figure&nbsp;10.3: A simple illustrative model of drug availability from taking a
 </div>
 <p>Let’s explore a familiar-sounding directive: Take one pill every six hours. We can model this by a linear combination of time-shifted <code>pill()</code> functions. Each pill provides a dose of size <code>A</code>.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>six_hours <span class="ot">&lt;-</span> </span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">makeFun</span>(A<span class="sc">*</span><span class="fu">pill</span>(t, k) <span class="sc">+</span> A<span class="sc">*</span><span class="fu">pill</span>(t<span class="dv">-6</span>, k) <span class="sc">+</span> </span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>          A<span class="sc">*</span><span class="fu">pill</span>(t<span class="dv">-12</span>, k) <span class="sc">+</span> A<span class="sc">*</span><span class="fu">pill</span>(t<span class="dv">-18</span>, k) <span class="sc">+</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>          A<span class="sc">*</span><span class="fu">pill</span>(t<span class="dv">-24</span>, k) <span class="sc">~</span> t, </span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">k=</span><span class="fu">log</span>(<span class="dv">2</span>)<span class="sc">/</span><span class="dv">3</span>, <span class="at">A  =</span> <span class="dv">1</span>)</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">six_hours</span>(t) <span class="sc">~</span> t, <span class="fu">bounds</span>(<span class="at">t=</span><span class="sc">-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">24</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>six_hours <span class="ot">&lt;-</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">makeFun</span>(A<span class="sc">*</span><span class="fu">pill</span>(t, k) <span class="sc">+</span> A<span class="sc">*</span><span class="fu">pill</span>(t<span class="dv">-6</span>, k) <span class="sc">+</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>          A<span class="sc">*</span><span class="fu">pill</span>(t<span class="dv">-12</span>, k) <span class="sc">+</span> A<span class="sc">*</span><span class="fu">pill</span>(t<span class="dv">-18</span>, k) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>          A<span class="sc">*</span><span class="fu">pill</span>(t<span class="dv">-24</span>, k) <span class="sc">~</span> t, </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">k=</span><span class="fu">log</span>(<span class="dv">2</span>)<span class="sc">/</span><span class="dv">3</span>, <span class="at">A  =</span> <span class="dv">1</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">six_hours</span>(t) <span class="sc">~</span> t, <span class="fu">bounds</span>(<span class="at">t=</span><span class="sc">-</span><span class="dv">1</span><span class="sc">:</span><span class="dv">24</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="03-functions-with-multiple-inputs_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+<p><img src="03-functions-with-multiple-inputs_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
@@ -1420,7 +1443,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../Modeling/04-fitting-by-eye.html" class="pagination-link" aria-label="Fitting features">
+      <a href="../Modeling/04-fitting-features.html" class="pagination-link" aria-label="Fitting features">
         <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>

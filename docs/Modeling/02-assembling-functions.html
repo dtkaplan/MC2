@@ -260,8 +260,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Preliminaries/07-data-and-data-graphics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data and data graphics</span></span></a>
+  <a href="../Preliminaries/07-data-functions-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data, functions, graphics</span></span></a>
   </div>
 </li>
       </ul>
@@ -295,7 +295,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Modeling/04-fitting-by-eye.html" class="sidebar-item-text sidebar-link">
+  <a href="../Modeling/04-fitting-features.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></span></a>
   </div>
 </li>
@@ -625,6 +625,12 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../Symbolic-manipulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">53</span>&nbsp; <span class="chapter-title">Symbolic manipulations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../R-mosaic-setup.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Setting up R/mosaic</span></a>
   </div>
@@ -676,45 +682,75 @@ window.Quarto = {
 </header>
 
 
-<p>When we need a new function for some purpose, we practically always build it out of existing functions. For illustrate, a function like <span class="math display">\[f(x) \equiv A \sin\left(\frac{2 \pi}{P}x\right) + B\]</span> is built by assembling a straight-line input scaling (<span class="math inline">\(2\pi/P\)</span>), a pattern-book <span class="math inline">\(\sin()\)</span> function, and another straight-line function <span class="math inline">\(A f(x) + B\)</span> for scaling the output from <span class="math inline">\(\sin()\)</span>.</p>
-<p>In this chapter, we will review four general frameworks for combining functions: linear combination of functions, function composition, function multiplication, and “piecewise” splitting of the domain. You have almost certainly seen all four of these frameworks in your previous mathematical studies, although you might not have known that they have names.</p>
+<p>When a modeler needs a new function for some purpose, there are three tactics; the best one depends on the circumstances and the availability of data.</p>
+<ol type="1">
+<li>Assemble the function from combinations of input-scaled pattern-book functions.</li>
+</ol>
+<p>This tactic is well represented in Calculus textbooks. I think this is not so much a statement about the power of the tactic, but the general tendency to avoid working with data. For the applications of applied math, data is a valuable resource. When it’s available, as is often the case, there are alternatives to (1) that are available.</p>
+<ol start="2" type="1">
+<li><p>Use the data to guide the input and output scaling of pattern-book functions and their generalizations such as the power-law functions introduced in <a href="../Preliminaries/05-pattern-book-functions.html#sec-power-law-family" class="quarto-xref"><span>Section 5.2</span></a>. This is often called “<strong>fitting the function</strong>”. We will study this tactic and its techniques in <a href="04-fitting-features.html" class="quarto-xref"><span>Chapter 11</span></a>.</p></li>
+<li><p>Split the domain of the desired function into small pieces. Then, for each piece, use very simple functions to capture the <strong>local behavior</strong> of a function locally. As the simple functions, the lower-order polynomaials <code>x ~ a x</code> or <code>x ~a x + b</code> or <code>x ~ a x^ + b x^2</code> are widely used. The parameters are set entirely by data. This strategy was originally called “statistical learning,” then renamed “machine learning.” These days, “artificial intelligence” is used to refer to a particular strategy of <em>iteration</em> that slowly and gently incorporates data to tease the model parameters into a function that makes good predictions.</p></li>
+</ol>
+<p>This chapter focusses on the mathematical framework for (1). In <a href="04-fitting-features.html" class="quarto-xref"><span>Chapter 11</span></a> we will introduce the incorporation of data used in tactic (2). As for (3), we will need several core concepts of calculus as a basis for understanding, so we mainly defer the tactic to <a href="../Manifestations/B4-splines.html" class="quarto-xref"><span>Chapter 48</span></a>.</p>
 <section id="linear-combination" class="level2 page-columns page-full" data-number="9.1">
 <h2 data-number="9.1" class="anchored" data-anchor-id="linear-combination"><span class="header-section-number">9.1</span> Linear combination</h2>
-<p>One of the most widely used sorts of combination is called a <strong><em>linear combination</em></strong>. The mathematics of linear combination is, it happens, at the core of the use of math in a large variety of real-world applications, whether that be constructing a Google-like search engine or analyzing medical data to see if a treatment has a positive effect.</p>
-<div class="page-columns page-full"><p></p><div class="no-row-height column-margin column-container"><span class="margin-aside">There is a special name for a quantity used to scale the output of a function: a <strong><em>scalar</em></strong>. Scalars are ordinary quantities; the word “scalar” is merely a way to distinguish the quantity from the function it is multiplying. Scalars generally come with units. So we might well have a metric polynomial and an equivalent traditional-unit polynomial.</span></div></div>
-<p>To illustrate how linear combination is used to create new functions, consider polynomials, for instance, <span class="math display">\[f(x) \equiv 3 x^2 + 5 x - 2\ .\]</span> There are three pattern-book functions in this polynomial. In polynomials the functions being combined are all power-law functions: <span class="math inline">\(g_0(x) \equiv 1\)</span>, <span class="math inline">\(g_1(x) \equiv x\)</span>, and <span class="math inline">\(g_2(x) \equiv x^2\)</span>. With these functions defined, we can write the polynomial <span class="math inline">\(f(x)\)</span> as <span class="math display">\[f(x) \equiv 3 g_2(x) + 5 g_1(x) - 2 g_0(x)\]</span> Each of the functions is being scaled by a quantity: 3, 5, and -2 in this example. Then the scaled functions are added up. That is a linear combination; scale and add.</p>
+<p><a href="01-parameters.html#sec-output-scaling" class="quarto-xref"><span>Section 8.4</span></a> introduced the notation of input and output scaling. For instance, <a href="04-fitting-features.html#fig-tides-ri2" class="quarto-xref">Figure&nbsp;<span>11.6</span></a> illustrates how the pattern-book <span class="math inline">\(\sin()\)</span> function can be customized to model a particular situation. Recall that the input scaling involves inserting a straight-line function <em>inside</em> the parentheses, as in</p>
+<p><span id="eq-input-scaled-sin"><span class="math display">\[f_1(t) \equiv \sin\left( a t + b\right) \tag{9.1}\]</span></span></p>
+<p>You may recognize <span class="math inline">\(at + b\)</span> as a straight-line function. Possibly, your recognition would be easier if we wrote <span class="math inline">\(at + b\)</span> using different names for the input and the first parameter: <span class="math inline">\(m x + b\)</span>. You have been trained to pronounce <span class="math inline">\(m\)</span> as the “slope” of the line and <span class="math inline">\(b\)</span> as the “y-intercept.”</p>
+<p>Using both input and output scaling gives a more general kind of function:</p>
+<p><span id="eq-input-output-scaled-sin"><span class="math display">\[f_2(t) \equiv A \sin(a t + b) + B \tag{9.2}\]</span></span></p>
+<p><a href="#eq-input-output-scaled-sin" class="quarto-xref">Math expression&nbsp;<span>9.2</span></a> is an example of a <strong>linear combination</strong> of two functions. The two functions are <span class="math inline">\(g_1(t) \equiv 1\)</span> and <span class="math inline">\(g_2(t) \equiv sin(a t + b)\)</span>.</p>
+<p>It might be easier to see <a href="#eq-input-output-scaled-sin" class="quarto-xref">Math expression&nbsp;<span>9.2</span></a> as a linear combination if the function were written explicitly using the two functions being combined, that is, as</p>
+<p><span class="math display">\[f_2 \equiv A g_2(t) + B g_1(t)\]</span></p>
+<p>The combination is made by scaling each of the functions involved then adding the scaled functions together. The two scaling factors, <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, could be called “parameters of <span class="math inline">\(f_2()\)</span>,” which indeed they are. It would be good to get used to another word that’s used specifically for the parameters in a linear combination: “<strong>coefficients</strong>.” The advantage of “coefficients” as a name lies in it marking the parameters as those involved in a linear combination, rather than any of the other ways parameters can be used.</p>
+<p>Note that “coefficients” always refers to parameters that are not inside the parentheses of a function. In contrast, often parameters are inside the parentheses as in <a href="#eq-input-scaled-sin" class="quarto-xref">Math expression&nbsp;<span>9.1</span></a>. The parameters <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> in <span class="math inline">\(\sin(a t + b)\)</span> are <em>inside</em> the parentheses. Consequently, <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> shouldn’t be called “coefficients.” Sometimes, to emphasize this, parameters in parentheses are called “nonlinear parameters” to distinguish them from coefficients like <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>.</p>
+<p>To illustrate how linear combination is used to create new functions, consider polynomials, for instance, <span class="math display">\[f(x) \equiv 3 x^2 + 5 x - 2\ .\]</span> There are three pattern-book functions in this polynomial. In polynomials the functions being combined are all power-law functions: <span class="math inline">\(g_0(x) \equiv 1\)</span>, <span class="math inline">\(g_1(x) \equiv x\)</span>, and <span class="math inline">\(g_2(x) \equiv x^2\)</span>. With these functions defined, we can write the polynomial <span class="math inline">\(f(x)\)</span> as <span class="math display">\[f(x) \equiv 3 g_2(x) + 5 g_1(x) - 2 g_0(x)\]</span> Each of the functions is being scaled by a quantity: 3, 5, and -2 respectively. Then the scaled functions are added up. That is a linear combination; scale and add.</p>
 <div class="page-columns page-full"><p></p><div class="no-row-height column-margin column-container"><span class="margin-aside">In high school, polynomials are often presented as puzzles—factor them to find the roots! In calculus, however, polynomials are used as functions for modeling. They are a kind of modeling “clay,” which can be shaped as needed.</span></div></div>
-<p>There are other places where you have seen linear combinations:</p>
-<div class="page-columns page-full"><p></p><div class="no-row-height column-margin column-container"><span class="margin-aside">Note that neither the parameterized exponential nor the parameterized sinusoid is a polynomial. A polynomial is always a linear combination of monomials. (As <a href="../Preliminaries/05-pattern-book-functions.html#sec-power-law-family" class="quarto-xref"><span>Section 5.3</span></a>, describes, monomials are the power-law functions <span class="math inline">\(x^0\)</span>, <span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>, and so on.)</span></div></div>
-<ul>
-<li>The parameterized <strong><em>sinusoid</em></strong> <span class="math display">\[A \sin\left(\frac{2 \pi}{P}t\right) + B\]</span> is a linear combination of the functions <span class="math inline">\(h_1(t) \equiv \sin\left(\frac{2 \pi}{P} t\right)\)</span> and <span class="math inline">\(h_2(t) \equiv 1\)</span>. The linear combination is <span class="math inline">\(A\,h_1(t) + B\, h_2(t)\)</span>.</li>
-<li>The parameterized <strong><em>exponential</em></strong> <span class="math display">\[A e^{kt} + B\]</span> The functions being combined are <span class="math inline">\(e^{kt}\)</span> and <span class="math inline">\(1\)</span>. The scalars are, again, <span class="math inline">\(A\)</span> and <span class="math inline">\(C\)</span>.</li>
-<li>The straight-line function, such as <span class="math inline">\(\mbox{output}(x) \equiv A x + B\)</span> and <span class="math inline">\(\mbox{input}(x) \equiv a x + b\)</span>. The functions being combined are <span class="math inline">\(x\)</span> and <span class="math inline">\(1\)</span>, the scalars are <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>.</li>
-</ul>
-<p>There are a few reasons for us to be introducing linear combinations here.</p>
-<ol type="1">
-<li>You will see linear combinations everywhere once you know to look for them.</li>
-<li>There is a highly refined mathematical theory of linear combinations that gives us powerful ways to think about them as well as computer software that can quickly find the best scalars to use to match input-output data.</li>
-<li>The concept of linear combination generalizes the simple idea that we have been calling “scaling the output.” From now on, we will use the linear-combination terminology and avoid the narrower idea of “scaling the output.”</li>
-<li>Many physical systems are described by linear combinations. For instance, the motion of a vibrating molecule, a helicopter in flight, or a building shaken by an earthquake are described in terms of simple “modes” which are linearly combined to make up the entire motion. More down to Earth, the timbre of a musical instrument is set by the scalars in a linear combination of pure tones.</li>
-<li>Many modeling tasks can be put into the framework of choosing an appropriate set of simple functions to combine and then figuring out the best scalars to use in the combination. (Generally, the computer does the figuring.)</li>
-</ol>
+<p>Linear combination is an extremely important tactic that quantitative workers use throughout their careers. For instance, many physical systems are described by linear combinations. For instance, the motion of a vibrating molecule, a helicopter in flight, or a building shaken by an earthquake are described in terms of simple “modes” which are linearly combined to make up the entire motion. More down to Earth, the timbre of a musical instrument is set by the scalars in a linear combination of pure tones. And throughout work with data in science, commerce, government and other fields a primary data analysis method—called “regression”—is about finding the best linear combination of a set of explanatory variables to create a model function of the response variable.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Identical vs proportional vs straight-line
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>One of the pattern book functions is very simple; the output is identical to the input:</p>
+<p><span class="math display">\[\text{identity}(x) \equiv x\]</span> Multiplying the identity() function by a parameter gives a function that can well be called “proportional().”</p>
+<p><span class="math display">\[\text{proportional}(x) \equiv a\ \text{identity}(x) = a\ x\]</span> The parameter <span class="math inline">\(a\)</span> is often called the “<strong>constant of proportionality</strong>.”</p>
+<p>It’s common to call this closely related function the “linear” function, but a better name is the “straight-line” function. “Straight-line” is the name we shall use in this book.</p>
+<p><span class="math display">\[\text{straight_line}(x) \equiv a\ x + b\]</span></p>
+</div>
+</div>
 </section>
 <section id="sec-function-composition" class="level2" data-number="9.2">
 <h2 data-number="9.2" class="anchored" data-anchor-id="sec-function-composition"><span class="header-section-number">9.2</span> Function composition</h2>
-<p>To <strong><em>compose</em></strong> two functions, <span class="math inline">\(f(x)\)</span> and <span class="math inline">\(g(x)\)</span>, means to apply one of the functions to the output of the other. “<span class="math inline">\(f()\)</span> composed with <span class="math inline">\(g()\)</span>” means <span class="math inline">\(f(g(x))\)</span>. This is generally very different from “<span class="math inline">\(g()\)</span> composed with <span class="math inline">\(f()\)</span>” which means <span class="math inline">\(g(f(x))\)</span>.</p>
-<p>For instance, suppose you have recorded the outdoor temperature over the course of a day and packaged this into a function <span class="math inline">\(\text{AirTemp}(t)\)</span>: temperature as a function of time <span class="math inline">\(t\)</span>. Your digital thermometer uses degrees Celsius, but you want the output units to be degrees Kelvin. The conversion function is <span class="math display">\[\text{CtoK}(C) \equiv C + 273.15\]</span> Notice that CtoK() takes temperature in <span class="math inline">\(^\circ C\)</span> as input. With this, we can write the “Kelvin as a function of time” as <span class="math display">\[\text{CtoK}\left(\text{AirTemp}(t)\right)\]</span></p>
-<p>It is important to distinguish the above time <span class="math inline">\(\rightarrow\)</span> Kelvin function from something that looks very much the same but is utterly different: <span class="math inline">\(\text{AirTemp}\left(\text{CtoK}(C)\right)\)</span>. In the first, the input is time. In the second, it is temperature in celsius.</p>
+<p><strong>Function composition</strong> refers to combining functions by taking the input of one function and feeding it as input to another. “<span class="math inline">\(g()\)</span> composed with <span class="math inline">\(h()\)</span>” means <span class="math inline">\(g(h(x))\)</span>.</p>
+<p>To illustrate, consider again the function defined in <a href="#eq-input-output-scaled-sin" class="quarto-xref">Math expression&nbsp;<span>9.2</span></a>: <span class="math display">\[f(t) \equiv A \sin\left( a t + b\right) + B\]</span></p>
+<p>You’ve already seen how <span class="quarto-unresolved-ref">?eq-input-outout-scaled-sin</span> is a linear combination of two functions <span class="math inline">\(f_1(t) \equiv 1\)</span> and <span class="math inline">\(f_2(t) \equiv sin(a t + b)\)</span>. But <span class="math inline">\(f_2()\)</span> is not a linear combination. Instead, it is a function composition. The two functions being composed are <span class="math inline">\(sin(x)\)</span> and <span class="math inline">\(a t + b\)</span>, producing <span class="math inline">\(sin(a t + b)\)</span>. Here, <span class="math inline">\(\sin()\)</span> is the <strong>outer</strong> function in the composition and <span class="math inline">\(at + b\)</span> is the <strong>inner</strong> function.</p>
 </section>
 <section id="sec-function-multiplication" class="level2 page-columns page-full" data-number="9.3">
 <h2 data-number="9.3" class="anchored" data-anchor-id="sec-function-multiplication"><span class="header-section-number">9.3</span> Function multiplication</h2>
-<p>Multiplication is the third in our repertoire of methods for making new functions. With two functions <span class="math inline">\(f(x)\)</span> and <span class="math inline">\(g(x)\)</span>, the product is simply <span class="math inline">\(f(x)g(x)\)</span>.</p>
-<p>It is essential to distinguish between function multiplication and function composition:</p>
+<p>Multiplication is the third in our repertoire of methods for making new functions. To review, here are the first two methods involving combining a function <span class="math inline">\(f()\)</span> with a function $g():</p>
+<ol type="1">
+<li>Linear combinations. Example: <span class="math inline">\(n_1(t) \equiv 5 f(t) + 1.2 g(t)\)</span>.</li>
+<li>Function composition. There are two possibilities which produce two distinct functions:
+<ol type="i">
+<li><span class="math inline">\(c_1(t) \equiv f(g(t))\)</span>, that is, <span class="math inline">\(g()\)</span> is the <em>inner function</em>.</li>
+<li><span class="math inline">\(c_2(t) \equiv g(f(t))\)</span>, that is, <span class="math inline">\(g()\)</span> is the <em>outer function</em>.</li>
+</ol></li>
+</ol>
+<p>Now a new method:</p>
+<ol start="3" type="1">
+<li>Multiplication of the output of two functions. Example: <span class="math inline">\(m(t)\equiv f(t) g(t)\)</span>. This is perfectly ordinary multiplication. Multiplication is <em>commutative</em>, as illustrated by the equality of <span class="math inline">\(5 \times 2\)</span> and <span class="math inline">\(2 \times 5\)</span>. Owing to the commutativity of multiplication, it doesn’t matter whether <span class="math inline">\(f()\)</span> is first or <span class="math inline">\(g()\)</span> is first.</li>
+</ol>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p>In function composition, the order of the functions matters: <span class="math inline">\(f(g(x))\)</span> and <span class="math inline">\(g(f(x))\)</span> are in general completely different functions.</p>
 <p>In function multiplication, the order does not matter because multiplication is <strong><em>commutative</em></strong>, that is, if <span class="math inline">\(f()\)</span> and <span class="math inline">\(g()\)</span> are the functions to be multiplied <span class="math inline">\(f(x) \times g(x) = g(x)\times f(x)\)</span>.</p>
-</div></div><p><span class="math display">\[\underbrace{f(x) g(x)}_\text{multiplication}\ \ \ \ \underbrace{f(g(x)) \ \ \text{or}\ \ \ g(f(x))}_\text{composition}\]</span></p>
+</div></div><p><span class="math display">\[\underbrace{f(x) \times g(x)}_\text{multiplication}\ \ \ \ \underbrace{{\Large f(}g(x){\Large)} \ \ \text{or}\ \ \ {\Large g(}f(x){\Large)}}_\text{composition}\]</span></p>
 <p>In function composition, only one of the functions—the <strong><em>interior function</em></strong> is applied to the overall input, <span class="math inline">\(x\)</span> in the above example. The <strong><em>exterior function</em></strong> is fed its input from the output of the interior function.</p>
 <p>In multiplication, each of the functions is applied to the input individually. Then their outputs are multiplied to produce the overall output.</p>
 <div class="example">
@@ -765,7 +801,7 @@ Math in the World: Modeling rise and fall
 <p>One way to model this pattern is by multiplying a sigmoid by an exponential. (See <a href="#fig-yikyak" class="quarto-xref">Figure&nbsp;<span>9.3</span></a>.)</p>
 <div class="cell page-columns page-full" data-layout-align="center">
 <div class="cell-output-display page-columns page-full">
-<div id="fig-yikyak" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-cap-location="margin" data-fig-align="center" data-fig-pos="h">
+<div id="fig-yikyak" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-cap-location="margin" data-fig-pos="h" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure page-columns page-full">
 <div aria-describedby="fig-yikyak-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="02-assembling-functions_files/figure-html/fig-yikyak-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%" data-fig-pos="h">
@@ -1118,22 +1154,7 @@ Figure&nbsp;9.11: .
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bigger <span class="ot">&lt;-</span> </span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">makeFun</span>(<span class="fu">ifelse</span>(y <span class="sc">&gt;</span> x, y, x) <span class="sc">~</span> x <span class="sc">+</span> y)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">contour_plot</span>(<span class="fu">bigger</span>(x,y) <span class="sc">~</span> x<span class="sc">+</span>y, </span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>             <span class="fu">bounds</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>), <span class="at">y=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>)))</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Warning: The following aesthetics were dropped during statistical transformation: z</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="do">## ℹ This can happen when ggplot fails to infer the correct grouping structure in</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="do">##   the data.</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="do">## ℹ Did you forget to specify a `group` aesthetic or to convert a numerical</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="do">##   variable into a factor?</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="do">## The following aesthetics were dropped during statistical transformation: z</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="do">## ℹ This can happen when ggplot fails to infer the correct grouping structure in</span></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="do">##   the data.</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="do">## ℹ Did you forget to specify a `group` aesthetic or to convert a numerical</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="do">##   variable into a factor?</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="do">## The following aesthetics were dropped during statistical transformation: z</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="do">## ℹ This can happen when ggplot fails to infer the correct grouping structure in</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="do">##   the data.</span></span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="do">## ℹ Did you forget to specify a `group` aesthetic or to convert a numerical</span></span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="do">##   variable into a factor?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>             <span class="fu">bounds</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>), <span class="at">y=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">

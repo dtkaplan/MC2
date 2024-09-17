@@ -7,7 +7,7 @@ source("../starter.R")
 
 A big part of the high-school algebra curriculum is about polynomials. In some ways, this is appropriate since polynomials played an outsized part in the historical development of mathematical theory. Indeed, the so-called "Fundamental theorem of algebra" is about polynomials.[^diff-taylor-1]
 
-[^diff-taylor-1]: The fundamental theorem says that an order-n polynomial has n roots (including multiplicities).
+[^diff-taylor-1]: The fundamental theorem of algebra says that an order-n polynomial has n roots (including multiplicities).
 
 For modelers, polynomials are a mixed bag. They are very widely used in modeling. Sometimes this is entirely appropriate, for instance the low-order polynomials that are the subject of @sec-local-approximations. The problems come when high-order polynomials are selected for modeling purposes. Building a reliable model with high-order polynomials requires a deep knowledge of mathematics, and introduces serious potential pitfalls. Modern professional modelers learn the alternatives to high-order polynomials, but newcomers often draw on their experience in high-school and give unwarranted credence to polynomials. This chapter attempts to guide you to the ways you are likely to see polynomials in your future work and to help you avoid them when better alternatives are available.
 
@@ -142,7 +142,8 @@ The first four derivatives of $x - \frac{1}{6} x^3$ exactly match, at $x=0$, the
 
 The polynomial constructed by matching successive derivatives of a function $f(x)$ at some input $x_0$ is called a ***Taylor polynomial***. 
 
-::: {.practice data-latex=""}
+::: {.callout-tip #tip-taylor-ex}
+## Practice: a Taylor polynomial for $e^x$.
 Let's construct a 3rd-order Taylor polynomial approximation to $f(x) = e^x$ around $x=0$.
 
 We know it will be a 3rd order polynomial:
@@ -227,25 +228,31 @@ On the other hand, $\sin(0) = 0$ as well, so the sinc function evaluated at zero
 
 Still another answer is suggested by plotting out sinc($x$) near $x=0$ and reading the value off the graph: sinc(0) = 1.
 
+::: {#fig-sinc-near-zero}
 ```{r}
-#| label: fig-sinc-near-zero
-#| fig-cap: "To judge from this plot, $\\sin(0) = 1$."
-slice_plot(sin(x) / x ~ x, bounds(x=c(-10,10)), npts=500)
+slice_plot(sin(x) / x ~ x, domain(x=c(-10,10)), npts=500)
 ```
+To judge from this plot, $\sin(0) / 0 = 1$.
+:::
+
+
 The graph of sinc() looks smooth and the shape makes sense. Even if we zoom in very close to $x=0$, the graph continues to look smooth. We call such functions ***well behaved***.
 
 Compare the well-behaved sinc() to a very closely related function (which does not seem to be so important in applied work): $\frac{\sin(x)}{x^3}$.
 
 Both $\sin(x)/x$ and $\sin(x) / x^3$, evaluated at $x=0$ involve a divide by zero. Both are indeterminate forms 0/0 at $x=0$. But the graph of $\sin(x) / x^3$ (see @fig-sinc2) is not we will behaved.  $\sin(x) / x^3$ does not have any particular value at $x=0$; instead, it has an asymptote. 
 
-```{r}
-#| label: fig-sinc2
-#| fig-cap: "Zooming in around the division by zero. Left: The graph of $\\sin(x)/x$ versus $x$. Right: The graph of $\\sin(x)/x^2$. The vertical scales on the two graphs are utterly different."
-slice_plot(sin(x) / x ~ x, bounds(x=c(-0.1, 0.1)), npts=500) %>%
+::: {#fig-sinc2}
+```{webr-r}
+slice_plot(sin(x) / x ~ x, 
+           domain(x=c(-0.1, 0.1)), npts=500) %>%
   gf_refine(scale_y_log10())
-slice_plot(sin(x) / x^3 ~ x, bounds(x=c(-0.1, 0.1)), npts=500) %>%
+slice_plot(sin(x) / x^3 ~ x, 
+           domain(x=c(-0.1, 0.1)), npts=500) %>%
   gf_refine(scale_y_log10())
 ```
+Zooming in around the division by zero. Top: The graph of $\sin(x)/x$ versus $x$. Bottom: The graph of $\sin(x)/x^2$. The vertical scales on the two graphs are utterly different.
+:::
 
 Since both $\sin(x)/x\left.{\Large\strut}\right|_{x=0}$ and $\sin(x)/x^3\left. {\Large\strut}\right|_{x=0}$ involve a divide-by-zero, the answer to the utterly different behavior of the two functions is not to be found at zero. Instead, it is to be found ***near*** zero. For any non-zero value of $x$, the arithmetic to evaluate the functions is straight-forward. Note that $\sin(x) / x^3$ starts its mis-behavior away from zero. The slope of $\sin(x) / x^3$ is very large near $x=0$, while the slope of $\sin(x) / x$ smoothly approaches zero.
 
