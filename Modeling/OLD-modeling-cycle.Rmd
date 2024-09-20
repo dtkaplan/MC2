@@ -1,0 +1,334 @@
+# Modeling and the scientific method {#sec-modeling-science-method}
+
+```{r include=FALSE}
+source("../starter.R")
+```
+
+```{r include=FALSE}
+book_file_name <- "modeling/09-modeling-cycle.html"
+```
+
+Block 2 is entitled "Modeling," and for good reason. This Block has introduced techniques and concepts that provide the basic tools for constructing models, but which do not require an understanding of the major operations of Calculus.  In the next Blocks, we will study additional techniques and concepts. That study requires us to do two things at once: introduce the concepts and methods of Calculus and show examples of how they apply to modeling.
+
+Before continuing on with more mathematics, it is important to put the idea of modeling in context. However, that context doesn't come from the mathematics. Instead, the context comes from science and, particularly, the **scientific method**. 
+
+One description of the scientific method, arising in the mid-20th century, is the [**hypothetico-deductive** model](https://en.wikipedia.org/wiki/Hypothetico-deductive_model). The process of the hypothetical-deductive model consists of formulating a hypothesis to describe the world, deducing consequences from this hypothesis, and carrying out experiments to look for those consequences. If the consequences are experimentally observed, the experiment corroborates the hypothesis. If not, the experiment refutes the hypothesis. In the progess of science, refuted hypotheses are replaced with alternatives that are compatible with the assembled experimental data. And the cycle of experiment, corroboration or refutation, and hypothesis generation begins again.
+
+A good analogy for the scientific method comes from detective books and movies. The heros of the genre---Sherlock Holmes and Hercule Poirot are famously such---are playing the role of the modeler. The detectives' methods include fingerprints, chemical detection of traces of poison, clever interrogation of suspects and witnesses, etc. These are analogous to the various methods we have and will be studying in this Book. In each detective story, the detective has a goal, often set by the client and identified at the beginning. Goals include identifying the criminal, forestalling a crime, recovering an object of value, and tracking down a missing person. Similarly, good modelers also know what is the objective of their work. Each individual case will have its distinct objective, but in general the objective is to help a person or an organization make a decision: what should be the parameters of a new design, how best to set the operating levels in production, what will be likely outcomes of a new policy, among others.
+
+Once the objective has been identified, the scientific method is put to work. The detective collects whatever relevant information is readily available. On the basis of this information, the detective concocts one or more theories to make sense of the information. Such theories motivate the search for new information. Based on that information or a new development in the case, the theories are refined, discarded, or replaced. The new theories suggest what new data should be collected and how old information should be re-interpreted. This cycle continues. Theories are put to the test.
+
+Every detective has access to a rich body of knowledge from which to draw analogies to the case at hand. In detective fiction, that knowledge comes in the form of experience with previous crimes, ploys and scams used by criminals, wills revised under duress, heiresses who lose their memory, and so on. The detective puts together a more or less plausible theory out of these components.
+
+Similarly, in large part, the ability to model comes from knowing about the kinds of techniques that other modelers have found useful. You have met some of these already: functions, low-order polynomials, quantities and their dimensions, ways for dealing with a wide range of magnitudes, setting parameters, etc. In the upcoming Blocks, you'll learn new techniques that involve understanding relationships between information that comes in different forms. You'll also learn important ways to extract conclusions from the models you construct.
+
+This chapter shows by example some widely used modeling techniques. It also shows some automated methods, e.g. model polishing, that can improve a model. And, it's important to consider potential pitfalls and commonly held modeling misconceptions that mislead modelers down perilous and pointless paths.
+
+## Example: Cooling water
+
+Looking back on the exponential fitted to the cooling water data in @sec-fit-exponential, it looks like our original estimate of the half-life is a bit too small; the data does not seem to decay at the rate implied by $k = -0.0277$. Perhaps we should try a somewhat slower decay, say $k = -0.2$ and see if that improves things.
+
+::: {.scaffolding  data-latex=""}
+In the cooling water example, we are using only a subset of the data collected by Prof. Wagon. The next commands re-create that subset so that you can work with it. They also plot the data and an exponential model.  
+
+```{r results="hide"}
+# reconstruct the sample
+set.seed(101)
+Stans_data <- CoolingWater |> sample_n(20)
+# Plot the sample and overlay a model
+gf_point(temp ~ time, data=Stans_data) %>%
+  gf_lims(y = c(20, NA)) %>%
+  slice_plot(25 + 83.3*exp(-.0277*time) ~ time, color="dodgerblue")
+```
+
+See if $k=-0.02$ provides a better fit to the model. (You can add another `slice_plot()` to be able to compare the original and $k=-0.02$ models.)
+:::
+
+
+
+## Including new influences
+
+
+## Interpolation and extrapolation
+
+Peak oil and the sigmoidal function
+
+## Mechanism versus curve
+
+Mechanism versus curve: ballistic trajectory.
+
+## Polishing parameters {#sec-polishing-parameters}
+
+In @sec-polishing-promise we referred to a way to improve parameters in order to better match patterns in data.
+
+No matter how much you polish a toaster, you can't turn it into a microwave oven. Don't confuse precision with accuracy.
+
+-------
+
+Cobb-Douglas
+
+Calculus:  Newton and acceleration. Exponential versus sinusoidal.
+
+
+Cubic and bezier splines: different purposes. Splitting the domain (as in #sec-piecewise-intro). How are we to piece things back together. Continuity is intuitive, but how do we avoid the sharp bends. Need to have some way to describe smoothness.
+
+From a text I sent myself: Change modeling cycle chapter to models and the scientific method use the inverse square law for gravitation as an example of the limited applicability doesn’t work as you get into the earths
+
+
+
+
+
+## Moved from graphics chapter
+
+
+For many modeling purposes, it is important to be able to represent a relationship as a function. This would be easy if the data were arranged along a simple curve. But they are not. The engine designers did not face any mandate that they should select `stroke` or `bore` to fall along a simple curve. Consequently, a problem faced when trying to model data with a function is the trade-off between staying close to the actual data and keeping a function smooth and simple.
+
+The proportional function is simple and smooth function. We can construct such a model that goes as near to the data points as possible while remaining linear. Let's look ...
+
+::: {#lst-linear-stroke-bore}
+```{r}
+mod <- fitModel(stroke ~ a*bore + b, data = Engines)
+gf_point(stroke ~ bore, data=Engines) |> slice_plot(mod(bore) ~ bore)
+```
+
+The straight line displayed in @lst-linear-stroke-bore might be satisfactory as a model: It shows that engine stroke increases with cylinder bore. But if we wanted to use the model with an application involving small engines, there is a problem: the function output in @lst-linear-stroke-bore is *negative* at small bores, even though this is physically impossible.
+
+Faced with such a situation, the modeler might reasonable choose to seek a better function. Noticing the order of magnitude differences between different engines, we might decide to draw on the possibilities in @sec-magnitude and use a power-law function for the model. Such a model is shown in @lst-first-two-layers.
+
+EXERCISE WITH `gf_smooth(span=0.75)` changing the span parameter to get something we like.
+
+The data plotted by the code in @lst-stroke-vs-bore show a relationship between the stroke length of a piston and the diameter of the cylinder in which the piston moves. This relationship, however, is not being presented in the form of a function, that is, a single stroke value for each value of the bore diameter. 
+
+::: {.callout-note icon=false data-latex=""}
+## Math in the world
+
+TRANSLATING DATA TO A FUNCTION. data are generally scattered, while a function has just a single output value for any input. But we often use functions as a simplification to data.
+
+Nerve cells communicate via electrical voltages and currents. For long-distance communications (distances longer than about 1 mm) the signaling takes the form of pulses of voltage occurring repetitively at different rates. The formation of these pulses, called "action potentials," was the subject of an extensive research project in the 1950s involving inserting tiny electrodes into relatively large ("giant") nerve cells that mediate the fleeing reaction of squid. A typical experiment involved regulating artificially the voltage across the cell membrane. Through these experiments, the scientists--- John Eccles, Alan Hodgkin, and Andrew Huxley---were able to describe mathematically the relationship between membrane voltage and the current across the membrane. A calculus model built from the relationships provided a concise description of the biophysics of action potentials. A 1963 Nobel Prize was awarded for this work.
+
+```{r echo=FALSE}
+#| label: fig-fhn-model
+#| fig.cap: "Data (simulated) from the squid giant axon experiments. A smooth curve is drawn through the data points."
+#| column: margin
+
+set.seed(101)
+n <- 30
+FHN_points <- tibble(
+  v = sample(c(-2, -1.5, -1, -.5, 0, .5, 1, 1.5, 2), n, replace=TRUE),
+  w = v - v^3/3
+) %>% 
+  mutate(v=(1.9+v+rnorm(n, 0, 0.01))/36,
+         w=w+rnorm(n, 0, 0.1))
+
+gf_point(w ~ I(-v*36*25), data = FHN_points) %>%
+  gf_labs(y="Current (mA)", x = "Voltage (mV)") %>%
+  slice_plot( -(v/25 + 2) + (v/25 + 2)^3/3 ~ v, 
+              domain(v=-100:5)) 
+```
+In each experimental run, the membrane voltage was fixed at a given level (say, -50 mV) and the current measured. @fig-fhn-model shows what the data might have looked like, each point showing the results of one experimental run.
+
+COME BACK TO THIS IN "MODELING CYCLE" CHAPTER: CAN WE GET A FUNCTION THAT GOES BETTER THROUGH THE DATA POINTS?
+
+The data points themselves might be described metaphorically as "clouds" spotting the voltage vs current "sky." Real-world clouds often show patterns such as animal or country shapes. We might say that a given cloud resembles a rabbit. Similarly, the data clouds show a pattern between current and voltage. We might, for instance, describe the current-voltage relationship as S-shaped. Or, rather than using the letter "S" we could draw a curve through the dots to summarize and simplify the relationship.
+:::
+
+The smooth curve in  @fig-fhn-model describes the relationship between current and voltage quantitatively. For example, if you know that the current is 0, you can use the curve to figure out what the voltage will be around -90 mV or  -50 mV or -10 mV. But when the current is 0, the voltage will *not* be, say, -75 or -150.
+
+Graphs such as  @fig-carbon-phases and @fig-fhn-model are good ways of showing relationships. We can even do calculations simply using such graphs. Place your finger on a point of the S-shaped graph and you can read from the axes an allowed pair of voltage and current values. Place your finger on a point on the vertical axis. Moving it to the curve will reveal what current is associated with that voltage.
+
+
+AND REFER TO THE GRAPHIC HERE.
+
+On the other hand, functions cannot represent all types of relationships. For instance, the curve in @fig-fhn-model shows a relationship between current and voltage in nerve cells. But there is no mathematical function voltage(current) that does justice to the relationship. The reason is that mathematical functions can have ***one and only one*** output for any given input. There are three reasonable values for membrane voltage that are experimentally consistent with a zero current, not just one.
+
+
+-----
+
+SHOW A Function of two variables where only one of the inputs has a substantial effect. Point out that the contours are running more or less parallel. This is an instance where a function of just one input might be adequate.
+
+-----
+
+
+A table like REFERENCE TO THE ENGINES TABLE PREVIOUS describes the general relationships between engine attributes. For instance, we might want to understand the relationship (if any) between RPM and engine mass, or relate the diameter (that is, "bore") and depth (that is, "stroke") of the cylinders to the power generated by the engine. Any single entry in the table does not tell us about such general relationships; we need to consider the rows and columns as a whole. 
+
+If you examined the relationship between engine power (`BHP`) and bore, stroke, and RPM, you will find that (as a rule) the larger the bore and stroke, the more powerful the engine. That is a ***qualitative*** description of the relationship. Most educated people are able to understand such a qualitative description. Even if they don't know exactly what "power" means, they have some rough conception of it.
+
+Often, we are interested in having a ***quantitative*** description of a relationship such as the one (bore, stroke) $\rightarrow$ power. Remarkably, many otherwise well-educated people are uncomfortable with the idea of using quantitative descriptions of a relationship: what sort of language the description should be written with; how to perform the calculations to use the description; how to translate between data (such as in the table) and a quantitative description; how to translate the quantitative description to address a particular question or make a decision.
+
+_______
+
+
+## Possible introduction
+
+Seen very abstractly, a mathematical model is a set of ***functions*** that represent the relationships between inputs and outputs.  
+
+At the most simple level, building a model can be a short process:
+
+1. Develop an understanding of the relationship you want to model. Often, part of this "understanding" is the pattern seen in data.
+2. Choose a function type---e.g. exponential, sinusoidal, sigmoid---that you think would be a good match to the relationship.
+3. Find ***parameters*** that scales your function to be able to accept real-world inputs and generate real-world outputs.
+
+It is important to distinguish between two basic types of model:
+
+1. ***Empirical models*** which are rooted in ***observation*** and ***data***.
+2. ***Mechanistic models*** such as those created by applying fundamental laws of physics, chemistry, and such.
+
+We will put off mechanistic models for a while, for two reasons. First, the "fundamental laws of physics, chemistry, and such" are often expressed with the concepts and methods of calculus. We are heading there, but at this point you don't yet know the core concepts and methods of calculus. Second, most students don't make a careful study of the "fundamental laws of physics, chemistry, and such" until *after* they have studied calculus. So examples of mechanistic models will be a bit hollow at this point.
+
+
+
+## AN EXAMPLE FROM THE 01-parameters chapter
+
+::: {.callout-note icon=false data-latex=""} 
+## Math in the World: Exponential COVID
+
+You can see in @fig-covid-exp2 that the exponential function plotted in $\color{blue}{\text{blue}}$ does not align perfectly with the day-by-day data. For instance, during the interval from March 8 to 21, the function output is consistently higher than the data suggest it should be. As part of the ***modeling cycle*** it is important to notice such discrepancies and try to understand them. In this case, it is likely that during the early days of the pandemic the number of reported deaths understated the actual number of COVID-related deaths. This happens because, in the early days of the pandemic, many deaths from COVID were mis-attributed to other causes.
+::: 
+
+---------
+
+
+Effective modelers treat models with skepticism. They look for ways in which models fail to capture salient features of the real world. They have an eye out for deviations between what their models show and what they believe they know about the system being modeled. They consider ways in which the models might not serve the purpose for which they were developed.  
+
+When modelers spot a failure or deviation or lack of proper utility, they might discard the model but more often they make a series of small adjustments, tuning up the model until is successfully serves the purposes for which it is intended.
+
+Thus, modeling is a cyclic process of creating a model, assessing the model, and revising the model. The process comes to a sort of preliminary end when the model serves its purposes. But even then, models are often revised to check whether the results are sensitive to some factor that was not included or to check whether some component that was deemed essential really is so.
+
+
+
+Later in this course, we will study ***optimization***. There are optimization techniques for directing the computer to refine the parameters to best match the data. Just to illustrate, here is what we get:
+
+```{r echo=FALSE}
+set.seed(101)
+Stans_data <- CoolingWater |> sample_n(20)
+```
+
+```{r}
+#| label: fig-Fun-4-a-2-3
+#| fig-cap: "Polishing the fit using the rough model as a starting point."
+refined_params <-
+  fitModel(temp ~ A + B*exp(k*time), data = Stans_data,
+           start = list(A = 25, B = 83.3, k = -0.0277))
+coef(refined_params)
+new_f <- makeFun(refined_params)
+gf_point(temp ~ time, data = Stans_data) %>%
+  slice_plot(new_f(time) ~ time, color="dodgerblue")
+```
+
+The refined parameters give a much better fit to the data than our original rough estimates by eye.
+
+We had two rounds of the ***modeling cycle***. First, choice of an exponential model and a rough estimate of the parameters A, B, and $k$. Second, refinement of those parameters using the computer.
+
+Looking at the results of the second round, the experienced modeler can see some disturbing discrepancies. First, the estimated baseline appears to be too high. Related, the initial decay of the model function does not seem to be fast enough and the decay of the model function for large $t$ appears to be too slow. Prof. Stan Wagon noticed this. He used additional data to fill in the gaps for small $t$ and refined his model further by changing the basis functions in the linear combination. He hypothesized that there are at least two different cooling processes. First, the newly poured water raises the temperature of the mug itself. Since the water and mug are in direct contact, this is a fast process. Then, the complete water/mug unit comes slowly into equilibrium with the room temperature. 
+
+
+The newly refined model was a even better match to the data. But nothing's perfect and Prof. Wagon saw an opportunity for additional refinement based on the idea that there is a third physical mechanism of cooling: evaporation from the surface of the hot water. Prof. Wagon's additional circuits of the modeling cycle were appropriate to his purpose, which was to develop a detailed understanding of the process of cooling. For other purposes, such as demonstrating the appropriateness of an exponential process or interpolating between the data points, earlier cycles might have sufficed.
+
+Here's a graph of the model Prof. Wagon constructed to match the data.
+
+```{r echo=FALSE}
+#| label: fig-Fun-4-a-2-4
+#| out-width: "70%"
+#| fig-align: "center"
+#| fig-cap: "A model that combines three exponentials provides an excellent fit."
+knitr::include_graphics("www/Wagon-water-fit.png")
+```
+
+This is an excellent match to the data. But ... matching the data isn't always the only goal of modeling. Prof. Wagon wanted to make sure the model was physically plausible. And looking at the refined parameters, which include two exponential processes with parameters $k_1$ and $k_2$, he saw something wrong:
+
+> *But what can we make of $k_1$, whose [positive value] violates the laws of thermodynamics by suggesting that the water gets hotter by virtue of its presence in the cool air? The most likely problem is that our simple model (the proportionality assumption) is not adequate near the boiling point. There are many complicated factors that affect heat transportation, such as air movement, boundary layer dissipation, and diffusion, and our use of a single linear relationship appears to be inadequate. In the next section [of our paper] we suggest some further experiments, but we also hope that our experiments might inspire readers to come up with a better mathematical model.*
+
+The modeling cycle can go round and round!
+
+## Example: The tides
+
+In @sec-fit-periodic we looked at a sinusoid model of tide levels in Rhode Island. We left unresolved how to refine the estimate of the period $P$ and find the time offset $t_0$ in the sinusoidal model $$\text{tide}(t) \equiv A \sin\left(\frac{2\pi}{P} (t-t_0)\right) + B$$ 
+
+$${\color{blue}{\text{tide}(t)} \equiv 1.05 + 0.55 \sin(2\pi (t - t_0)/11)}$$
+
+The new parameter, $t_0$, should be set to be the time of a positive-going crossing of the baseline. Looking at the tide data (black) plotted in @fig-Fun-4-a-3-4 we can pick out  such a crossing at about time = 17. Happily, changing the phase does not itself necessitate re-estimating the other parameters: baseline, amplitude, period. This model, incorporating the phase, has been graphed in $\color{blue}{\text{blue}}$.
+
+```{r echo=FALSE, fig.show="hold"}
+#| label: fig-Fun-4-a-3-4
+#| out-width: "50%" 
+#| fig-cap: "Shifting the **phase** of the sinusoid gives the flexibility needed to align the peaks and troughs of the model with the data. Performing this alignment for one peak makes it clear that the period is wrong."
+mod1 <- makeFun(1.05 + 0.55*sin(2*pi*hour/13) ~ hour)
+mod2 <- makeFun(1.05 + 0.55*sin(2*pi*(hour-17)/13) ~ hour)
+gf_line(level ~ hour,
+         data = RI_tide |> filter(hour < 25)) %>%
+  slice_plot(mod2(hour) ~ hour, color="dodgerblue") %>%
+  gf_labs(y="Water level (meters)", x="Time (hours)") %>%
+  gf_lims(y =c(0, 2))
+gf_line(level ~ hour,
+         data = RI_tide |> filter(hour > 90)) %>%
+  slice_plot(mod2(hour) ~ hour, color="dodgerblue") %>%
+  gf_labs(y="Water level (meters)", x="Time (hours)")%>%
+  gf_lims(y =c(0, 2))
+```
+
+For some modeling purposes, such as prediction of future tides, the phase information is essential. For others, say, description of the amplitude of the tides, not. But getting the phase roughly right can help point out other problems. For instance, in the left panel of @fig-Fun-4-a-3-4 the blue model is roughly aligned with the data. Not at all so in the right panel. What leads to the discrepancy is a bad estimate for the period. 13 hours is roughly right, but over a five-day period the error accumulates until, in the right panel, the model has a trough where the data peak, and *vice versa*. 
+
+Although the blue sinusoid is not perfect, having it for comparison suggests that the previously estimated period of 13 hours is too long. We can shorten the period gradually in our model until we find something that better matches the data. For example: @fig-Fun-4-a-3-5 shows that a period of 12.3 hours is a good match to the data. 
+
+With this refinement the model is
+$${\color{green}{\text{tide}(t)} \equiv 1.05 + 0.55 \sin(2\pi (t - 17)/12.3)}$$
+
+```{r echo=FALSE}
+#| label: fig-Fun-4-a-3-5
+#| fig-cap: "With the phase about right, a better estimate can be made of the period: 12.3 hours."
+mod3 <- makeFun(0.55*sin(2*pi*(hour-17)/12.3) + 1.05 ~ hour)
+gf_line(level ~ hour, data = RI_tide) %>%
+  slice_plot(mod3(hour) ~ hour, color="violet") %>%
+  gf_labs(y="Water level (meters)", x="Time (hours)", title="Period 12.3 hours") %>%
+  gf_lims(y =c(0, 2))
+```
+We might call it quits with the model in @fig-Fun-4-a-3-5. But once we have a pretty good model fit, it is easy to polish the parameter estimates, letting the computer do the tedious work of trying little tweaks to see if it can improve the fit.
+
+The R/mosaic `fitModel()` can do this tweaking for us. As the following commands show, `fitModel()` takes a tilde expression as input. To the left  of the tilde goes the name of the function output in the data frame being used. The right side is a formula for the model, with names used for each parameter and using the names of inputs from the data frame. The second argument is the data frame. The third argument is used to convey an estimate for each parameter; that estimate should be pretty good if `fitModel()` is to be able to refine it.
+
+The output from `fitModel()` is a function, which we are naming `tide_mod()`. 
+
+```{r}
+tide_mod <-
+  fitModel(level ~ A + B*sin(2*pi*(hour-t0)/P),
+  data = RI_tide,
+  start=list(A=1.05, B=0.55, t0=17, P=12.3))
+coef(tide_mod)
+```
+
+The command `coef(tide_mod)` displays the parameters found by `fitModel()` which will be an improvement---perhaps a big improvement, perhaps not---on our original estimates.
+
+
+These new parameters differ only slightly from the ones shown in @fig-Fun-4-a-3-5, but the match to the data with the new coefficients is discernably better, even by eye.
+
+```{r echo=FALSE}
+#| label: fig-Fun-4-a-3-6
+#| fig-cap: "Polishing the parameters of the sinusoid"
+mod4 <- makeFun(tide_mod)
+gf_line(level ~ hour, data = RI_tide) %>%
+  slice_plot(mod4(hour) ~ hour, color="orange3", npts=200) %>%
+  gf_labs(y="Water level (meters)", x="Time (hours)", title="After polishing by the computer") %>%
+  gf_lims(y =c(0, 2))
+```
+This last model seems capable of making reasonable predictions, so if we collected up-to-date data we might be able to fit a new model to predict the tide level pretty accurately a few days ahead of time. Also, the excellent alignment of the model peaks with the data tell us that the cyclic tide has a period that is constant, at least so far as we can tell.  
+
+With the period estimate $P=12.56$ hours, we can go looking for other phenomena that might account for the tides. The period of the day-night cycle is, of course 24 hours. So the tides in Providence come in and out twice a day. But not exactly. Something else must be going on.
+
+Isaac Newton was the first to propose that the tides were caused by the gravitational attraction of the Moon. A complete cycle of the Moon---moon rise to moon rise---takes about 50 minutes longer than a full day: the Earth revolves once every 24 hours, but in that time the Moon has moved a bit further on in its orbit of the Earth. So the Moon's period, seen from a fixed place on Earth is about 24.8 hours. Half of this, 12.4 hours, is awfully close to our estimate of the tidal period: 12.56 hours. The difference in periods, 8 minutes a day, might be hard to observe over only 4 days. Maybe with more data we'd get a better match between the tides and the moon.
+
+This is the modeling cycle at work: Propose a model form (a sinusoid), adjust parameters to match what we know (the Providence tide record), compare the model to the data, observe discrepancies, propose a refined model. You can stop the model when it is giving you what you need. The period 12.56 hour model seems good enough to make a prediction of the tide level a few days ahead, and is certainly better than the "two tides a day" model. But our model is not yet able to implicate precisely the Moon's orbit in tidal oscillations.
+
+Discrepancies between a model and data play two roles: they help us decide if the model is fit for the purpose we have in mind and they can point the way to improved models. That the tidal data deviates from the steady amplitude of our model can be a clue for where to look next. It is not always obvious where this will lead.
+
+Historically, careful analysis of tides led to a highly detailed, highly accurate model: a linear combination of sinusoids with periods near a half-day 12.42 , 12.00, 12.66, and 11.97 hours as well components with periods that are about a day long 23.93, 25.82, 24.07, 26.87, and 24.00 hours. A tide-prediction model is constructed by finding the coefficients of the linear combination; these differ from locale to locale. There is no global model of tides, but rather a framework of linear combinations of sinusoids of different periods. What customizes the framework to the tides in a particular locale is the coefficients used in the linear combination.  
+
+::: {.example data-latex=""}
+Polishing the phase (optional)
+
+Linear combination to represent phase shift.
+$\sin(x + \phi) = \cos(\phi)\sin(x) + \sin(\phi) \cos(x)$
+
+$C \sin(x +\phi) = A \sin(x) + B \cos(x)$ where $C^2 = A^2 + B^2$ and $\phi=\arctan(A/B)$
+:::
+
+

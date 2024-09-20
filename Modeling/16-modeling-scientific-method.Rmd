@@ -1,4 +1,4 @@
-# Modeling and the scientific method {#sec-modeling-cycle}
+# Modeling and the scientific method {#sec-modeling-science-method}
 
 ```{r include=FALSE}
 source("../starter.R")
@@ -23,6 +23,65 @@ Every detective has access to a rich body of knowledge from which to draw analog
 Similarly, in large part, the ability to model comes from knowing about the kinds of techniques that other modelers have found useful. You have met some of these already: functions, low-order polynomials, quantities and their dimensions, ways for dealing with a wide range of magnitudes, setting parameters, etc. In the upcoming Blocks, you'll learn new techniques that involve understanding relationships between information that comes in different forms. You'll also learn important ways to extract conclusions from the models you construct.
 
 This chapter shows by example some widely used modeling techniques. It also shows some automated methods, e.g. model polishing, that can improve a model. And, it's important to consider potential pitfalls and commonly held modeling misconceptions that mislead modelers down perilous and pointless paths.
+
+## Example: Cooling water
+
+@sec-fitting-by-feature presented data on water cooling from near boiling to room temperature. (See @fig-stans-data.) The data were collected by Prof. Stan Wagon of Macalester College with a purpose in mind: to see whether *Newton's Law of Cooling* provides a good description of the actual physical process. In particular, Wagon knew that a simple application of Newton's Law implies that the water temperature will decay exponentially. 
+
+@fig-water-exponential shows an exponential function fitted to the water-cooling data.
+
+::: {#fig-water-exponential}
+```{r}
+Mod1_fun <- mosaic::fitModel(temp ~ A*exp(-k*time) + C, 
+                             data = CoolingWater,
+                             start = list(C = 30, k = 1/20, A = 70))
+gf_point(temp ~ time, data=CoolingWater, alpha = .15 ) |>
+  slice_plot(Mod1_fun(time) ~ time, color = "blue") |>
+  gf_labs(x = "Time (minutes)", y="Temperature (deg. C)")
+```
+
+An exponential model (blue) fitted to the `CoolingWater` data. 
+$$T(t) \equiv 27.0 + 62.1\ e^{-0.021 t}$$
+:::
+
+
+At first glance, the exponential function seems a good match to the data. But what do we mean by "good?" Is "good" good enough? And "good enough" for what? The experienced modeler should always have in mind the criterion by which to evaluate "good enough." These criteria, in turn, are shaped by the purpose for building the model.
+
+Beware of general-purpose criterion. For instance, a general-purpose criterion is to compare the shape of the function with the data. Clearly, the exponential model slopes and curves in a similar manner to the data. And the deviation of the model output from the data is at worst just a few degrees. This is small compared to the 50$^\circ$C change in temperature over the course of the experiment.
+
+Another widely used general-purpose statistical measure of the quality of the match is the R^2^ (R-squared) value. Mathematically, R^2^ is always between 0 and 1. (See @sec-stat-modeling, where the mathematics of R^2^ is introduced.) When R^2^ = 1, the match is perfect. For the `Mod1_fun()` and the cooling water data, R^2^ = 0.991. Many scientists would interpret this as "almost perfect," although things are sometimes more complicated ... as here.
+
+Wagon's purpose was not simply to see if an exponential curve looks like the data. Instead, he wanted to know if Newton's Law of Cooling was consistent with the observed cooling over time. The exponential shape of temperature versus time is just one consequence of Newton's Law. Another is that the water temperature should eventually reach equilibrium at the room temperature.
+
+The fitted exponential model fails here, as you can see by zooming in on the right tail of @fig-water-exponential. In @fig-water-exponential-tails we zoom in on both the left and right tails of the data.
+
+::: {#fig-water-exponential-tails}
+```{r echo=FALSE}
+#| layout-ncol: 2
+gf_point(temp ~ time, data=CoolingWater |> filter(time < 10), alpha = .75 ) |>
+  slice_plot(Mod1_fun(time) ~ time, color = "blue") |>
+  gf_labs(x = "Time (minutes)", y="Temperature (deg. C)") |>
+  gf_lims(y=c(NA, 100))
+
+gf_point(temp ~ time, data=CoolingWater |> filter(time > 160), alpha = .75 ) |>
+  slice_plot(Mod1_fun(time) ~ time, color = "blue") |>
+  gf_labs(x = "Time (minutes)", y="Temperature (deg. C)") 
+```
+The exponential model does not capture the initial almost-boiling temperature of the water. And the model (to judge from the $A$ coefficient presented in the caption of @fig-water-exponential) says the room temperature is 27$^\circ$C, while the data are heading off to perhaps less than 25$^\circ$C.
+:::
+
+In the scientific method, one takes a theory (Newton's Law of Cooling), makes predictions from that theory and compares the predictions to observed data. If the predictions are not a match for the theory---here, that the water should cool to room temperature---then a creative process is called for, replacing or modifying the theory. The same applies when a mathematical model fails to suit its original purpose.
+
+The creative process of constructing or modifying a theory is not mainly a matter of mathematics, it usually involves *expert knowledge* about the system being modeled. In the case of a cooling mug of water, the "expertise" can be drawn from everyday experience. For instance, everybody knows that it is not entirely a matter of the water cooling off, the mug gets hotter and then cools in its own fashion to room temperature. 
+
+Wagon's initial modification of the theory went like this: Newton's Law still applies, but with the water in contact with both the room and, more strongly, the mug. To build this model, he needed to draw on the mathematics of dynamical systems (introduced in Block 5), producing a new parameterized formula of water temperature versus time. 
+
+Wagon went on to check the water-mug-room theory against the data. He found that the improved model did not completely capture the temperature-versus-time data. He applied more expertise, that is, he considered something we all observe: water vapor ("steam") rises from the water in the mug. This prompted some experimental work where a drop of oil was placed on the water surface to block the evaporation. This experiment convinced him that a new revision to the model was called for that would include the cooling due to evaporation.
+
+Without being able to anticipate the settings and purposes for your own model building, we can't pretend to teach you the real-world expertise you will need. But we can do something to help you move forward in your work. The remaining sections of this chapter introduce some general-purpose mathematical approaches to refining models. For instance, rather than using a single exponential function, Wagon used a linear combination of exponentials for his modeling. We will also try to warn you of potential pitfalls and ways you can mislead yourself.
+
+
+
 
 ## Including new influences
 
