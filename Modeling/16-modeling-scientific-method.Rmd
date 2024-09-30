@@ -4,11 +4,7 @@
 source("../starter.R")
 ```
 
-```{r include=FALSE}
-book_file_name <- "modeling/09-modeling-cycle.html"
-```
-
-Block 2 is entitled "Modeling," and for good reasons. This Block has introduced techniques and concepts that provide the basic tools for constructing models, but which do not require an understanding of the major operations of Calculus.  In the next Blocks, we will study additional techniques and concepts. That study requires us to do two things at once: introduce the concepts and methods of Calculus and show examples of how they apply to modeling.
+Block 2 is entitled "Modeling," and for good reason. This Block has introduced techniques and concepts that provide the basic tools for constructing models, but which do not require an understanding of the major operations of Calculus.  In the next Blocks, we will study additional techniques and concepts. That study requires us to do two things at once: introduce the concepts and methods of Calculus and show examples of how they apply to modeling.
 
 Before continuing on with more mathematics, it is important to put the idea of modeling in context. That context doesn't come from the mathematics. Instead, the context comes from science and, particularly, the **scientific method**. 
 
@@ -28,14 +24,14 @@ This chapter shows by example some widely used modeling techniques. It also show
 
 @sec-fitting-by-feature presented data on water cooling from near boiling to room temperature. (See @fig-stans-data.) The data were collected by Prof. Stan Wagon of Macalester College with a purpose in mind: to see whether *Newton's Law of Cooling* provides a good description of the actual physical process. In particular, Wagon knew that a simple application of Newton's Law implies that the water temperature will decay exponentially. 
 
-@fig-water-exponential shows an exponential function fitted to the water-cooling data.
+@fig-water-exponential shows an exponential function fitted to the water-cooling data. The fitted function is stored as `Mod1_fun()` with the `1` identifying it as the first of possibly several models.
 
 ::: {#fig-water-exponential}
 ```{r}
 Mod1_fun <- mosaic::fitModel(temp ~ A*exp(-k*time) + C, 
                              data = CoolingWater,
                              start = list(C = 30, k = 1/20, A = 70))
-gf_point(temp ~ time, data=CoolingWater, alpha = .15 ) |>
+gf_point(temp ~ time, data = CoolingWater, alpha = .15 ) |>
   slice_plot(Mod1_fun(time) ~ time, color = "blue") |>
   gf_labs(x = "Time (minutes)", y="Temperature (deg. C)")
 ```
@@ -72,7 +68,7 @@ The exponential model does not capture the initial almost-boiling temperature of
 
 In the scientific method, one takes a theory (Newton's Law of Cooling), makes predictions from that theory and compares the predictions to observed data. If the predictions are not a match for the theory---here, that the water should cool to room temperature---then a creative process is called for, replacing or modifying the theory. The same applies when a mathematical model fails to suit its original purpose.
 
-The creative process of constructing or modifying a theory is not mainly a matter of mathematics, it usually involves *expert knowledge* about the system being modeled. In the case of a cooling mug of water, the "expertise" can be drawn from everyday experience. For instance, everybody knows that it is not entirely a matter of the water cooling off, the mug gets hotter and then cools in its own fashion to room temperature. 
+The creative process of constructing or modifying a theory is not primarily a matter of mathematics, it usually involves *expert knowledge* about the system being modeled. In the case of a cooling mug of water, the "expertise" can be drawn from everyday experience. For instance, everybody knows that it is not entirely a matter of the water cooling off, the mug gets hotter and then cools in its own fashion to room temperature. 
 
 Wagon's initial modification of the theory went like this: Newton's Law still applies, but with the water in contact with both the room and, more strongly, the mug. To build this model, he needed to draw on the mathematics of dynamical systems (introduced in Block 5), producing a new parameterized formula of water temperature versus time. 
 
@@ -80,130 +76,88 @@ Wagon went on to check the water-mug-room theory against the data. He found that
 
 Without being able to anticipate the settings and purposes for your own model building, we can't pretend to teach you the real-world expertise you will need. But we can do something to help you move forward in your work. The remaining sections of this chapter introduce some general-purpose mathematical approaches to refining models. For instance, rather than using a single exponential function, Wagon used a linear combination of exponentials for his modeling. We will also try to warn you of potential pitfalls and ways you can mislead yourself.
 
+## Identifying systematic discrepancies
 
+Refer to @fig-water-exponential, showing the measured temperature data along with the initial fitted exponential model. There are four places where the data systematically differ from the model: the model underestimates the temperature early in the process, then overestimates for a interval, returning later to an underestimation and finishing up with an over-estimation. 
 
+In assessing a model, it is a good practice to calculate the *difference* between the observed data and the model value. @fig-water-residuals shows this difference, calculated simply by subtracting from each data point the model value at the corresponding time. In statistical nomenclature, such differences are called the "**residuals**" from the model.
+
+::: {#fig-water-residuals}
+```{r}
+gf_point(temp - Mod1_fun(time) ~ time, data = CoolingWater) |>
+  gf_labs(x = "Time (minutes)", "Residual (deg C)")
+```
+
+Residuals versus time. The comparatively smooth structure indicates systematic deviations between the model and the data.
+:::
+
+The presence of *noise* in any measurement is to be expected. You can see such noise in @fig-water-residuals in the small, irregular trembling fluctuations. The large, smooth, slowly changing pattern in the residuals is the systematic part. The smooth variations are much larger in amplitude than the noise, a sign that we should consider them carefully.
+
+This is a chance for the modeler to speculate on what might be causing the systematic deviations. A good place to start is with the largest residuals. In this case, that's at the beginning of the temperature recording. Here, the phenomenon we seek to explain is that the actual recorded temperatures fall much faster than the model. (This is perhaps clearer with reference to @fig-water-exponential.)
+
+What physical process might lead to the initial fast cooling of the water? Answering this question requires both detailed knowledge of how the system works and some creativity. As mentioned above, Wagon speculated that the water might be cooling in two ways: i) heat moving from the water to the air in the room and ii) heat moving from the water into the adjacent mug. This second process can be fast, making it a candidate for explaining the residuals in the early times of the experiment. 
+
+A quick test of the speculation is to construct a linear combination of two exponential processes, one fast and one slower. This would be difficult to do by eye using the techniques of @sec-parameters, but `fitModel()` can accomplish the task so long as we can give a rough estimate of what the parameters are. @fig-water-two-exps shows the resulting function and the residuals.
+
+::: {#fig-water-two-exps}
+```{r echo=FALSE}
+#| layout-ncol: 1
+Mod2_fun <- mosaic::fitModel(temp ~ A*exp(-k*time) + B*exp(-k2*time) + C, 
+                             data = CoolingWater,
+                             start = list(C = 30, k = 1/20, A = 70, B=10, k2=1/3))
+
+gf_point(temp ~ time, data=CoolingWater, alpha = .75 ) |>
+  slice_plot(Mod2_fun(time) ~ time, color = "blue") |>
+  gf_labs(x = "Time (minutes)", y="Temperature (deg. C)") 
+gf_point(temp - Mod2_fun(time) ~ time, data = CoolingWater) |>
+  gf_labs(x = "Time (minutes)", "Residual (deg C)") 
+```
+The water-cooling model with two exponential processes, one fast and one slow, and the residuals from the observed data. 
+:::
+
+@fig-water-two-exps shows a much improved match between the model and the data. The residuals are only about one-tenth as large as those from the original model.
+
+Depending on the purpose for which the modeling is being done, this might be the end of the story. The model is within a few tenths of a degree C from the data, good enough for purposes such as prediction. For Prof. Wagon, however, the purpose was to investigate how complete an explanation Newton's Law of Cooling is for the physical process. His conclusion was that the residuals in @fig-water-two-exps still show systematic patterns.
+
+## Refine the data, refine the experimental technique
+
+Often, the initial model building will suggest how new, informative data might be collected. It's impossible to generalize this to all situations, but in Prof. Wagon's work, two possibilities arise:
+
+1. Measure the temperature of the mug directly, as well as the temperature of the water.
+
+2. Stifle other possible physical processes, such as *evaporation* of water from the top surface of the liquid, and collect new data
+
+Prof. Wagon managed (2) by putting adding a small drop of oil right after the water was poured into the mug. This created a thin layer that hindered evaporation. His expectation was that cancelling this non-Newtonian process would make the Newton model a better fit to the new data, providing an estimate of the magnitude of the evaporation effect.  
 
 ## Including new influences
 
+In many situations, there is data on more than one factor that might come into play in determining the response variable. The mathematical methods relating to linear combinations covered in Block 3 provide the basic toolkit for considering such new influences. In Block 5 you will see many examples of situations where the system's behavior depends critically on the interaction between two competing factors.
+
+The closely related topic of *statistical modeling* provides essential concepts and tools for deciding whether to incorporate an additional input to a model function. Part of the importance of a statistical approach comes from a mathematical paradox that will be discussed in Block 4. Whenever you have a model of a response variable in terms of explanatory variables there will be residuals. Adding in a new response variable, even if it is utterly unrelated to the system, will make the residuals smaller. Statistical method provides the means to avoid mistakenly including the new response variable by comparing the actual reduction in residuals to what would be expected from a generic random variable.
+
+Another important statistical topic is *causality*; reasoning about what causes what. Often, the modeler's understanding of how the system under study actually works can guide the choice of additional variables to include in a model.
+
+Space precludes our including detailed consideration of the statistical phenomena in this book, although the techniques used are well within the capabilities of anyone who has completed this book through Block 3. 
+
+It's worth point out a regretable fact of life in the academic world covering the quantitative science. At almost all institutions (as of 2024), calculus is taught in a manner that is totally disconnected from statistics and data science. In part, this is because the professional training of mathematics instructors does not include an emphasis on statistics. This is an artifact of history and is slowly being addressed. *MOSAIC Calculus* is the result of a successful program to integrate modeling, statistics, calculus, and computing---the M S C of MoSaiC. To fit in with the academic structure at most universities, it was necessarily to deliver the integrated material in a form that could be slotted into existing Calculus curricula and, separately, into existing statistics curricula. The statistics part of the integrated curriculum is packaged into another free, online textbook: [Lessons in Statistical Thinking](https://dtkaplan.github.io/Lessons-in-statistical-thinking).
 
 ## Interpolation and extrapolation
 
-Peak oil and the sigmoidal function
+Models are most reliable when the domain of the functions is considered to be the span of the data or observations underlying them. Evaluating a function *inside* the span of the data is called "**interpolation**." Conversely, sometimes functions are evaluated at inputs far outside the span of the data used to construct the function. This is "**extrapolation**." 
 
-## Mechanism versus curve
+Extrapolation is unreliable. However, sometimes the purpose of a model is to help us consider how a system might behave when inputs are outside of the span of already-observed data. To satisfy such a purpose, extrapolation is unavoidable.
 
-Mechanism versus curve: ballistic trajectory.
+Still, it is possible to adopt mathematical methods that mitigate the impact of extrapolation. It's key, for instance, to *avoid high-order polynomials*, as these produce some of the most extreme and misleading behavior. (See @sec-polynomials.) More reliable alternatives include using only *low-order polynomials* (as already described in @sec-low-order), localized functions such as the sigmoid or gaussian, or splines (@sec-splines).
 
-## Polishing parameters {#sec-polishing-parameters}
+::: {.callout-note}
+## Example: Extrapolating gravitation
 
-In @sec-polishing-promise we referred to a way to improve parameters in order to better match patterns in data.
+Isaac Newton famously developed his universal theory of gravitation through examination of the orbits of planets. Planets close to the sun feel a strong tug of the Sun's gravity, farther-out planets have receive a weaker tug. Similarly, the motion of satellites around the Earth is determined mainly by the Earth's gravitational pull. Per Newton's theory, the acceleration due to gravity goes as the *inverse-square of distance* from the center of the Earth. Far-away satellites have long orbits, close-in satellites orbit with far lower orbital duration.
 
-No matter how much you polish a toaster, you can't turn it into a microwave oven. Don't confuse precision with accuracy.
-
--------
-
-Cobb-Douglas
-
-Calculus:  Newton and acceleration. Exponential versus sinusoidal.
-
-
-Cubic and bezier splines: different purposes. Splitting the domain (as in #sec-piecewise-intro). How are we to piece things back together. Continuity is intuitive, but how do we avoid the sharp bends. Need to have some way to describe smoothness.
-
-From a text I sent myself: Change modeling cycle chapter to models and the scientific method use the inverse square law for gravitation as an example of the limited applicability doesn’t work as you get into the earths
-
-
-
-
-
-## Moved from graphics chapter
-
-
-For many modeling purposes, it is important to be able to represent a relationship as a function. This would be easy if the data were arranged along a simple curve. But they are not. The engine designers did not face any mandate that they should select `stroke` or `bore` to fall along a simple curve. Consequently, a problem faced when trying to model data with a function is the trade-off between staying close to the actual data and keeping a function smooth and simple.
-
-The proportional function is simple and smooth function. We can construct such a model that goes as near to the data points as possible while remaining linear. Let's look ...
-
-::: {#lst-linear-stroke-bore}
-```{r}
-mod <- fitModel(stroke ~ a*bore + b, data = Engines)
-gf_point(stroke ~ bore, data=Engines) |> slice_plot(mod(bore) ~ bore)
-```
-
-The straight line displayed in @lst-linear-stroke-bore might be satisfactory as a model: It shows that engine stroke increases with cylinder bore. But if we wanted to use the model with an application involving small engines, there is a problem: the function output in @lst-linear-stroke-bore is *negative* at small bores, even though this is physically impossible.
-
-Faced with such a situation, the modeler might reasonable choose to seek a better function. Noticing the order of magnitude differences between different engines, we might decide to draw on the possibilities in @sec-magnitude and use a power-law function for the model. Such a model is shown in @lst-first-two-layers.
-
-EXERCISE WITH `gf_smooth(span=0.75)` changing the span parameter to get something we like.
-
-The data plotted by the code in @lst-stroke-vs-bore show a relationship between the stroke length of a piston and the diameter of the cylinder in which the piston moves. This relationship, however, is not being presented in the form of a function, that is, a single stroke value for each value of the bore diameter. 
-
-::: {.callout-note icon=false data-latex=""}
-## Math in the world
-
-TRANSLATING DATA TO A FUNCTION. data are generally scattered, while a function has just a single output value for any input. But we often use functions as a simplification to data.
-
-Nerve cells communicate via electrical voltages and currents. For long-distance communications (distances longer than about 1 mm) the signaling takes the form of pulses of voltage occurring repetitively at different rates. The formation of these pulses, called "action potentials," was the subject of an extensive research project in the 1950s involving inserting tiny electrodes into relatively large ("giant") nerve cells that mediate the fleeing reaction of squid. A typical experiment involved regulating artificially the voltage across the cell membrane. Through these experiments, the scientists--- John Eccles, Alan Hodgkin, and Andrew Huxley---were able to describe mathematically the relationship between membrane voltage and the current across the membrane. A calculus model built from the relationships provided a concise description of the biophysics of action potentials. A 1963 Nobel Prize was awarded for this work.
-
-```{r echo=FALSE}
-#| label: fig-fhn-model
-#| fig.cap: "Data (simulated) from the squid giant axon experiments. A smooth curve is drawn through the data points."
-#| column: margin
-
-set.seed(101)
-n <- 30
-FHN_points <- tibble(
-  v = sample(c(-2, -1.5, -1, -.5, 0, .5, 1, 1.5, 2), n, replace=TRUE),
-  w = v - v^3/3
-) %>% 
-  mutate(v=(1.9+v+rnorm(n, 0, 0.01))/36,
-         w=w+rnorm(n, 0, 0.1))
-
-gf_point(w ~ I(-v*36*25), data = FHN_points) %>%
-  gf_labs(y="Current (mA)", x = "Voltage (mV)") %>%
-  slice_plot( -(v/25 + 2) + (v/25 + 2)^3/3 ~ v, 
-              domain(v=-100:5)) 
-```
-In each experimental run, the membrane voltage was fixed at a given level (say, -50 mV) and the current measured. @fig-fhn-model shows what the data might have looked like, each point showing the results of one experimental run.
-
-COME BACK TO THIS IN "MODELING CYCLE" CHAPTER: CAN WE GET A FUNCTION THAT GOES BETTER THROUGH THE DATA POINTS?
-
-The data points themselves might be described metaphorically as "clouds" spotting the voltage vs current "sky." Real-world clouds often show patterns such as animal or country shapes. We might say that a given cloud resembles a rabbit. Similarly, the data clouds show a pattern between current and voltage. We might, for instance, describe the current-voltage relationship as S-shaped. Or, rather than using the letter "S" we could draw a curve through the dots to summarize and simplify the relationship.
+Planets orbits outside the Sun. Satellites orbit outside the Earth. Application of the inverse-square law to forces *inside* the Sun or *inside* the Earth are interpolation. But extrapolation, for instance using the inverse square law to model forces inside the Sun or Earth, produce catastrophically misleading models. In reality, gravitational force on the inside---as you might imagine in a tunnel going through the center of the Earth---increase linearly with distance from the center. (Newton's theory explains the mechanics of this.)
 :::
 
-The smooth curve in  @fig-fhn-model describes the relationship between current and voltage quantitatively. For example, if you know that the current is 0, you can use the curve to figure out what the voltage will be around -90 mV or  -50 mV or -10 mV. But when the current is 0, the voltage will *not* be, say, -75 or -150.
-
-Graphs such as  @fig-carbon-phases and @fig-fhn-model are good ways of showing relationships. We can even do calculations simply using such graphs. Place your finger on a point of the S-shaped graph and you can read from the axes an allowed pair of voltage and current values. Place your finger on a point on the vertical axis. Moving it to the curve will reveal what current is associated with that voltage.
-
-
-AND REFER TO THE GRAPHIC HERE.
-
-On the other hand, functions cannot represent all types of relationships. For instance, the curve in @fig-fhn-model shows a relationship between current and voltage in nerve cells. But there is no mathematical function voltage(current) that does justice to the relationship. The reason is that mathematical functions can have ***one and only one*** output for any given input. There are three reasonable values for membrane voltage that are experimentally consistent with a zero current, not just one.
-
-
------
-
-SHOW A Function of two variables where only one of the inputs has a substantial effect. Point out that the contours are running more or less parallel. This is an instance where a function of just one input might be adequate.
-
------
-
-
-A table like REFERENCE TO THE ENGINES TABLE PREVIOUS describes the general relationships between engine attributes. For instance, we might want to understand the relationship (if any) between RPM and engine mass, or relate the diameter (that is, "bore") and depth (that is, "stroke") of the cylinders to the power generated by the engine. Any single entry in the table does not tell us about such general relationships; we need to consider the rows and columns as a whole. 
-
-If you examined the relationship between engine power (`BHP`) and bore, stroke, and RPM, you will find that (as a rule) the larger the bore and stroke, the more powerful the engine. That is a ***qualitative*** description of the relationship. Most educated people are able to understand such a qualitative description. Even if they don't know exactly what "power" means, they have some rough conception of it.
-
-Often, we are interested in having a ***quantitative*** description of a relationship such as the one (bore, stroke) $\rightarrow$ power. Remarkably, many otherwise well-educated people are uncomfortable with the idea of using quantitative descriptions of a relationship: what sort of language the description should be written with; how to perform the calculations to use the description; how to translate between data (such as in the table) and a quantitative description; how to translate the quantitative description to address a particular question or make a decision.
-
-_______
-
-
-## Possible introduction
-
-Seen very abstractly, a mathematical model is a set of ***functions*** that represent the relationships between inputs and outputs.  
-
-At the most simple level, building a model can be a short process:
-
-1. Develop an understanding of the relationship you want to model. Often, part of this "understanding" is the pattern seen in data.
-2. Choose a function type---e.g. exponential, sinusoidal, sigmoid---that you think would be a good match to the relationship.
-3. Find ***parameters*** that scales your function to be able to accept real-world inputs and generate real-world outputs.
+## Mechanism versus curve {#sec-mechanism-vs-curve}
 
 It is important to distinguish between two basic types of model:
 
@@ -212,180 +166,65 @@ It is important to distinguish between two basic types of model:
 
 We will put off mechanistic models for a while, for two reasons. First, the "fundamental laws of physics, chemistry, and such" are often expressed with the concepts and methods of calculus. We are heading there, but at this point you don't yet know the core concepts and methods of calculus. Second, most students don't make a careful study of the "fundamental laws of physics, chemistry, and such" until *after* they have studied calculus. So examples of mechanistic models will be a bit hollow at this point.
 
+Empirical models---sometimes deprecatingly called "curve fitting"---are common in many important areas: the social sciences and economics, psychology, clinical medicine, etc. A solid understanding of statistics greatly enhances the reliability of conclusions drawn from empirical models. 
+
+Outside of physical law, geometry provides many examples of mechanistic connections between elements, for example calculating the force on an arrow being pulled back by the draw of a bow. Another important area of such mechanisms is the rates of chemical reactions. Using such mechanisms, known or expected, can add reliability to models.
+
+## Polishing parameters {#sec-polishing-parameters}
+
+In @sec-polishing-promise we referred to a way to improve parameters in order to better match patterns in data: polishing. Polishing can be carried out by software such as `fitModel()`. It's worthwhile because it is easy and mostly automatic. 
+
+Polishing becomes harmful when the modeler misinterprets it as increasing the reliability of a model. Polishing can add a digit or two to a model parameter, but those digits may be irrelevant from a statistical perspective and they do not provide any warranty that the function being fitted is an appropriate approximation to the real-world situation. 
+
+An analogy might help. Polishing your teeth might make you marginally more attractive, and can be part of good hygiene, but it will not make you a better person. 
+
+::: {.callout-note}
+## Example: Peak Oil?
+
+Nowadays, everybody knows about the problems with oil consumption and climate change; bringing world oil consumption down to zero by 2050 is an often-stated goal of countries throughout the world. The basic theory of climate change is that increased CO$_2$_ from the consumption of fossil fuels causes warming via the greenhouse effect. (There are other greenhouse gasses as well such as methane.) The CO$_2$_ greenhouse phenomenon was first modeled by Svante Arrhenius in 1896. His model indicated that if atmospheric CO$_2$_ doubled, global temperature would rise by 5-6$^\circ$C. As of today, atmospheric CO$_2$_ has increased by 50% from historic levels at the start of the industrial revolution. A simple linear interpolation of Arrhenius' prediction would put global temperature increase at about 2.5$^\circ$C. This is eerily close to the present-day target of an increase by 2 degrees.
+
+Despite Arrhenius's prescience, widespread understanding of greenhouse gas effects emerged only around 1990. Up until then, the possibility of concern was that the world might run out of oil and freeze the economy. Policy makers attempted to use past data to predict future oil. These were entirely empirical models: curve fitting. The curve selected was sensible: a sigmoidal function. The time until world oil was exhausted corresponded to the sigmoidal curve reaching it's upper horizontal asymptote.
+
+@fig-peak-oil shows cumulative oil consumption globally as of each year, starting in 1900 and running through 2023. It's revealing to look at a fitted curve using data up to 1973. (In 1973 the world oil economy started to change rapidly, due to embargoes and oligopolistic behavior by leading oil producers.) The blue curve in @fig-peak-oil shows a sigmoidal function as might have been fitted in 1973.
 
 
-## AN EXAMPLE FROM THE 01-parameters chapter
-
-::: {.callout-note icon=false data-latex=""} 
-## Math in the World: Exponential COVID
-
-You can see in @fig-covid-exp2 that the exponential function plotted in $\color{blue}{\text{blue}}$ does not align perfectly with the day-by-day data. For instance, during the interval from March 8 to 21, the function output is consistently higher than the data suggest it should be. As part of the ***modeling cycle*** it is important to notice such discrepancies and try to understand them. In this case, it is likely that during the early days of the pandemic the number of reported deaths understated the actual number of COVID-related deaths. This happens because, in the early days of the pandemic, many deaths from COVID were mis-attributed to other causes.
-::: 
-
----------
+::: {#fig-peak-oil}
+```{r echo=FALSE, warning=FALSE}
+Oil <- World_oil |>
+  mutate(cumulative = cumsum(oil)) 
+# |> 
+#   filter(year < 1973)
 
 
-Effective modelers treat models with skepticism. They look for ways in which models fail to capture salient features of the real world. They have an eye out for deviations between what their models show and what they believe they know about the system being modeled. They consider ways in which the models might not serve the purpose for which they were developed.  
+Mod1 <- mosaic::fitModel(cumulative ~ A * pnorm(year, mean=M, sd=S),
+                         start=list(M=2163, S = 58, A = 1e9), 
+                         data = Oil |> filter(year < 1973),
+                         control = nls.control(maxiter=5000,
+                                               warnOnly = TRUE))
 
-When modelers spot a failure or deviation or lack of proper utility, they might discard the model but more often they make a series of small adjustments, tuning up the model until is successfully serves the purposes for which it is intended.
+Mod2 <- mosaic::fitModel(cumulative ~ A * pnorm(year, mean=M, sd=S),
+                         start=list(M=2163, S = 58, A = 1e9), 
+                         data = Oil,
+                         control = nls.control(maxiter=5000,
+                                               warnOnly = TRUE))
 
-Thus, modeling is a cyclic process of creating a model, assessing the model, and revising the model. The process comes to a sort of preliminary end when the model serves its purposes. But even then, models are often revised to check whether the results are sensitive to some factor that was not included or to check whether some component that was deemed essential really is so.
-
-
-## Example: Cooling water
-
-Looking back on the exponential fitted to the cooling water data in @sec-fit-exponential, it looks like our original estimate of the half-life is a bit too small; the data does not seem to decay at the rate implied by $k = -0.0277$. Perhaps we should try a somewhat slower decay, say $k = -0.2$ and see if that improves things.
-
-::: {.scaffolding  data-latex=""}
-In the cooling water example, we are using only a subset of the data collected by Prof. Wagon. The next commands re-create that subset so that you can work with it. They also plot the data and an exponential model.  
-
-```{r results="hide"}
-# reconstruct the sample
-set.seed(101)
-Stans_data <- CoolingWater |> sample_n(20)
-# Plot the sample and overlay a model
-gf_point(temp ~ time, data=Stans_data) %>%
-  gf_lims(y = c(20, NA)) %>%
-  slice_plot(25 + 83.3*exp(-.0277*time) ~ time, color="dodgerblue")
+Oil |>
+  gf_point(cumulative ~ year, alpha=0.2) |>
+  gf_point(cumulative ~ year, data= Oil |> filter(year < 1973),
+          alpha = 0.3) |>
+  slice_plot(Mod2(year) ~ year, color="green", domain(year=1900:2023)) |>
+  slice_plot(Mod1(year) ~ year, color="blue", domain(year=1900:2023)) |>
+  gf_labs(y = "Oil consumption (Twh)")
 ```
 
-See if $k=-0.02$ provides a better fit to the model. (You can add another `slice_plot()` to be able to compare the original and $k=-0.02$ models.)
+
+
+Total cumulative amount of oil produced (units: Terra-watt-hours) globally for each year since 1900. Blue: a sigmoidal model fitted to the data up to 1973. Green: sigmoidal model fitted with data through 2023.
 :::
 
+Such curve fitting is a fool's errand for several reasons. Although it might be sensible to imagine cumulative oil production over time as a sigmoid, there is no indication in the data that the curve is leveling off. Nor is there good reason to assume that the mechanisms that shaped the oil economy in 1920 were still in action in 1973, let alone in 2023. Not only is the model an extrapolation, but it depends on the details of polishing of sigmoidal parameters. To illustrate this sensitivity, consider the green curve in @fig-peak-oil which is fitted to the data through 2023. The observed data in 2023 is only about one-third the level of the 1973 prediction for 2023.
 
-Later in this course, we will study ***optimization***. There are optimization techniques for directing the computer to refine the parameters to best match the data. Just to illustrate, here is what we get:
+Now consider a different purpose for such modeling. Suppose we take at face value international claims of a "net-zero" CO$_2$ economy by 2050 and we want to anticipate the total cumulative effect as of that time. Draw a smooth curve continuing the oil consumption data up through 2100, with a clear leveling off around 2050. There is no precise way to do this, since there is no reason to think that the growth part of the sigmoidal curve will be the same as the leveling-off part. There is a range of plausible scenarios, but since we are already close or even at the target of a 1.5 degree increase in global temperature, it seems entirely possible that the horizontal asymptote will be above 2 or even 2.5 degrees. 
 
-```{r echo=FALSE}
-set.seed(101)
-Stans_data <- CoolingWater |> sample_n(20)
-```
-
-```{r}
-#| label: fig-Fun-4-a-2-3
-#| fig-cap: "Polishing the fit using the rough model as a starting point."
-refined_params <-
-  fitModel(temp ~ A + B*exp(k*time), data = Stans_data,
-           start = list(A = 25, B = 83.3, k = -0.0277))
-coef(refined_params)
-new_f <- makeFun(refined_params)
-gf_point(temp ~ time, data = Stans_data) %>%
-  slice_plot(new_f(time) ~ time, color="dodgerblue")
-```
-
-The refined parameters give a much better fit to the data than our original rough estimates by eye.
-
-We had two rounds of the ***modeling cycle***. First, choice of an exponential model and a rough estimate of the parameters A, B, and $k$. Second, refinement of those parameters using the computer.
-
-Looking at the results of the second round, the experienced modeler can see some disturbing discrepancies. First, the estimated baseline appears to be too high. Related, the initial decay of the model function does not seem to be fast enough and the decay of the model function for large $t$ appears to be too slow. Prof. Stan Wagon noticed this. He used additional data to fill in the gaps for small $t$ and refined his model further by changing the basis functions in the linear combination. He hypothesized that there are at least two different cooling processes. First, the newly poured water raises the temperature of the mug itself. Since the water and mug are in direct contact, this is a fast process. Then, the complete water/mug unit comes slowly into equilibrium with the room temperature. 
-
-
-The newly refined model was a even better match to the data. But nothing's perfect and Prof. Wagon saw an opportunity for additional refinement based on the idea that there is a third physical mechanism of cooling: evaporation from the surface of the hot water. Prof. Wagon's additional circuits of the modeling cycle were appropriate to his purpose, which was to develop a detailed understanding of the process of cooling. For other purposes, such as demonstrating the appropriateness of an exponential process or interpolating between the data points, earlier cycles might have sufficed.
-
-Here's a graph of the model Prof. Wagon constructed to match the data.
-
-```{r echo=FALSE}
-#| label: fig-Fun-4-a-2-4
-#| out-width: "70%"
-#| fig-align: "center"
-#| fig-cap: "A model that combines three exponentials provides an excellent fit."
-knitr::include_graphics("www/Wagon-water-fit.png")
-```
-
-This is an excellent match to the data. But ... matching the data isn't always the only goal of modeling. Prof. Wagon wanted to make sure the model was physically plausible. And looking at the refined parameters, which include two exponential processes with parameters $k_1$ and $k_2$, he saw something wrong:
-
-> *But what can we make of $k_1$, whose [positive value] violates the laws of thermodynamics by suggesting that the water gets hotter by virtue of its presence in the cool air? The most likely problem is that our simple model (the proportionality assumption) is not adequate near the boiling point. There are many complicated factors that affect heat transportation, such as air movement, boundary layer dissipation, and diffusion, and our use of a single linear relationship appears to be inadequate. In the next section [of our paper] we suggest some further experiments, but we also hope that our experiments might inspire readers to come up with a better mathematical model.*
-
-The modeling cycle can go round and round!
-
-## Example: The tides
-
-In @sec-fit-periodic we looked at a sinusoid model of tide levels in Rhode Island. We left unresolved how to refine the estimate of the period $P$ and find the time offset $t_0$ in the sinusoidal model $$\text{tide}(t) \equiv A \sin\left(\frac{2\pi}{P} (t-t_0)\right) + B$$ 
-
-$${\color{blue}{\text{tide}(t)} \equiv 1.05 + 0.55 \sin(2\pi (t - t_0)/11)}$$
-
-The new parameter, $t_0$, should be set to be the time of a positive-going crossing of the baseline. Looking at the tide data (black) plotted in @fig-Fun-4-a-3-4 we can pick out  such a crossing at about time = 17. Happily, changing the phase does not itself necessitate re-estimating the other parameters: baseline, amplitude, period. This model, incorporating the phase, has been graphed in $\color{blue}{\text{blue}}$.
-
-```{r echo=FALSE, fig.show="hold"}
-#| label: fig-Fun-4-a-3-4
-#| out-width: "50%" 
-#| fig-cap: "Shifting the **phase** of the sinusoid gives the flexibility needed to align the peaks and troughs of the model with the data. Performing this alignment for one peak makes it clear that the period is wrong."
-mod1 <- makeFun(1.05 + 0.55*sin(2*pi*hour/13) ~ hour)
-mod2 <- makeFun(1.05 + 0.55*sin(2*pi*(hour-17)/13) ~ hour)
-gf_line(level ~ hour,
-         data = RI_tide |> filter(hour < 25)) %>%
-  slice_plot(mod2(hour) ~ hour, color="dodgerblue") %>%
-  gf_labs(y="Water level (meters)", x="Time (hours)") %>%
-  gf_lims(y =c(0, 2))
-gf_line(level ~ hour,
-         data = RI_tide |> filter(hour > 90)) %>%
-  slice_plot(mod2(hour) ~ hour, color="dodgerblue") %>%
-  gf_labs(y="Water level (meters)", x="Time (hours)")%>%
-  gf_lims(y =c(0, 2))
-```
-
-For some modeling purposes, such as prediction of future tides, the phase information is essential. For others, say, description of the amplitude of the tides, not. But getting the phase roughly right can help point out other problems. For instance, in the left panel of @fig-Fun-4-a-3-4 the blue model is roughly aligned with the data. Not at all so in the right panel. What leads to the discrepancy is a bad estimate for the period. 13 hours is roughly right, but over a five-day period the error accumulates until, in the right panel, the model has a trough where the data peak, and *vice versa*. 
-
-Although the blue sinusoid is not perfect, having it for comparison suggests that the previously estimated period of 13 hours is too long. We can shorten the period gradually in our model until we find something that better matches the data. For example: @fig-Fun-4-a-3-5 shows that a period of 12.3 hours is a good match to the data. 
-
-With this refinement the model is
-$${\color{green}{\text{tide}(t)} \equiv 1.05 + 0.55 \sin(2\pi (t - 17)/12.3)}$$
-
-```{r echo=FALSE}
-#| label: fig-Fun-4-a-3-5
-#| fig-cap: "With the phase about right, a better estimate can be made of the period: 12.3 hours."
-mod3 <- makeFun(0.55*sin(2*pi*(hour-17)/12.3) + 1.05 ~ hour)
-gf_line(level ~ hour, data = RI_tide) %>%
-  slice_plot(mod3(hour) ~ hour, color="violet") %>%
-  gf_labs(y="Water level (meters)", x="Time (hours)", title="Period 12.3 hours") %>%
-  gf_lims(y =c(0, 2))
-```
-We might call it quits with the model in @fig-Fun-4-a-3-5. But once we have a pretty good model fit, it is easy to polish the parameter estimates, letting the computer do the tedious work of trying little tweaks to see if it can improve the fit.
-
-The R/mosaic `fitModel()` can do this tweaking for us. As the following commands show, `fitModel()` takes a tilde expression as input. To the left  of the tilde goes the name of the function output in the data frame being used. The right side is a formula for the model, with names used for each parameter and using the names of inputs from the data frame. The second argument is the data frame. The third argument is used to convey an estimate for each parameter; that estimate should be pretty good if `fitModel()` is to be able to refine it.
-
-The output from `fitModel()` is a function, which we are naming `tide_mod()`. 
-
-```{r}
-tide_mod <-
-  fitModel(level ~ A + B*sin(2*pi*(hour-t0)/P),
-  data = RI_tide,
-  start=list(A=1.05, B=0.55, t0=17, P=12.3))
-coef(tide_mod)
-```
-
-The command `coef(tide_mod)` displays the parameters found by `fitModel()` which will be an improvement---perhaps a big improvement, perhaps not---on our original estimates.
-
-
-These new parameters differ only slightly from the ones shown in @fig-Fun-4-a-3-5, but the match to the data with the new coefficients is discernably better, even by eye.
-
-```{r echo=FALSE}
-#| label: fig-Fun-4-a-3-6
-#| fig-cap: "Polishing the parameters of the sinusoid"
-mod4 <- makeFun(tide_mod)
-gf_line(level ~ hour, data = RI_tide) %>%
-  slice_plot(mod4(hour) ~ hour, color="orange3", npts=200) %>%
-  gf_labs(y="Water level (meters)", x="Time (hours)", title="After polishing by the computer") %>%
-  gf_lims(y =c(0, 2))
-```
-This last model seems capable of making reasonable predictions, so if we collected up-to-date data we might be able to fit a new model to predict the tide level pretty accurately a few days ahead of time. Also, the excellent alignment of the model peaks with the data tell us that the cyclic tide has a period that is constant, at least so far as we can tell.  
-
-With the period estimate $P=12.56$ hours, we can go looking for other phenomena that might account for the tides. The period of the day-night cycle is, of course 24 hours. So the tides in Providence come in and out twice a day. But not exactly. Something else must be going on.
-
-Isaac Newton was the first to propose that the tides were caused by the gravitational attraction of the Moon. A complete cycle of the Moon---moon rise to moon rise---takes about 50 minutes longer than a full day: the Earth revolves once every 24 hours, but in that time the Moon has moved a bit further on in its orbit of the Earth. So the Moon's period, seen from a fixed place on Earth is about 24.8 hours. Half of this, 12.4 hours, is awfully close to our estimate of the tidal period: 12.56 hours. The difference in periods, 8 minutes a day, might be hard to observe over only 4 days. Maybe with more data we'd get a better match between the tides and the moon.
-
-This is the modeling cycle at work: Propose a model form (a sinusoid), adjust parameters to match what we know (the Providence tide record), compare the model to the data, observe discrepancies, propose a refined model. You can stop the model when it is giving you what you need. The period 12.56 hour model seems good enough to make a prediction of the tide level a few days ahead, and is certainly better than the "two tides a day" model. But our model is not yet able to implicate precisely the Moon's orbit in tidal oscillations.
-
-Discrepancies between a model and data play two roles: they help us decide if the model is fit for the purpose we have in mind and they can point the way to improved models. That the tidal data deviates from the steady amplitude of our model can be a clue for where to look next. It is not always obvious where this will lead.
-
-Historically, careful analysis of tides led to a highly detailed, highly accurate model: a linear combination of sinusoids with periods near a half-day 12.42 , 12.00, 12.66, and 11.97 hours as well components with periods that are about a day long 23.93, 25.82, 24.07, 26.87, and 24.00 hours. A tide-prediction model is constructed by finding the coefficients of the linear combination; these differ from locale to locale. There is no global model of tides, but rather a framework of linear combinations of sinusoids of different periods. What customizes the framework to the tides in a particular locale is the coefficients used in the linear combination.  
-
-::: {.example data-latex=""}
-Polishing the phase (optional)
-
-Linear combination to represent phase shift.
-$\sin(x + \phi) = \cos(\phi)\sin(x) + \sin(\phi) \cos(x)$
-
-$C \sin(x +\phi) = A \sin(x) + B \cos(x)$ where $C^2 = A^2 + B^2$ and $\phi=\arctan(A/B)$
-:::
-
+Fortunately, unlike in 1973, there are now detailed mechanistic climate models relating CO$_2$ to global temperatures. We will have to pay careful attention to their predictions as we head toward the goal of net-zero emissions. 
 
