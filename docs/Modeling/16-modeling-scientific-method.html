@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.55">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>16&nbsp; Modeling and the scientific method – MOSAIC Calculus</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../Modeling/Modeling-projects.html" rel="next">
+<link href="../Modeling/15-dimensions.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+</head><body class="nav-sidebar floating nav-fixed"><span class="math inline" style="display: none;">
+\(\newcommand{\line}{\text{line}}
+\newcommand{\hump}{\text{hump}}
+\newcommand{\sigmoid}{\text{sigmoid}}
+\newcommand{\recip}{\text{recip}}
+\newcommand{\diff}[1]{{\cal D}_#1}
+\newcommand{\pnorm}{\text{pnorm}}
+\newcommand{\dnorm}{\text{dnorm}}
+\let\origvec\vec
+\let\origmathit\mathit
+\let\orighat\hat
+\let\origbar\bar
+\newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+\newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+\newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+\newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+\newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+\newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+\newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+\newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+\newcommand{\modeledby}[2]{#1\!\sim\!#2}
+\newcommand{\CC}[1]{\color{#648fff}{#1}}
+\newcommand{\CE}[1]{\color{#785ef0}{#1}}
+\newcommand{\CA}[1]{\color{#dc267f}{#1}}
+\newcommand{\CB}[1]{\color{#fe6100}{#1}}
+\newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+</span>
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../www/Cover-1.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">MOSAIC Calculus</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+    <a href="https://github.com/dtkaplan/MC2/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../modeling-part.html">BLOCK I. Modeling</a></li><li class="breadcrumb-item"><a href="../Modeling/16-modeling-scientific-method.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling and the scientific method</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PRELIMINARIES</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/01-quant-fun-space.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/07-data-functions-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data, functions, graphics</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK I. Modeling</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/08-parameters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/09-assembling-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/10-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/11-fitting-features.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/12-low-order-polynomials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/13-operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/14-magnitudes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/15-dimensions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/16-modeling-scientific-method.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling and the scientific method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/Modeling-projects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Projects</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#example-cooling-water" id="toc-example-cooling-water" class="nav-link active" data-scroll-target="#example-cooling-water"><span class="header-section-number">16.1</span> Example: Cooling water</a></li>
+  <li><a href="#identifying-systematic-discrepancies" id="toc-identifying-systematic-discrepancies" class="nav-link" data-scroll-target="#identifying-systematic-discrepancies"><span class="header-section-number">16.2</span> Identifying systematic discrepancies</a></li>
+  <li><a href="#refine-the-data-refine-the-experimental-technique" id="toc-refine-the-data-refine-the-experimental-technique" class="nav-link" data-scroll-target="#refine-the-data-refine-the-experimental-technique"><span class="header-section-number">16.3</span> Refine the data, refine the experimental technique</a></li>
+  <li><a href="#including-new-influences" id="toc-including-new-influences" class="nav-link" data-scroll-target="#including-new-influences"><span class="header-section-number">16.4</span> Including new influences</a></li>
+  <li><a href="#interpolation-and-extrapolation" id="toc-interpolation-and-extrapolation" class="nav-link" data-scroll-target="#interpolation-and-extrapolation"><span class="header-section-number">16.5</span> Interpolation and extrapolation</a></li>
+  <li><a href="#sec-mechanism-vs-curve" id="toc-sec-mechanism-vs-curve" class="nav-link" data-scroll-target="#sec-mechanism-vs-curve"><span class="header-section-number">16.6</span> Mechanism versus curve</a></li>
+  <li><a href="#sec-polishing-parameters" id="toc-sec-polishing-parameters" class="nav-link" data-scroll-target="#sec-polishing-parameters"><span class="header-section-number">16.7</span> Polishing parameters</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Modeling/16-modeling-scientific-method.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../modeling-part.html">BLOCK I. Modeling</a></li><li class="breadcrumb-item"><a href="../Modeling/16-modeling-scientific-method.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling and the scientific method</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-modeling-science-method" class="quarto-section-identifier"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling and the scientific method</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Block 2 is entitled “Modeling,” and for good reason. This Block has introduced techniques and concepts that provide essential tools for constructing models but do not require an understanding of the operations of Calculus. In the following Blocks, we will study additional techniques and concepts. That study requires us to do two things at once: introduce the concepts and methods of Calculus and show examples of how they apply to modeling.</p>
+<p>Before continuing with more mathematics, it is helpful to put modeling in context. That context doesn’t come from the mathematics. Instead, it comes from science and, particularly, the <strong>scientific method</strong>.</p>
+<p>One description of the scientific method, arising in the mid-20th century, is the <a href="https://en.wikipedia.org/wiki/Hypothetico-deductive_model"><strong>hypothetico-deductive</strong> model</a>. The process embedded in the hypothetical-deductive model consists of formulating a hypothesis to describe the world, deducing consequences from this hypothesis, and carrying out experiments to look for those consequences. If the consequences are experimentally observed, the experiment corroborates the hypothesis. If not, the experiment refutes the hypothesis. In the progess of science, refuted hypotheses are replaced with alternatives that are compatible with the assembled experimental data. And the cycle of experiment, corroboration or refutation, and hypothesis generation begins again.</p>
+<p>A good analogy for the scientific method comes from detective books and movies. The heroes of the genre—Sherlock Holmes and Hercule Poirot are famously such—are playing the role of the modeler. The detectives’ methods include fingerprints, chemical detection of traces of poison, clever interrogation of suspects and witnesses, etc. These are analogous to the various methods we have and will be studying in this Book. In each detective story, the detective has a goal, often set by the client and identified at the beginning. Goals include identifying the criminal, forestalling a crime, recovering an object of value, and tracking down a missing person. Similarly, good modelers also know what is the objective of their work. Each individual case will have its distinct objective, but in general the objective is to help a person or an organization make a decision: what should be the parameters of a new design, how best to set the operating levels in production, what will be likely outcomes of a new policy, among others.</p>
+<p>Once the objective has been identified, the scientific method is put to work. The detective collects whatever relevant information is readily available. Based on this information, the detective concocts one or more theories to make sense of the information. Such theories motivate the search for new information. Based on that information or a new development in the case, the theories are refined, discarded, or replaced. The new theories suggest what new data should be collected and how old information should be re-interpreted. This cycle continues. Theories are put to the test.</p>
+<p>Every detective has access to a rich body of knowledge that provides analogies to the case at hand. In detective fiction, that knowledge often comes from experience with previous crimes, ploys and scams used by criminals, wills revised under duress, heiresses who lose their memory, and so on. The detective puts together a more or less plausible theory from these components.</p>
+<p>Similarly, in large part, the ability to model comes from knowing about the kinds of techniques that other modelers have found useful. You have met some of these already: functions, low-order polynomials, quantities and their dimensions, ways for dealing with a wide range of magnitudes, setting parameters, etc. In the upcoming Blocks, you’ll learn new techniques that involve understanding relationships between information that comes in different forms. You’ll also learn important ways to extract conclusions from the models you construct.</p>
+<p>This chapter shows, by example, some widely used modeling techniques. It also shows some automated methods, e.g., model polishing, that can improve a model. And, it’s important to consider potential pitfalls and commonly held modeling misconceptions that mislead modelers down perilous and pointless paths.</p>
+<section id="example-cooling-water" class="level2" data-number="16.1">
+<h2 data-number="16.1" class="anchored" data-anchor-id="example-cooling-water"><span class="header-section-number">16.1</span> Example: Cooling water</h2>
+<p><a href="11-fitting-features.html" class="quarto-xref"><span>Chapter 11</span></a> presented data on water cooling from near boiling to room temperature. (See <a href="11-fitting-features.html#fig-stans-data" class="quarto-xref">Figure&nbsp;<span>11.2</span></a>.) Prof.&nbsp;Stan Wagon of Macalester College collected the data with a purpose in mind: to see whether <em>Newton’s Law of Cooling</em> provides a good description of the actual physical process. In particular, Wagon knew that a simple application of Newton’s Law implies that the water temperature will decay exponentially.</p>
+<p><a href="#fig-water-exponential" class="quarto-xref">Figure&nbsp;<span>16.1</span></a> shows an exponential function fitted to the water-cooling data. The fitted function is stored as <code>Mod1_fun()</code> with the <code>1</code> identifying it as the first of possibly several models.</p>
+<div id="fig-water-exponential" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-water-exponential-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Mod1_fun <span class="ot">&lt;-</span> mosaic<span class="sc">::</span><span class="fu">fitModel</span>(temp <span class="sc">~</span> A<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>k<span class="sc">*</span>time) <span class="sc">+</span> C, </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">data =</span> CoolingWater,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">start =</span> <span class="fu">list</span>(<span class="at">C =</span> <span class="dv">30</span>, <span class="at">k =</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">20</span>, <span class="at">A =</span> <span class="dv">70</span>))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(temp <span class="sc">~</span> time, <span class="at">data =</span> CoolingWater, <span class="at">alpha =</span> .<span class="dv">15</span> ) <span class="sc">|&gt;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_plot</span>(<span class="fu">Mod1_fun</span>(time) <span class="sc">~</span> time, <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"Time (minutes)"</span>, <span class="at">y=</span><span class="st">"Temperature (deg. C)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="16-modeling-scientific-method_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-water-exponential-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16.1: An exponential model (blue) fitted to the <code>CoolingWater</code> data. <span class="math display">\[T(t) \equiv 27.0 + 62.1\ e^{-0.021 t}\]</span>
+</figcaption>
+</figure>
+</div>
+<p>At first glance, the exponential function seems a good match to the data. But what do we mean by “good?” Is “good” good enough? And “good enough” for what? The experienced modeler should always have in mind the criterion by which to evaluate “good enough.” These criteria, in turn, are shaped by the purpose of building the model.</p>
+<p>Beware of general-purpose criteria. For instance, a general-purpose criterion is to compare the shape of the function with the data. The exponential model slopes and curves in a similar manner to the data. The deviation of the model output from the data is, at worst, just a few degrees. This is small compared to the 50<span class="math inline">\(^\circ\)</span>C change in temperature throughout the experiment.</p>
+<p>Another widely used general-purpose statistical measure of the quality of the match is the R<sup>2</sup> (R-squared) value. Mathematically, R<sup>2</sup> is always between 0 and 1. (See <span class="quarto-unresolved-ref">?sec-stat-modeling</span>, where the mathematics of R<sup>2</sup> is introduced.) When R<sup>2</sup> = 1, the match is perfect. For the <code>Mod1_fun()</code> and the cooling water data, R<sup>2</sup> = 0.991. Many scientists would interpret this as “almost perfect,” although things are sometimes more complicated … as here.</p>
+<p>Wagon’s purpose was not simply to see if an exponential curve resembles the data. Instead, he wanted to know if Newton’s Law of Cooling was consistent with the observed cooling over time. The exponential shape of temperature versus time is just one consequence of Newton’s Law. Another is that the water temperature should eventually reach equilibrium at room temperature.</p>
+<p>The fitted exponential model fails here, as you can see by zooming in on the right tail of <a href="#fig-water-exponential" class="quarto-xref">Figure&nbsp;<span>16.1</span></a>. In <a href="#fig-water-exponential-tails" class="quarto-xref">Figure&nbsp;<span>16.2</span></a>, we zoom in on the data’s left and right tails.</p>
+<div id="fig-water-exponential-tails" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-water-exponential-tails-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+
+</div>
+<div class="cell quarto-layout-panel" data-layout-align="center" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="16-modeling-scientific-method_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="16-modeling-scientific-method_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-water-exponential-tails-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16.2: The exponential model does not capture the water’s initial almost-boiling temperature. To judge from the <span class="math inline">\(A\)</span> coefficient presented in the caption of <a href="#fig-water-exponential" class="quarto-xref">Figure&nbsp;<span>16.1</span></a>, the room temperature is 27<span class="math inline">\(^\circ\)</span>C, while the data themselves indicate a room temperature a little less than 25<span class="math inline">\(^\circ\)</span>C.
+</figcaption>
+</figure>
+</div>
+<p>In the scientific method, one takes a theory (Newton’s Law of Cooling), makes predictions from that theory, and compares the predictions to observed data. If the predictions do not match the theory—here, that the water should cool to room temperature—then a creative process is called for, replacing or modifying the theory. The same applies when a mathematical model fails to suit its original purpose.</p>
+<p>The creative process of constructing or modifying a theory is not primarily a matter of mathematics, it usually involves <em>expert knowledge</em> about the system being modeled. In the case of a cooling mug of water, the “expertise” can be drawn from everyday experience. For instance, everybody knows that it is not entirely a matter of the water cooling off; the mug gets hotter and then cools in its own fashion to room temperature.</p>
+<p>Wagon’s initial modification of the theory went like this: Newton’s Law still applies, but with the water in contact with both the room and, more strongly, the mug. To build this model, he needed to draw on the mathematics of dynamical systems (to be introduced in Block 5), producing a new parameterized formula of water temperature versus time.</p>
+<p>Wagon went on to check the water-mug-room theory against the data. He found that the improved model did not completely capture the temperature-versus-time data. He applied more expertise, that is, he considered something we all observe: water vapor (“steam”) rises from the water in the mug. This prompted some experimental work where a drop of oil was placed on the water surface to block the vapor. This experiment convinced him that a new revision to the model was called for that would include the cooling due to evaporation.</p>
+<p>Without being able to anticipate the settings and purposes for your model building, we can’t pretend to teach you the real-world expertise you will need. But we can do something to help you move forward in your work. The remaining sections of this chapter introduce some general-purpose mathematical approaches to refining models. For instance, rather than using a single exponential function, Wagon used a linear combination of exponentials for his modeling. We will also try to warn you of potential pitfalls and ways you can mislead yourself.</p>
+</section>
+<section id="identifying-systematic-discrepancies" class="level2" data-number="16.2">
+<h2 data-number="16.2" class="anchored" data-anchor-id="identifying-systematic-discrepancies"><span class="header-section-number">16.2</span> Identifying systematic discrepancies</h2>
+<p>Refer to <a href="#fig-water-exponential" class="quarto-xref">Figure&nbsp;<span>16.1</span></a>, which shows the measured temperature data along with the initial fitted exponential model. The data systematically differ from the model in four places: the model underestimates the temperature early in the process, then overestimates for an interval, returns later to an underestimation, and finishes up with an overestimation.</p>
+<p>When assessing a model, it is a good practice to calculate the <em>difference</em> between the observed data and the model value. <a href="#fig-water-residuals" class="quarto-xref">Figure&nbsp;<span>16.3</span></a> shows this difference, calculated simply by subtracting from each data point the model value at the corresponding time. In statistical nomenclature, such differences are called the “<strong>residuals</strong>” from the model.</p>
+<div id="fig-water-residuals" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-water-residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>(temp <span class="sc">-</span> <span class="fu">Mod1_fun</span>(time) <span class="sc">~</span> time, <span class="at">data =</span> CoolingWater) <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">x =</span> <span class="st">"Time (minutes)"</span>, <span class="st">"Residual (deg C)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="16-modeling-scientific-method_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-water-residuals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16.3: Residuals versus time. The comparatively smooth structure indicates systematic deviations between the model and the data.
+</figcaption>
+</figure>
+</div>
+<p>The presence of <em>noise</em> in any measurement is to be expected. You can see such noise in <a href="#fig-water-residuals" class="quarto-xref">Figure&nbsp;<span>16.3</span></a> in the small, irregular, trembling fluctuations. Conversely, any smooth, slowly changing pattern in the residuals is considered <strong>systematic</strong> variation. Here, those smooth variations are much larger in amplitude than the irregular noise, indicating that we should investigate the systematic variation more closely.</p>
+<p>This is a chance for the modeler to speculate on what might be causing the systematic deviations. A good place to start is with the largest residuals. In this case, that’s at the beginning of the temperature recording. Note that early in the recording, the recorded temperature falls much faster than in the model. This is perhaps clearer with reference to <a href="#fig-water-exponential" class="quarto-xref">Figure&nbsp;<span>16.1</span></a>.</p>
+<p>What physical process might lead to the initial fast cooling of the water? Answering this question requires both detailed knowledge of how the system works and some creativity. As mentioned above, Wagon speculated that the water might be cooling in two ways: i) heat moving from the water to the air in the room and ii) heat moving from the water into the adjacent mug. This second process can be fast, making it a candidate for explaining the residuals in the early times of the experiment.</p>
+<p>A quick test of the speculation is to construct a linear combination of two exponential processes, one fast and one slower. This would be difficult to do by eye using the techniques of <a href="08-parameters.html" class="quarto-xref"><span>Chapter 8</span></a>, but <code>fitModel()</code> can accomplish the task so long as we can give a rough estimate of suitable numerical values for the parameters. <a href="#fig-water-two-exps" class="quarto-xref">Figure&nbsp;<span>16.4</span></a> shows the resulting function and the residuals.</p>
+<div id="fig-water-two-exps" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-water-two-exps-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+
+</div>
+<div class="cell quarto-layout-panel" data-layout-align="center" data-layout-ncol="1">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="16-modeling-scientific-method_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="16-modeling-scientific-method_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-water-two-exps-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16.4: The water-cooling model with two exponential processes, one fast and one slow, and the residuals from the observed data.
+</figcaption>
+</figure>
+</div>
+<p><a href="#fig-water-two-exps" class="quarto-xref">Figure&nbsp;<span>16.4</span></a> shows a much-improved match between the model and the data. The residuals are about one-tenth as large as those from the original model.</p>
+<p>Depending on the purpose for which the modeling is being done, this might be the end of the story. The model is within a few tenths of a degree C from the data, good enough for purposes such as prediction. For Prof.&nbsp;Wagon, however, the purpose was to investigate how complete an explanation Newton’s Law of Cooling is for the physical process. He concluded that the residuals in <a href="#fig-water-two-exps" class="quarto-xref">Figure&nbsp;<span>16.4</span></a> still show systematic patterns.</p>
+</section>
+<section id="refine-the-data-refine-the-experimental-technique" class="level2" data-number="16.3">
+<h2 data-number="16.3" class="anchored" data-anchor-id="refine-the-data-refine-the-experimental-technique"><span class="header-section-number">16.3</span> Refine the data, refine the experimental technique</h2>
+<p>The initial model building often suggests how new, informative data might be collected. It’s impossible to generalize this to all situations, but in Prof.&nbsp;Wagon’s work, two possibilities arise:</p>
+<ol type="1">
+<li><p>Measure the temperature of the mug directly, as well as the temperature of the water.</p></li>
+<li><p>Stifle other possible physical processes, such as <em>evaporation</em> of water from the top surface of the liquid, and collect new data</p></li>
+</ol>
+<p>Prof.&nbsp;Wagon managed (2) by putting a small drop of oil on the water right after it was poured into the mug. This created a thin layer that hindered evaporation. He expected that canceling this non-Newtonian process would make the Newton model a better fit to the new data, providing an estimate of the magnitude of the evaporation effect.</p>
+</section>
+<section id="including-new-influences" class="level2" data-number="16.4">
+<h2 data-number="16.4" class="anchored" data-anchor-id="including-new-influences"><span class="header-section-number">16.4</span> Including new influences</h2>
+<p>In many situations, there is data on more than one factor that might come into play in determining the response variable. The mathematical methods relating to linear combinations covered in Block 3 provide the basic toolkit for considering such new influences. In Block 5, you will see many examples of situations where the system’s behavior depends critically on the interaction between two competing factors.</p>
+<p>The closely related topic of <em>statistical modeling</em> provides essential concepts and tools for deciding whether to incorporate an additional input to a model function. Part of the importance of a statistical approach comes from a mathematical paradox that will be discussed in Block 4. Whenever you have a model of a response variable in terms of explanatory variables there will be residuals. Adding in a new response variable, even if it is utterly unrelated to the system, will make the residuals smaller. Statistical method provides the means to avoid mistakenly including the new response variable by comparing the actual reduction in residuals to what would be expected from a generic random variable.</p>
+<p>Another important statistical topic is causality: reasoning about what causes what. Often, the modeler’s understanding of how the system under study works can guide the choice of additional variables to include in a model.</p>
+<p>Space precludes detailed consideration of the statistical phenomena in this book, although the techniques used are well within the capabilities of anyone who has completed this book through Block 3.</p>
+<p>It’s worth point out a regretable fact of life in the academic world covering the quantitative science. At almost all institutions (as of 2024), calculus is taught in a manner that is totally disconnected from statistics and data science. In part, this is because the professional training of mathematics instructors does not include an emphasis on statistics. This is an artifact of history and is slowly being addressed. <em>MOSAIC Calculus</em> is the result of a successful program to integrate modeling, statistics, calculus, and computing—the M S C of MoSaiC. To fit in with the academic structure at most universities, it was necessarily to deliver the integrated material in a form that could be slotted into existing Calculus curricula and, separately, into existing statistics curricula. The statistics part of the integrated curriculum is packaged into another free, online textbook: <a href="https://dtkaplan.github.io/Lessons-in-statistical-thinking">Lessons in Statistical Thinking</a>.</p>
+</section>
+<section id="interpolation-and-extrapolation" class="level2" data-number="16.5">
+<h2 data-number="16.5" class="anchored" data-anchor-id="interpolation-and-extrapolation"><span class="header-section-number">16.5</span> Interpolation and extrapolation</h2>
+<p>Models are most reliable when the domain of the functions is considered to be the span of the data or observations underlying them. Evaluating a function <em>inside</em> the span of the data is called “<strong>interpolation</strong>.” Conversely, sometimes functions are evaluated at inputs far outside the span of the data used to construct the function. This is “<strong>extrapolation</strong>.”</p>
+<p>Extrapolation is unreliable. However, sometimes, the purpose of a model is to help us consider how a system might behave when inputs are outside of the span of already-observed data. To satisfy such a purpose, extrapolation is unavoidable.</p>
+<p>Still, it is possible to adopt mathematical methods that mitigate the impact of extrapolation. It’s key, for instance, to <em>avoid high-order polynomials</em>, as these produce some of the most extreme and misleading behavior. (See <span class="quarto-unresolved-ref">?sec-polynomials</span>.) More reliable alternatives include using only <em>low-order polynomials</em> (as already described in <a href="12-low-order-polynomials.html" class="quarto-xref"><span>Chapter 12</span></a>), localized functions such as the sigmoid or gaussian, or splines (<span class="quarto-unresolved-ref">?sec-splines</span>).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Example: Extrapolating gravitation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Isaac Newton famously developed his universal theory of gravitation by examining the orbits of planets. Planets close to the sun feel a strong tug of the Sun’s gravity, and farther-out planets have receive a weaker tug. Similarly, the motion of satellites around the Earth is determined mainly by the Earth’s gravitational pull. Per Newton’s theory, the acceleration due to gravity goes as the <em>inverse-square</em> of distance from the center of the Earth. Far-away satellites have long orbits, close-in satellites orbit with far lower orbital duration.</p>
+<p>Planets orbit outside the Sun. Satellites orbit outside the Earth. Application of the inverse-square law to forces <em>outside</em> the Sun or <em>outside</em> the Earth are interpolation. But there are no observations of orbits or forces <em>inside</em> the Sun or Earth. So using the inverse-square law for inside forces is an extrapolation. This extrapolation produces catastrophically misleading models. In reality, the gravitational force on the inside—as you might imagine in a tunnel going through the center of the Earth—increases linearly with distance from the center. (Newton’s theory explains the mechanics of this.)</p>
+</div>
+</div>
+</section>
+<section id="sec-mechanism-vs-curve" class="level2" data-number="16.6">
+<h2 data-number="16.6" class="anchored" data-anchor-id="sec-mechanism-vs-curve"><span class="header-section-number">16.6</span> Mechanism versus curve</h2>
+<p>It is important to distinguish between two basic types of model:</p>
+<ol type="1">
+<li><strong><em>Empirical models</em></strong> which are rooted in <strong><em>observation</em></strong> and <strong><em>data</em></strong>.</li>
+<li><strong><em>Mechanistic models</em></strong> such as those created by applying fundamental laws of physics, chemistry, etc.</li>
+</ol>
+<p>We will put off mechanistic models for a while, for two reasons. First, the “fundamental laws of physics, chemistry, and such” are often expressed with the concepts and methods of calculus. We are heading there, but at this point you don’t yet know the core concepts and methods of calculus. Second, most students don’t make a careful study of the “fundamental laws of physics, chemistry, and such” until <em>after</em> they have studied calculus. So examples of mechanistic models will be a bit hollow at this point.</p>
+<p>Empirical models (sometimes deprecatingly called “curve fitting”) are common in many vital areas such as the social sciences and economics, psychology, clinical medicine, etc. A solid understanding of statistics greatly enhances the reliability of conclusions drawn from empirical models.</p>
+<p>In addition to physical law, geometry provides many examples of mechanistic connections between elements. An example is the geometric calculation of the forward force on an arrow being pulled back by a bow’s draw.</p>
+</section>
+<section id="sec-polishing-parameters" class="level2" data-number="16.7">
+<h2 data-number="16.7" class="anchored" data-anchor-id="sec-polishing-parameters"><span class="header-section-number">16.7</span> Polishing parameters</h2>
+<p>In <a href="11-fitting-features.html#sec-polishing-promise" class="quarto-xref"><span>Section 11.6</span></a>, we referred to a way to improve parameters in order to better match patterns in data: polishing. Polishing can be carried out by software such as <code>fitModel()</code>. It is usually worthwhile because it is easy and mostly automatic.</p>
+<p>Polishing becomes harmful when the modeler misinterprets it as increasing a model’s reliability. Polishing can add a digit or two to a model parameter. Still, those digits may be irrelevant from a statistical perspective and do not provide any warranty that the fitted function is an appropriate approximation to the real-world situation.</p>
+<p>An analogy might help. Polishing your teeth might make you marginally more attractive, and can be part of good hygiene, but it will not make you a better person.</p>
+<div id="thm-peak-oil" class="theorem" style="display: none;">
+<p><span class="theorem-title"><strong>Application area 16.1</strong></span> We look at attemps in the 1970s to predict when oil production and consumption will reach its peak.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<a href="#thm-peak-oil" class="quarto-xref">Application area&nbsp;<span>16.1</span></a> Peak Oil?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nowadays, everybody knows about the problems with oil consumption and climate change; bringing world oil consumption down to zero by 2050 is an often-stated goal of countries throughout the world. The basic theory of climate change is that increased CO<span class="math inline">\(_2\)</span>_ from the consumption of fossil fuels causes warming via the greenhouse effect. (There are other greenhouse gasses as well such as methane.) The CO<span class="math inline">\(_2\)</span>_ greenhouse phenomenon was first modeled by Svante Arrhenius in 1896. His model indicated that if atmospheric CO<span class="math inline">\(_2\)</span>_ doubled, global temperature would rise by 5-6<span class="math inline">\(^\circ\)</span>C. As of today, atmospheric CO<span class="math inline">\(_2\)</span>_ has increased by 50% from historic levels at the start of the industrial revolution. A simple linear interpolation of Arrhenius’ prediction would put global temperature increase at about 2.5<span class="math inline">\(^\circ\)</span>C. This is eerily close to the present-day target of an increase by 2 degrees.</p>
+<p>Despite Arrhenius’s prescience, widespread understanding of greenhouse gas effects emerged only around 1990. Up until then, the possibility of concern was that the world might run out of oil and freeze the economy. Policy makers attempted to use past data to predict future oil. These were entirely empirical models: curve fitting. The curve selected was sensible: a sigmoidal function. The exhaustion of oil corresponds to reaching the sigmoid’s upper horizontal asymptote is reach.</p>
+<p><a href="#fig-peak-oil" class="quarto-xref">Figure&nbsp;<span>16.5</span></a> shows <em>cumulative</em> oil consumption globally. The value for each year corresponds to all consumption from 1900 up to the given year. It’s revealing to look at a fitted curve using data up to 1973. (In 1973, the world’s oil economy started to change rapidly due to embargoes and oligopolistic behavior by leading oil producers.) The blue curve in <a href="#fig-peak-oil" class="quarto-xref">Figure&nbsp;<span>16.5</span></a> shows a sigmoidal function as might have been fitted in 1973.</p>
+<div id="fig-peak-oil" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-peak-oil-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="16-modeling-scientific-method_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-peak-oil-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16.5: The total cumulative amount of oil produced (units: Terra-watt-hours) globally for each year since 1900. Blue: a sigmoidal model fitted to the data up to 1973. Green: sigmoidal model fitted with data through 2023.
+</figcaption>
+</figure>
+</div>
+<p>Such curve fitting is a fool’s errand for several reasons. Although it might be sensible to imagine cumulative oil production over time as a sigmoid, there is no indication in the data that the curve is leveling off. Nor is there good reason to assume that the mechanisms that shaped the oil economy of 1920 were still in action in 1973, let alone in 2023. Not only is the model an extrapolation, but it depends on the details of polishing of sigmoidal parameters. To illustrate this sensitivity, consider the green curve in <a href="#fig-peak-oil" class="quarto-xref">Figure&nbsp;<span>16.5</span></a> which is fitted to the data through 2023. The observed data in 2023 is only about one-third the level of the 1973 prediction for 2023.</p>
+<p>Now consider a different purpose for such modeling. Suppose we take at face value international claims of a “net-zero” CO<span class="math inline">\(_2\)</span> economy by 2050 and we want to anticipate the total cumulative effect as of that time. Draw a smooth curve continuing the oil consumption data up through 2100, with a leveling off around 2050. There is no precise way to do this, since there is no reason to think that the growth part of the sigmoidal curve will be the same as the leveling-off part. There is a range of plausible scenarios, but since we are already close or even at the target of a 1.5 degree increase in global temperature, it seems entirely possible that the horizontal asymptote will be above 2 or even 2.5 degrees.</p>
+<p>Fortunately, unlike in 1973, there are now detailed mechanistic climate models relating CO<span class="math inline">\(_2\)</span> to global temperatures. We will have to pay careful attention to their predictions as we head toward the goal of net-zero emissions.</p>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/dtkaplan\.github\.io\/MC2\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../Modeling/15-dimensions.html" class="pagination-link" aria-label="Dimensions and units">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../Modeling/Modeling-projects.html" class="pagination-link" aria-label="Projects">
+        <span class="nav-page-text">Projects</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Modeling/16-modeling-scientific-method.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>

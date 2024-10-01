@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.55">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>36&nbsp; Integration – MOSAIC Calculus</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../Accumulation/36-functions.html" rel="next">
+<link href="../Accumulation/34-visualizing.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+</head><body class="nav-sidebar floating nav-fixed slimcontent"><span class="math inline" style="display: none;">
+\(\newcommand{\line}{\text{line}}
+\newcommand{\hump}{\text{hump}}
+\newcommand{\sigmoid}{\text{sigmoid}}
+\newcommand{\recip}{\text{recip}}
+\newcommand{\diff}[1]{{\cal D}_#1}
+\newcommand{\pnorm}{\text{pnorm}}
+\newcommand{\dnorm}{\text{dnorm}}
+\let\origvec\vec
+\let\origmathit\mathit
+\let\orighat\hat
+\let\origbar\bar
+\newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+\newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+\newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+\newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+\newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+\newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+\newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+\newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+\newcommand{\modeledby}[2]{#1\!\sim\!#2}
+\newcommand{\CC}[1]{\color{#648fff}{#1}}
+\newcommand{\CE}[1]{\color{#785ef0}{#1}}
+\newcommand{\CA}[1]{\color{#dc267f}{#1}}
+\newcommand{\CB}[1]{\color{#fe6100}{#1}}
+\newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+</span>
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../www/Cover-1.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">MOSAIC Calculus</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+    <a href="https://github.com/dtkaplan/MC2/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../accumulation-part.html">BLOCK IV. Accumulation</a></li><li class="breadcrumb-item"><a href="../Accumulation/35-integration.html"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PRELIMINARIES</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/01-quant-fun-space.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/07-data-functions-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data, functions, graphics</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK I. Modeling</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/08-parameters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/09-assembling-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/10-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/11-fitting-features.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/12-low-order-polynomials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/13-operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/14-magnitudes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/15-dimensions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/16-modeling-scientific-method.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling and the scientific method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/Modeling-projects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Projects</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK II. Differentiation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/17-continuous-change.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Continuous change</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/18-rate-of-change.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rate of change</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/19-evanescent-h.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/20-computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Constructing derivatives</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/21-concavity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/22-cont-and-smooth.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/23-rules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/24-optim.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/25-partial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/26-approximation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/27-taylor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/Differentiation-projects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Differentiation projects</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK III. Vectors and linear combinations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-Vectors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Vectors</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-linear-combinations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-projection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-target-problem.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">The target problem</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/B5-stat-modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK IV. Accumulation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/33-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/34-visualizing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/35-integration.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/36-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Functions as vectors</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/37-euler.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/38-symbolic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK V. Dynamics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-diff-eq.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Differential equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-solution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Finding a “solution”</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-line.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the line</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-flow-on-plane.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Flows on the plane</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-equilibria.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-eigen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/B6-second-order.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Force-balance equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK VI. Manifestations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Operations on functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-splines.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Data-driven functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-optimization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">50</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">51</span>&nbsp; <span class="chapter-title">Probability and evidence</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-future-value.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">52</span>&nbsp; <span class="chapter-title">Present and future value</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/B4-mechanics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">53</span>&nbsp; <span class="chapter-title">Mechanics</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#net-change" id="toc-net-change" class="nav-link active" data-scroll-target="#net-change"><span class="header-section-number">36.1</span> Net change</a></li>
+  <li><a href="#the-definite-integral" id="toc-the-definite-integral" class="nav-link" data-scroll-target="#the-definite-integral"><span class="header-section-number">36.2</span> The “definite” integral</a></li>
+  <li><a href="#initial-value-of-the-quantity" id="toc-initial-value-of-the-quantity" class="nav-link" data-scroll-target="#initial-value-of-the-quantity"><span class="header-section-number">36.3</span> Initial value of the quantity</a></li>
+  <li><a href="#integrals-from-bottom-to-top" id="toc-integrals-from-bottom-to-top" class="nav-link" data-scroll-target="#integrals-from-bottom-to-top"><span class="header-section-number">36.4</span> Integrals from bottom to top</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Accumulation/35-integration.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../accumulation-part.html">BLOCK IV. Accumulation</a></li><li class="breadcrumb-item"><a href="../Accumulation/35-integration.html"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-net-change" class="quarto-section-identifier"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Anti-derivatives are useful when you know how a quantity is changing but don’t yet know the quantity itself.</p>
+<p>It is important, of course, to keep track of which is the “quantity itself” and which is the “rate of increase in that quantity.” This always depends on context and your point of view. It is convenient, then, to set some fixed examples to make it easy to keep track of which quantity is which.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 44%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Context</th>
+<th>Quantity</th>
+<th>Rate of increase in quantity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Money</td>
+<td>Cash on hand <span class="math inline">\({\mathbf S}(t)\)</span></td>
+<td>Cash flow <span class="math inline">\(s(t)\)</span></td>
+</tr>
+<tr class="even">
+<td>Fuel</td>
+<td>Amount in fuel tank <span class="math inline">\({\mathbf F}(t)\)</span></td>
+<td>Fuel consumption rate, e.g.&nbsp;kg/hour <span class="math inline">\(f(t)\)</span></td>
+</tr>
+<tr class="odd">
+<td>Motion</td>
+<td>Momentum <span class="math inline">\({\mathbf M}(t)\)</span></td>
+<td>Force <span class="math inline">\(m(t)\)</span></td>
+</tr>
+<tr class="even">
+<td>notation</td>
+<td><span class="math inline">\({\mathbf H}(t)\)</span></td>
+<td><span class="math inline">\(\partial_t {\mathbf H}(t)\)</span></td>
+</tr>
+<tr class="odd">
+<td>notation</td>
+<td><span class="math inline">\(G(t) = \int g(t) dt\)</span></td>
+<td><span class="math inline">\(g(t)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>We will also adopt a convention to make it simpler to recognize which quantity is the “quantity itself” and which is the “rate of increase in that quantity.” We will use CAPITAL LETTERS to name functions that are the quantity itself, and <em>lower-case</em> letters for the rate of increase in that quantity. For example, if talking about motion, an important quantity is <strong><em>momentum</em></strong> and how it changes over time. The momentum itself will be <span class="math inline">\({\mathbf M}(t)\)</span> while the rate of increase of momentum will be <span class="math inline">\(m(t)\)</span>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> The amount of money a business has on hand at time <span class="math inline">\(t\)</span> is <span class="math inline">\({\mathbf S}(t)\)</span> measured, say, in dollars. The rate of increase of that money is <span class="math inline">\(s(t)\)</span>, in, say, dollars per day.</p>
+<p>Notice that we are using the phrase “rate of increase” rather than “rate of change.” that is because we want to keep straight the meaning of the sign of the <em>lower-case</em> function. If <span class="math inline">\(m(t)\)</span> is positive, the momentum is increasing. If <span class="math inline">\(m(t)\)</span> is negative then it is a “negative rate of increase,” which is, of course, just a “decrease.”</p>
+<p>For a business, money coming in means that <span class="math inline">\(s(t)\)</span> is positive. Expenditures of money correspond to <span class="math inline">\(s(t)\)</span> being negative. In the fuel example. <span class="math inline">\({\mathbf F}(t)\)</span> is the amount of fuel in the tank. <span class="math inline">\(f(t)\)</span> is the rate of <em>increase</em> in the amount of fuel in the tank. Of course, engines burn fuel, removing it from the tank. So we would write the rate at which fuel is burned as <span class="math inline">\(-f(t)\)</span>: removing fuel is a negative increase in the amount of fuel, an expenditure of fuel.</p>
+<p>The objective of this chapter is to introduce you to the sorts of calculations, and their notations, that let you figure out how much the CAPITAL LETTER quantity has changed over an interval of <span class="math inline">\(t\)</span> based on what you already know about the value over time of the <em>lower-case</em> function.</p>
+<p>The first step in any such calculation is to find or construct the <em>lower-case</em> function <span class="math inline">\(f(t)\)</span> or <span class="math inline">\(c(t)\)</span> or <span class="math inline">\(m(t)\)</span> or whatever it might be. This is a modeling phase. In this chapter, we will ignore detailed modeling of the situation and just present you with the <em>lower-case</em> function.</p>
+<p>The second step in any such calculation is to compute the anti-derivative of the <em>lower-case</em> function, giving as a result the CAPITAL LETTER function. You’ve already seen the notation for this, e.g. <span class="math display">\[{\Large  F(t) = \int f(t) dt}\ \ \ \ \ \text{or}\ \ \ \ \ {\Large G(t) = \int g(t) dt}\ \ \ \ \text{and so on.}\]</span> In this chapter, we will not spend any time on this step; we will assume that you already have at hand the means to compute the anti-derivative. (Indeed, you already have <code>antiD()</code> available which will do the job for you.) Later chapters will look at the issues around and techniques for doing the computations by other means.</p>
+<p>The remaining steps in such calculations are to work with the CAPITAL LETTER function to compute such things as the amount of that quantity, or the change in that quantity as it is accumulated over an interval of <span class="math inline">\(t\)</span>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" data-latex="">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Why capital letters?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Sometimes we write capital letter functions in <strong>bold-face</strong>, e.g.&nbsp;<span class="math inline">\({\mathbf F}(t)\)</span> and other times you aren’t, e.g.&nbsp;<span class="math inline">\(F(t)\)</span>. What’s going on?</p>
+<p>This is a convention we are adopting for this chapter, which is when we need it the most to introduce the concepts.</p>
+<p><strong>Bold-face</strong> is being used in this chapter to represent the real-world quantity of interest. So <span class="math inline">\({\mathbf F}(t)\)</span> is the actual amount of fuel in the tank, <span class="math inline">\({\mathbf M}(t)\)</span> is the actual momentum of the car, and <span class="math inline">\({\mathbf S}(t)\)</span> is the actual amount of money on hand. The regular-face functions, <span class="math inline">\(F(t)\)</span> and <span class="math inline">\(M(t)\)</span> and <span class="math inline">\(S(t)\)</span> are the functions that we get by applying anti-differentiation to <span class="math inline">\(f(t)\)</span> or <span class="math inline">\(m(t)\)</span> or <span class="math inline">\(s(t)\)</span>.</p>
+<p>Our broad interest is to construct the <strong>bold-face</strong> function knowing just the derivative of that function, which we are writing in <em>lower-case</em>. So, <span class="math inline">\(f(t) \equiv \partial_t {\mathbf F}(t)\)</span>. Similarly, <span class="math inline">\(m(t) \equiv \partial_t {\mathbf M}(t)\)</span> and <span class="math inline">\(s(t) \equiv \partial_t {\mathbf S}(t)\)</span>. We are in the situation where we know <span class="math inline">\(f(t)\)</span> but not <span class="math inline">\({\mathbf F}(t)\)</span>, or we know <span class="math inline">\(m(t)\)</span> but not <span class="math inline">\({\mathbf M}(t)\)</span>, and so on.</p>
+<p>How could such a situation arise in the real world? Suppose the car’s fuel gauge is broken, leaving us without direct knowledge of <span class="math inline">\(\mathbf F\)</span> (liters). But there is a dashboard readout of the instantaneous rate of fuel consumption (say, liters per 100 km). So, we know <span class="math inline">\(f(t)\)</span> but not <span class="math inline">\({\mathbf F}(t)\)</span>. Or suppose you are in charge of day-to-day running of a business, collecting the income each day and paying the daily expenses. Thus, each day you know <span class="math inline">\(s(t)\)</span>—the cash flow. But it is your boss who has access to the bank account; you merely deposit money as you get it and authorize electronic funds transfers to suppliers. Your boss knows <span class="math inline">\({\mathbf S}(t)\)</span> but you know only <span class="math inline">\(s(t)\)</span>.</p>
+<p>Anti-differentiation is part of the way to reconstruct the fuel level <span class="math inline">\({\mathbf F}(t)\)</span> from the known <span class="math inline">\(f(t)\)</span>, or to figure out the bank balance <span class="math inline">\({\mathbf S}(t)\)</span> from your records of <span class="math inline">\(s(t)\)</span>.</p>
+<p>But anti-differentiation, while part of the solution, is only just a part. You can apply anti-differentiation to <span class="math inline">\(f(t)\)</span>, but what you get back will be <span class="math inline">\(F(t)\)</span>, not <span class="math inline">\({\mathbf F}(t)\)</span>.</p>
+<p>What’s the difference between the two? It involves a constant value <span class="math inline">\(C\)</span> which, alas, you can never figure out from <span class="math inline">\(f(t)\)</span>. All that you can claim, given the <span class="math inline">\(F(t)\)</span> generated by anti-differentiation, is that <span class="math display">\[{\mathbf F}(t) = F(t) + C .\]</span></p>
+</div>
+</div>
+<section id="net-change" class="level2" data-number="36.1">
+<h2 data-number="36.1" class="anchored" data-anchor-id="net-change"><span class="header-section-number">36.1</span> Net change</h2>
+<p>Perhaps it goes without saying, but once you have the CAPITAL LETTER function, e.g.&nbsp;<span class="math inline">\(F(t)\)</span>, you can evaluate that function at any input that falls into the domain of <span class="math inline">\(F(t)\)</span>. If you have a graph of <span class="math inline">\(F(t)\)</span> versus <span class="math inline">\(t\)</span>, just position your finger on the horizontal axis at input <span class="math inline">\(t_1\)</span>, then trace up to the function graph, then horizontally to the vertical axis where you can read off the value <span class="math inline">\(F(t_1)\)</span>. If you have <span class="math inline">\(F()\)</span> in the form of a computer function, just <strong><em>apply</em></strong> <span class="math inline">\(F()\)</span> to the input <span class="math inline">\(t_1\)</span>.</p>
+<p>In this regard, <span class="math inline">\(F(t)\)</span> is like any other function.</p>
+<p>However, in using and interpreting the <span class="math inline">\(F(t)\)</span> that we constructed by anti-differentiating <span class="math inline">\(f(t)\)</span>, we have to keep in mind the limitations of the anti-differentiation process. In particular, any function <span class="math inline">\(f(t)\)</span> does not have a unique anti-derivative function. If we have one anti-derivative, we can always construct another by adding some constant: <span class="math inline">\(F(t) + C\)</span> is also an anti-derivative of <span class="math inline">\(f(t)\)</span>.</p>
+<p>But we have a special purpose in mind when calculating <span class="math inline">\(F(t_1)\)</span>. We want to figure out from <span class="math inline">\(F(t)\)</span> how much of the quantity <span class="math inline">\(f(t)\)</span> has accumulated up to time <span class="math inline">\(t_1\)</span>. For example, if <span class="math inline">\(f(t)\)</span> is the rate of increase in fuel (that is, the negative of fuel consumption), we want <span class="math inline">\(F(t_1)\)</span> to be the amount of fuel in our tank at time <span class="math inline">\(t_1\)</span>. <strong>That cannot happen.</strong> All we can say is that <span class="math inline">\(F(t_1)\)</span> is the amount of fuel in the tank at <span class="math inline">\(t_1\)</span> give or take some unknown constant C.</p>
+<p>Instead, the correct use of <span class="math inline">\(F(t)\)</span> is to say how much the quantity has changed over some interval of time, <span class="math inline">\(t_0 \leq t \leq t_1\)</span>. This “change in the quantity” is called the <strong><em>net change</em></strong> in <span class="math inline">\(F()\)</span>. To calculate the net change in <span class="math inline">\(F()\)</span> from <span class="math inline">\(t_0\)</span> to <span class="math inline">\(t_1\)</span> we apply <span class="math inline">\(F()\)</span> to both <span class="math inline">\(t_0\)</span> and <span class="math inline">\(t_1\)</span>, then subtract:</p>
+<p><span class="math display">\[\text{Net change in}\ F(t) \ \text{from}\ t_0 \ \text{to}\ t_1 :\\= F(t_1) - F(t_0)\]</span></p>
+<div class="example">
+<p>Suppose you have already constructed the rate-of-change function for momentum <span class="math inline">\(m()\)</span> and implemented it as an R function <code>m()</code>. For instance, <span class="math inline">\(m(t)\)</span> might be the amount of <strong>force</strong> at any instant <span class="math inline">\(t\)</span> of a car, and <span class="math inline">\({\mathbf M}(t)\)</span> is the <strong>accumulated force</strong>, better known as momentum. We will assume that the input to <code>m()</code> is in seconds, and the output is in kg-meters-per-second-squared, which has the correct dimension for force.</p>
+<p>You want to find the amount of force accumulated between time <span class="math inline">\(t=2\)</span> and <span class="math inline">\(t=5\)</span> seconds.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># You've previous constructed m(t)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">antiD</span>(<span class="fu">m</span>(t) <span class="sc">~</span> t)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">M</span>(<span class="dv">5</span>) <span class="sc">-</span> <span class="fu">M</span>(<span class="dv">2</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] -1.392131</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To make use of this quantity, you will need to know its dimension and units. For this example, where the dimension [<span class="math inline">\(m(t)\)</span>] is M L T<span class="math inline">\(^{-2}\)</span>, and [<span class="math inline">\(t\)</span>] = T, the dimension [<span class="math inline">\({\mathbf M}(t)\)</span>] will be M L T<span class="math inline">\(^{-1}\)</span>. In other words, if the output of <span class="math inline">\(m(t)\)</span> is kg-meters-per-second-squared, then the output of <span class="math inline">\(V(t)\)</span> must be kg- meters-per-second.</p>
+</div>
+</section>
+<section id="the-definite-integral" class="level2" data-number="36.2">
+<h2 data-number="36.2" class="anchored" data-anchor-id="the-definite-integral"><span class="header-section-number">36.2</span> The “definite” integral</h2>
+<p>We have described the process of calculating a net change from the <em>lower-case</em> function <span class="math inline">\(f(t)\)</span> in terms of two steps:</p>
+<ol type="1">
+<li>Construct <span class="math inline">\(F(t) = \int f(t) dt\)</span>.</li>
+<li>Evaluate <span class="math inline">\(F(t)\)</span> at two inputs, e.g.&nbsp;<span class="math inline">\(F(t_2) - F(t_1)\)</span>, giving a net change, which we will write as <span class="math inline">\({\cal F}(t_1, t_2) = F(t_2) - F(t_1)\)</span>.</li>
+</ol>
+<p>As a matter of notation, the process of going from <span class="math inline">\(f(t)\)</span> to the net change is written as one statement. <span class="math display">\[{\cal F}(t_1, t_2) = F(t_2) - F(t_1) = \int_{t_1}^{t_2} f(t) dt\]</span></p>
+<p>The punctuation <span class="math display">\[\int_{t_1}^{t_2} \_\_\_\_ dt\]</span> captures in one construction both the anti-differentiation step (<span class="math inline">\(\int\_\_dt\)</span>) and the evaluation of the anti-derivative at the two bound <span class="math inline">\(t_2\)</span> and <span class="math inline">\(t_1\)</span>.</p>
+<p>Several names are used to describe the overall process. It is important to become familiar with these.</p>
+<ul>
+<li><span class="math inline">\(\int_a^b f(t) dt\)</span> is called a <strong><em>definite integral</em></strong> of <span class="math inline">\(f(t)\)</span>.</li>
+<li><span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> are called, respectively, the <strong><em>lower bound of integration</em></strong> and the <strong><em>upper bound of integration</em></strong>, although given the way we draw graphs it might be better to call them the “left” and “right” bounds, rather than lower and upper.</li>
+<li>The pair <span class="math inline">\(a, b\)</span> is called the <strong><em>bounds of integration</em></strong>.</li>
+</ul>
+<p>As always, it pays to know what <em>kind of thing</em> is <span class="math inline">\({\cal F}(t_1, t_2)\)</span>. Assuming that <span class="math inline">\(t_1\)</span> and <span class="math inline">\(t_2\)</span> are fixed quantities, say <span class="math inline">\(t_1 = 2\)</span> seconds and <span class="math inline">\(t_2 = 5\)</span> seconds, then <span class="math inline">\({\cal F}(t_1, t_2)\)</span> is itself a quantity. The dimension of that quantity is [<span class="math inline">\(F(t)\)</span>] which in turn is [<span class="math inline">\(f(t)\)</span>]<span class="math inline">\(\cdot\)</span>[<span class="math inline">\(t\)</span>]. So if <span class="math inline">\(f(t)\)</span> is fuel consumption in liters per second, then <span class="math inline">\(F(t)\)</span> will have units of liters, and <span class="math inline">\({\cal F}(t_1, t_2)\)</span> will also have units of liters.</p>
+<p>Remember also an important distinction:</p>
+<ul>
+<li><span class="math inline">\(F(t) = \int f(t) dt\)</span> is a <strong><em>function</em></strong> whose output is a quantity.</li>
+<li><span class="math inline">\(F(t_2) - F(t_1) = \int_{t_1}^{t_2} f(t) dt\)</span> is a <strong><em>quantity</em></strong>, not a function.</li>
+</ul>
+<p>Of course, <span class="math inline">\(f(t)\)</span> is a <strong><em>function</em></strong> whose output is a quantity. In general, the two functions <span class="math inline">\(F(t)\)</span> and <span class="math inline">\(f(t)\)</span> produce outputs that are <em>different kinds</em> of quantities. For instance, the output of <span class="math inline">\(F(t)\)</span> is liters of fuel while the output of <span class="math inline">\(f(t)\)</span> is liters per second: fuel consumption. Similarly, the output of <span class="math inline">\(S(t)\)</span> is dollars, while the output of <span class="math inline">\(s(t)\)</span> is dollars per day.</p>
+<p>The use of the term <strong><em>definite integral</em></strong> suggests that there might be something called an <strong><em>indefinite integral</em></strong>, and indeed there is. “Indefinite integral” is just a synonym for “anti-derivative.” In this book we favor the use of <strong><em>anti-derivative</em></strong> because it is too easy to leave off the “indefinite” and confuse an indefinite integral with a definite integral. Also, “anti-derivative” makes it completely clear what is the relationship to “derivative.”</p>
+<p>Since 1700, it is common for calculus courses to be organized into two divisions:</p>
+<ol type="i">
+<li>Differential calculus, which is the study of derivatives and their uses.</li>
+<li>Integral calculus, which is the study of anti-derivatives and their uses.</li>
+</ol>
+<p>Mathematical notation having been developed for experts rather than for students, very small typographical changes are often used to signal very large changes in meaning. When it comes to anti-differentiation, there are two poles of fixed meaning and then small changes which modify the meaning. The poles are:</p>
+<ol type="i">
+<li>Anti-derivative: <span class="math inline">\(\int f(t) dt\)</span>, which is a function whose output is a quantity.</li>
+<li>Definite integral <span class="math inline">\(\int_a^b f(t) dt\)</span>, which is a quantity, plain and simple.</li>
+</ol>
+<p>But you will also see some intermediate forms:</p>
+<ol type="a">
+<li><p><span class="math inline">\(\int_a^t f(t) dt\)</span>, which is a <strong>function</strong> with input <span class="math inline">\(t\)</span>.</p></li>
+<li><p><span class="math inline">\(\int_a^x f(t) dt\)</span>, which is the same function as in (a) but with the input name <span class="math inline">\(x\)</span> being used.</p></li>
+<li><p><span class="math inline">\(\int_t^b f(t) dt\)</span>, which is a <strong>function</strong> with input <span class="math inline">\(t\)</span>.</p></li>
+<li><p>Less commonly, <span class="math inline">\(\int_x^t f(t) dt\)</span> which is a <strong>function</strong> with two inputs, <span class="math inline">\(x\)</span> and <span class="math inline">\(t\)</span>. The same is true of <span class="math inline">\(\int_x^y f(t) dt\)</span> and similar variations.</p></li>
+</ol>
+</section>
+<section id="initial-value-of-the-quantity" class="level2 page-columns page-full" data-number="36.3">
+<h2 data-number="36.3" class="anchored" data-anchor-id="initial-value-of-the-quantity"><span class="header-section-number">36.3</span> Initial value of the quantity</h2>
+<p>Recall that we are interested in a real quantity <span class="math inline">\({\mathbf F}(t)\)</span>, but we only know <span class="math inline">\(f(t)\)</span> and from that can calculate an anti-derivative <span class="math inline">\(F(t)\)</span>. The relationship between them is <span class="math display">\[{\mathbf F}(t) = F(t) + C\]</span> where <span class="math inline">\(C\)</span> is some fixed quantity that we cannot determine directly from <span class="math inline">\(f(t)\)</span>.</p>
+<p>Still, even if we cannot determine <span class="math inline">\(C\)</span>, there is one way we can use <span class="math inline">\(F(t)\)</span> to make definite statements about <span class="math inline">\({\mathbf F}(t)\)</span>. Consider the net change from <span class="math inline">\(t_1\)</span> to <span class="math inline">\(t_2\)</span> in the real quantity <span class="math inline">\({\mathbf F}\)</span>. This is <span class="math display">\[{\mathbf F}(t_2) - {\mathbf F}(t_1) =  \left[F(t_2) + C\right] - \left[F(t_1) + C\right] = F(t_2) - F(t_1)\]</span> In other words, just knowing <span class="math inline">\(F(t)\)</span>, we can make completely accurate statements about net changes in the value of <span class="math inline">\({\mathbf F}(t)\)</span>.</p>
+<p>Let’s develop our understanding of this unknown constant <span class="math inline">\(C\)</span>, which is called the <strong><em>constant of integration</em></strong>. To do so, watch the movie in <a href="#fig-accum-movie-1" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-accum-movie-1</span></a> showing the process of constructing the anti-derivative <span class="math display">\[F(t) = \int_2^t f(t) dt\ .\]</span></p>
+<div class="cell page-columns page-full" data-layout-align="center">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-accum-movie-1" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-cap-location="margin" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-accum-movie-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="www/arrow-plot.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-accum-movie-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;36.1: Constructing the anti-derivative <span class="math inline">\(F(t)\)</span> by reading the slope from <span class="math inline">\(f(t)\)</span> and using that slope to extend the picture of <span class="math inline">\(F()\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ol type="1">
+<li>Focus first on the top graph. The function we are integrating, <span class="math inline">\(f(t)\)</span>, is known before we carry out the integration, so it is shown in the top graph.</li>
+</ol>
+<p><span class="math inline">\(f(t)\)</span> is the rate of increase in <span class="math inline">\(F(t)\)</span> (or <span class="math inline">\({\mathbf F}(t)\)</span> for that matter). From the graph, you can read using the vertical axis the value of <span class="math inline">\(f(t)\)</span> for any input <span class="math inline">\(t\)</span>. But since <span class="math inline">\(f(t)\)</span> is a rate of increase, we can also depict <span class="math inline">\(f(t)\)</span> as a slope. That slope is being drawn as a <span class="math inline">\(\color{magenta}{\text{magenta}}\)</span> arrow. Notice that when <span class="math inline">\(f(t)\)</span> is positive, the arrow slopes upward and when <span class="math inline">\(f(t)\)</span> is negative, the arrow slopes downward. The steepness of the arrow is the value of <span class="math inline">\(f(t)\)</span>, so for inputs where the value of <span class="math inline">\(f(t)\)</span> is far from zero the arrow is steeper than for values of <span class="math inline">\(f(t)\)</span> that are near zero.</p>
+<ol start="2" type="1">
+<li><p>Now look at both graphs, but concentrate just on the arrows in the two graphs. They are always the same: carbon copies of one another.</p></li>
+<li><p>Finally the bottom graph. We are starting the integral at <span class="math inline">\(t_1=2\)</span>. Since nothing has yet been accumulated, the value <span class="math inline">\(F(t_1 = 2) = 0\)</span>. From (1) and (2), you know the arrow shows the slope of <span class="math inline">\(F(t)\)</span>. So as <span class="math inline">\(F(t&gt;2)\)</span> is being constructed the arrow guides the way. When the slope arrow is positive, <span class="math inline">\(F(t)\)</span> is growing. When the slope arrow is negative, <span class="math inline">\(F(t)\)</span> is going down.</p></li>
+</ol>
+<p>In tallying up the accumulation of <span class="math inline">\(f(t)\)</span>, we started at time <span class="math inline">\(t=2\)</span> and with <span class="math inline">\(F(t=2) = 0\)</span>. This makes sense, since nothing can be accumulated over the mere instant of time from <span class="math inline">\(t=2\)</span> to <span class="math inline">\(t=2\)</span>. On the other hand, it was our choice to start at <span class="math inline">\(t=2\)</span>. We might have started at another value of <span class="math inline">\(t\)</span> such as <span class="math inline">\(t=0\)</span> or <span class="math inline">\(t=-5\)</span> or <span class="math inline">\(t=-\infty\)</span>. If so, then the accumulation of <span class="math inline">\(f(t)\)</span> up to <span class="math inline">\(t=2\)</span> would likely have been something other than zero.</p>
+<p>But what if we knew an actual value for <span class="math inline">\({\mathbf F}(2)\)</span>. This is often the case. For instance, before taking a trip you might have filled up the fuel tank. The accumulation of fuel consumption only tells you how much fuel has been used since the start of the trip. But if you know the starting amount of fuel, by adding that to the accumulation you will know instant by instant how much fuel is in the tank. In other words, <span class="math display">\[{\mathbf F}(t) = {\mathbf F}(2) + \int_2^t f(t) dt\ .\]</span> This is why, when we write an anti-derivative, we should always include mention of some constant <span class="math inline">\(C\)</span>—the so-called <strong><em>constant of integration</em></strong>—to remind us that there is a difference between the <span class="math inline">\(F(t)\)</span> we get from anti-differentiation and the <span class="math inline">\({\mathbf F}(t)\)</span> of the function we are trying to reconstruct. That is, <span class="math display">\[{\mathbf F}(t) = F(t) + C = \int f(t) dt + C\ .\]</span> We only need to know <span class="math inline">\({\mathbf F}(t)\)</span> at one point in time, say <span class="math inline">\(t=0\)</span>, to be able to figure out the value of <span class="math inline">\(C\)</span>: <span class="math display">\[C = {\mathbf F}(0) - F(0)\ .\]</span></p>
+<p>Another way to state the relationship between the anti-derivative and <span class="math inline">\({\mathbf F}(t)\)</span> is by using the anti-derivative to accumulate <span class="math inline">\(f(t)\)</span> from some starting point <span class="math inline">\(t_0\)</span> to time <span class="math inline">\(t\)</span>. That is: <span class="math display">\[{\mathbf F}(t) \ =\  {\mathbf F}(t_0) + \int_{t_0}^t f(t)\, dt\  = \
+{\mathbf F}(t_0) + \left({\large\strut}F(t) - F(t_0)\right)\]</span></p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" data-latex="">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Math in the World: Galileo in Pisa
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An oft-told legend has Galileo at the top of the Tower of Pisa around 1590. The legend illustrates Galileo’s finding that a light object (e.g.&nbsp;a marble) and a heavy object (e.g.&nbsp;a ball) will fall at the same speed. Galileo published his mathematical findings in 1638 in <em>Discorsi e Dimostrazioni Matematiche, intorno a due nuove scienze</em>. (English: Discourses and Mathematical Demonstrations Relating to Two New Sciences)</p>
+<p>In 1687, Newton published his world-changing<em>Philosophiae Naturalis Principia Mathematica</em>. (English: Mathematical Principles of Natural Philosophy)</p>
+<p>Let’s imagine the ghost of Galileo returned to Pisa in 1690 after reading Newton’s <em>Principia Mathematica</em>. In this new legend, Galileo holds a ball still in his hand, releases it, and figures out the position of the ball as a function of time.</p>
+<p>Although Newton famously demonstrated that gravitational attraction is a function of the distance between to objects, he also knew that at a fixed distance—the surface of the Earth—gravitational acceleration was constant. So Galileo was vindicated by Newton. But, although gravitational acceleration is constant from top to bottom of the Tower of Pisa, Galileo’s ball was part of a more complex system: a hand holding the ball still until release. Acceleration of the ball versus time is therefore approximately a Heaviside function:</p>
+<p><span class="math inline">\(\text{accel}(t) \equiv \left\{\begin{array}{rl}0 &amp; \text{for}\ t \leq 3\\
+{-9.8}  &amp; \text{otherwise}\end{array}\right.\)</span></p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>accel <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(<span class="fu">ifelse</span>(t <span class="sc">&lt;=</span> <span class="dv">3</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="fl">9.8</span>) <span class="sc">~</span> t)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Acceleration is the derivative of velocity. We can construct a function <span class="math inline">\(V(t)\)</span> as the anti-derivative of acceleration, but the real-world velocity function will be <span class="math display">\[{\mathbf V}(t) = {\mathbf V}(0) + \int_0^t \text{accel}(t) dt\]</span></p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>V_from_antiD <span class="ot">&lt;-</span> <span class="fu">antiD</span>(<span class="fu">accel</span>(t) <span class="sc">~</span> t)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>V <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(V0 <span class="sc">+</span> (<span class="fu">V_from_antiD</span>(t) <span class="sc">-</span> <span class="fu">V_from_antiD</span>(<span class="dv">0</span>)) <span class="sc">~</span> t, <span class="at">V0 =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the computer expression, the parameter <code>V0</code> stands for <span class="math inline">\({\mathbf V}(0)\)</span>. We’ve set it equal to zero since, at time <span class="math inline">\(t=0\)</span>, Galileo was holding the ball still.</p>
+<p>Velocity is the derivative of position, but the real-world velocity function will be the accumulation of velocity from some starting time to time <span class="math inline">\(t\)</span>, plus the position at that starting time: <span class="math display">\[x(t) \equiv x(0) + \int_0^t V(t) dt\]</span> We can calculate <span class="math inline">\(\int V(t) dt\)</span> easily enough with <code>antiD()</code>, but the function <span class="math inline">\(x(t)\)</span> involves evaluating that anti-derivative at times 0 and <span class="math inline">\(t\)</span>:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>x_from_antiD <span class="ot">&lt;-</span> <span class="fu">antiD</span>(<span class="fu">V</span>(t) <span class="sc">~</span> t)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(x0 <span class="sc">+</span> (<span class="fu">x_from_antiD</span>(t) <span class="sc">-</span> <span class="fu">x_from_antiD</span>(<span class="dv">0</span>)) <span class="sc">~</span> t, <span class="at">x0 =</span> <span class="dv">53</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We’ve set the parameter <code>x0</code> to be 53 meters, the height above the ground of the top balcony on which Galileo was standing for the experiment.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-galileo-accel" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-galileo-accel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="35-integration_files/figure-html/fig-galileo-accel-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-galileo-accel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;36.2: The acceleration, velocity, and position of the ball as a function of time in Galileo’s Tower of Pisa experiment. The ball is released at time <span class="math inline">\(t_0\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>In the (fictional) account of the 1690 experiment, we had Galileo release the ball at time <span class="math inline">\(t=0\)</span>. That is a common device in mathematical derivations, but in a physical sense it is entirely arbitrary. Galileo might have let go of the ball at any other time, say, <span class="math inline">\(t=3\)</span> or <span class="math inline">\(t=14:32:05\)</span>.</p>
+<p>A remarkable feature of integrals is that it does not matter what we use as the lower bound of integration, so long as we set the initial value to correspond to that bound.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" data-latex="">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Why <span class="math inline">\(\int f(x) dx\)</span> instead of <span class="math inline">\(\int f(t) dt\)</span>?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a while you were writing integrals like this: <span class="math inline">\(\int_a^b f(t) dt\)</span>. Then you replaced <span class="math inline">\(b\)</span> with the input name <span class="math inline">\(t\)</span> to get <span class="math inline">\(\int_a^t f(t) dt\)</span>. But then you switched everything up by writing <span class="math inline">\(\int_a^t f(x) dx\)</span>. Is that the same as <span class="math inline">\(\int_a^t f(t) dt\)</span>? If so, why do you get to replace the <span class="math inline">\(t\)</span> with <span class="math inline">\(x\)</span> in some places but not in others?</p>
+<p>Recall from <a href="#sec-notation" class="quarto-xref"><span class="quarto-unresolved-ref">sec-notation</span></a> that the names used for inputs to a function definition don’t matter so long as they are used consistently on the left and right sides of <span class="math inline">\(\equiv\)</span>. For instance, all these are the same function:</p>
+<ul>
+<li><span class="math inline">\(f(x) \equiv m x + b\)</span></li>
+<li><span class="math inline">\(g(t) \equiv m t + b\)</span></li>
+<li><span class="math inline">\(h(\text{wind}) \equiv m \text{wind} + b\)</span></li>
+</ul>
+<p>Now think about the integral <span class="math inline">\(\int_a^b f(t) dt\)</span>: <span class="math display">\[\int_a^b f(t) dt = F(b) - F(a)\ .\]</span></p>
+<p>On the left-hand side, the input name <span class="math inline">\(t\)</span> is prominent, appearing in two places: <span class="math inline">\(f(\color{magenta}{t}) d\color{magenta}{t}\)</span>. But <span class="math inline">\(t\)</span> is nowhere on the right-hand side. We could have equally well written this as <span class="math inline">\(\int_a^b f(x) dx\)</span> or <span class="math inline">\(\int_a^b f(\text{wind}) d\text{wind}\)</span>. The name we use for the input to <span class="math inline">\(f()\)</span> does not matter so long as it is consistent with the name used in the <span class="math inline">\(d\_\_\)</span> part of the notation. Often, the name placed in the blanks in <span class="math inline">\(\int f(\_\_) d\_\_\)</span> is called a <strong><em>dummy variable</em></strong>.</p>
+<p>Writing <span class="math inline">\(\int_a^t f(t) dt\)</span> is perfectly reasonable, but many authors dislike the multiple appearance of <span class="math inline">\(t\)</span>. So they write something like <span class="math inline">\(\int_a^t f(x) dx\)</span> instead.</p>
+</div>
+</div>
+</section>
+<section id="integrals-from-bottom-to-top" class="level2" data-number="36.4">
+<h2 data-number="36.4" class="anchored" data-anchor-id="integrals-from-bottom-to-top"><span class="header-section-number">36.4</span> Integrals from bottom to top</h2>
+<p>The bounds of integration appear in different arrangements. None of these are difficult to derive from the basic forms:</p>
+<ul>
+<li>The relationship between an integral and its corresponding anti-derivative function: <span class="math display">\[\int_a^b f(x) dx = F(b) - F(a)\]</span> This relationship has a fancy-sounding name: the <strong><em>second fundamental theorem of calculus</em></strong>.</li>
+<li>The accumulation from an initial-value <span class="math display">\[{\mathbf F}(b)\  =\  {\mathbf F}(a) + \int_a^b f(x) dx\  = \ {\mathbf F}(a) + F(b) - F(a)\]</span> For many modeling situations, <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> are fixed quantities, so <span class="math inline">\(F(a)\)</span> and <span class="math inline">\(F(b)\)</span> are also quantities; the output of the anti-derivative function at inputs <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>. But either the lower-bound or the upper-bound can be input names, as in <span class="math display">\[\int_0^t f(x) dx = F(t) - F(0)\]</span></li>
+</ul>
+<p>Note that <span class="math inline">\(F(t)\)</span> is not a quantity but a function of <span class="math inline">\(t\)</span>.</p>
+<p>On occasion, you will see forms like <span class="math inline">\(\int_t^0 f(x)dx\)</span>. You can think of this in either of two ways:</p>
+<ol type="1">
+<li>The accumulation from a time <span class="math inline">\(t\)</span> less than 0 up until 0.</li>
+<li>The <em>reverse</em> accumulation from 0 until time <span class="math inline">\(t\)</span>.</li>
+</ol>
+<p>Reverse accumulation can be a tricky concept because it violates everyday intuition. Suppose you were harvesting a row of ripe strawberries. You start at the beginning of the row—position zero. Then you move down the row, picking strawberries and placing them in your basket. When you have reached position <span class="math inline">\(B\)</span> your basket holds the accumulation <span class="math inline">\(\int_0^B s(x)\, dx\)</span>, where <span class="math inline">\(s(x)\)</span> is the lineal density of strawberries—units: berries per meter of row.</p>
+<p>But suppose you go the other way, starting with an empty basket at position <span class="math inline">\(B\)</span> and working your way back to position 0. Common sense says your basket will fill to the same amount as in the forward direction, and indeed this is the case. But integrals work differently. The integral <span class="math inline">\(\int_B^0 s(x) dx\)</span> will be the <strong>negative</strong> of <span class="math inline">\(\int_0^B s(x) dx\)</span>. You can see this from the relationship between the integral and the anti-derivative: <span class="math display">\[\int_B^0 s(x) dx \ = \ S(0) - S(B) \ =\ -\left[{\large\strut}S(B) - S(0)\right]\ = \ -\int_0^B s(x) dx\]</span></p>
+<p>This is not to say that there is such a thing as a negative strawberry. Rather, it means that harvesting strawberries is similar to an integral in some ways (accumulation) but not in other ways. In farming, harvesting from 0 to <span class="math inline">\(B\)</span> is much the same as harvesting from <span class="math inline">\(B\)</span> to 0, but integrals don’t work this way.</p>
+<p>Another property of integrals is that the interval between bounds of integration can be broken into pieces. For instance:</p>
+<p><span class="math display">\[\int_a^c f(x) dx \ = \ \int_a^b f(x) dx + \int_b^c f(x) dx\]</span> You can confirm this by noting that <span class="math display">\[\int_a^b f(x) dx + \int_b^c f(x) dx \ = \ \left[{\large\strut}F(b) - F(a)\right] + \left[{\large\strut}F(c) - F(b)\right] = F(c) - F(a) \ = \ \int_a^c f(x) dx\ .\]</span></p>
+<p>Finally, consider this function of <span class="math inline">\(t\)</span>: <span class="math display">\[\partial_t \int_a^t f(x) dx\ .\]</span> First, how do we know it is a function of <span class="math inline">\(t\)</span>? <span class="math inline">\(\int_a^t f(x) dx\)</span> is a definite integral and has the value <span class="math display">\[\int_a^t f(x) dx = F(t) - F(a)\  .\]</span> Following our convention, <span class="math inline">\(a\)</span> is a parameter and stands for a specific numerical value, so <span class="math inline">\(F(a)\)</span> is the output of <span class="math inline">\(F()\)</span> for a specific input. But according to convention <span class="math inline">\(t\)</span> is the name of an input. So <span class="math inline">\(F(t)\)</span> is a function whose output depends on <span class="math inline">\(t\)</span>. Differentiating the function <span class="math inline">\(F(t)\)</span>, as with every other function, produces a new function.</p>
+<p>Second, there is a shortcut for calculating <span class="math inline">\(\partial_t \int_a^t f(x) dx\)</span>: <span class="math display">\[\partial_t \int_a^t f(x) dx\ =\ \partial_t \left[{\large\strut}F(t) - F(a)\right]\ .\]</span> Since <span class="math inline">\(F(a)\)</span> is a quantity and not a function, <span class="math inline">\(\partial_t F(a) = 0\)</span>. That simplies things. Even better, we know that the derivative of <span class="math inline">\(F(t)\)</span> is simply <span class="math inline">\(f(t)\)</span>: that is just the nature of the derivative/anti-derivative relationship between <span class="math inline">\(f(t)\)</span> and <span class="math inline">\(F(t)\)</span>. Put together, we have: <span class="math display">\[\partial_t \int_a^t f(x) dx\ =\ f(t)\ .\]</span></p>
+<p>This complicated-looking identity has a fancy name: the <strong><em>first fundamental theorem of calculus</em></strong>.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" data-latex="">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Math out of the World: Backtracking the stars
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In the 1920s, astronomers and cosmologists questioned the idea that the large-scale universe is static and unchanging. This traditional belief was undermined both by theory (e.g.&nbsp;General Relativity) and observations. The most famous of these were collected and published by Edwin Hubble, starting in 1929 and continuing over the next decade as improved techniques and larger telescopes became available. In recent years, with the availability of the space telescope named in honor of Hubble data has expanded in availability and quality. <a href="#fig-hubble-curve" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-hubble-curve</span></a> shows a version of <a href="https://www.pnas.org/content/15/3/168">Hubble’s 1929 graph</a> based on <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC314128/">contemporary data</a>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-hubble-curve" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hubble-curve-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="www/hubble-curve.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hubble-curve-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;36.3: The relationship between velocity and distance of stars, using contemporary data in the same format at Edwin Hubble’s 1929 publication.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Each dot in <a href="#fig-hubble-curve" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-hubble-curve</span></a> is an exploding star called a <em>supernova</em>. The graph shows the relationship between the distance of the star from our galaxy and the outward velocity of that star. The velocities are large, <span class="math inline">\(3 \times 10^4 = 30,000\)</span> km/s is about one-tenth the speed of light. Similarly, the distances are big; 600 Mpc is the same as 2 billion light years or <span class="math inline">\(1.8 \times 10^{22} \text{km}\)</span>. The slope of the line in <a href="#fig-hubble-curve" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-hubble-curve</span></a> is <span class="math inline">\(\frac{3.75 \times 10^4\, \text{km/s}}{1.8 \times 10^{22}\, \text{km}} = 2.1 \times 10^{-18}\, \text{s}^{-1}\)</span>. For ease of reading, we will call this slope <span class="math inline">\(\alpha\)</span> and therefore the velocity of a start distance <span class="math inline">\(D\)</span> from Earth is <span class="math display">\[v(D) \equiv \alpha D\ .\]</span></p>
+<p>Earlier in the history of the universe each star was a different distance from Earth. We will call this function <span class="math inline">\(D(t)\)</span>, distance as a function of time in the universe.</p>
+<p>The distance travelled by each star from time <span class="math inline">\(t\)</span> (billions of years ago) to the present is <span class="math display">\[\int_t^\text{now} v(t) dt  = D_\text{now} - D(t)\]</span> which can be re-arranged to give <span class="math display">\[D(t) = D_\text{now} - \int_t^\text{now} v(t) dt .\]</span> Assuming that <span class="math inline">\(v(t)\)</span> for each star has remained constant at <span class="math inline">\(\alpha D_\text{now}\)</span>, the distance travelled by each star since time <span class="math inline">\(t\)</span> depends on its current distance like this: <span class="math display">\[\int_t^\text{now} v(t) dt = \int_t^\text{now} \left[ \alpha D_\text{now}\right]\, dt = \alpha D_\text{now}\left[\text{now} - t\right]\]</span> Thus, the position of each star at time <span class="math inline">\(t\)</span> is <span class="math display">\[D(t) = D_\text{now} - \alpha D_\text{now}\left[\text{now} - t\right] = D(t)\]</span> or, <span class="math display">\[D(t) = D_\text{now}\left({\large\strut} 1-\alpha \left[\text{now} - t\right]\right)\]</span></p>
+<p>According to this model, there was a common time <span class="math inline">\(t_0\)</span> when when all the stars were at the same place: <span class="math inline">\(D(t_0) = 0\)</span>. This happened when <span class="math display">\[\text{now} - t_0 = \frac{1}{\alpha} = \frac{1}{2.1 \times 10^{-18}\, \text{s}^{-1}} = 4.8 \times 10^{17} \text{s}\ .\]</span> It seems fair to call such a time, when all the stars where at the same place at the same time, as the origin of the universe. If so, <span class="math inline">\(\text{now} - t_0\)</span> corresponds to the <strong><em>age of the universe</em></strong> and our estimate of that age is <span class="math inline">\(4.8\times 10^{17}\text{s}\)</span>. Conventionally, this age is reported in years. To get that, we multiply by the <strong><em>flavor of one</em></strong> that turns seconds into years: <span class="math display">\[\frac{60\, \text{seconds}}{1\, \text{minute}} \cdot \frac{60\, \text{minutes}}{1\, \text{hour}} \cdot \frac{24\, \text{hours}}{1\, \text{day}} \cdot \frac{365\, \text{days}}{1\, \text{year}} = 31,500,000 \frac{\text{s}}{\text{year}}\]</span> The grand (but hypothetical) meeting of the stars therefore occurred <span class="math inline">\(4.8 \times 10^{17} \text{s} / 3.15 \times 10^{7} \text{s/year} = 15,000,000,000\)</span> years ago. Pretty crowded to have all the mass in the universe in one place at the same time. No wonder they call it the Big Bang!</p>
+</div>
+</div>
+
+
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Momentum is velocity times mass. Newton’s Second Law of Motion stipulates that force equals the rate of change of momentum.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/dtkaplan\.github\.io\/MC2\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../Accumulation/34-visualizing.html" class="pagination-link" aria-label="Totaling the little bits">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../Accumulation/36-functions.html" class="pagination-link" aria-label="Functions as vectors">
+        <span class="nav-page-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Functions as vectors</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Accumulation/35-integration.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>

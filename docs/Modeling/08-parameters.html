@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.55">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>8&nbsp; Parameters – MOSAIC Calculus</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../Modeling/09-assembling-functions.html" rel="next">
+<link href="../modeling-part.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+</head><body class="nav-sidebar floating nav-fixed slimcontent"><span class="math inline" style="display: none;">
+\(\newcommand{\line}{\text{line}}
+\newcommand{\hump}{\text{hump}}
+\newcommand{\sigmoid}{\text{sigmoid}}
+\newcommand{\recip}{\text{recip}}
+\newcommand{\diff}[1]{{\cal D}_#1}
+\newcommand{\pnorm}{\text{pnorm}}
+\newcommand{\dnorm}{\text{dnorm}}
+\let\origvec\vec
+\let\origmathit\mathit
+\let\orighat\hat
+\let\origbar\bar
+\newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+\newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+\newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+\newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+\newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+\newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+\newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+\newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+\newcommand{\modeledby}[2]{#1\!\sim\!#2}
+\newcommand{\CC}[1]{\color{#648fff}{#1}}
+\newcommand{\CE}[1]{\color{#785ef0}{#1}}
+\newcommand{\CA}[1]{\color{#dc267f}{#1}}
+\newcommand{\CB}[1]{\color{#fe6100}{#1}}
+\newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+</span>
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../www/Cover-1.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">MOSAIC Calculus</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+    <a href="https://github.com/dtkaplan/MC2/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../modeling-part.html">BLOCK I. Modeling</a></li><li class="breadcrumb-item"><a href="../Modeling/08-parameters.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PRELIMINARIES</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/01-quant-fun-space.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/07-data-functions-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data, functions, graphics</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK I. Modeling</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/08-parameters.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/09-assembling-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/10-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/11-fitting-features.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/12-low-order-polynomials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/13-operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/14-magnitudes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/15-dimensions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/16-modeling-scientific-method.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling and the scientific method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/Modeling-projects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Projects</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#matching-numbers-to-quantities" id="toc-matching-numbers-to-quantities" class="nav-link active" data-scroll-target="#matching-numbers-to-quantities"><span class="header-section-number">8.1</span> Matching numbers to quantities</a></li>
+  <li><a href="#parallel-scales" id="toc-parallel-scales" class="nav-link" data-scroll-target="#parallel-scales"><span class="header-section-number">8.2</span> Parallel scales</a></li>
+  <li><a href="#sec-input-scaling" id="toc-sec-input-scaling" class="nav-link" data-scroll-target="#sec-input-scaling"><span class="header-section-number">8.3</span> Input scaling</a></li>
+  <li><a href="#sec-output-scaling" id="toc-sec-output-scaling" class="nav-link" data-scroll-target="#sec-output-scaling"><span class="header-section-number">8.4</span> Output scaling</a></li>
+  <li><a href="#a-procedure-for-building-models" id="toc-a-procedure-for-building-models" class="nav-link" data-scroll-target="#a-procedure-for-building-models"><span class="header-section-number">8.5</span> A procedure for building models</a></li>
+  <li><a href="#other-formats-for-scaling" id="toc-other-formats-for-scaling" class="nav-link" data-scroll-target="#other-formats-for-scaling"><span class="header-section-number">8.6</span> Other formats for scaling</a></li>
+  <li><a href="#parameterization-conventions" id="toc-parameterization-conventions" class="nav-link" data-scroll-target="#parameterization-conventions"><span class="header-section-number">8.7</span> Parameterization conventions</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Modeling/08-parameters.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../modeling-part.html">BLOCK I. Modeling</a></li><li class="breadcrumb-item"><a href="../Modeling/08-parameters.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-parameters" class="quarto-section-identifier"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="page-columns page-full"><p>The variety of shapes of the nine pattern-book functions means that, often, one or another will be suitable for the modeling situation in hand. </p><div class="no-row-height column-margin column-container"><span class="margin-aside">Combining the functions to create a greater diversity of shapes is the subject of <a href="09-assembling-functions.html" class="quarto-xref"><span>Chapter 9</span></a>.</span></div></div>
+<p>Even if the shape of the function used is appropriate, the pattern still needs to be “adjusted” so that the units of output and input are well matched to the phenomenon being modeled. Let’s consider data from the outbreak of COVID-19 as an example. <a href="#fig-covid-exp" class="quarto-xref">Figure&nbsp;<span>8.1</span></a> shows, day-by-day, the number of officially confirmed COVID-19 cases as the in the US in March 2020.</p>
+<p>During the outbreak, case numbers increased with time. As time went on, the rate of case-number increase itself grew faster and faster. This is the same pattern provided by the exponential function.</p>
+<p>Alongside the case-number data <a href="#fig-covid-exp" class="quarto-xref">Figure&nbsp;<span>8.1</span></a> shows the function <span class="math inline">\(\text{cases}(t) \equiv e^t\)</span> plotted as a <span class="math inline">\(\color{magenta}{\text{magenta}}\)</span> curve.</p>
+<div class="cell page-columns page-full" data-layout-align="center">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-covid-exp" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-fig-align="center" data-cap-location="margin">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-covid-exp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="08-parameters_files/figure-html/fig-covid-exp-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-covid-exp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.1: Cumulative officially confirmed COVID-19 cases (in 10000s) during the month of March, 2020. The <span class="math inline">\(\color{magenta}{\text{magenta curve}}\)</span> is <span class="math inline">\(e^t\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>There is an obvious mismatch between the data and the function <span class="math inline">\(e^t\)</span>. Does this mean the COVID pattern is not exponential?</p>
+<p>This chapter will introduce how modelers stretch and shift the individual patter-book functions so that they can be used in models of real-world situations such as the outbreak of COVID-19.</p>
+<section id="matching-numbers-to-quantities" class="level2 page-columns page-full" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="matching-numbers-to-quantities"><span class="header-section-number">8.1</span> Matching numbers to quantities</h2>
+<p>The coordinate axes in <a href="#fig-covid-exp" class="quarto-xref">Figure&nbsp;<span>8.1</span></a> represent quantities. On the horizontal axis is time, measured in days. The vertical axis is denominated in “10000 cases,” meaning that the numbers on the vertical scale should be multiplied by 10000 to get the number of cases.</p>
+<p>The exponential function takes as input a <strong>pure number</strong> and produces an output that is also a pure number. This is true for all the pattern-book functions. Since the graph axes don’t show pure numbers, it is no surprise then that the pattern-book exponential function doesn’t align with the COVID case data.</p>
+<div class="page-columns page-full"><p></p><div class="no-row-height column-margin column-container"><span class="margin-aside">Recall that <strong><em>pure numbers</em></strong>, like 17.32, do not have units. Quantities, on the other hand, usually do have units, as in 17.3 days or 34 meters.</span></div></div>
+<p>If we want the input to the model function <span class="math inline">\(\text{cases}(t)\)</span> to be denominated in days, we will have to convert <span class="math inline">\(t\)</span> to a pure pure number (e.g.&nbsp;10, not “10 days”) <em>before</em> the quantity is handed off as the argument to <span class="math inline">\(\exp()\)</span>. We do this by introducing a <strong><em>parameter</em></strong>.</p>
+<div class="page-columns page-full"><p></p><div class="no-row-height column-margin column-container"><span class="margin-aside">In every case, these parameters are arranged to translate a with-units quantity into a pure number suitable as an input to the pattern-book function. Similarly, parameters will translate the pure-number output from the pattern-book function into a quantity with units.</span></div></div>
+<p>The standard parameterization for the exponential function is <span class="math inline">\(e^{kt}\)</span>. The parameter <span class="math inline">\(k\)</span> will be a quantity with units of “per-day.” Suppose we set <span class="math inline">\(k=0.2\)</span> per day. Then <span class="math inline">\(k\, t{\LARGE\left.\right|}_{t=10 days} = 2\)</span>. This “2” is a pure number because the units on the 0.2 (“per day”) and on the 10 (days) cancel out: <span class="math display">\[0.2\, \text{day}^{-1} \cdot 10\, \text{days} = 2\ .\]</span> The use of a parameter like <span class="math inline">\(k\)</span> does more than handle the formality of converting input quantities into pure numbers. Having a choice for <span class="math inline">\(k\)</span> allows us to stretch or compress the function to align with the data. <a href="#fig-covid-exp2" class="quarto-xref">Figure&nbsp;<span>8.2</span></a> plots the modeling version of the exponential function to the COVID-case data:</p>
+<div class="cell page-columns page-full" data-layout-align="center">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-covid-exp2" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-fig-align="center" data-cap-location="margin">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-covid-exp2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="08-parameters_files/figure-html/fig-covid-exp2-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-covid-exp2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.2: Using the function form <span class="math inline">\(A e^{kt}\)</span> with parameters <span class="math inline">\(k=0.19\)</span> per day and <span class="math inline">\(A = 0.0573\)</span> cases (in 10000s) matches the COVID-case data well.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="parallel-scales" class="level2 page-columns page-full" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="parallel-scales"><span class="header-section-number">8.2</span> Parallel scales</h2>
+<div class="cell page-columns page-full" data-layout-align="center">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="www/thermometer.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div></div></div>
+<p>At the heart of how we use the pattern-book functions to model the relationship between quantities is the idea of conversion between one scale and another. Consider these everyday objects: a thermometer and a ruler.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="www/ruler.jpeg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Each object presents a read-out of what’s being measured—temperature or length—on two different scales. At the same time, the objects provide a way to convert one scale to another.</p>
+<p>A function gives the output for any given input. We represent the input value as a position on a number line—which we call an “axis”—and the output as a position on another output line, almost always drawn perpendicular to one another. But the two number lines can just as well be parallel to one another. To evaluate the function, find the input value on the input scale and read off the corresponding output.</p>
+<p>We can translate the correspondance between one scale and the other into the form of a straight-line function. For instance, if we know the temperature in Fahrenheit (<span class="math inline">\(^\circ\)</span>F) and want to convert it to Celsius (<span class="math inline">\(^\circ C\)</span>) we have the following function: <span class="math display">\[C(F) \equiv {\small\frac{5}{9}}(F-32)\ .\]</span> Similarly, converting inches to centimeters can be accomplished with <span class="math display">\[\text{cm(inches)} \equiv 2.54 \, (\text{inches}-0)\ .\]</span> Both of these scale conversion functions have the form of the straight-line function, which can be written as <span class="math display">\[f(x) \equiv a x + b\ \ \ \text{or, equivalently as}\ \ \ \ f(x) \equiv a(x-x_0)\ ,\]</span> where <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>, and <span class="math inline">\(x_0\)</span> are <strong><em>parameters</em></strong>.</p>
+<p>In <a href="#sec-input-scaling" class="quarto-xref"><span>Section 8.3</span></a>, we will use the <span class="math inline">\(ax + b\)</span> form of scale conversion, to scale the <strong>input</strong> to pattern-book functions, but we could equally well have used <span class="math inline">\(a(x-x_0)\)</span>.</p>
+<p>In <a href="#sec-output-scaling" class="quarto-xref"><span>Section 8.4</span></a> we will introduce a second scale conversion function, for the <strong>output</strong> from pattern-book functions. That scaling will also be in the form of a straight-line function: <span class="math inline">\(A x + B\)</span>. The use of the lower-case parameter names (<span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span>) versus the upper-case parameter names (<span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span>) will help us distinguish the two different uses for scale conversion, namely <strong><em>input scaling</em></strong> versus <strong><em>output scaling</em></strong>.</p>
+</section>
+<section id="sec-input-scaling" class="level2 page-columns page-full" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="sec-input-scaling"><span class="header-section-number">8.3</span> Input scaling</h2>
+<p><a href="#fig-tides-ri1" class="quarto-xref">Figure&nbsp;<span>8.3</span></a> is based on the data frame <code>RI-tide</code> which is a minute-by-minute record of the tide level in Providence, Rhode Island (USA) for the period April 1 to 5, 2010. The <code>level</code> variable is measured in meters; the <code>hour</code> variable gives the time of the measurement in hours after midnight at the start of April 1.</p>
+<div class="cell page-columns page-full" data-layout-align="center">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-tides-ri1" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-fig-align="center" data-cap-location="margin">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-tides-ri1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="08-parameters_files/figure-html/fig-tides-ri1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-tides-ri1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.3: Tide levels oscillate up and down over time. This is analogous to the <span class="math inline">\(\sin(t)\)</span> pattern-book function.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The pattern-book <span class="math inline">\(\sin()\)</span> and the function <span class="math inline">\(\color{magenta}{\text{level}}\color{blue}{(hour)}\)</span> have similar shapes, so it seems reasonable to model the tide data as a sinusoid. However, the scale of the axes is different on the two graphs.</p>
+<p>To model the tide with a sinusoid, we need to modify the sinusoid to change the scale of the input and output. First, let’s look at how to accomplish the <strong><em>input scaling</em></strong>. Specifically, we want the pure-number input <span class="math inline">\(t\)</span> to the sinusoid be a function of the quantity <span class="math inline">\(hour\)</span>. Our framework for this re-scaling is the straight-line function. We will replace the pattern-book input <span class="math inline">\(t\)</span> with a function <span class="math display">\[t(\color{blue}{hour}) \equiv a\, \color{blue}{hour} + b\ .\]</span></p>
+<p>The challenge is to find values for the parameters <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> that will transform the <span class="math inline">\(\color{blue}{\mathbf{\text{blue}}}\)</span> horizontal axis into the <strong>black</strong> horizontal axis, like this:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="08-parameters_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>By comparing the two axes, we can estimate that <span class="math inline">\(\color{blue}{10} \rightarrow 4\)</span> and <span class="math inline">\(\color{blue}{100} \rightarrow 49\)</span>. With these two coordinate points, we can find the straight-line function that turns <span class="math inline">\(\color{blue}{\mathbf{\text{blue}}}\)</span> into <strong>black</strong> by plotting the coordinate pairs <span class="math inline">\((\color{blue}{0},1)\)</span> and <span class="math inline">\((\color{blue}{100}, 51)\)</span> and finding the straight-line function that connects the points.</p>
+<div class="cell page-columns page-full" data-layout-align="center">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-blue-to-black-1" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-fig-align="center" data-cap-location="margin">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-blue-to-black-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="08-parameters_files/figure-html/fig-blue-to-black-1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-blue-to-black-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.4: The input scaling function must transform 10 into 4 and transform 100 into 49 to properly arrange the time scale with the scale for the pattern-book function.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>You can calculate for yourself that the function that relates <span class="math inline">\(\color{blue}{\mathbf{\text{blue}}}\)</span> to <strong>black</strong> is <span class="math display">\[t(\color{blue}{time}) = \underbrace{\frac{1}{2}}_a \color{blue}{time}  \underbrace{-1\LARGE\strut}_b\]</span></p>
+<p>Replacing the pure number <span class="math inline">\(t\)</span> as the input to pattern-book <span class="math inline">\(\sin(t)\)</span> with the transformed <span class="math inline">\(\frac{1}{2} \color{blue}{time}\)</span> we get a new function: <span class="math display">\[g(\color{blue}{time}) \equiv \sin\left(\strut {\small\frac{1}{2}}\color{blue}{time} - 1\right)\ .\]</span> <a href="11-fitting-features.html#fig-tides-ri2" class="quarto-xref">Figure&nbsp;<span>11.6</span></a> plots <span class="math inline">\(g()\)</span> along with the actual tide data.</p>
+<div class="cell page-columns page-full" data-layout-align="center">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-tides-ri2" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-fig-align="center" data-cap-location="margin">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-tides-ri2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="08-parameters_files/figure-html/fig-tides-ri2-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-tides-ri2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.5: The sinusoid with input scaling (black) aligns nicely with the tide-level data.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-output-scaling" class="level2 page-columns page-full" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="sec-output-scaling"><span class="header-section-number">8.4</span> Output scaling</h2>
+<p>Just as the natural input needs to be scaled before it reaches the pattern-book function, so the output from the pattern-book function needs to be scaled before it presents a result suited for interpreting in the real world.</p>
+<div class="cell fig-cap-location-top page-columns page-full" data-layout-align="center">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-scaling-nature" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-fig-align="center" data-cap-location="top">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-scaling-nature-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.6: Natural <strong>quantities</strong> must be scaled to pure numbers before being suited to the pattern-book functions. The output from the pattern-book function is a pure number which is scaled to the natural <strong>quantity</strong> of interest.
+</figcaption>
+<div aria-describedby="fig-scaling-nature-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="page-columns page-full">
+<img src="www/scaling-nature.png" class="img-fluid quarto-figure quarto-figure-center figure-img column-page-right" style="width:150.0%">
+</div>
+</figure>
+</div>
+</div>
+</div>
+<p>The overall result of input and output scaling is to tailor the pattern-book function so that it is ready to be used in the real world.</p>
+<p>Let’s return to <a href="11-fitting-features.html#fig-tides-ri2" class="quarto-xref">Figure&nbsp;<span>11.6</span></a> which shows that the function <span class="math inline">\(g(\color{blue}{time})\)</span>, which scales the input to the pattern-book sinusoid, has a much better alignment to the tide data. Still, the vertical axes of the two graphs in the figure are not the same.</p>
+<p>This is the job for <strong><em>output scaling</em></strong>, which takes the output of <span class="math inline">\(g(\color{blue}{time})\)</span> (bottom graph) and scales it to match the <span class="math inline">\(\color{magenta}{level}\)</span> axis on the top graph. That is, we seek to align the <strong>black</strong> vertical scale with the <span class="math inline">\(\color{magenta}{\mathbf{\text{magenta}}}\)</span> vertical scale. To do this, we note that the range of the <span class="math inline">\(g(\color{blue}{time})\)</span> is -1 to 1, whereas the range of the tide-level is about 0.5 to 1.5. The output scaling will take the straight-line form <span class="math display">\[{\color{magenta}{\text{level}}}({\color{blue}{time}}) = A\, g({\color{blue}{time}}) + B\]</span> or, in graphical terms</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="08-parameters_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can figure out parameters <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> by finding the straight-line function that connects the coordinate pairs <span class="math inline">\((-1, \color{magenta}{0.5})\)</span> and <span class="math inline">\((1, \color{magenta}{1.5})\)</span> as in <a href="#fig-black-to-magenta-1" class="quarto-xref">Figure&nbsp;<span>8.7</span></a>.</p>
+<div class="cell page-columns page-full" data-layout-align="center">
+<div class="cell-output-display page-columns page-full">
+<div id="fig-black-to-magenta-1" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-fig-align="center" data-cap-location="margin">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-black-to-magenta-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="08-parameters_files/figure-html/fig-black-to-magenta-1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-black-to-magenta-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.7: Finding the straight-line function that converts <span class="math inline">\(-1 \rightarrow \color{magenta}{0.5}\)</span> and converts <span class="math inline">\(1 \rightarrow \color{magenta}{1.5}\)</span>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>You can confirm for yourself that the function that does the job is <span class="math display">\[{\color{magenta}{\text{level}}} = 0.5 g({\color{blue}{time}}) + 1\ .\]</span></p>
+<p>Putting everything together, that is, scaling both the input to pattern-book <span class="math inline">\(\sin()\)</span> and the output from pattern-book <span class="math inline">\(\sin()\)</span>, we get</p>
+<p><span class="math display">\[{\color{magenta}{\text{level}}}({\color{blue}{time}}) = \underbrace{0.5}_A \sin\left(\underbrace{\small\frac{1}{2}}_a {\color{blue}{time}}  \underbrace{-1}_b\right) + \underbrace{1}_B\]</span></p>
+</section>
+<section id="a-procedure-for-building-models" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="a-procedure-for-building-models"><span class="header-section-number">8.5</span> A procedure for building models</h2>
+<p>We’ve been using pattern-book functions as the intermediaries between input scaling and output scaling, using this format.</p>
+<p><span class="math display">\[f(x) \equiv A e^{ax + b} + B\ .\]</span> We can use the other pattern-book functions—the gaussian, the sigmoid, the logarithm, the power-law functions—in the same way. That is, the basic framework for modeling is this:</p>
+<p><span class="math display">\[\text{model}(x) \equiv A\, {g_{pattern\_book}}(ax + b) + B\ ,\]</span> where <span class="math inline">\(g_{pattern\_book}()\)</span> is one of the pattern-book functions. To construct a basic model, you task has two parts:</p>
+<ol type="1">
+<li><p>Pick the specific pattern-book function whose shape resembles that of the relationship you are trying to model. For instance, we picked <span class="math inline">\(e^x\)</span> for modeling COVID cases versus time (at the start of the pandemic). We picked <span class="math inline">\(\sin(x)\)</span> for modeling tide levels versus time.</p></li>
+<li><p>Find numerical values for the parameters <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span>, <span class="math inline">\(a\)</span>, and <span class="math inline">\(b\)</span>. In <span class="quarto-unresolved-ref">?sec-fitting-by-eye</span> we will show you some ways to make this part of the task easier.</p></li>
+</ol>
+<p>It is remarkable that models of a very wide range of real-world relationships between pairs of quantities can be constructed by picking one of a handful of functions, then scaling the input and the output. As we move on to other Blocks in <em>MOSAIC Calculus</em>, you will see how to generalize this to potentially complicated relationships among more than two quantities. That is a big part of the reason you’re studying calculus.</p>
+</section>
+<section id="other-formats-for-scaling" class="level2" data-number="8.6">
+<h2 data-number="8.6" class="anchored" data-anchor-id="other-formats-for-scaling"><span class="header-section-number">8.6</span> Other formats for scaling</h2>
+<p>Often, modelers choose to use input scaling in the form <span class="math inline">\(a (x - x_0)\)</span> rather than <span class="math inline">\(a x + b\)</span>. The two are completely equivalent when <span class="math inline">\(x_0 = - b/a\)</span>. The choice between the two forms is largely a matter of convention. But almost always the output scaling is written in the format <span class="math inline">\(A y + B\)</span>.</p>
+<div class="example">
+<p>For the COVID case-number data shown in <a href="#fig-covid-exp2" class="quarto-xref">Figure&nbsp;<span>8.2</span></a>, we found that a reasonable match to the data can be had by input- and output-scaling the exponential: <span class="math display">\[\text{cases}(t) \equiv  \underbrace{573}_A e^{\underbrace{0.19}_a\ t}\ .\]</span></p>
+<p>You might wonder why the parameters <span class="math inline">\(B\)</span> and <span class="math inline">\(b\)</span> aren’t included in the model. One reason is that cases and the exponential function already have the same range: zero and upwards. So there is no need to shift the output with a parameter B.</p>
+<p>Another reason has to do with the algebraic properties of the exponential function. Specifically, <span class="math display">\[e^{a x + b}= e^b e^{ax} = {\cal A} e^{ax}\]</span> where <span class="math inline">\({\cal A} \equiv e^b\)</span>.</p>
+<p>In the case of exponentials, writing the input scaling in the form <span class="math inline">\(e^{a(x-x_0)}\)</span> can provide additional insight.</p>
+<p>A bit of symbolic manipulation of the model can provide some additional insight. As you know, the properties of exponentials and logarithms are such that <span class="math display">\[A e^{at} = e^{\log(A)} e^{at} = e^{a t + \log(A)} = e^{a\left(\strut t + \log(A)/a\right)} = e^{a(t-t_0)}\ ,\]</span> where <span class="math display">\[t_0 = - \log(A)/a = - \log(593)/0.19 = -33.6\ .\]</span> You can interpret <span class="math inline">\(t_0\)</span> as the starting point of the pandemic. When <span class="math inline">\(t = t_0\)</span>, the model output is <span class="math inline">\(e^{k 0} = 1\)</span>: the first case. According to the parameters we matched to the data for March, the pandemic’s first case would have happened about 33 days before March 1, which is late January. We know from other sources of information, the outbreak began in late January. It is remarkable that even though the curve was constructed without any data from January or even February, the data from March, translated through the curve-fitting process, pointed to the start of the outbreak. This is a good indication that the exponential form for the model is fundamentally correct.</p>
+</div>
+</section>
+<section id="parameterization-conventions" class="level2 page-columns page-full" data-number="8.7">
+<h2 data-number="8.7" class="anchored" data-anchor-id="parameterization-conventions"><span class="header-section-number">8.7</span> Parameterization conventions</h2>
+<p>There are conventions for the symbols used for input-scaling parameterization of the pattern-book functions. Knowing these conventions makes it easier to read and assimilate mathematical formulas. In several cases, there is more than one conventional option. For instance, the sinusoid has a variety of parameterization forms that get used depending on which feature of the function is easiest to measure. <span class="quarto-unresolved-ref">?tbl-param</span> that are used in practice.</p>
+<div id="tbl-parameterization" class="column-screen-inset-right quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-parameterization-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8.1: Some standard forms of <em>input scaling</em> parameterizations
+</figcaption>
+<div aria-describedby="tbl-parameterization-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Written form</th>
+<th>Parameter 1</th>
+<th>Parameter 2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Exponential</td>
+<td><span class="math inline">\(e^{kt}\)</span></td>
+<td><span class="math inline">\(k\)</span></td>
+<td>Not used</td>
+</tr>
+<tr class="even">
+<td>Exponential</td>
+<td><span class="math inline">\(e^{t/\tau}\)</span></td>
+<td><span class="math inline">\(\tau\)</span> “time constant”</td>
+<td>Not used</td>
+</tr>
+<tr class="odd">
+<td>Exponential</td>
+<td><span class="math inline">\(2^{t/\tau_2}\)</span></td>
+<td><span class="math inline">\(\tau_2\)</span> “doubling time”</td>
+<td>Not used</td>
+</tr>
+<tr class="even">
+<td>Exponential</td>
+<td><span class="math inline">\(2^{-\tau_{1/2}}\)</span></td>
+<td><span class="math inline">\(-\tau_{1/2}\)</span> “half life”</td>
+<td>Not used</td>
+</tr>
+<tr class="odd">
+<td>Power-law</td>
+<td><span class="math inline">\([x - x_0]^p\)</span></td>
+<td><span class="math inline">\(x_0\)</span> x-intercept</td>
+<td>exponent</td>
+</tr>
+<tr class="even">
+<td>Sinusoid</td>
+<td><span class="math inline">\(\sin\left(\frac{2 \pi}{P} (t-t_0)\right)\)</span></td>
+<td><span class="math inline">\(P\)</span> “period”</td>
+<td><span class="math inline">\(t_0\)</span> “time shift”</td>
+</tr>
+<tr class="odd">
+<td>Sinusoid</td>
+<td><span class="math inline">\(\sin(\omega t + \phi)\)</span></td>
+<td><span class="math inline">\(\omega\)</span> “angular frequency”</td>
+<td><span class="math inline">\(\phi\)</span> “phase shift”</td>
+</tr>
+<tr class="even">
+<td>Sinusoid</td>
+<td><span class="math inline">\(\sin(2 \pi \omega t + \phi)\)</span></td>
+<td><span class="math inline">\(\omega\)</span> “frequency”</td>
+<td><span class="math inline">\(\phi\)</span> “phase shift”</td>
+</tr>
+<tr class="odd">
+<td>Gaussian</td>
+<td>dnorm(x, mean, sd)</td>
+<td>“mean” (center)</td>
+<td>sd “standard deviation”</td>
+</tr>
+<tr class="even">
+<td>Sigmoid</td>
+<td>pnorm(x, mean, sd)</td>
+<td>“mean” (center)</td>
+<td>sd “standard deviation”</td>
+</tr>
+<tr class="odd">
+<td>Straight-line</td>
+<td><span class="math inline">\(mx + b\)</span></td>
+<td><span class="math inline">\(m\)</span> “slope”</td>
+<td><span class="math inline">\(b\)</span> “y-intercept”</td>
+</tr>
+<tr class="even">
+<td>Straight-line</td>
+<td><span class="math inline">\(m (x-x_0)\)</span></td>
+<td><span class="math inline">\(m\)</span> “slope”</td>
+<td><span class="math inline">\(x_0\)</span> “center”</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/dtkaplan\.github\.io\/MC2\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../modeling-part.html" class="pagination-link" aria-label="BLOCK I. Modeling">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">BLOCK I. Modeling</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../Modeling/09-assembling-functions.html" class="pagination-link" aria-label="Assembling functions">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Modeling/08-parameters.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
