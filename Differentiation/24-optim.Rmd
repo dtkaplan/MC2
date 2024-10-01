@@ -177,21 +177,11 @@ The above is an equation, not a definition. It says that whatever $x^\star$ happ
 :::
 
 
-
-<!--
-`r insert_calcZ_exercise("23.16", "eberg", "Exercises/optim-blue.Rmd")`
-Save for after approximations have been introduced. --> 
-
-<!--
-::: {.todo}
-This is probably misplaced. and the `plot_lens()` function would have to be provided.
-
-"Exercises/optim-purple.Rmd"`
+::: {#thm-demand-curve style="display: none;"}
+---In economics, demand for a good is a function of the good's price (and other things). This function is called the "demand curve."
 :::
--->
-
-::: {.callout-note icon=false data-latex=""} 
-## Math in the World: The demand "curve"
+::: {.callout-note icon=false} 
+## @thm-demand-curve The demand "curve"
 
 In economics, a monopoly or similar arrangement can set the price for a good or commodity. Monopolists can set the price at a level that generates the most income for themselves. 
 
@@ -249,10 +239,12 @@ For example, consider [a style problem that often appears in calculus textbooks]
 
 The above is a lovely geometry/calculus problem. Whether it is relevant to any genuine, real-world problem is another question.
 
-```{r echo=FALSE}
-#| column: margin
-knitr::include_graphics("www/cylinder.png")
-```
+
+::: {#fig-cylinder-diagram}
+![](www/cylinder.png)
+
+Diagram of a cylinder
+:::
 
 Using the notation in the diagram, the volume and surface area of the cylinder is $$V(r, h) \equiv \pi r^2 h \ \ \ \text{and}\ \ \ A(r, h) \equiv 2 \pi r^2 + 2 \pi r h$$
 
@@ -261,12 +253,17 @@ Minimizing the weight of the cylinder is our objective (according to the problem
 $$h(r, V) \equiv V / \pi r^2 \ \ \ \implies\ \ \ A(r, V) = 2 \pi r^2 + 2 \pi r V/\pi r^2 = 2 \pi r^2 + 2 V / r$$
 Suppose $V$ is specified as 1000 liters. A good first step is to choose appropriate units for $r$ to make sure the formula for $A(r, V)$ is dimensionally consistent. Suppose we choose $r$ in cm. Then we want $V$ in cubic centimeters (cc). 1000 liters is 1,000,000 cc. Now we can plot a slice of the area function:
 
+::: {#fig-cyl-surface-area}
 ```{r}
 #| column: margin
 A <- makeFun(2*pi*r^2 + 2*V/r ~ r, V=1000000)
 slice_plot(A(r) ~ r, bounds(r=c(10, 100))) %>%
   gf_labs(x = "radius (cm)", y = "Surface area of container (square cm)")
 ```
+
+Surface area of a cylindrical tank (@fig-cylinder-diagram) of capacity 1000 liters as a function of radius. Since the volume is specified, the height of the cylinder is a function of radius.
+:::
+
 
 As always, the function's derivative is zero at the optimal $r$. In the graph, the argmin is near $r=50$ cm at which point the minimum is about 50,000 cm$^2$. Since $h(r,V) = V/\pi r^2$, the required height of cylinder will be near $10^6 / \pi 50^2 = 127$cm. 
 
@@ -286,12 +283,15 @@ In modeling, a good rule of thumb is this: "If you don't know what a sensible pr
 
 Approach (2) is always at hand, since you already know the objective function. Let's graph the objective function near $r = 54.1926$ ...
 
+::: {#fig-container-objective}
 ```{r echo=FALSE}
-#| column: margin
 slice_plot(A(r) ~ r, bounds(r=c(50, 60))) %>%
   gf_point(A(54.1926) ~ 54.1926, shape="*", size=10) %>%
   gf_labs(x = "radius (cm)", y="Container surface area (square cm)")
 ```
+
+Zooming in on the argmin for the surface area of the container as a function of radius of the cylinder.
+:::
 
 Look carefully at the axes scales. Deviating from the mathematical optimum by about 5cm (that is, 50,000 microns) produces a change in the output of the objective function by about 400 units **out of 55,000**. In other words, about 0.7%. 
 
@@ -303,9 +303,11 @@ In reporting the results from an optimization problem, you ought to give the dec
 
 We mentioned another technique for getting a handle on what precision is meaningful: (1) solve a closely related problem. It can requires some insight and creativity to frame the new problem. For instance, large capacity tanks often are shaped like a lozenge: a cylinder with hemi-spherical ends.  
 
-```{r echo=FALSE}
-#| column: margin
-knitr::include_graphics("www/hemisphere.png")
+::: {#fig-hemisphere}
+
+![](www/hemisphere.png)
+
+Diagram of a cylindrical tank with hemispherical end caps.
 ```
 
 Using $h$ for the length of the cylindrical portion of the tank, and $r$ for the radius, the volume and surface area are:
