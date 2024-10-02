@@ -137,24 +137,27 @@ slice_plot(wave_packet(x, A=2, center=3, width  = 4, P  = 10/5 ) ~ x,
 
 
 
-
+::: {#thm-rise-and-fall style="display: none;"}
+---What goes up may come down.
+:::
 
 ::: {.callout-note icon=false data-latex=""} 
-## Math in the World: Modeling rise and fall
+## @thm-rise-and-fall Modeling rise and fall
 
 The initial rise in popularity of the social media platform [Yik Yak](https://en.wikipedia.org/wiki/Yik_Yak) was exponential. Then popularity leveled off, promising a steady, if static, business into the future. But, the internet being what it is, popularity collapsed to near zero and the company closed.
 
 One way to model this pattern is by multiplying a sigmoid by an exponential. (See @fig-yikyak.)
 
+::: {#fig-yikyak}
 ```{r echo=FALSE}
-#| label: fig-yikyak 
-#| fig-cap: "Subscriptions to the web messaging service Yik Yak grew exponentially in 2013 and 2014, then collapsed. The company closed in 2017."
-#| fig-pos: "h"
-#| fig-cap-location: margin
 yikyak <- makeFun(
   pnorm(year, mean=2014.5, sd=0.7) * exp(-(year-2014)) ~ year)
 slice_plot(yikyak(year) ~ year, bounds(year=2010:2018))
 ```
+
+Subscriptions to the web messaging service Yik Yak grew exponentially in 2013 and 2014, then collapsed. The company closed in 2017.
+:::
+
 :::
 
 Functions constructed as a ***product*** of simple functions can look like this in tradition notation:
@@ -256,22 +259,25 @@ R notation              | English
 :::
 
 
-
+::: {#thm-heating-with-gas style="display: none;"}
+---Two uses of gas---heating and cooking---call for a piecewise function.
+:::
 ::: {.callout-note icon=false data-latex=""} 
-## Math in the World: Heating with gas
+## @thm-heating-with-gas Heating with gas
 
 @fig-gas-use-two is a graph of monthly natural gas use in the author's household versus average temperature during the month. (Natural gas is measured in cubic feet, abbreviated *ccf*.) 
 
+::: {#fig-gas-use-two}
 ```{r echo=FALSE}
-#| label: fig-gas-use-two
-#| fig-cap: "The amount of natural gas used for heating the author's home varies with the outside temperature."
-#| fig-cap-location: margin
 ramp <- makeFun(ifelse(0 < x, x, 0) ~ x)
 gf_point(ccf ~ temp, data = Home_utilities, alpha=0.5) %>%
   gf_labs(title="Household natural gas use", x = "Average temperature for the month (deg. F)", y = "Volume of gas used (cubic feet)") %>%
   gf_lims(x = c(0, 85)) %>%
   slice_plot(4.3*ramp(62 - temp) + 15 ~ temp, color="dodgerblue", size=2, alpha=0.5)
 ```
+
+The amount of natural gas used for heating the author's home varies with the outside temperature.
+:::
 
 The graph looks somewhat like a hockey stick. A sloping straight-line dependence of ccf on temperature for temperatures below $60^\circ$F and constant for higher temperatures.  The shape originates from the dual uses of natural gas. Gas is used for cooking and domestic hot water, the demand for which is more or less independent of outdoor temperature at about 15 ccf per month. Gas is also used for heating the house, but that is  needed only when the temperature is less than about $60^\circ$F.  
 
