@@ -4,137 +4,153 @@
 source("../starter.R")
 ```
 
+Mathematical notation evolved for the purpose of communication among people. With the introduction of programmable computers in the middle of the 20th century, a notation was needed to communicate between people and hardware. It turns out that traditional mathematical notation in calculus is not fully adequate for this purpose. This chapter introduces the notation used in R/mosaic. 
+
 ## Commands and evaluation
 
-Mathematical notation evolved for the purpose of communication among people. With the introduction of programmable computers in the middle of the 20th century, a notation was needed to communicate between people and hardware. It turns out that traditional mathematical notation in calculus is not fully adequate for this purpose. 
+Computers need to distinguish between ***declarative*** and ***imperative*** statements. A declarative statement, like $g(z) \equiv z \cos(z)$ defines and describes a relationship. An imperative statement is a direction to **do some action**. For instance, "The store is on the next block," is declarative. "Bring some crackers from the store," is imperative. Evaluating a function calls for an imperative statement. 
 
-Computers need to distinguish between ***declarative*** and ***imperative*** statements. A declarative statement, like $g(z) \equiv z \cos(z)$ defines and describes a relationship. An imperative statement is a direction to **do some action**. For instance, "The store is on the next block," is declarative. "Bring some crackers from the store," is imperative. 
+::: {.callout-tip}
+## $\equiv$ and $=$ are declarative
+Noting the distinction between declarative and imperative helps to better understand *mathematical notation*.
+In a mathematical statement like $h(x) \equiv 3 x + 2$, the $\equiv$ indicates that the statement is declarative. Similarly, the equal sign is used for declarative statements, as with $$\pi = 3.14159\ldots$$ On the other hand, applying a function to a value, as in $h(3)$, is an imperative statement. 
+:::
 
 
-The names and format of such  instructions---e.g. make a mathematical function from a formula, draw a graph of a function, plot data---are given in the same function notation we use in math. For example, `makeFun()` constructs a function from a formula, `slice_plot()` graphs a function, `gf_point()` makes one style of data graphic. These R entities saying "do this" are also called "functions." 
+The names and format of such instructions---e.g. make a mathematical function from a formula, draw a graph of a function, plot data---are given in the same name/parentheses notation we use in math. For example, `makeFun()` constructs a function from a formula, `slice_plot()` graphs a function, `gf_point()` makes one style of data graphic. These R entities saying "do this" are also called "functions." 
 
 When referring to such R "do this" functions, we will refer to the stuff that goes in between the parentheses as "arguments." The word "input" would also be fine. The point of using "input" for math functions and "argument" for R "do-this" functions is merely to help you identify when we are talking about mathematics and when we are talking about computing.
 
+With computers, writing an expression in computer notation goes hand-in-hand with ***evaluating*** the notation. In the mode we will use in this book, you enter your commands in an editor block that we call an "*active R chunk*." An example is @lst-very-first-one, where the editor has been pre-populated with a simple arithmetic command: `2 + 3`.
 
-With computers, writing an expression in computer notation goes hand-in-hand with ***evaluating*** the notation. We will start with the simplest mode of evaluation, where you are writing the expression in the ***console*** for the language. @fig-R-console shows and example the console tab provided by the RStudio application. 
-
-::: {#fig-r-console}
-![](www/console.png)
-An RStudio console tab for writing expressions and evaluating them. The `>` is the ***prompt*** after which you write your expression, here shown in $\color{blue}{\text{blue}}$. Pressing the "return" key causes the language interpreter to evaluate the command.
-:::
-
-
-In @fig-r-console we have come in to the story in the middle of the action. To start, there was just a prompt character.
-
-$\color{blue}{\mathtt >}$
-
-The person at the keyboard then typed a simple expression: `2 + 3`
-
-$\color{blue}{\mathtt >\  2 + 3}$
-
-Having completed the expression, the keyboarder presses "return." The RStudio application sends the expression to the software that "interprets" it according to the rules of the R language. `2 + 3` is a complete, valid R expression, an imperative statement. Consequently, the R-language software carries out the action specified---adding 2 and 3---and returns the result to RStudio, which displays it just below the expression itself. 
-
-$\color{blue}{\mathtt >\  2 + 3}$
-
-$\mathtt{[1]\ 5}$
-
-Note that the value of the expression is simply the number `5`. The R language is set up to **format** numbers with an index, which is helpful when the value of the expressions is a large set of numbers. In the case here, with just a single number in the result of evaluating the expression, the index is simply stating the obvious. 
-
-Having printed the result of evaluating the `2 + 3` expression, RStudio shows another prompt, signally that it is ready for you to enter your next expression. In @fig-r-console we are seeing the console after the person at the keyboard has responded to the prompt by writing another expression, pressed return, had RStudio print the value of that expression, and displayed a new prompt. 
-
-The two expressions shown in the console in @fig-r-console both evaluate to single numbers. We say, "the command returns a value."  The ***command*** is a valid R expression followed by the signal (pressing the "Return" key) to evaluate the command. The ***value*** of the expression is the result of evaluating the command.
-
-::: {.column-margin}
-In a mathematical statement like $h(x) \equiv 3 x + 2$, the $\equiv$ indicates that the statement is declarative. On the other hand, applying a function to a value, as in $h(3)$, is an imperative statement. 
-:::
-
-Another common form of R expression is ***assignment***, a declarative statement. An assignment gives a name to a value. It is done using a symbolic name and the `<-` token:
-
-```{r}
-b <- 3
-```
-
-The result of evaluating this command is to store in the computer memory, under the name `b`, Because the value is being stored, R is designed *not* to display the value as happened with the first two commands in the console. If you want to see the value printed out, give the name as an imperative command:
-
-```{r collapse=TRUE}
-b
-```
-
-Often, declarative and imperative statements are combined, for instance
-
-```{r}
-b <- 22/7
-```
-
-This book displays the command being evaluated in a gray box, without a prompt. The value returned by the command is displayed underneath the command, prefaced by $\color{red}{\mathtt{\#\#}}$. In the book formatting, the four commands we have just described would be displayed in this way:
-
-```{r collapse=TRUE}
-#| layout-ncol: 2
+::: {#lst-very-first-one}
+```{webr-r}
 2 + 3
-sqrt(16)
-b <- 3
-b <- 22/7
+```
+:::
+
+To evaluate the command, press the "Run Code" button. You can edit the command in the usual way, placing the cursor in the editor block and typing.
+
+In @lst-very-first-one (as it initially appears) there is a 1 at the far left. This is a line number, not part of a command. Active R chunks can contain multiple lines and even multiple commands.
+
+::: {.callout-important #try-very-first-one}
+## Simple editing
+Modify the contents of @lst-very-first-one to subtract 22 from 108. Confirm that running the code produces an output of 86.
+:::
+
+The R language is set up to **format** the printing of returned values with an index, which is helpful when the value of the expressions is a large set of numbers. In the case here, with just a single number in the result of evaluating the expression, the index is simply stating the obvious. 
+ 
+::: {.callout-important #try-sqrt-17}
+## "*Calling*" a function
+Leaving the command from @try-very-first-one in place, add a second line to @lst-very-first-one to calculate $\sqrt{17}$. (In R, the square-root function is named `sqrt()`.) When you run the code, you will see two outputs: one for the first line and the other for the second line. 
+:::
+
+Strictly speaking, we can say that running the code `sqrt(17)` is *invoking* the function `sqrt()` on the input value `17`. It's very common in the world of computing to use the word "*calling*" rather than "invoking." So, in @try-sqrt-17 you have "called `sqrt()`.
+
+An important form of R expression is ***storage***, a declarative statement. Storage uses a symbolic name and the `<-` token. @lst-assignment-1 gives a simple example using the name `b`.
+
+::: {#lst-assignment-1}
+```{webr-r}
+b <- 7
+```
+:::
+
+We call `<-` the "**storage arrow**." Think of it as stowing the left-hand value in a box labelled with the name on the right-hand side. 
+When storing a value, R is designed *not* to display the value as happened in the imperative statements in Try it [-@try-very-first-one] and [-try-sqrt-17].
+
+::: {.callout-important #try-store-1}
+## Accessing stored values by name
+The purpose of storage is to provide access to a value later on. In order to retrieve the value stored under a name, simply give the name as a command, as in @lst-retrieve-b.
+
+::: {#lst-retrieve-b}
+```{webr-r}
 b
 ```
+:::
 
-When reading this book, take care to distinguish between the display of a command and the display of the value returned by that command. The first is something you type, the second is printed by the computer.
+Some students may have gotten a response from @lst-retrieve-b in the form of an "*error message*" such as [Error: object 'b' not found]{style="color: red;"}. Even experts get such error messages; it's easy to make a mistake when forming a computer command. It's important for newbies to understand that error messages are intended to help you fix things rather than to frighten you. Perhaps being gentler would help here---[Sorry, but the object 'b' wasn't found.]{style="color: green;"}---but "[errors]{style="color: red;"}" are part of computing culture. 
 
+The message "object 'b' not found" is an indication that nothing has yet been stored under the name `b`. This would be the case if you had neglected to run the code in @lst-assignment-1. If that's your situation, go back to @lst-assignment-1 and run the code, then try @lst-retrieve-b again.
+:::
 
-## Installing mosaic 
+Within a document, for instance a chapter of this book or from the MOSAIC Calculus [*Workbook*](https://dtkaplan.github.io/MC-Workbook/) all the active R chunks have access to the work of the other chunks in the document. Understandably, you need to *run the code* in a chunk in order for other chunks to access it.
 
-This book uses the R language extended by a series of packages known collectively as `{mosaic}`. To use the commands in the next sections, you will need to install these package. This is a one-time operation; you do it once for each computer after you have set up R and RStudio. These commands will do the job. Run them into your R console.
+Whenever you refresh or re-open a document, the active R chunks will all in a not-yet-run state. You have to run the code individually for each chunk you want to use or which are used by other chunks. By and large, we write each R chunks to avoid the need to run earlier chunks ... but not always!
+
+::: {.callout-tip}
+## Using R as a stand-alone app
+Professionals are used to R coming in the form of a stand-alone app. The most popular such app is RStudio, available as free, open-source software produced by a public benefit corporation, Posit PBC. 
+
+There are many tutorials on installing and using RStudio. People do this especially when they need to document and preserve their work or integrate computing into documents. (This book is an example of such a document.) *MOSAIC Calculus* is written so that you do not need to use anything but the active R chunks. Still, you might prefer to use the many helpful features that RStudio adds to work with the R language. (Advantages of the active R chunks: the student doesn't need to install any software. It's nice as well to be able to refer to computations by pointing to a specific active R chunk like @lst-very-first-one.)
+
+If you do use RStudio, note that in addition to the app, you need to install several packages from the R ecosystem. You do this from within R. The following R command will do the job:
 
 ```{r eval=FALSE}
-install.packages("remotes")
-remotes::install_github("ProjectMOSAIC/mosaicCalc")
+install.packages("mosaicCalc")
 ```
 
-You do not need to reinstall the packages every time you start up a new R console. However, you must tell each R console that you open to refer to the packages. Do this with the following command, which will typically be the first thing you type when you open a console.
+Then, each time you open RStudio, you need to tell R that you are planning to use the `{mosaicCalc}` package. Do this as follows:
 
 ```{r}
 library(mosaicCalc)
 ```
 
+:::
 
-## Functions in R/mosaic {#sec-makefun}
+## Defining mathematical functions in R/mosaic {#sec-makefun}
 
-One of the fundamental mathematical operations in this book is ***defining functions***. You've already seen the way we use mathematical notation to define a function, for instance, 
-$$h(t) \equiv 1.5\, t^2 - 2\ .$$
-The R/mosaic equivalent to the definition of $h()$ is:
+As you progress through this book you will meet a dozen or so functions from R/mosaic. For instance, @sec-graphs-and-graphics introduces functions for drawing graphs. @sec-data-and-data-graphics shows how to plot data.
 
-```{r}
+In this section, we introduce the R/mosaic function *for creating mathematical functions*. 
+
+As you know, our mathematical notation for defining a function looks like this: $$h(t) \equiv 1.5\, t^2 - 2\ .$$
+
+The R/mosaic equivalent to this is
+
+::: {lst-define-h-function}
+```{webr-r}
 h <- makeFun(1.5*t^2 - 2 ~ t)
 ```
+:::
 
-Once you have defined a function, you can evaluate it on an input. The R notation for evaluating functions is the same as with mathematical notation, for instance,
 
-```{r}
-h(4)
-```
-
-or 
-
-```{r}
-h(t=4)
-```
-
-There are obvious differences, however, between the mathematical and computing notation used to define a function. All the same information is being provided, but the format is different. That information is:
-
-1. the name of the function: $h()$ or `h`. When writing the name of a computer-defined function, we will put the reminder parentheses after the name, as in `h()`. 
-2. the name of the input to the function: $x$ or `x`
-3. the calculation that the function performs, written in terms of the input name. $1.5 t^2 -2$ or `1.5 * t^2 - 2`.
-
-Laying out the two notation forms side by side let's us label the elements they share:
+Laying out the two notation forms side by side lets us label the elements they share:
 
 ![](www/formula-rosetta.png)
 
-For the human reading the mathematical notation, you know that the statement defines a function because you have been told so. Likewise, the computer needs to be told what to do with the provided information. That is the point of `makeFun()`. There are other R/mosaic commands that could take the same information and do something else with it, for example create a graph of the function or (for those who have had some calculus) create the derivative or the anti-derivative of the function.
+For the human reading the mathematical notation, you know that the statement defines a function because you have been taught. Likewise, the computer needs to be told what to do with the provided information. That is the point of `makeFun()`. There are other R/mosaic commands that could take the same information and do something else with it, for example create a graph of the function or (for those who have had some calculus) create the derivative or the anti-derivative of the function.
 
-::: {.callout-note data-latex=""}
-# Take note ...
+In its simplest use, `makeFun()` takes only one argument. That argument must be in a form called a ***tilde expression***. This name comes from the character tilde ([~]{style="font-size:250%'"}) in the middle. On the right-hand side of the tilde goes the name of the input: `~ t`. On the left-hand side is the R expression for the formula to be used, written in terms of the input name and whatever parameters are used. For instance, @lst-h-with-params defines a parameterized version of $h()$. 
 
-In R, things like `makeFun()` are called "functions" because, like mathematical functions, they turn inputs into outputs. In the case of `makeFun()`, the input is a form called a ***tilde expression***, owing to the character tilde (<span style="font-size:250%'">~</span>) in the middle. On the right-hand side of the tilde goes the name of the input. On the left-hand side is the R expression for the formula to be used, written as always in terms of the input name. The whole tilde expression is taken as the one argument to `makeFun()`. Although it may seem odd to have punctuation in the middle of an argument, remember that something similar happens when we write $h(t=3)$.
+::: {#lst-h-with-params}
+```{webr-r}
+h <- makeFun(a*t^2 - b ~ t, a = 1.5, b = 2)
+```
+In @lst-h-with-params, three arguments are being provided:
+
+1. The tilde expression `a*t^2 - b ~ t`
+2. A default value for parameter `a`.
+3. A default value for parameter `b`.
+
+Arguments are always separated by commas. 
 :::
+
+::: {.callout-important #try-evaluate-h}
+## Evaluating `h()` at an input.
+In @lst-h-with-params2, write each of the following commands.
+
+i. Evaluate `h()` for the input $t = 1$. 
+ii. Evaluate `h()` for the input $t = 2$.
+iii. Repeat (i) and (ii), but override the default value of `b`, setting it instead to be $b=100$.
+
+Naturally, you need to run the code in @lst-h-with-params before you can evaluate `h()`.
+
+::: {#lst-h-with-params2}
+```{webr-r}
+```
+:::
+:::
+
 
 ## Names and assignment
 
@@ -146,26 +162,27 @@ h <- makeFun(1.5*t^2 - 2 ~ t)
 
 gives the name `h` to the function created by `makeFun()`. Good choice of names makes your commands much easier for the human reader. 
 
+::: {.callout-tip}
+## Valid and invalid names in R
+
 The R language puts some restrictions on the names that are allowed. Keep these in mind as you create R names in your future work:
 
-1. A name is the **only**^[Note for R experts: Strictly speaking, the thing to the left of `<-` must be an "assignable," which includes names with indices (e.g. `Engines$hp` or `Engines$hp[3:5]`
-and other forms). We will not need indexing in *MOSAIC Calculus*] thing allowed on the left side of the assignment symbol `<-`. 
+1. A name is the **only** thing allowed on the left side of the storage arrow `<-`. (For experts ... there are additional allowed forms for the left-hand side. We will not need them in this book.)
 2. A name must *begin* with a letter of the alphabet, e.g. `able`, `Baker`, and so on.
 3. Numerals can be used after the initial letter, as in `final4` or `g20`. You can also use the period `.` and underscore `_` as in `third_place`. No other characters can be used in names: no minus sign, no `@` sign, no `/` or `+`, no quotation marks, and so on. 
 
 For instance, while `third_place` is a perfectly legitimate name in R, the following are not: `3rd_place`, `third-place`. But it is OK to have names like `place_3rd` or `place3`, etc., which start with a letter.
 
 R also distinguishes between letter case. For example, `Henry` is a different name than `henry`, even though they look the same to a human reader.
-
+:::
 
 
 
 ## Formulas in R
 
-The constraint of the keyboard means that computer formulas are written in a slightly different way than the traditional mathematical notation. This is most evident when writing multiplication and exponentiation. Multiplication must *always* be indicated with the `*` symbol, for instance $3 \pi$ is written `3*pi`. For exponentiation, instead of using superscripts like $2^3$ you use the "caret" character, as in `2^3`. The best way to learn to implement mathematical formulas in a computer language is to read examples and practice writing them. 
+The constraint of the keyboard means that computer formulas are written in a slightly different way than the traditional mathematical notation. This is most evident when writing multiplication and exponentiation. Multiplication must *always* be indicated with the `*` symbol, for instance $3 \pi$ is written `3*pi`. For exponentiation, instead of using superscripts like $2^3$ you use the "caret" character, as in `2^3`. The best way to learn to implement mathematical formulas in a computer language is to read examples and practice writing them. Several examples are given in @tbl-parallel-commands.
 
-Here are some examples:
-
+::: {#tbl-parallel-commands}
 Traditional notation | R notation 
 ---------------------|-------------
 $3 + 2$              | `3 + 2`
@@ -180,6 +197,6 @@ $\frac{17 - 5}{\strut 2}$   | `(17 - 5) / 2`
 $3^2$                | `3^2`
 $e^{-2}$             | `exp(-2)`
 
-
-Each of these examples has been written using numbers as inputs to the mathematical operations. The syntax will be the same when using an input name such as `x` or `y` or `altitude`, for instance `(x - y) / 2`. In order for that command using `x` and `y` to work, some meaning must have been previously attached to the symbols. We will come back to this important topic on another day.
+Arithmetic operations used frequently in this book. Here, the inputs are all numbers. But in the rest of the book we will often use *names* as the arguments. 
+:::
 
