@@ -26,7 +26,7 @@ As you know, humans can use the function graph as a scaffold for an algorithm fo
 
 ## Drawing function graphs with R/mosaic
 
-In technical vocabulary, the word "**graph**" refers to the kind of display in @fig-function-graph-1. The word "**graphic**" is not technical and is more general than *graph*. A "graphic" is any kind of visual presentation of art or information. This is important to note, since the majority of graphics in this Calculus book will not be "graphs." 
+In technical vocabulary, the word "**graph**" refers to the kind of display in @fig-function-graph-3. The word "**graphic**" is not technical and is more general than *graph*. A "graphic" is any kind of visual presentation of art or information. This is important to note, since the majority of graphics in this Calculus book will not be "graphs." 
 
 A "graph" is a suitable format for displaying a function with one *input*. (Remember, *all* functions in this book will have one *output*.) In modeling, it's typical to use functions of multiple inputs. Consequently, graphics involving functions will typically *not* be "graphs." But, the reader is undoubted familiar with graphs from high school, so we start there so that we can focus on the computer commands before we introduce other modes.
 
@@ -43,7 +43,7 @@ You see the typical components of an R/mosaic command: a function name (`slice_p
 1. a tilde expression for the **function** you wish to graph
 2. the **graphical domain** to be covered by the horizontal axis
 
-A tilde expression suitable for `slice_plot()` must have a single input name on the right-hand side ("RHS" for short). The left-hand side ("LHS") is an expression of the sort you have already used in `makeFun()`.
+A tilde expression suitable for `slice_plot()` must have a single input name on the right-hand side. The left-hand side is an expression of the sort you have already used in `makeFun()`.
 
 The second argument to `slice_plot()` will always be `domain()` with a named argument matching the name from the tilde expression RHS. The *value* given for the named argument contains the left- and right-bounds for the horizontal axis.
 
@@ -74,24 +74,23 @@ contour_plot(h(x, y) ~ x & y, domain(x = -1:1, y = 0:2))
 
 :::
 
-The function being plotted is named `h()`. Since `h()` takes two inputs, the graphical domain needs to be a space with two dimensions. We signal this by giving two arguments to `domain()`, one for each dimension of the input space. Of course, the names used within `domain()` have to match the names used in the tilde expression. Note that we use only one `domain()` call. It's the two arguments that establish that the domain will have two dimensions.
-
+The function being plotted is named `h()`. Since `h()` takes two inputs, the graphical domain needs to be a space with two dimensions. We signal this by giving two arguments to `domain()`, one for each dimension of the input space. Of course, the names used within `domain()` have to match the names used in the tilde expression. Note that we use only one `domain()` call but it has two arguments: one for the horizontal axis, the other for the vertical axis.
 
 ## Spaces and graphs of functions
 
-We are going to step back from the instructions for drawing graphics like @fig-function-graph-1 in order to give you a better perspective on the essentials of making graphical displays of functions. This will help in reading and interpreting graphics, especially graphics for functions of multiple inputs such as in @fig-contour-1.
+We are going to step back from the instructions for drawing graphics like @lst-first-graph in order to give you a better perspective on the essentials of making graphical displays of functions. This will help in reading and interpreting graphics, especially graphics for functions of multiple inputs such as in @fig-contour-1.
 
 As you know, the domain of a function is the set of all possible valid inputs to that function. In @sec-quantity-function-space we defined a **space** to be a set of possibilities. Thus, a function domain can be seen as a space, the "input space" for the function.
 
-In @fig-function-graph-1, the input space is a number line. Each point in the space is a possible input value to the function.
+In @lst-first-graph, the input space is a number line. Each point in the space is a possible input value to the function.
 
 ::: {#fig-input-space}
 ![](www/Input-space.png){width="60%"}
 
-The input space for the function graphed in @fig-function-graph-1.
+The input space for the function graphed in @lst-first-graph.
 :::
 
-There is also an **output space** for a function, the set of all possible outputs. @fig-output-space shows a number line that is the output space for the function graphed in @fig-function-graph-1.
+There is also an **output space** for a function, the set of all possible outputs. @fig-output-space shows a number line that is the output space for the function graphed in @lst-first-graph.
 
 ::: {#fig-output-space}
 ![](www/Output-space.png){width="50%"}
@@ -104,8 +103,9 @@ f <- doodle_fun(~ x, seed=104)
 ff <- makeFun(f(x)/6 + 3~ x)
 Mapping <- tibble(
   x = c(-4.8, -4,  -3.5, -2, -0.9, -0.4, -0.3, 0.3,  0.7, 0.9,  1.5, 2.3, 3.5,  5.6,  5.7, 6.0 ),
-  hue = c("red", "green", "blue", "tan", "green", "purple", "orange", "red", "blue", "purple", "brown", "blue", "magenta", "purple", "red", "purple"),
-  y = ff(x)
+  hue = c("red", "green", "blue", "tan", "red", "purple", "orange", "red", "blue", "purple", "brown", "blue", "magenta", "purple", "red", "purple"),
+  y = ff(x),
+  linewidth = 0.5 + 0.6*(hue=="green")
 )
 
 draw_axis <- function(P=NULL, range = c(0, 10), yup=0.02, ylabels = 0.4, x_offset = 0, y=0, color="blue", label="Input space", scale=1) {
@@ -137,18 +137,21 @@ draw_axis <- function(P=NULL, range = c(0, 10), yup=0.02, ylabels = 0.4, x_offse
 ```{r echo=FALSE}
 draw_axis(color="black", y=2, range=c(-7, 7), label="Input space") |> draw_axis(range=c(-1,6), y=1.5, yup=-0.05, x_offset=-1.2, scale=1.5, color="blue",
       label="Output space") + theme_void() + 
-  geom_segment(data=Mapping, aes(x=x, xend=1.5*y+1.2, color=hue), y=2, yend=1.5) +
-  scale_color_identity()
+  geom_segment(data=Mapping, 
+               aes(x=x, xend=1.5*y-1.2, 
+                   color=hue, linewidth=linewidth), y=2, yend=1.5) +
+  scale_color_identity() +
+  scale_linewidth_identity()
 ```
 
-A function relates points from the input space to their corresponding location in output space.
+A function relates points from the input space to their corresponding location in output space. 
 :::
 
 For example, the function displayed in @fig-show-lines-function translates an input value of -4 (see the [green line]{font-color="green"}) into an output value of 3.7.
 
 The display in @fig-show-lines-function is very hard to interpret. Also, to avoid the display being filled up with colored ink, we can show only a few of the input/output pairs. 
 
-A function graph (like @fig-function-graph-1) is much easier to read. But let's be clear about where the spaces are shown. In a function graph, the input space is shown horizontally and the output space is shown vertically as in @fig-both-spaces.
+A function graph (like @lst-first-graph) is much easier to read. But let's be clear about where the spaces are shown. In a function graph, the input space is shown horizontally and the output space is shown vertically as in @fig-both-spaces.
 
 ::: {#fig-both-spaces}
 ![](www/Both-axes.png)
@@ -156,12 +159,10 @@ A function graph (like @fig-function-graph-1) is much easier to read. But let's 
 A function graph shows the input space horizontally and the output space vertically.
 :::
 
-Now for every point in the input space the function specifies a corresponding point in the output space. We mark the correspondence with a dot. The horizontal coordinate tells us what is the input value. The vertical coordinate tells us what is the corresponding output value. To show the function as a whole---the output corresponding to every input---we would need a lot of dots! So many dots that they collectively give an appearance of a thin curve, the curve seen in @fig-function-graph-1.
+Now for every point in the input space the function specifies a corresponding point in the output space. We mark the correspondence with a dot. The horizontal coordinate tells us what is the input value. The vertical coordinate tells us what is the corresponding output value. To show the function as a whole---the output corresponding to every input---we would need a lot of dots! So many dots that they collectively give an appearance of a thin curve, the curve seen in @lst-first-graph.
 
 ::: {#fig-graph1}
 ```{r echo=FALSE, warning=FALSE}
-
-
 gf_point(y ~ x, data = Mapping, color=~ hue, linewidth=2, alpha=0.5) %>%
   gf_vline(xintercept=~ x, data = Mapping, color=~ hue, size=.1) %>%
   gf_hline(yintercept=~ y, data = Mapping, color=~ hue, size=.1) %>%
@@ -190,7 +191,7 @@ Math textbooks---but not so much this one!---often display functions with two in
 surface_plot(exp(-z)*sin(y) ~ y & z, bounds(y=-6:6, z=0:2))
 ```
 
-A function `g(x, y) ~ x & y` drawn as a surface. The function output value, for any given $(x, y)$ pair, is the height of the surface above the $(x, y)$-plane.
+A function `g(x, y) ~ x & y` drawn as a surface. The function output value, for any given $(x, y)$ pair, is the height of the surface above the $(x, y)$-plane. Such graphs are best appreciated by interacting with them. When you move the cursor over the graph, a rectangular frame appears from which you can read out coordinates numerically. Dragging while pressing will rotate the graph. Press the {{< iconify maki:home >}} icon to return to the original view.
 :::
 
 A variety of drawing techniques such as transparency, color, and interactive annotation are used to help us perceive a two-dimensional surface embedded in a three-dimensional space. (Place your cursor within the space delimited by the x, y, z axes to see the annotations.)  
@@ -216,24 +217,19 @@ Almost always, when mathematically modeling a real-world situation or phenomenon
 
 
 
-
+::: {#fig-contour-pre-slice}
 ```{r  echo=FALSE, warning=FALSE}
-#| label: fig-contour-pre-slice
-#| fig-cap: "A hypothetical relationship among three quantities."
-#| fig-cap-location: margin
 f2 <- doodle_fun( ~ input_1 + input_2, seed=96)
 contour_plot(f2(input_1, input_2) ~ input_1 + input_2,
                  domain(input_1=c(-5, 5), input_2 = c(0, 4)), fill_alpha=0.3,
              skip=0)
 ```
-
-
+The function that we will be taking slices of in Figures [-@fig-contour-slice1] and [-@fig-one-c-three].
+:::
 
 
 
 In this spirit, it is useful always to assume that our models are leaving something out and that a more complete model involves a function with more inputs than the present candidate. The present candidate model should be considered as a ***slice*** of a more complete model. Our slice leaves out one or more of the input quantities in a more complete model.
-
-[As you become practiced reading contour plots, you might prefer to read this one as a hilltop (shaded yellow) side-by-side with a hollow or bowl (shaded purple), with green, almost level flanks at the left and right edges of the frame.]{.aside}
 
 To illustrate this, suppose that the actual system involves relationships among three quantities, which we represent in the form of a function of two inputs, as shown in @fig-contour-pre-slice. (The third quantity in the relationship is the output of the function.)
 
@@ -241,7 +237,7 @@ The most common forms of ***slice*** involve constructing a simpler function tha
 
 For instance, suppose we set input 22 to the constant value 1.5. This means that we can consider any value of input 1, but input 2 has been replaced by 1.5. In @fig-contour-slice1, we've marked in red the points in the contour plot that give the output of the simplified function. 
 
-::: {#fig-contour-slice1}
+::: {#fig-contour-slice1 layout-ncol=2}
 
 ```{r echo=FALSE, warning=FALSE}
 #| fig-subcap: "(a) Contour plot of a function with two inputs. The red path shows points in the input space where `input_2` is held constant at 1.5."
@@ -261,10 +257,11 @@ slice_plot(f2(input_1, input_2=1.5) ~ input_1,
                  domain(input_1=c(-5, 5)), color="red", npts=1000) +
   geom_point(color="red")
 ```
+A slice through the function in @fig-contour-pre-slice,
 
 :::
 
-Each point along the red line corresponds to a specific value of input #1. From the contours, we can read the output corresponding to each of those values of input #1. This relationship, output versus input #1 can be drawn as a mathematical graph (to the right of the contour plot). Study that graph until you can see how the rising and falling parts of the graph correspond to the contours being crossed by the red line.
+Each point along the red line in @fig-contour-slice1(a) corresponds to a specific value of input #1. From the contours, we can read the output corresponding to each of those values of input #1. This relationship, output versus input #1 can be drawn as a mathematical graph (to the right of the contour plot). Study that graph until you can see how the rising and falling parts of the graph correspond to the contours being crossed by the red line.
 
 Slices can be taken in any direction or even along a curved path! The blue line in @fig-one-c-three shows the slice constructed by letting input 2 vary and holding input 1 at the constant value 0.
 
@@ -287,6 +284,7 @@ slice_plot(f2(input_1 = 0 , input_2) ~ input_2,
   coord_flip()
 
 ```
+Another one-dimensional slice through the graph of a function with two inputs.
 :::
 
 
