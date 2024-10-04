@@ -4,19 +4,14 @@
 source("../starter.R")
 ```
 
-The variety of shapes of the nine pattern-book functions means that, often, one or another will be suitable for the modeling situation in hand. [Combining the functions to create a greater diversity of shapes is the subject of @sec-assembling.]{.aside}
-
-
-Even if the shape of the function used is appropriate, the pattern still needs to be “adjusted” so that the units of output and input are well matched to the phenomenon being modeled. Let's consider data from the outbreak of COVID-19 as an example.  @fig-covid-exp shows, day-by-day, the number of officially confirmed COVID-19 cases as the in the US in March 2020.
+The variety of shapes of the nine pattern-book functions means that, often, one or another will be suitable for the modeling situation in hand. But, even if the shape of the function used is appropriate, the pattern still needs to be “adjusted” so that the units of output and input are well matched to the phenomenon being modeled. Let's consider data from the outbreak of COVID-19 as an example.  @fig-covid-exp shows, day-by-day, the number of officially confirmed COVID-19 cases as the in the US in March 2020.
 
 During the outbreak, case numbers increased with time. As time went on, the rate of case-number increase itself grew faster and faster. This is the same pattern provided by the exponential function.
 
 Alongside the case-number data @fig-covid-exp shows the function $\text{cases}(t) \equiv e^t$ plotted as a $\color{magenta}{\text{magenta}}$ curve.
 
+::: {#fig-covid-exp}
 ```{r echo=FALSE, warning=FALSE}
-#| label: fig-covid-exp
-#| fig-cap: "Cumulative officially confirmed COVID-19 cases (in 10000s) during the month of March, 2020. The $\\color{magenta}{\\text{magenta curve}}$ is $e^t$."
-#| fig-cap-location: margin
 March <- Covid_US |> filter(lubridate::month(date)==3, 
                              lubridate::year(date)==2020) %>%
   mutate(day = lubridate::mday(date),
@@ -30,6 +25,9 @@ Pcases %>%
              color="magenta", label_text = "exp(t)\n\n",
              label_x=0.6, label_vjust = "left", size=1) 
 ```
+
+Cumulative officially confirmed COVID-19 cases (in 10000s) during the month of March, 2020. The $\\color{magenta}{\\text{magenta curve}}$ is $e^t$.
+:::
 
 There is an obvious mismatch between the data and the function $e^t$. Does this mean the COVID pattern is not exponential?
 
@@ -54,7 +52,6 @@ The use of a parameter like $k$ does more than handle the formality of convertin
 ```{r echo=FALSE, warning=FALSE}
 #| label: fig-covid-exp2
 #| fig-cap: "Using the function form $A e^{kt}$ with parameters $k=0.19$ per day and $A = 0.0573$ cases (in 10000s) matches the COVID-case data well."
-#| fig-cap-location: margin
 Pcases %>%
   slice_plot(.0573*exp(0.19*t) ~ t, bounds(t=0:31), color="blue", label_x=0.5,
              label_text="A exp(k t)\nA = 593 cases\nk=0.19 per day\n", label_vjust = "left")
@@ -64,16 +61,16 @@ Pcases %>%
 
 ## Parallel scales
 
-```{r echo=FALSE}
-#| column: margin
-knitr::include_graphics("www/thermometer.png")
-```
 
 At the heart of how we use the pattern-book functions to model the relationship between quantities is the idea of conversion between one scale and another.  Consider these everyday objects: a thermometer and a ruler.
 
-```{r echo=FALSE}
-knitr::include_graphics("www/ruler.jpeg")
-```
+::: {#fig-thermo-ruler layout-ncol=2}
+![A thermometer](www/thermometer.png){#fig-thermometer height=400}
+
+![A ruler](www/ruler.jpeg){#fig-thermometer height=400}
+
+Two everyday objects that facilitate conversion from one scale to another.
+:::
 
 Each object presents a read-out of what's being measured---temperature or length---on two different scales. At the same time, the objects provide a way to convert one scale to another.
 
@@ -92,12 +89,10 @@ In @sec-output-scaling we will introduce a second scale conversion function, for
 
 ## Input scaling {#sec-input-scaling}
 
-@fig-tides-ri1 is based on the data frame `RI-tide` which is a minute-by-minute record of the tide level in Providence, Rhode Island (USA) for the period April 1 to 5, 2010. The `level` variable is measured in meters; the `hour` variable gives the time of the measurement in hours after midnight at the start of April 1.
+@fig-tides-ri1 is based on the data frame `RI-tide`, a minute-by-minute record of the tide level in Providence, Rhode Island (USA) for the period April 1 to 5, 2010. The `level` variable is measured in meters; the `hour` variable gives the time of the measurement in hours after midnight at the start of April 1.
 
+::: {#fig-tides-ri1}
 ```{r echo=FALSE}
-#| label: fig-tides-ri1
-#| fig-cap: "Tide levels oscillate up and down over time. This is analogous to the $\\sin(t)$ pattern-book function."
-#| fig-cap-location: margin
 Pa <- gf_line(level ~ hour, data = RI_tide, color="blue") %>%
   gf_labs(subtitle="Tide level", x="time (hours)", y="level (meters)") %>%
   gf_theme(axis.text.x = element_text(colour = "blue"),
@@ -116,6 +111,9 @@ Pb <- slice_plot(sin(t) ~ t, bounds(t=0:(17*pi)), npts=500) %>%
 gridExtra::grid.arrange(Pa, Pb, ncol=1)
 ```
 
+Tide levels oscillate up and down over time. This is analogous to the $\\sin(t)$ pattern-book function.
+:::
+
 The pattern-book $\sin()$ and the function $\color{magenta}{\text{level}}\color{blue}{(hour)}$ have similar shapes, so it seems reasonable to model the tide data as a sinusoid. However, the scale of the axes is different on the two graphs.
 
 To model the tide with a sinusoid, we need to modify the sinusoid to change the scale of the input and output. First, let's look at how to accomplish the ***input scaling***. Specifically, we want the pure-number input $t$ to the sinusoid be a function of the quantity $hour$. Our framework for this re-scaling is the straight-line function. We will replace the pattern-book input $t$ with a function $$t(\color{blue}{hour}) \equiv a\, \color{blue}{hour} + b\ .$$
@@ -133,7 +131,6 @@ By comparing the two axes, we can estimate that $\color{blue}{10} \rightarrow 4$
 ```{r echo=FALSE, warning=FALSE}
 #| label: fig-blue-to-black-1
 #| fig-cap: "The input scaling function must transform 10 into 4 and transform 100 into 49 to properly arrange the time scale with the scale for the pattern-book function."
-#| fig-cap-location: margin
 Pts <- tibble(x=c(10, 100), y=c(4, 49), text=c("(10,4)","(100,49)"))
 gf_point(y ~ x, data = Pts) %>%
   gf_vline(xintercept = ~ x, color="blue", alpha=0.5) %>%
@@ -162,7 +159,6 @@ $$g(\color{blue}{time}) \equiv \sin\left(\strut {\small\frac{1}{2}}\color{blue}{
 ```{r echo=FALSE}
 #| label: fig-tides-ri2
 #| fig-cap: "The sinusoid with input scaling (black) aligns nicely with the tide-level data."
-#| fig-cap-location: margin
 g1 <- ggplotGrob(Pa)
 Pb2 <- slice_plot(sin(time/2 - 1) ~ time,
                   bounds(time=0:107), npts=500) %>%
@@ -185,14 +181,11 @@ grid::grid.draw(g)
 
 Just as the natural input needs to be scaled before it reaches the pattern-book function, so the output from the pattern-book function needs to be scaled before it presents a result suited for interpreting in the real world. 
 
-```{r  echo=FALSE}
-#| label: fig-scaling-nature
-#| fig-cap: "Natural **quantities** must be scaled to pure numbers before being suited to the pattern-book functions. The output from the pattern-book function is a pure number which is scaled to the natural **quantity** of interest."
-#| column: page-right
-#| out-width: "150%"
-#| fig-cap-location: top
-knitr::include_graphics("www/scaling-nature.png")
-```
+::: {#fig-scaling-nature}
+![](www/scaling-nature.png)
+
+Natural **quantities** must be scaled to pure numbers before being suited to the pattern-book functions. The output from the pattern-book function is a pure number which is scaled to the natural **quantity** of interest.
+:::
 
 The overall result of input and output scaling is to tailor the pattern-book function so that it is ready to be used in the real world.
 
@@ -215,7 +208,6 @@ We can figure out parameters $A$ and $B$ by finding the straight-line function t
 ```{r echo=FALSE}
 #| label: fig-black-to-magenta-1
 #| fig-cap: "Finding the straight-line function that converts $-1 \\rightarrow \\color{magenta}{0.5}$ and converts $1 \\rightarrow \\color{magenta}{1.5}$"
-#| fig-cap-location: margin
 Pts <- tibble(x=c(-1, 1), y=c(0.5, 1.5), text=c("(-1,0.5)","(+1,1.5)"))
 gf_point(y ~ x, data = Pts) %>%
   gf_vline(xintercept = ~ x, color="black", alpha=0.5) %>%
@@ -252,7 +244,7 @@ $$\text{model}(x) \equiv A\, {g_{pattern\_book}}(ax + b) + B\ ,$$ where $g_{patt
 
 1. Pick the specific pattern-book function whose shape resembles that of the relationship you are trying to model. For instance, we picked $e^x$ for modeling COVID cases versus time (at the start of the pandemic). We picked $\sin(x)$ for modeling tide levels versus time.
 
-2. Find numerical values for the parameters $A$, $B$, $a$, and $b$. In @sec-fitting-by-eye we will show you some ways to make this part of the task easier.
+2. Find numerical values for the parameters $A$, $B$, $a$, and $b$. In @sec-fitting-by-feature shows some ways to make this part of the task easier.
 
 It is remarkable that models of a very wide range of real-world relationships between pairs of quantities can be constructed by picking one of a handful of functions, then scaling the input and the output. As we move on to other Blocks in *MOSAIC Calculus*, you will see how to generalize this to potentially complicated relationships among more than two quantities. That is a big part of the reason you're studying calculus.
 
@@ -260,7 +252,11 @@ It is remarkable that models of a very wide range of real-world relationships be
 
 Often, modelers choose to use input scaling in the form $a (x - x_0)$ rather than $a x + b$. The two are completely equivalent when $x_0 = - b/a$. The choice between the two forms is largely a matter of convention. But almost always the output scaling is written in the format $A y + B$. 
 
-::: {.example data-latex=""}
+::: {#thm-covid-scaling style="display: none;"}
+---Shifting an exponential horizontally is the same as scaling vertically.
+:::
+::: {.callout-note}
+## @thm-covid-scaling The start of COVID
 For the COVID case-number data shown in @fig-covid-exp2, we found that a reasonable match to the data can be had by input- and output-scaling the exponential: $$\text{cases}(t) \equiv  \underbrace{573}_A e^{\underbrace{0.19}_a\ t}\ .$$
 
 You might wonder why the parameters $B$ and $b$ aren't included in the model. One reason is that cases and the exponential function already have the same range: zero and upwards. So there is no need to shift the output with a parameter B. 
@@ -278,9 +274,9 @@ You can interpret $t_0$ as the starting point of the pandemic. When $t = t_0$, t
 
 ## Parameterization conventions
 
-There are conventions for the symbols used for input-scaling parameterization of the pattern-book functions. Knowing these conventions makes it easier to read and assimilate mathematical formulas. In several cases, there is more than one conventional option. For instance, the sinusoid has a variety of parameterization forms that get used depending on which feature of the function is easiest to measure. @tbl-param that are used in practice.
+There are conventions for the symbols used for input-scaling parameterization of the pattern-book functions. Knowing these conventions makes it easier to read and assimilate mathematical formulas. In several cases, there is more than one conventional option. For instance, the sinusoid has a variety of parameterization forms that get used depending on which feature of the function is easiest to measure. @tbl-parameterization list several that are frequently used in practice.
 
-::: {#tbl-parameterization .column-screen-inset-right}
+::: {#tbl-parameterization }
 Function    | Written form | Parameter 1 | Parameter 2
 ----------|-------------|-------------|--------------
 Exponential | $e^{kt}$     | $k$  | Not used

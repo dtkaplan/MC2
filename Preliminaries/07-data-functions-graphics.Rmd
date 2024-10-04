@@ -69,7 +69,7 @@ The basics that you need for our work with data are:
 
 For our work, you can access the data frames we need directly by name in R. For instance, the `Engines` data frame (@tbl-engine-table) records the characteristics of several internal combustion engines of various sizes:
 
-::: {#tbl-engine-table .column-page-right}
+::: {#tbl-engine-table}
 Engine | mass | BHP | RPM | bore | stroke
 :------|-----:|----:|----:|-----:|---------:
 Webra Speed 20 | 0.25 | 0.78 | 22000 | 16.5 | 16
@@ -122,12 +122,14 @@ Running the code will create a point plot showing the relationship between engin
 
 Later in *MOSAIC Calculus*, we will discuss ways to construct functions that are a good match to data using the pattern-book functions. Here, our concern is graphing such functions on top of a point plot. So, without explanation (until later chapters), we will construct a power-law function, called, stroke(bore), that might be a good match to the data. The we will add a second layer to the point-plot graphic: a slice-plot of the function we've constructed.
 
-::: {#lst-first-two-layers}
+::: {#lst-first-two-layers .column-page-right}
 ```{webr-r}
-stroke_model <- fitModel(stroke ~ A*bore^b, 
-                         data = Engines)
+stroke_model <- 
+  fitModel(stroke ~ A*bore^b, 
+           data = Engines)
 gf_point(stroke ~ bore, data = Engines) |>
-  slice_plot(stroke_model(bore) ~ bore, color="blue")
+  slice_plot(stroke_model(bore) ~ bore, 
+             color="blue")
 ```
 
 Code to make a graphic composed of two layers: 1) a point plot; 2) a slice plot of a power-law function named `stroke()` fitted to the data.
@@ -144,18 +146,19 @@ The pipe punctuation can never go at the start of a line. Usually, we will use t
 `slice_plot()` is a bit clever when it is used after a previous graphics command. Usually, you need to specify the interval of the domain over which you want to display the function, as with ...
 
 
-<!-- MYSTERY ... The following command works in the console, but not in a code chunk -->
+```{r echo=FALSE}
+stroke_model <- fitModel(stroke ~ A*bore^b, data = Engines)
+# Putting stroke_model in scope for the R chunks.
+```
 
-```{r eval=FALSE, results="hide"} 
+
+```{r} 
 slice_plot(stroke_model(bore) ~ bore, domain(bore=0:1000))
 ```
 
-[IN DRAFT: Resolve bug here and in next chunk.]{.aside}
-
-
 You can do that also when `slice_plot()` is the second layer in a graphics command. But `slice_plot()` can also infer the interval of the domain from previous layers as in ...
 
-```{r eval=FALSE, results="hide"}
+```{r}
 gf_point(stroke ~ bore, data = Engines) |> # <1>
   slice_plot(stroke_model(bore) ~ bore)  # <2>
 ```
@@ -176,13 +179,13 @@ This chapter expands the use of tilde expressions to two new tasks:
 3. Plotting data, e.g. `gf_point(stroke ~ bore)`
 4. Fitting a function to data, e.g. `fitModel(stroke ~ A*bore^b, data=Engines)`
 
-There is an important pattern shared by all these tasks. In the tilde expression, the output is on the left-hand side of [~]{style="font-size:25pt;"} while the inputs are on the right-hand side. 
+There is an important pattern shared by all these tasks. In the tilde expression, the output is on the left-hand side of [~]{style="font-size:20pt;"} while the inputs are on the right-hand side. That is:
 
-output [~]{style="font-size:25pt;"} input(s)
+      function output     ![tilde](www/tilde-small.png)     input(s)
 
-For historical reasons, mathematics and data science/statistics use different terms. In data science, the terms "response" and "explanatory" are used instead of "input" and "output." 
+For historical reasons, mathematics and data science/statistics use different terms. In data science, the terms "response" and "explanatory" are used instead of "input" and "output."
 
-response var. [~]{style="font-size:25pt;"} explanatory var(s)
+      response variable     ![tilde](www/tilde-small.png)     explanatory variable(s)
 
 In the tilde expression for `fitModel()` used above, the response variable is `stroke` while the explanatory variable is named in the RHS of the expression. As it happens, in `fitModel()` the RHS needs to do double duty: (1) name the explanatory variables (2) specify the formula for the function produced by `fitModel()`.
 :::
@@ -206,5 +209,7 @@ The reader familiar with floors and corridors and office doors may note that the
 
 Fortunately, it is easy to create a continuous function out of a discrete table by adding on a small, standard calculation called "**interpolation**." 
 The simplest form, called "linear interpolation," works like this: for an input of, say, 321.487... the messenger goes to both office 321 and 322 and collects their respective outputs. Let's imagine that they are -14.3 and 12.5 respectively. All that is  needed is a small calculation, which in this case will look like $$-14.3 \times (1 - 0.487...)   + 12.5 \times 0.487...$$ 
+
+@sec-splines introduces a modern, sophisticated form of interpolation that makes smooth functions.
 
 

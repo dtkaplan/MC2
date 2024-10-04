@@ -8,6 +8,15 @@ library(gridExtra) # for arranging plots.
 library(kableExtra)
 library(Znotes)
 
+# Link to a cross reference showing just a popup icon 
+# cross-reference should be a #-type, not @
+# Only works within a document.
+popup_xref <- function(id) {
+  paste0(
+    "[{{< iconify entypo:popup >}}](",
+    id, "){class=\"quarto-xref\"}")
+}
+
 
 # theme the plots to match the document
 # thematic_rmd(bg="#8F8F8C", fg=NA, accent=NA)

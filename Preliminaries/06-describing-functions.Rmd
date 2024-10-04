@@ -25,7 +25,7 @@ vii. local extrema.
 
 Each of these concepts has the idea of a function at the core, because each one depends on how the function output changes as the input is changed.
 
-For the sake of illustration, I'll use the three pattern-book functions @fig-three-for-illustration. Keep in mind, however, that the shape words can be applied to almost every function you will see in this book. (To be more precise, the shape words apply to every *continuous* function in this book. See @sec-continuity-intro.) 
+For the sake of illustration, I'll use three pattern-book functions to illustrate the function-shape concepts. (@fig-three-for-illustration) However, that the shape words can be applied to almost every function you will see in this book. (To be more precise, the shape words apply to every *continuous* function in this book. See @sec-continuity-intro.) 
 
 ::: {#fig-three-for-illustration}
 reciprocal | sinusoid | exponential
@@ -35,26 +35,9 @@ reciprocal | sinusoid | exponential
 Three pattern-book functions used to illustrate the function-shape words. 
 :::
 
-```{r eval=FALSE, echo=FALSE}
-#| label: fig-for-words
-#| fig-cap: "Three of the pattern-book functions: (a) exponential, (b) sinusoid, (c) power-law $x^{-1}$."
-#| fig-cap-location: margin
-Pa <- slice_plot(exp(x) ~ x, bounds(x=c(-3,3))) %>%
-  gf_labs(subtitle="(a) exponential") %>%
-  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
-Psinusoid <- slice_plot(sin(x) ~ x, bounds(x=c(-5,5))) %>%
-  gf_labs(subtitle="(b) sinusoid", y="") %>%
-  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
-Pc <- slice_plot(1/x ~ x, bounds(x=c(.01, 1.25))) %>%
-  slice_plot(1/x ~ x, bounds(x=c(-1.25, -.01))) %>%
-  gf_labs(subtitle="(c) power-law with negative exponent", y="")%>%
-  gf_hline(yintercept=~0, color="magenta", linetype="dashed")
-gridExtra::grid.arrange(Pa, Psinusoid, Pc, ncol=1)
-```
-
 ## Slope
 
-The slope describes whether the output goes up or down, and to what extent, as the input changes. Typically, the slope is different for different input values. The only function type that has a slope that is the same for all inputs is the straight-line function.
+Slope describes whether the output goes up or down, and the extent of this rise or fall, as the input changes. Typically, except for the constant and straight-line functions the slope is different for different input values. 
 
 @fig-slope-at-point graphs the sinusoid function (black curve). At numerous points in the domain, the function has been overlaid with a straight-line segment that has the same slope as does the function itself.  For $x$ near $-3$ the slope is negative; for $x$ near zero the slope is positive, then swings back to negative again for $x$ near $3$.
 
@@ -80,11 +63,8 @@ Short straight-line segments laid over a graph of the sinusoid. The slope of eac
 
 When we speak of the slope of the sinusoid, or any other function, we mean the local slope as a function of the input. The value of the function does not enter into it, just the slope. @fig-slope-at-point2 shows only the slope of the sinusoid, without the sinusoid output at all. Each line segment has a horizontal "run" of $0.1$, so you can measure the slope of each segment---rise over run---as the vertical extent $\Delta y$ of the segment divided by $0.1$. 
 
+::: {#fig-slope-at-point2}
 ```{r echo=FALSE}
-#| label: fig-slope-at-point2
-#| fig-cap: "Showing just the slope of the sinusoid as a function of input $x$. Top: representing the slope by the steepness of line segments. Bottom: The numerical value of the slope of each segment."
-#| fig-cap-location: margin
-
 Pa <- gf_segment(0 + y2end ~ x + xend, data = Segs[seq(1,nrow(Segs), by=2),], 
            color=~slope,alpha=0.65, size=1, lineend="round") %>%
   gf_refine(scale_color_viridis_c(begin=.3, end=1)) %>%
@@ -97,9 +77,13 @@ Pb <-  gf_line(slope ~ x, data = Segs, color=~slope) %>%
   gf_hline(yintercept=~0, color="magenta", linetype="dashed")
 gridExtra::grid.arrange(Pa, Pb, ncol=1)
 ```
+
+Showing just the slope of the sinusoid as a function of input $x$. Top: representing the slope by the steepness of line segments. Bottom: The numerical value of the slope of each segment.
+:::
 For instance, the $\Delta y$ for the slope segment at $x=0$ is 0.1, so the slope at $x=0$ is $\Delta y/0.1 = 1$. At $x=1$, $\Delta y \approx 0.05$, so the slope is 0.5. The graph colors the segment according to the slope, so large negative slopes are blue, slopes near zero are green, and large positive slopes are yellow.
 
-::: {.takenote data-latex=""}
+::: {.callout-tip}
+## Definition: "change" versus "rate of change" 
 A more general word than "slope" for describing functions is ***rate of change***. It is absolutely crucial to distinguish between the ***change*** in the output value of a function and the ***rate of change*** of that output.
 
 To illustrate, suppose we have a function $f(x) \equiv x^2 + 3$. When we talk about "change" we imagine a situation where we have to different values of the function ***input***, say $x_1 = 3$ and $x_2 = 6$. 
@@ -129,6 +113,10 @@ c. This particular power law $x^{-1}$ is ***concave up*** for $0 < x$ and ***con
 
 When a function switches between positive concavity and negative concavity, as does the sinusoid as well as the gaussian and sigmoid functions, there is an input value where the switch occurs and the function has zero concavity. (Continuous functions that pass from negative to positive or *vice versa* must always cross zero.) Such in-between points of zero concavity are called ***inflection points***. A function can have zero, one, or many inflection points. For instance, the sinusoid has inflection points at $x = \ldots, -\pi, 0, \pi, 2\pi, \ldots$. In contrast, the exponential and the reciprocal functions do not have any inflection points. 
 
+
+
+
+
 ::: {#fig-concave-diagram}
 ![](www/Concavity-diagram.png){width="70%"}
 
@@ -154,7 +142,7 @@ A function is ***monotonic*** on a domain when the *sign* of the slope never cha
 
 Another way of thinking about monotonicity is to consider the order of inputs and outputs compared to a number line. If a function is monotonically increasing then it will preserve the order of inputs along the number line when it maps inputs to outputs, whereas a monotonically decreasing function will reverse the order. For instance, if the input $x$ comes before an input $y$ (i.e., $x<y$), then $f(x)<f(y)$ for monotonically *increasing* functions (the order is preserved), but $f(y)<f(x)$ for monotonically *decreasing* functions (the order of outputs is reversed).
 
-Of the pattern-book functions in @fig-three-for-illustration: both the exponential and the logarithm function are monotonic: the exponential grows monotonically as does the logarithm. The sinusoid is not monotonic over any domain longer than half a cycle: the function switchs between positive slope and negative slope in different parts of the cycle. 
+Of the pattern-book functions in @fig-three-for-illustration: both the exponential and the logarithm function are monotonic: the exponential grows monotonically as does the logarithm. The sinusoid is not monotonic over any domain longer than half a cycle: the function switches between positive slope and negative slope in different parts of the cycle (as is evident in @fig-slope-at-point2). 
     
 ## Periodicity
 
@@ -174,7 +162,7 @@ Look at the graph of the exponential function in @fig-three-for-illustration. As
 
 2. When the **output** of a function gets bigger and bigger in size, going to $\infty$ or $-\infty$ without the input doing likewise. The visual appearance on a graph is like a sky-rocket: the output changes tremendously fast even though the input changes only a little. The vertical line that the skyrocket approaches is called a ***vertical asymptote***. The power-law function $x^{-1}$ has a ***vertical asymptote*** at $x=0$. If you were to consider inputs closer and closer to $x=0$, the outputs would grow larger and larger is magnitude, tending toward $\infty$ or $-\infty$.
 
-Several of the pattern-book functions have horizontal or vertical asymptotes or both. For instance, the function $x^{-1}$ has a horizontal asymptote of zero for both $x \rightarrow \infty$ and $x \rightarrow -\infty$. 
+Several of the pattern-book functions have horizontal or vertical asymptotes or both. For instance, the reciprocal function ($x^{-1}$) has a horizontal asymptote of zero for both $x \rightarrow \infty$ and $x \rightarrow -\infty$.
 
 The sinusoid has neither a vertical nor a horizontal asymptote. As input $x$ increases either to $-\infty$ or $\infty$, the output of the sinusoid continues to oscillate, never settling down to a single value. And, of course, the output of the sinusoid is everywhere $-1 \leq \sin(x) \leq 1$, so there is no possibility for a vertical asymptote.
 
@@ -202,4 +190,3 @@ Other modeling applications involve finding an ***argmin***, the input for which
 The process of finding an argmin or an argmax is called ***optimization***. And since maxima and minima are very much the same mathematically, collectively they are called ***extrema***.
 
 Any function that has an extremum cannot possibly be monotonic, since the growth is positive on one side of the extremum and negative on the other side. 
-
