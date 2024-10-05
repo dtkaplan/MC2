@@ -1,12 +1,91 @@
 # Operations on functions {#sec-operations}
 
+<!-- take this out when the CRAN version of mosaicCalc is updated -->
+
+```{webr-r}
+#| context: setup
+doodle_fun <- function (vars = ~x & y, seed = NULL, n = 0) 
+{
+  if (!is.null(seed)) 
+    set.seed(seed)
+  if (!inherits(vars, "formula")) 
+    stop("Must provide a formula, e.g. ~x&y, to identify the variables")
+  nmaxes <- ifelse(n == 0, ceiling(runif(1, min = 4, max = 10)), 
+                   n)
+  varnames <- all.vars(vars)
+  nvars <- length(varnames)
+  locs <- list()
+  for (k in 1:nvars) locs[[k]] <- runif(nmaxes, min = -3, max = 3)
+  signsmax <- runif(nmaxes, min = 3, max = 10) * sign(runif(nmaxes, 
+                                                            min = -1, max = 1))
+  xscales <- runif(nmaxes, min = 0.1, max = 5)
+  if (nvars == 1) {
+    f <- function() {
+      x <- eval(parse(text = varnames[1]))
+      res <- 0
+      for (k in 1:nmaxes) {
+        res <- res + signsmax[k] * exp(-(xscales[k] * 
+                                           (x - locs[[1]][k])^2)/9)
+      }
+      return(res)
+    }
+  }
+  if (nvars == 2) {
+    f <- function() {
+      x <- eval(parse(text = varnames[1]))
+      y <- eval(parse(text = varnames[2]))
+      res <- 0
+      for (k in 1:nmaxes) {
+        res <- res + signsmax[k] * exp(-(xscales[k] * 
+                                           (x - locs[[1]][k])^2 + (y - locs[[2]][k])^2)/9)
+      }
+      return(res)
+    }
+  }
+  if (nvars == 3) {
+    f <- function() {
+      x <- eval(parse(text = varnames[1]))
+      y <- eval(parse(text = varnames[2]))
+      z <- eval(parse(text = varnames[3]))
+      res <- 0
+      for (k in 1:nmaxes) {
+        res <- res + signsmax[k] * exp(-(xscales[k] * 
+                                           (x - locs[[1]][k])^2 + (y - locs[[2]][k])^2 + 
+                                           (z - locs[[3]][k])^2)/9)
+      }
+      return(res)
+    }
+  }
+  if (nvars > 3) {
+    f <- function() {
+      x <- eval(parse(text = varnames[1]))
+      res <- 0
+      for (k in 1:nmaxes) {
+        foo <- xscales[k] * (x - locs[[1]][k])^2
+        for (j in 2:nvars) {
+          x <- eval(parse(text = varnames[j]))
+          foo <- foo + (x - locs[[j]][k])^2
+        }
+        res <- res + signsmax[k] * exp(-foo/9)
+      }
+      return(res)
+    }
+  }
+  tmp <- paste("alist( ", paste(varnames, "=", collapse = ",", 
+                                sep = ""), ")")
+  tmp <- eval(parse(text = tmp))
+  formals(f) <- tmp
+  return(f)
+}
+```
+
 ```{r include=FALSE}
 source("../starter.R")
 ```
 
-@sec-parameters through @sec-fitting-by-feature introduce concepts and techniques for constructing functions. This is an important aspect of building models, but it is not the only one. Typically, a modeler, after constructing appropriate functions, will manipulate them in ways that provide the ***information*** required to answer questions that motivated the modeling work.
+Chapters [-@sec-parameters] through [-@sec-fitting-by-feature] introduce concepts and techniques for constructing functions. This is an important aspect of building models, but it is not the only one. Typically, a modeler, after constructing appropriate functions, will manipulate them in ways that extract the ***information*** required to answer questions that motivated the modeling work. This chapter will introduce some of the operations and manipulations used to extract information from model functions.
 
-This will introduce some of the operations and manipulations used to extract information from model functions.^[We use the phrase "extract information" to reflect the purpose of using the operations discussed in this chapter. You may be more familiar with the phrase "find a solution."] There are five such operations that you will see many times throughout this book. They are:
+There are five such operations that you will see many times throughout this book. 
 
 1. Zero-finding: finding an input that produces the desired output. This is also called "inversion."
 2. Optimization: finding an input that produces the largest output
@@ -20,7 +99,7 @@ We take two different perspectives on the three operations: graphical and comput
 
 Graphics connect well with human cognitive strengths, but the computer can also automatically carry out the operations quickly and precisely. The computing algorithms and software used for zero-finding/inversion and optimization are often based on concepts from calculus that we have not yet encountered. Software provides another advantage: Experts in a field can communicate with newbies so that anyone can use the operation in practice without necessarily developing a complete theoretical understanding of the algorithm. At this stage, before the calculus concepts have been introduced, our computational focus will be on how to set up the calculation and how to interpret the results. 
 
-::: {.callout-caution}
+::: {.callout-tip}
 ## Functions and operations
 
 In computer languages, the word "function" is used to describe a piece of software which transforms inputs into an output. Examples of such software functions are making slice- and contour graphics, `makeFun()`, `fitModel()`, and so on. As well, we implement mathematical functions (using, for instance, `makeFun()`) as software functions.
@@ -32,45 +111,81 @@ To avoid unnecessary confusion, we will write `function`, in monospaced font, wh
 
 ## Zero finding
 
-A function is a mechanism for turning any given input into an output. ***Zero finding*** is about going the other way: given an output value, find the corresponding input. As an example, consider the exponential function $e^x$. Given a specific input, say $x=2.135$ you can easily compute the corresponding output:
+A function is a mechanism for turning any given input into an output. ***Zero finding*** is about going the other way: given an output value, find the corresponding input. As an example, consider the exponential function $e^x$. Given a known input, say $x=2.135$ you can easily compute the corresponding output as in @lst-exp-213:
 
-```{r}
+::: {#lst-exp-213}
+```{webr-r}
 exp(2.135)
 ```
+:::
 
-But suppose the information you have at hand is in the form of an output from the function, say $e^{x_0} = 4.93$. We don't (yet) know $x_0$ but, whatever it might be, we know that $e^{x_0}$ will produce the value 4.93.
+Depending on the modeling context, information can come in different forms. For instance, suppose the situation is:
 
-How do you find the specific input $x_0$ that will produce that output? The answer typically presented in high school is to apply another function, $\ln()$, to the output:
+- Given: We know that $\exp(x_0) = 4.93$ for some as yet unknown $x_0$.
+- Information wanted: What is the value of $x_0$?
 
-```{r}
+This sort of situation calls for "**inverting**" the $\exp()$ function. There are very general and simple methods for performing this sort of extraction. We call these methods "**zero finding**. They involve searching for the value of an input that will make the output of a given function be zero.
+
+::: {#thm-earthquake style="display: none;"}
+--- Detecting earthquakes and heart disease have something in common.
+:::
+::: {.callout-note}
+## @thm-earthquake Finding earthquakes and injured heart muscle.
+
+We look at pretty simple functions in this book. But consider these two similar kinds of functions:
+
+- An earthquake occurs at some depth and location and involving a particular energy and direction of motion along the fault. The function is this: The motion creates waves that pass through the Earth's crust and mantle and are refracted by the Earth's core. In the end, they reach a seismometer at a geophysics research lab. 
+
+- A heart attack has damaged some heart muscle. This alters the electrical activity of the heart. In every heart beat, the electrical activity passes as waves through the complex structure of the thorax and muscles, and on to the arms and legs. The function is this: how the alteration in activity appears when measured as electrical voltages on the surface of the body, as in an electro-cardiogram (ECG).
+
+In both these cases, it's possible to approximate the function. Often, this is done with simulation: building a detailed model of the Earth or a body and passing waves through the model. The *inversion* is the process of finding what input to the model produces the measured output. 
+:::
+
+
+
+::: {.callout-tip}
+## Inverting algebraically
+
+Some may already know a technique for finding the value of $x_0$ in the Information/Extraction situation posed above. The process, learned in high-school algebra classes is to use the natural logarithm on the output 4.93. 
+
+```{webr-r}
 log(4.93)
 ```
 
-To confirm that the result 1.595339 is correct, apply the exponential function to it and check that the output is the same as the original, given output 4.93.
+How would you demonstrate that the result is correct? Feed the value you found for $x_0$ back into the $\exp()$ function and verify that you get 4.93.
 
-```{r}
-exp(1.595339)
+```{webr-r}
+exp(log(4.93))
 ```
 
-This process works because we happen to have a function at hand, the logarithm, that is perfectly set up to "undo" the action of the exponential function. In high school, you learned a handful of function/inverse pairs: `exp()` and `log()` as you've just seen, `sin()` and `arcsin()`, square and square root, etc.
+This process works because we happen to have a function at hand, the natural logarithm, that is perfectly set up to "undo" the action of the exponential function. In high school, you learned a handful of function/inverse pairs: `exp()` and `log()` as you've just seen, `sin()` and `arcsin()`, square and square root, etc.
 
-Another situation that is usually addressed in high school is inverting low-order polynomial functions. For instance, suppose your modeling function is $g(x) \equiv 1.7 - 0.85 x + 0.063 x^2$ and you seek the $x_0$ such that $g(x_0) = 3$. High school students are taught to approach such problems in a process using the quadratic formula. to apply the quadratic formula, you need to place the problem into a standard format, not $$1.7 - 0.85 x + 0.063 x^2 = 3$$ but 
-$$0.063\, x^2 - 0.85\, x - 1.4 = 0$$
+Memorizing the names of such function/inverse pairs is helpful in passing high-school algebra and for following derivations in texts and on the blackboard. But knowing the name is only part of the story. You have to be able to apply the functions to inputs. Typically, the only way you have to do this is with a machine such as a calculator or computer.
 
-::: {.column-margin}
-The name "zero-finding" can be a little misleading. The objective is find $x_0$ such that $h(x_0) = b$. In this sense, "b-finding" would be a more appropriate name. Instead of chasing after honey as "b-finding" suggests, we reformat the problem into finding $x_0$ such that $h(x_0) - b = 0$. In other words, we look for zeros of the function $h(x) - b$.
+A similar high-school situations involves quadratic polynomials. Almost all readers will be familiar with this situation:
+
+- Given: We know that $x_0^2 - 3.9 x_0 = -7.2$ for some as yet unknown $x_0$.
+- Information wanted: What is the value of $x_0$?
+
+High-school students learn to bring the $-7.2$ to the left side of the equals sign and then find the "roots." Applying the "quadratic formula" to the coefficients of the polynomial gives numerical values for the roots. which produces one or two numbers as a result. This is well and good so far as it goes, but the quadratic formula is no use for a slightly modified problem. For instance, suppose the situation is this:
+
+- Given: We know that $x_0^2 - 3.9 e^{x_0} = -7.2$ for some as yet unknown $x_0$.
+- Information wanted: What is the value of $x_0$?
+
+Wouldn't it be nice to have one simple technique that applies to all such problems? That's what the zero-finding operation gives us.
+
 :::
 
-One reason that low-order polynomials are popular in modeling is that such operations are straightforward.
 
-If none of the high-school approaches are suited to your modeling function, as is often the case, you can still carry out the zero-finding operation.
 
-### Graphical zero-finding
+### Graphical zero-finding {-}
+
+Consider any function $h(x)$ that you constructed by linear combination and/or function multiplication and/or function composition. To illustrate, we will work with the function $h(x)$ graphed in @fig-zero-finding1.
 
 ::: {#fig-zero-finding1}
-```{r echo=FALSE}
+```{r echo=FALSE,  message=FALSE}
 h <- doodle_fun(~ x, seed=9632)
-slice_plot(h(x) ~ x, bounds(x=-4:4)) |>
+slice_plot(h(x) ~ x, bounds(x=-4:4), linewidth=1.5) |>
   gf_hline(yintercept = ~ 3, color="magenta") |>
   gf_labs(y="h(x)") |> gf_lims(y=c(0, NA)) |>
   gf_theme(scale_y_continuous(breaks=c(0,3,6,9,12)))
@@ -80,7 +195,6 @@ Finding an $x_0$ such that $h(x_0) = 3$
 :::
 
 
-Consider any function $h(x)$ that you constructed by linear combination and/or function multiplication and/or function composition. To illustrate, we will work with the function $h(x)$ graphed in @fig-zero-finding1. 
 
 Suppose the output for which we want to find a corresponding input is 3, that is, we want to find $x_0$ such that $h(x_0)=3$. 
 
@@ -92,21 +206,21 @@ i. Graph the function $h(x)$ over a domain interval of interest.
 ii. Draw a horizontal line located at the value on the right-hand side of the equation $h(x_0) = 3$. (This is the $\color{magenta}{\text{magenta}}$ line in @fig-zero-finding1.)
 iii. Find the places, if any, where the horizontal line intersects the graph of the function. In @fig-zero-finding1, there are two such values: $x_0 = -3.5$ or $x_0 = 2.75$.
 
-::: {.practice data-latex=""}
-The graph shows a function $g(t)$. Find a value $t_0$ such that $g(t_0) = 5$.
+::: {.callout-important #try-zero-finding1} 
+## Graphical zero finding
+A function $g(t)$ is graphed below. Find a value $t_0$ such that $g(t_0) = 5$.
 
 ```{r echo=FALSE}
-#| column: margin
 g <- doodle_fun(~ t, seed=84)
 slice_plot(-g(t+3)*cos(t) ~ t, bounds(t=0:6)) %>%
   gf_labs(y="g(t)")
 ```
 
+
 i. Draw a horizontal line at output level 5.
 ii. Find the t-value where the horizontal line intersects the function graph. There is only one such intersection and that is  at about $t=1.2$. 
 
 Consequently, $t_0 = 1.2$, at least to the precision possible when reading a graph.
-
 :::
 
 The graphical approach to zero finding is limited by your ability to locate positions on the vertical and horizontal axis. If you need more precision than the graph provides, you have two options:
@@ -115,22 +229,23 @@ The graphical approach to zero finding is limited by your ability to locate posi
 
 2. Use software implementing a numerical zero-finding algorithm. Such software is available in many different computer languages and a variety of algorithms is available, each with its own merits and demerits.
 
-### Numerical zero finding
+### Numerical zero finding {-}
 
 In this book, for consistency with our notation, we use the R/mosaic `Zeros()` `function`. The first argument to `Zeros()` is a tilde expression and the second argument an interval of the domain over which to search.
 
 `Zeros()` is set up to find inputs where the mathematical function defined in the tilde expression produces zero as an output. But suppose you are dealing with a problem like $f(x) = 10$? You can modify the tilde expression so that it implements a slightly different function: $f(x) - 10$. If we can find $x_0$ such that $f(x_0) - 10 = 0$, that will also be the $x_0$ satisfying $f(x_0) = 10$.
 
-::: {.practice}
+::: {.callout-important #try-numerical-zeros}
+## Computationally finding zeros
 The point of this example is to show how to use `Zeros()`, so we will define a function $f(x)$ using `doodle_fun()` from R/mosaic. This constructs a function by taking a linear combination of other functions selected at random. The argument `seed=579` determines which functions will be in the linear combination. The function is graphed in @fig-doodle-579.
 
-```{r}
+```{webr-r}
 f <- doodle_fun( ~ z, seed=579)
 ```
 
 We want to find the zeros of the function $f(x) - 10$ which corresponds to solving $f(x) = 10$. The `function` `Zeros()` handles this for us.
 
-```{r}
+```{webr-r}
 Zeros(f(z) - 10 ~ z, domain(z=-4:4))
 ```
 
@@ -138,14 +253,17 @@ The output produced by `Zeros()` is a data frame with one row for each of the $x
 
 
 ::: {#fig-doodle-579}
-```{r}
+```{r echo=FALSE, warning=FALSE}
 f <- doodle_fun( ~ z, seed=579)
 slice_plot(f(x) ~ x, bounds(x=-4:4)) |>
   gf_hline(yintercept = ~ 10, color="magenta") |>
   gf_vline(xintercept = c(-2.919, 0.0795), color = "red", alpha=0.25)
 ```
+
+A graph of $f()$, marking the places where the output is 10.
 :::
 
+:::
 
 ## Optimization
 
@@ -153,20 +271,18 @@ Optimization problems consist of both a modeling phase and a solution phase (tha
 
 In this chapter we will deal only with the solution phase. In real work, the modeling phase is essential
 
-### Graphical optimization
+### Graphical optimization {-}
 
-Look for local peaks, then read off the input that generates the value at the peak. 
+Simple. Look for local peaks, then read off the input that generates the value at the peak. 
 
-### Numerical optimization
+### Numerical optimization {-}
 
 When it comes to functions, ***maximization*** is the process of finding an input to the function that produces a larger output than any of the other, nearby inputs.  
 
-To illustrate, @fig-show-peak1 shows a function with two peaks.
+To illustrate, @fig-show-peak1 shows a function `f()` with two peaks.
 
 ::: {#fig-show-peak1}
 ```{r echo=FALSE}
-#| label: fig-show-peak1
-#| fig-cap: a function with two peaks
 f <- doodle_fun(~ x, seed=7293)
 Peaks <- argM(f(x) ~ x, bounds(x=-5:5))
 slice_plot(f(x) ~ x, bounds(x=-5:5)) %>%
@@ -187,12 +303,13 @@ Just as you can see a mountain top from a distance, so you can see where the fun
 
 ### Numerical optimization
 
-The R/mosaic `argM()` `function` finds a mathematical function's argmax and argmin over a given domain. It works in exactly the same way as `slice_plot()`, but rather than drawing a graphic it returns a data frame giving the argmax in one row and the argmin in another. For instance, the function shown in @fig-show-peak1 is $h()$, generated by `doodle_fun()`:
+The R/mosaic `argM()` `function` finds a mathematical function's argmax and argmin over a given domain. It works in exactly the same way as `slice_plot()`, but rather than drawing a graphic it returns a data frame giving the argmax in one row and the argmin in another. For instance, the function shown in @fig-show-peak1 is $f()$, generated by `doodle_fun()`:
 
-```{r}
-h <- doodle_fun(~ x, seed=7293)
-argM(h(x) ~ x, domain(x=-5:5))
+```{webr-r}
+f <- doodle_fun(~ x, seed=7293)
+argM(f(x) ~ x, domain(x=-5:5))
 ```
+
 The `x` column holds the argmax and argmin, the `.output.` column gives the value of the function output for the input `x`. The `concavity` column tells whether the function's concavity at `x` is positive or negative. Near a peak, the concavity will be negative; near a valley, the concavity is positive. Consequently, you can see that the first row of the data frame corresponds to a local minimum and the second row is a local maximum.
 
 `argM()` is set up to look for a single argmax and a single argmin in the domain interval given as the second argument. In @fig-show-peak1 there are two local peaks and two local valleys. `argM()` gives only the largest of the peaks and the deepest of the valleys.
@@ -209,23 +326,28 @@ $$\text{better(guess)} = \frac{1}{2}\left( \text{guess} + \frac{x}{\text{guess}}
 
 It may not be at all clear why this formula is related to finding a square root. Let's put that matter off until the end of the section and concentrate our attention on how to use it.
 
-To start, let's define the function for the computer:
+To start, let's define the function for the computer. Suppose we want to apply the square root function to the input 55, that is, calculate $\sqrt{\strut x=55}$. The value we should assign to $x$ is therefore 55.
 
-```{r}
-better <- makeFun((guess + x/guess)/2 ~ guess)
+::: {.column-page-right}
+```{webr-r}
+better <- 
+  makeFun((guess + x/guess)/2 ~ guess, x=55)
 ```
+:::
 
 Notice that $x$ is cast in the role of a ***parameter*** of the function rather than an input to the function. 
 
-Suppose we want to apply the square root function to the input 55, that is, calculate $\sqrt{\strut x=55}$. The value we should assign to $x$ is therefore 55.
+To calculate better(guess) we need an initial value for the guess. What should be this value and what will we do with the quantity better(guess) when we've calculated it.
 
-To calculate better(guess) we need not only $x=55$ but a value for the guess. What should be this value and what will we do with the quantity better(guess) when we've calculated it.
+Without explanation, we will use guess = 1. Calculating the output ...
 
-Without explanation, we will use guess = 1, regardless of the value of $x$. Calculating the output ...
-
-```{r}
-better(1, x=55)
+::: {.column-page-right}
+```{webr-r}
+guess0 <- 1
+# calculate and print guess1
+guess1 <- better(guess0);  guess1
 ```
+:::
 
 Neither our guess 1 nor the output 28 are $\sqrt{\strut x=55}$. (Having long-ago memorized the squares of integers, we know $\sqrt{\strut x=55}$ will be somewhere between 7 and 8. Neither 1 nor 28 are in that interval.)
 
@@ -233,30 +355,34 @@ The people---more than two thousand years ago---who invented the ideas behind th
 
 This is where ***iteration*** comes in. Even if 28 is a better guess than 1, 28 is still not a good guess. But we can use `better()` to find something better than 28:
 
-```{r}
-better(28, x=55)
+::: {.column-page-right}
+```{webr-r}
+guess2 <- better(guess1); guess2
 ```
+:::
 
 To ***iterate*** an action means to perform that action over and over again. ("Iterate" stems from the Latin word *iterum*, meaning "again.") A bird iterates its call, singing it over and over again. In mathematics, "iterate" has a twist. When we repeat the mathematical action, we will draw on the results of the previous angle rather than simply repeating the earlier calculation. 
 
-Continuing our iteration of better() ...
+Continuing our iteration of better(), plugging the output of each calculation as the input for the next ...
 
-```{r}
-better(14.98214, x=55)
-better(9.326589, x=55)
-better(7.611854, x=55)
-better(7.418713, x=55)
-better(7.416199, x=55)
+::: {.column-page-right}
+```{webr-r}
+guess3 <- better(guess2, x=55); guess3
+guess4 <- better(guess3, x=55); guess4
+guess5 <- better(guess3, x=55); guess5
+guess6 <- better(guess4, x=55); guess6
+guess7 <- better(guess6, x=55); guess7
 ```
+:::
 
 In the last step, the output of `better()` is practically identical to the input, so no reason to continue. We can confirm that the last output is a good guess for $\sqrt{\strut x=55}$:
 
-```{r}
+```{webr-r}
 7.416198^2
 ```
 
 
-### Graphical iteration
+### Graphical iteration {-}
 
 ```{r echo=FALSE}
 ggcobweb <- function(tilde, domain, x0, n=5) {
@@ -284,6 +410,7 @@ To iterate graphically, we graph the function to be iterated and mark the initia
 ```{r echo=FALSE, warning=FALSE}
 #| column: page-inset-right
 #| layout-ncol: 3
+better <- makeFun((guess + x/guess)/2 ~ guess, x=55)
 Pa <- ggcobweb(better(guess, x=55) ~ guess, bounds(x=0:30), x0=1, n=1) %>%
   gf_labs(x="guess", y="better(guess, x=55)")
 Pb <- ggcobweb(better(guess, x=55) ~ guess, bounds(x=0:30), x0=1, n=2) %>%
@@ -294,13 +421,17 @@ Pa; Pb; Pc
 ```
 
 Three steps of iteration of `better()` starting with an initial guess of 1.
-### Numerical iteration
+:::
+
+### Numerical iteration {-}
 
 Use the R/mosaic `Iterate()` function. The first argument is a tilde expression defining the function to be iterated. The second is the starting guess. The third is the number of iteration steps. For instance:
 
-```{r}
+::: {.column-page-right}
+```{webr-r}
 Iterate(better(guess, x=55) ~ guess, x0=1, n=8)
 ```
+:::
 
 The output produced by `Iterate()` is a data frame. The initial guess is in the row with $n=0$. Successive rows give the output, step by step, with each new iteration step.
 
