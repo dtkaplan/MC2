@@ -32,7 +32,7 @@ For this reason, people who have routinely to deal with very large or very small
 
 > Which is bigger? 7.3 $\times$ 10^-13^ or 1.3 $\times$ 10^-10^
 
-In scientific notation, the first step in the comparison process involves just the exponent in 10^?^. Whichever of the two numbers has the larger exponent is the larger number. Only if the exponents are the same is there any need to look at the digits preceeding $\times$10^?^$.
+In scientific notation, the first step in the comparison process involves just the exponent in 10^?^. Whichever of the two numbers has the larger exponent is the larger number. Only if the exponents are the same is there any need to look at the digits preceeding $\times  10^{?}$.
 
 The exponent in a scientific-notation number can be called the "order of magnitude" of that number. As you will see in the following sections, "order of magnitude" is closely connected to one of our pattern-book functions: the logarithm. This is one reason that the logarithm is important in applied work.
 
@@ -43,10 +43,11 @@ We will refer to judging the size of numbers by their count of digits as reading
 
 Many phenomena and quantities are better understood in terms of magnitude than in terms of number. An example: Animals, including humans, go about the world in varying states of illumination, from the bright sunlight of high noon to the dim shadows of a half-moon. To be able to see in such diverse conditions, the eye needs to respond to light intensity across many orders of magnitude. 
 
-The ***lux*** is the unit of illuminance in the Système international. This table^[Source: <https://en.wikipedia.org/wiki/Daylight>] shows the illumination in a range of familiar outdoor settings:
+The ***lux*** is the unit of illuminance in the Système international. @tbl-lux-examples shows the illumination in a range of familiar outdoor settings:
 
+::: {#tbl-lux-examples}
 Illuminance | Condition
-------------|---------------
+------------:|:---------------
 110,000 lux | Bright sunlight
 20,000 lux	| Shade illuminated by entire clear blue sky, midday
 1,000 lux	| Typical overcast day, midday
@@ -54,11 +55,14 @@ Illuminance | Condition
 0.25 lux |	A full Moon, clear night sky
 0.01 lux | 	A quarter Moon, clear night sky
 
+Illumination in lux in some outdoor settings. [Source](https://en.wikipedia.org/wiki/Daylight) 
+:::
+
 For a creature active both night and day, the eye needs to be sensitive over 7 orders of magnitude of illumination. To accomplish this, eyes use several mechanisms: contraction or dilation of the pupil accounts for about 1 order of magnitude, photopic (color, cones) versus scotopic (black-and-white, rods, nighttime) covers about 3 orders of magnitude, adaptation over minutes (1 order), squinting (1 order).
 
 More impressively, human perception of sound spans more than 16 orders of magnitude in terms of the energy impinging on the eardrum. The energy density of perceptible sound ranges from the threshold of hearing at 0.000000000001 Watt per square meter to a conversational level of 0.000001 W/m^2^ to 0.1 W/m^2^ in the front rows of a rock concert. But in terms of our subjective perception of loudness, each order of magnitude change is perceived in the same way, whether it be from street traffic to vacuum cleaner or from whisper to normal conversation. (The unit of sound measurement is the decibel (dB), with 10 decibels corresponding to an order of magnitude in the energy density of sound.)
 
-::: {.column-margin}
+::: {#tbl-sound-energy}
 Situation | Energy level (dB)
 :-------------|---------:
 Rustling leaves | 10 dB
@@ -73,7 +77,7 @@ Rock concert | 110 dB
 Jackhammer | 130 dB
 Military jet takeoff | 140 dB
 
-: Energy density of sound in various situations. Sound at 85 dB, for extended periods, can cause permanent hearing loss. Exposure to sound at 120 dB over 30 seconds is dangerous. {#tbl-sound-energy}
+Energy density of sound in various situations. Sound at 85 dB, for extended periods, can cause permanent hearing loss. Exposure to sound at 120 dB over 30 seconds is dangerous. 
 :::
 
 6, 60, 600, and 6000 miles-per-hour are quantities that differ in size by ***orders of magnitude***. Such differences often point to a substantial change in context. A jog is 6 mph, a car on a highway goes 60 mph, a cruising commercial jet goes 600 mph, and a rocket passes through 6000 mph on its way to orbital velocity. From an infant's crawl to highway cruising is 3 orders of magnitude in speed.
@@ -96,13 +100,13 @@ Imagine having a digit counting function called digits(). It takes a number as i
 | ... and so on ...
 | digits(1,000,000) $\equiv$ 6
 | ... and on.
-
+     
 For numbers smaller than 1, like 0.01 or 0.0001, we define the number of digits to be the *negative* of the number of zeros *before* the 1.
 
 | digits(0.1) $\equiv$ -1
 | digits(0.01) $\equiv$ -2
 | digits(0.0001) $\equiv$ -4
-
+     
 The digits() function easily can be applied to the product of two numbers. For instance:
 
 - digits(1000 $\times$ 100) = digits(1000) + digits(100) = 3 + 2 = 5.
@@ -116,7 +120,7 @@ In practice, digits() is so useful that it could well have been one of our basic
 To illustrate, consider these three calculations of logarithms:
 
 ::: {#lst-digits-proportionality}
-```{r}
+```{webr-r}
 0.4342945 * log(100) 
 0.4342945 * log(1000) 
 0.4342945 * log(10000)
@@ -133,27 +137,33 @@ $$\text{digits}(x) \equiv \ln(x) / \ln(10)$${#eq-digits-math-def}
 In R/mosaic, the analogous definition is:
 
 ::: {#lst-digits-R-def}
-```{r}
+```{webr-r}
 digits <- makeFun(log(x) / log(10) ~ x)
 ```
 :::
 
-You may have guessed that `digits()` is handy for computing differences in terms of orders of magnitude. Here's how:   
+You may have guessed that `digits()` is handy for computing differences in terms of orders of magnitude. 
+
+::: {.callout-important #try-order-of-magnitude}
+## Calculating differences in order of magnitude
 
 1. Make sure that the quantities are expressed in the same ***units***. 
-2. Calculate the difference between the `digits()` of the numerical part of the quantity.
+2. Calculate the difference between the `digits()` of the numerical part of the quantities.
 
-::: {.practice data-latex=""}
-What is the order-of-magnitude difference in velocity between a snail and a walking human? A snail slides at about 1 mm/sec, a human walks at about 5 km per hour. Putting human speed in the same units as snail speed: 
+
+What is the order-of-magnitude difference in velocity between a snail and a walking human? A snail slides at about 1 mm/sec, a human walks at about 5 km per hour. 
+
+The first task is to put human speed in the same units as snail speed: 
 \begin{eqnarray}5 \frac{km}{hr} = \left[\frac{1}{3600} \frac{hr}{sec}\right] 5 \frac{km}{hr} &=& \\
 \left[10^6 \frac{mm}{km}\right] \left[\frac{1}{3600} \frac{hr}{sec}\right] 5 \frac{km}{hr} &=& 1390 \frac{mm}{sec}
 \end{eqnarray}
-Calculating the difference in `digits()` between 1 and 1390:
 
-```{r}
-log10(1390) - log10(1)
+The second task is to find the difference between the number of `digits()`in each of the numbers.
+
+```{webr-r}
+digits(1390) - digits(1)
 ```
-So, about 3 orders of magnitude difference in speed. To a snail, we walking humans must seem like rockets on their way to orbit!
+So, about 3 orders of magnitude difference in speed: a factor of 1000. To a snail, we walking humans must seem like rockets on their way to orbit seem to us! (Think about it. We walk about 5 km/hour. A thousand time that is 5000 km/hour---rocket speed.)
 :::
 
 The use of factors of 10 in counting orders of magnitude is arbitrary. A person walking and a person jogging are on the edge of being qualitatively different, although their speeds differ by a factor of only 2. Aircraft that cruise at 600 mph and 1200 mph are qualitatively different in design, although the speeds are only a factor of 2 apart. A professional basketball player (height 2 meters or more) is qualitatively different from a third grader (height about 1 meter).
@@ -194,132 +204,126 @@ log(2.718281828 * 63)
 
 To display a variable from data that varies over multiple orders of magnitude, it helps to plot the ***logarithm*** rather than the variable itself. Let's illustrate using the `Engine` data frame, which contains measurements of many different internal combustion engines of widely varying sizes. For instance, we can graph engine RPM (revolutions per second) versus engine mass, as in @fig-rpm-mass.
 
-```{r}
+::: {#fig-rpm-mass layout-ncol=3 .column-page-insert-right}
+```{r echo=FALSE}
 #| label: fig-rpm-mass
-#| fig-cap: "Engine RPM versus mass for 39 different enginges plotted on the standard linear axis."
-#| column: margin
+#| fig-subcap: linear axes
 gf_point(RPM ~ mass, data = Engines)
 ```
-
-In the graph, most of the engines have a mass that is ... zero. At least that is  what it appears to be. The horizontal scale is dominated by the two huge 100,000-pound monster engines plotted at the right end of the graph.
-
-Plotting the logarithm of the engine mass spreads things out, as in @fig-rpm-mass-log.
-
-```{r}
+```{r echo=FALSE}
 #| label: fig-rpm-mass-log
-#| fig-cap: "Engine RPM versus mass on semi-log axes."
-#| column: margin
-gf_point(RPM ~ mass, data = Engines) %>%
+#| fig-subcap: semi-log axes
+gf_point(RPM ~ mass, data = Engines) |>
   gf_refine(scale_x_log10())
 ```
-
-Note that the horizontal axis has been labeled with the actual mass (in pounds), with the labels evenly spaced in terms of their logarithm. This presentation, with the horizontal axis constructed this way, is called a ***semi-log*** plot.
-
-When both axes are labeled this way, we have a ***log-log*** plot, as shown in @fig-rpm-mass-log-log. 
-
-```{r}
+```{r echo=FALSE}
 #| label: fig-rpm-mass-log-log
-#| fig-cap: "Engine RPM versus mass on log-log axes."
-#| column: margin
-gf_point(RPM ~ mass, data = Engines) %>%
+#| fig-subcap: log-log axes
+gf_point(RPM ~ mass, data = Engines) |>
   gf_refine(
     scale_x_log10(),
     scale_y_log10()
     )
 ```
 
+Engine RPM versus mass for 39 different enginges plotted
+:::
+
+In the graph, most of the engines have a mass that is ... zero. At least that is  what it appears to be. The horizontal scale is dominated by the two huge 100,000-pound monster engines plotted at the right end of the graph.
+
+Plotting the logarithm of the engine mass spreads things out, as in @fig-rpm-mass-log.
+
+Note that the horizontal axis has been labeled with the actual mass (in pounds), with the labels evenly spaced in terms of their logarithm. This presentation, with the horizontal axis constructed this way, is called a ***semi-log*** plot.
+
+When both axes are labeled this way, we have a ***log-log*** plot, as shown in @fig-rpm-mass-log-log. 
+
 Semi-log and log-log axes are widely used in science and economics, whenever data spanning several orders of magnitude need to be displayed. In the case of the engine RPM and mass, the log-log axis shows that there is a graphically simple relationship between the variables. Such axes are very useful for displaying data but can be hard for the newcomer to read quantitatively. For example, calculating the slope of the evident straight-line relationship in @fig-rpm-mass-log-log is extremely difficult for a human reader and requires translating the labels into their logarithms. 
-
-
-
 
 ::: {.callout-note icon=false data-latex=""} 
 ## Calculus history---Boyle's Law
 
-Robert Boyle (1627-1691) was a founder of modern chemistry and the scientific method in general. As any chemistry student already knows, Boyle sought to understand the properties of gasses. His results are summarized in *Boyle's Law*.
-
-The data frame `Boyle` contains two variables from one of Boyle's experiments as reported in his lab notebook: pressure in a bag of air and volume of the bag. The units of pressure are mmHg and the units of volume are cubic inches.^[Boyle's notebooks are preserved at the Royal Society in London. The data in the `Boyle` data frame have been copied from [this source](
-https://chem.libretexts.org/Courses/University_of_California_Davis/UCD_Chem_002A/UCD_Chem_2A/Text/Unit_III%3A_Physical_Properties_of_Gases/06.03_Relationships_among_Pressure%2C_Temperature%2C_Volume%2C_and_Amount).)] 
-
-Famously, Boyle's Law states that, at a constant temperature, the pressure of a constant mass of gas is inversely proportional to the volume occupied by the gas. @fig-boyle-movie shows a cartoon of the relationship.
+Robert Boyle (1627-1691) was a founder of modern chemistry and the scientific method in general. As any chemistry student already knows, Boyle sought to understand the properties of gasses. Famously, *Boyle's Law* states that, at a constant temperature, the pressure of a constant mass of gas is inversely proportional to the volume occupied by the gas. @fig-boyle-movie shows a cartoon of the relationship.
 
 ::: {#fig-boyle-movie}
-![](www/Boyles_Law_animated.gif)
+![](www/Boyles_Law_animated.gif){width=60%}
 
 A cartoon illustrating Boyle's Law. Source: [NASA Glenn Research Center](https://www.grc.nasa.gov/WWW/K-12/airplane/aboyle.html)"
 :::
 
-@fig-boyle-data plots out Boyle's actual experimental data. I
+The data frame `Boyle` contains two variables from one of Boyle's experiments as reported in his lab notebook: pressure in a bag of air and volume of the bag. The units of pressure are mmHg and the units of volume are cubic inches.^[Boyle's notebooks are preserved at the Royal Society in London. The data in the `Boyle` data frame have been copied from [this source](
+https://chem.libretexts.org/Courses/University_of_California_Davis/UCD_Chem_002A/UCD_Chem_2A/Text/Unit_III%3A_Physical_Properties_of_Gases/06.03_Relationships_among_Pressure%2C_Temperature%2C_Volume%2C_and_Amount).)] 
 
-::: {#fig-boyle-data}
-```{r} 
-gf_point(pressure ~ volume, data = Boyle) %>%
+@fig-boyle-data plots out Boyle's actual experimental data in two different ways.
+
+::: {#fig-boyle-data layout-ncol=2}
+```{r echo=FALSE, warning=FALSE} 
+#| fig-subcap: linear axes
+#| label: fig-boyle-data-linear
+gf_point(pressure ~ volume, data = Boyle, size=2) |>
   gf_lm()
 ```
-
-A plot of Boyle's pressure vs volume data on linear axes. The straight line model is a poor representation of the pattern seen in the data.
-:::
-
-You can see a clear relationship between pressure and volume, but it is hardly a linear relationship.
-
-Plotting Boyle's data on log-log axes reveals that, in terms of the logarithm of pressure and the logarithm of volume, the relationship is linear.
-
-```{r}
+```{r echo=FALSE}
 #| label: fig-boyle-data-log
-#| fig-cap: "Plotting the logarithm of pressure against the logarithm of volume reveals a straight-line relationship."
-#| column: margin
-gf_point(log(pressure) ~ log(volume), data = Boyle) %>%
+#| fig-subcap: "log-log axes"
+gf_point(log(pressure) ~ log(volume), data = Boyle, size=2) |>
   gf_lm()
 ```
+
+Boyle's pressure vs volume data plotted on linear and log-log axes. 
 :::
 
-@fig-boyle-data-log shows that Boyle's log-pressure and log-volume data are a straight-line function. In other words:
+
+The straight-line model fits nicely to the log-log plot in @fig-boyle-data-log showing that log-pressure and log-volume data are related as a straight-line function. In other words:
 
 $$\ln(\text{Pressure}) = a + b \ln(\text{Volume})$$
 
 You can find the slope $b$ and intercept $a$ from the graph. For now, we want to point out the consequences of the straight-line relationship between logarithms. 
 
 Exponentiating both sides gives
-$$e^{\ln(\text{Pressure})} = \text{Pressure} = e^{a + b \ln(\text{Volume})} = e^a\  \left[e^{ \ln(\text{Volume})}\right]^b = e^a\, \text{Volume}^b$$ or, more simply (and writing the number $e^a$ as $A$)
+$$e^{\ln(\text{Pressure})} = \text{Pressure} = e^{a + b \ln(\text{Volume})}$$
+$$= e^a\  \left[e^{ \ln(\text{Volume})}\right]^b = e^a\, \text{Volume}^b$${#eq-boyles-law} or, more simply (and writing the number $e^a$ as $A$)
 
-$$\text{Pressure} = A\,  \text{Volume}^b$$
+Since $a$ is a parameter, the quantity $e^a$ is effectively a parameter. We'll use $A$ to denote $e^a$, simplifying @eq-boyles-law to $$\text{Pressure} = A\times  \text{Volume}^b\ .$${#eq-boyle-simplified}
 A power-law relationship!
-
+:::
 
 ## Reading logarithmic scales {#sec-reading-log-axes}
 
 Plotting the logarithm of a quantity gives a visual display of the magnitude of the quantity and labels the axis as that magnitude. A useful graphical technique is to label the axis with the original quantity, letting the position on the axis show the magnitude.   
 
-To illustrate, @fig-mag-scales-1(left) is a log-log graph of horsepower versus displacement for the internal combustion engines reported in the `Engines` data frame. The points are admirably evenly spaced, but it is hard to translate the scales to the physical quantity. The right panel in @fig-mag-scales-1 shows *the same data points*, but now the scales are labeled using the original quantity.
+To illustrate, @fig-mag-scales-1 is a log-log graph of horsepower versus displacement for the internal combustion engines reported in the `Engines` data frame. The points are admirably evenly spaced, but it is hard to translate the scales to the physical quantity. The right panel in @fig-mag-scales-2 shows *the same data points*, but now the scales are labeled using the original quantity.
 
+::: {#fig-mag-scales layout-ncol=2}
 ```{r echo=FALSE}
 #| label: fig-mag-scales-1
-#| fig-cap: "Horsepower versus displacement from the `Engines` data.frame plotted with log-log scales."
-#| column: page-inset-right
-pA <- gf_point(log10(BHP) ~ log10(displacement), data = Engines)
-pB <- gf_point(BHP ~ displacement, data = Engines) %>%
-  gf_refine(scale_y_log10(), scale_x_log10()) 
-gridExtra::grid.arrange(pA, pB, ncol=2)
+#| fig-subcap: "Log-log scales on the data"
+gf_point(log10(BHP) ~ log10(displacement), data = Engines)
 ```
+```{r echo=FALSE}
+#| label: fig-mag-scales-2
+#| fig-subcap: "Linear scales on the log data"
+gf_point(BHP ~ displacement, data = Engines) |>
+  gf_refine(scale_y_log10(), scale_x_log10()) 
+```
+
+The same horsepower (BHP) versus engine displacement data plotted using two different scales. The data points themselves appear the same in both plots, but the parameters $b$ and $e^a$ (that is, $A$ in @eq-boyle-simplified) can be estimated as the slope and y-intercept respectively of a line fitted to @fig-mag-scales-1 in the usual way.
+:::
 
 The tick marks on the vertical axis in the left pane are labeled for 0, 1, 2, 3, and 4. These numbers do not refer to the horsepower itself, but to the logarithm (base 10) of the horsepower. The right pane has tick labels that are in horsepower at positions marked 1, 10, 100, 1000, and 10000.  
 
-Such even splits of a 0-100 scale are not appropriate for logarithmic scales. One reason is that 0 cannot be on a logarithmic scale in the first place since $\log(0) = -\infty$.
+Such even splits of a 0-100 scale are not appropriate for logarithmic scales. One reason is that 0 cannot be on a logarithmic scale in the first place since $\ln(0) = -\infty$.
 
 Another reason is that 1, 3, and 10 are pretty close to an even split of a logarithmic scale running from  1 to 10. It is something like this:
 
+:::{.column-page-inset-right}
 ```
 1              2            3          5            10     x
 |----------------------------------------------------|
 0               1/3         1/2        7/10          1     log(x)
 ```
+:::
 
 It is nice to have the labels show round numbers. It is also nice for them to be evenly spaced along the axis. The 1-2-3-5-10 convention is a good compromise; almost evenly separated in space yet showing simple round numbers.
 
-
-
-## Mini-project
-
-`r insert_exercises("Modeling", "magnitudes-mini-project")`
 
 

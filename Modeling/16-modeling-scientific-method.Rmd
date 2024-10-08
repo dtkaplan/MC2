@@ -8,7 +8,7 @@ Block 2 is entitled "Modeling," and for good reason. This Block has introduced t
 
 Before continuing with more mathematics, it is helpful to put modeling in context. That context doesn't come from the mathematics. Instead, it comes from science and, particularly, the **scientific method**. 
 
-One description of the scientific method, arising in the mid-20th century, is the [**hypothetico-deductive** model](https://en.wikipedia.org/wiki/Hypothetico-deductive_model). The process embedded in the hypothetical-deductive model consists of formulating a hypothesis to describe the world, deducing consequences from this hypothesis, and carrying out experiments to look for those consequences. If the consequences are experimentally observed, the experiment corroborates the hypothesis. If not, the experiment refutes the hypothesis. In the progess of science, refuted hypotheses are replaced with alternatives that are compatible with the assembled experimental data. And the cycle of experiment, corroboration or refutation, and hypothesis generation begins again.
+One description of the scientific method, arising in the mid-20th century, is the [**hypothetico-deductive model**](https://en.wikipedia.org/wiki/Hypothetico-deductive_model). The process embedded in the hypothetical-deductive model consists of formulating a hypothesis to describe the world, deducing consequences from this hypothesis, and carrying out experiments to look for those consequences. If the consequences are experimentally observed, the experiment corroborates the hypothesis. If not, the experiment refutes the hypothesis. In the progess of science, refuted hypotheses are replaced with alternatives that are compatible with the assembled experimental data. And the cycle of experiment, corroboration or refutation, and hypothesis generation begins again.
 
 A good analogy for the scientific method comes from detective books and movies. The heroes of the genre---Sherlock Holmes and Hercule Poirot are famously such---are playing the role of the modeler. The detectives' methods include fingerprints, chemical detection of traces of poison, clever interrogation of suspects and witnesses, etc. These are analogous to the various methods we have and will be studying in this Book. In each detective story, the detective has a goal, often set by the client and identified at the beginning. Goals include identifying the criminal, forestalling a crime, recovering an object of value, and tracking down a missing person. Similarly, good modelers also know what is the objective of their work. Each individual case will have its distinct objective, but in general the objective is to help a person or an organization make a decision: what should be the parameters of a new design, how best to set the operating levels in production, what will be likely outcomes of a new policy, among others.
 
@@ -24,7 +24,7 @@ This chapter shows, by example, some widely used modeling techniques. It also sh
 
 @sec-fitting-by-feature presented data on water cooling from near boiling to room temperature. (See @fig-stans-data.) Prof. Stan Wagon of Macalester College collected the data with a purpose in mind: to see whether *Newton's Law of Cooling* provides a good description of the actual physical process. In particular, Wagon knew that a simple application of Newton's Law implies that the water temperature will decay exponentially. 
 
-@fig-water-exponential shows an exponential function fitted to the water-cooling data. The fitted function is stored as `Mod1_fun()` with the `1` identifying it as the first of possibly several models.
+@fig-water-exponential shows an exponential function fitted to the water-cooling data. 
 
 ::: {#fig-water-exponential}
 ```{r}
@@ -37,29 +37,35 @@ gf_point(temp ~ time, data = CoolingWater, alpha = .15 ) |>
 ```
 
 An exponential model (blue) fitted to the `CoolingWater` data. 
-$$T(t) \equiv 27.0 + 62.1\ e^{-0.021 t}$$
+$$\text{Model}_1 \equiv T(t) \equiv 27.0 + 62.1\ e^{-0.021 t}$$
 :::
 
 
-At first glance, the exponential function seems a good match to the data. But what do we mean by "good?" Is "good" good enough? And "good enough" for what? The experienced modeler should always have in mind the criterion by which to evaluate "good enough." These criteria, in turn, are shaped by the purpose of building the model.
+At first glance, the Model$_1()$ seems a good match to the data. But what do we mean by "good?" Is "good" good enough? And "good enough" for what? The experienced modeler should always have in mind the criterion by which to evaluate "good enough." These criteria, in turn, are shaped by the purpose of building the model.
 
 Beware of general-purpose criteria. For instance, a general-purpose criterion is to compare the shape of the function with the data. The exponential model slopes and curves in a similar manner to the data. The deviation of the model output from the data is, at worst, just a few degrees. This is small compared to the 50$^\circ$C change in temperature throughout the experiment.
 
-Another widely used general-purpose statistical measure of the quality of the match is the R^2^ (R-squared) value. Mathematically, R^2^ is always between 0 and 1. (See @sec-stat-modeling, where the mathematics of R^2^ is introduced.) When R^2^ = 1, the match is perfect. For the `Mod1_fun()` and the cooling water data, R^2^ = 0.991. Many scientists would interpret this as "almost perfect," although things are sometimes more complicated ... as here.
+Another widely used general-purpose statistical measure of the quality of the match is the R^2^ (R-squared) value. Mathematically, R^2^ is always between 0 and 1. (See @sec-stat-modeling, where the mathematics of R^2^ is introduced.) When R^2^ = 1, the match is perfect. For Model$_1()$ and the cooling water data, R^2^ = 0.991. Many scientists would interpret this as "almost perfect," although things are sometimes more complicated ... as here.
 
 Wagon's purpose was not simply to see if an exponential curve resembles the data. Instead, he wanted to know if Newton's Law of Cooling was consistent with the observed cooling over time. The exponential shape of temperature versus time is just one consequence of Newton's Law. Another is that the water temperature should eventually reach equilibrium at room temperature.
 
 The fitted exponential model fails here, as you can see by zooming in on the right tail of @fig-water-exponential. In @fig-water-exponential-tails, we zoom in on the data's left and right tails.
 
-::: {#fig-water-exponential-tails}
+::: {#fig-water-exponential-tails layout-ncol=2}
 ```{r echo=FALSE}
-#| layout-ncol: 2
-gf_point(temp ~ time, data=CoolingWater |> filter(time < 10), alpha = .75 ) |>
+#| fig-subcap: 
+#| - "Early in the experiment."
+gf_point(temp ~ time, data=CoolingWater |> 
+           filter(time < 10), alpha = .75 ) |>
   slice_plot(Mod1_fun(time) ~ time, color = "blue") |>
   gf_labs(x = "Time (minutes)", y="Temperature (deg. C)") |>
   gf_lims(y=c(NA, 100))
-
-gf_point(temp ~ time, data=CoolingWater |> filter(time > 160), alpha = .75 ) |>
+```
+```{r echo=FALSE}
+#| fig-subcap: 
+#| - "Late in the experiment"
+gf_point(temp ~ time, data=CoolingWater |> 
+           filter(time > 160), alpha = .75 ) |>
   slice_plot(Mod1_fun(time) ~ time, color = "blue") |>
   gf_labs(x = "Time (minutes)", y="Temperature (deg. C)") 
 ```
@@ -84,12 +90,12 @@ Refer to @fig-water-exponential, which shows the measured temperature data along
 When assessing a model, it is a good practice to calculate the *difference* between the observed data and the model value. @fig-water-residuals shows this difference, calculated simply by subtracting from each data point the model value at the corresponding time. In statistical nomenclature, such differences are called the "**residuals**" from the model.
 
 ::: {#fig-water-residuals}
-```{r}
+```{r echo=FALSE}
 gf_point(temp - Mod1_fun(time) ~ time, data = CoolingWater) |>
   gf_labs(x = "Time (minutes)", "Residual (deg C)")
 ```
 
-Residuals versus time. The comparatively smooth structure indicates systematic deviations between the model and the data.
+Residuals versus time for Model$_1()$. The comparatively smooth structure indicates systematic deviations between the model and the data.
 :::
 
 The presence of *noise* in any measurement is to be expected. You can see such noise in @fig-water-residuals in the small, irregular, trembling fluctuations. Conversely, any smooth, slowly changing pattern in the residuals is considered **systematic** variation. Here, those smooth variations are much larger in amplitude than the irregular noise, indicating that we should investigate the systematic variation more closely.

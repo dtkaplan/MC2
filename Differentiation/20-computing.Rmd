@@ -4,15 +4,15 @@
 source("../starter.R")
 ```
 
-This chapter showshow to use the computer to construct the derivative of any function. This is easy because the task of constructing derivatives is well suited to the computer. [There are functions where the derivative cannot be meaningfully defined. Examples are the absolute-value function or the Heaviside function which we introduced when discussing piecewise functions in @sec-piecewise-intro.  In @sec-cont-and-smooth we will consider the pathological cases and show you how to spot them at a glance.]{.aside} 
+This chapter shows to use the computer to construct the derivative of any^[There are functions where the derivative cannot be meaningfully defined. Examples are the absolute-value function or the Heaviside function which we introduced when discussing piecewise functions in @sec-piecewise-intro.  In @sec-cont-and-smooth we will consider the pathological cases and show you how to spot them at a glance.] function. This is easy because the task of constructing derivatives is well suited to the computer.
 
 We will demonstrate two methods:
 
 1. ***Symbolic differentiation***, which transforms an algebraic formula for a function into a corresponding algebraic formula for the derivative.
 
-2. ***Finite-difference*** methods that use a "small"---but not evanescent---$h$.
+2. ***Finite-difference*** methods that use a "small" $h$, but not evanescent.
 
-@sec-prod-comp-rules covers the algorithms used by the computer to construct symbolic derivatives. One reason for teaching you to do with paper and pencil the simpler sorts of problems that the computer does perfectly is analogous to why you learned basic arithmetic by hand even though a calculator can perform the task more reliably. Another reason to learn to carry out symbolic differentiation on your own is to enable you to follow textbook or classroom demonstrations of formulas which often come from solve a differentiation problem. 
+@sec-prod-comp-rules covers the algorithms used by the computer to construct symbolic derivatives. Why teach you to do with paper and pencil the simpler sorts of problems that the computer does perfectly? One reason is that it helps you to anticipate what the results of the computer calculation will be, providing a mechanism to detect error in the way the computation was set up. Another reason is to enable you to follow textbook or classroom demonstrations of formulas which often come from working out a differentiation problem. 
 
 ## Why differentiate?
 
@@ -38,10 +38,10 @@ Often, we know one member in such function-and-derivative pairs, but to need to 
 
 Derivatives also play an important role in design. They play an important role in the construction and representation of smooth curves, such as a robot's track or the body of a car. (See @sec-splines.) Control systems that work to stabilize a airplane's flight or regulate the speed and spacing of cars are based on derivatives. The notion of "stability" itself is defined in terms of derivatives. (See @sec-equilibria.) Algorithms for optimizing design choices also often make use of derivatives. (See @sec-optimization-and-constraint.)
 
+Economics as a field makes considerable use of concepts of calculus---particularly first and second derivatives, the subjects of this Block---although the names used are peculiar to economics, for instance, "elasticity", "marginal returns" and "diminishing marginal returns."
+
 ::: {.callout-note icon=false data-latex=""}
 ## Calculus history---*The Wealth of Nations*
-
-Economics as a field makes considerable use of concepts of calculus---particularly first and second derivatives, the subjects of this Block---although the names used are peculiar to economics, for instance, "elasticity", "marginal returns" and "diminishing marginal returns."
 
 The origins of modern economics, especially the theory of the free market, are attributed to a book published in 1776, *The Wealth of Nations*. The author, Adam Smith (1723-1790), lays out dozens of relationships between different quantities --- wages, labor, stock, interest, prices, profits, and coinage among others. Yet despite the invention of calculus a century before *Wealth of Nations*, the book uses no calculus.
 
@@ -49,16 +49,13 @@ Consider this characteristic statement in *Wealth of Nations*:
 
 >  *The market price of every particular commodity is regulated by the proportion between the quantity which is brought to market, and the demand of those who are willing to pay the natural price of the commodity.*
 
-Without calculus and the ideas of functions and their derivatives, Smith was not able to think about prices in a modern way where price is shaped by demand and supply. Instead, for Smith, each item has a "natural price": a fixed quantity that depends on the amount of labor used to produce the item. Nowadays, we understand that productivity changes as new methods of production and new inventions are introduced. But Smith lived near the end of a centuries-long period of ***static*** economies. Transportation, agriculture, manufacture, and population size were all much as they had been for the past 500 years or longer. James Watt's steam engine was introduced only in 1776 and it would be decades before being adapted to the myriad uses of steam power characteristic of the 19th century. The cotton gin (1793), labor-saving agricultural machines such as the McCormick reaper (1831), the assembly line (1901), and the many other innovations of industry all lay in the future when Smith was writing *Wealth of Nations*. 
+Without calculus and the ideas of functions and their derivatives, Smith was not able to think about prices in the modern way where price is shaped by demand and supply. Instead, for Smith, each item has a "natural price": a fixed quantity that depends on the amount of labor used to produce the item. Nowadays, we understand that productivity changes as new methods of production and new inventions are introduced. But Smith lived near the end of a centuries-long period of ***static*** economies. Transportation, agriculture, manufacture, and population size were all much as they had been for the past 500 years or longer. James Watt's steam engine was introduced only in 1776 and it would be decades before being adapted to the myriad uses of steam power characteristic of the 19th century. The cotton gin (1793), labor-saving agricultural machines such as the McCormick reaper (1831), the assembly line (1901), and the many other innovations of industry all lay in the future when Smith was writing *Wealth of Nations*. 
 
+::: {#fig-cournot-demand}
+![](www/cournot-demand-curve.png)
 
-```{r echo=FALSE}
-#| label: cournot-demand
-#| fig-cap: "Demand as a *function* of price, as first published by Antoine-Augustin Cournot in 1836."
-#| column: margin
-knitr::include_graphics("www/cournot-demand-curve.png")
-```
-
+Demand as a *function* of price, as first published by Antoine-Augustin Cournot in 1836.
+:::
 
 It took the industrial revolution and nearly a century of intellectual development before economics had to and could embrace the rapid changes in the production process. In this dynamical view, supply and demand are not mere quantities, but ***functions*** of which price is the primary input. The tradition in economics is to use the word "curve" instead of "function," giving us the phrases "supply curve" and "demand curve." Making the transition from quantity to function, that is, between a single amount and a relationship between amounts, is a core challenge to those learning economics. 
 
@@ -69,35 +66,51 @@ It took the industrial revolution and nearly a century of intellectual developme
 
 ## Symbolic differentiation
 
-The R/mosaic function `D()` takes a formula for a function and produces the derivative. It uses the same sort of tilde expression used by `makeFun()` or `contour_plot()` or the other R/mosaic tools.  For instance,
+The R/mosaic function `D()` takes a formula for a function and produces the derivative. It uses the same sort of tilde expression used by `makeFun()` or `contour_plot()` or the other R/mosaic tools.  For instance, run the code in @lst-symbolic-sin to see the function created by differentiating $t \sin(t)$ with respect to $t$.
 
-```{r}
+::: {#lst-symbolic-sin}
+```{webr-r}
 D(t * sin(t) ~ t)
-```
-
-If you prefer, you can use `makeFun()` to define a function, then hand that function to `D()` for differentiation.
-
-```{r}
-myf <- makeFun(sqrt(y * pnorm(1 + x^2, mean=2, sd=3)) ~ x & y)
-dx_myf <- D(myf(x, y) ~ x, y=3)
-dx_myf
-```
-
-In the right side of the tilde expression handed off to `D()` names the with-respect-to input. This is similar to the tilde expressions used in plotting, which name the inputs that form the graphics domain. But it contrasts with the tilde expressions in `makeFun()`, where the right-hand side specifies the order in which you want the inputs to appear.
-
-::: {.example data-latex=""}
-Needless to say, `D()` knows the rules for the derivatives of the pattern-book functions introduced in @sec-d-pattern-book. For instance,
-
-```{r}
-D(sin(t) ~ t)
-D(log(x) ~ x)
-D(exp(x) ~ x)
-D(x^2 ~ x)
 ```
 :::
 
+If you prefer, you can use `makeFun()` to define a function, then hand that function to `D()` for differentiation as in @lst-define-then-differentiate:
 
-## Finite-difference derivatives
+::: {#lst-define-then-differentiate}
+```{webr-r}
+g <- makeFun(t * sin(t) ~ t)
+D(g(t) ~ t)
+```
+:::
+
+When differentiating a function with two (or more) inputs, the function definition will have the names of the inputs on the right-hand side of the tilde expression, as in @lst-xy-arguments-diff where the two arguments to `f()` are named `x` and `y`. But notice that in the use of `D()`, the right-hand side of the tilde expression lists only the "with respect to" variable, in this case, `x`.
+
+::: {#lst-xy-arguments-diff .column-page-right}  
+```{webr-r}
+f <- makeFun(sqrt(y * pnorm(1 + x^2, mean=2, sd=y)) ~ x & y)
+dx_f <- D(f(x, y) ~ x)
+dx_f
+```
+:::
+
+::: {#try-D-on-pattern-book style="display: none;"}
+:::
+::: {.callout-important}
+## @try-D-on-pattern-book Derivatives of the pattern book functions
+
+Needless to say, `D()` knows the rules for the derivatives of the pattern-book functions introduced in @sec-d-pattern-book. For instance,
+
+```{webr-r}
+D(sin(t) ~ t)
+```
+
+Try the other eight pattern-book functions. For seven of these, `D()` produces a symbolic derivative. For the eighth, 
+`D()` resorts to a "finite-difference" derivative (introduced in @sec-finite-difference-derivatives). Which is this pattern-book function where `D()` produces a finite-difference derivative?
+
+:::
+
+
+## Finite-difference derivatives {#sec-finite-difference-derivatives}
 
 Whenever you have a formula amenable to the construction of a symbolic derivative, that is  what you should use. Finite-difference derivatives are useful in those situation where you don't have such a formula. The calculation is simple but has a weakness that points out the advantages of the evanescent-$h$ approach.
 
@@ -106,48 +119,74 @@ For a function $f(x)$ and a "small," non-zero number $h$, the finite-difference 
 $$\partial_x f(x) \approx \frac{f(x+h) - f(x-h)}{2h}\ .$$
 To demonstrate, let's construct the finite-difference approximation to $\partial_x \sin(x)$. Since we already know the symbolic derivative---it is $\partial_x \sin(x) = \cos(x)$---there is no genuinely practical purpose for this demonstration. Still, it can serve to confirm the symbolic rule.
 
-We will call the finite-difference approximation `fq_sin()` and use `makeFun()` to construct it:
+We will call the finite-difference approximation `fd_sine()` and use `makeFun()` to construct it:
 
-```{r}
-fq_sin <- makeFun((sin(x+h)- sin(x-h))/(2*h) ~ x, h=0.01)
+```{r echo=FALSE}
+fd_sine <- makeFun((sin(x+h)- sin(x-h))/(2*h) ~ x, h=0.01)
 ```
 
-Notice that `fq_sin()` has a parameter, `h` whose default value is being set to `0.01`. Whether 0.01 is "small" or not depends on the context. Operationally, we define "small" to be a value that gives practically the same result even if it is made smaller by a factor of 2 or 10.
+```{webr-r}
+fd_sine <- makeFun((sin(x+h)- sin(x-h))/(2*h) ~ x, h=0.01)
+```
 
-As a demonstration that `fq_sin()` with $h=0.01$ approximates the genuine $\partial_x \sin(x)$, we exploit our knowledge that $\partial_x \sin(x) = \cos(x)$. @fig-confirm-fq-sin plots out the difference between the the $h=0.01$ approximation and the genuine derivative.
 
-```{r}
-#| label: fig-confirm-fq-sin
-#| fig-cap: "Comparing `fq_sin()` to $\\partial_x \\sin(x)$ for two values of $h$."
-slice_plot(fq_sin(x, h=0.01) - cos(x) ~ x, bounds(x=-10:10)) %>%
-  slice_plot(fq_sin(x, h=0.001) - cos(x) ~ x, color="magenta") %>%
+Notice that `fd_sine()` has a parameter, `h` whose default value is being set to `0.01`. Whether 0.01 is "small" or not depends on the context. Operationally, we define "small" to be a value that gives practically the same result even if it is made smaller by a factor of 2 or 10.
+
+As a demonstration that `fd_sine()` with $h=0.01$ approximates the genuine $\partial_x \sin(x)$, we exploit our knowledge that $\partial_x \sin(x) = \cos(x)$. @fig-confirm-fq-sin plots out the difference between the $h=0.01$ approximation and the genuine derivative.
+
+::: {#fig-confirm-fq-sin layout-ncol=2}
+```{r echo=FALSE}
+#| fig-subcap:
+#| - "`fd_sine()` itself"
+#| label: fig-confirm-fq-sin-a
+slice_plot(fd_sine(x, h=0.01) ~ x, bounds(x=-10:10), linewidth=2, npts=300) |>
+  slice_plot(fd_sine(x, h=0.001) ~ x, color="magenta", npts=300) 
+```
+
+
+
+```{r echo=FALSE}
+#| label: fig-confirm-fq-sin-b
+#| fig-subcap: 
+#| - "Error between `fd_sine()` and `cos()`"
+slice_plot(fd_sine(x, h=0.01) - cos(x) ~ x, bounds(x=-10:10)) |>
+  slice_plot(fd_sine(x, h=0.001) - cos(x) ~ x, color="magenta") |>
   gf_labs(y="Error from true value.")
 ```
 
-You will need to look carefully at the vertical axis scale in @fig-confirm-fq-sin to see what's happening. For $h=0.01$, `fq_sin()` is not exactly the same as `cos()`, but it is close, always being within $\pm$0.00017. For many purposes, this would be accurate enough. But not for all purposes. We can make the approximation better by using a smaller $h$. For instance, the $h=0.001$ version of `fq_sin()` is accurate to within $\pm$0.0000017.
+Comparing `fd_sine()` to the symbolic $\partial_x \sin(x)$  for two values of $h$: $h=0.01$ and  $h=0.001$. 
+:::
+
+A glance at @fig-confirm-fq-sin-a shows that the finite-difference derivative for $h=0.01$ (black) is essentially the same as for $h=0.001$. Thus, $h=0.01$ is good enough. @fig-confirm-fq-sin-b highlights this, showing the error between the finite-difference derivative and the (known) symbolic derivative $\cos(x)$.
+You will need to look carefully at the vertical axis scale in @fig-confirm-fq-sin-b to see what's happening. For $h=0.01$, `fd_sine()` is not exactly the same as `cos()`, but it is close, always being within $\pm$0.000017. For many purposes, this would be accurate enough. But not for all purposes. We can make the approximation better by using a smaller $h$. For instance, the $h=0.001$ version of `fd_sine()` is one-hundred times more accurate: to within $\pm$0.00000017.
 
 In practical use, one employs the finite-difference method in those cases where one does *not already know* the exact derivative function. This would be the case, for example, if the function is a sound wave recorded in the form of an MP3 audio file.
 
 In such situations, a practical way to determine what is a small $h$ is to pick one based on your understanding of the situation. For example, much of what we perceive of sound involves mixtures of sinusoids with periods longer than one-two-thousandth of a second, so you might start with $h$ of 0.002 seconds. Use this guess about $h$ to construct a candidate finite-difference approximation. Then, construct another candidate using a smaller `h`, say, 0.0002 seconds. If the two candidates are a close match to one another, then you have confirmed that your choice of $h$ is adequate.
 
-It is tempting to think that the approximation gets better and better as `h` is made even smaller. But that is not necessarily true for computer calculations. The reason is that quantities on the computer have only a limited precision: about 15 digits. To illustrate, let's calculate a simple quantity, $(\sqrt{3})^2 - 3$. Mathematically, this quantity is exactly zero. On the computer, however it is not quite zero:
+It is tempting to think that the approximation gets better and better as `h` is made even smaller. But that is not necessarily true for computer calculations. The reason is that quantities on the computer have only a limited precision: about 15 digits. To illustrate, let's calculate a simple quantity, $(\sqrt{3})^2 - 3$. Mathematically, this quantity is exactly zero. However, on the computer, as in @lst-not-quite-zero, it is not quite zero:
 
-```{r}
+::: {#lst-not-quite-zero}
+```{webr-r}
 sqrt(3)^2 - 3
 ```
+:::
 
 We can see this loss of precision at work if we make `h` very small in the finite-difference approximation to $\partial_x \sin(x)$. In @fig-too-small-h we are using `h = 0.000000000001`. The result is unsatisfactory.
 
-```{r}
-#| label: fig-too-small-h
-#| fig-cap: "In computer calculations, using too small an `h` leads to a loss of accuracy in the finite-difference approximation."
-#| fig-cap-location: margin
-slice_plot(  fq_sin(x, h=0.000000000001) - cos(x) ~ x, 
+::: {#fig-too-small-h}
+```{r echo=FALSE}
+slice_plot(  fd_sine(x, h=0.000000000001) - cos(x) ~ x, 
            bounds(x=-10:10)) %>%
-  slice_plot(fq_sin(x, h=0.0000000000001) - cos(x) ~ x,
+  slice_plot(fd_sine(x, h=0.0000000000001) - cos(x) ~ x,
              color="magenta") %>%
   gf_labs(y="Error from true value.")
 ```
+
+In computer calculations, using too small an `h` ($h=0.0000000000001$, magenta compared to ($h=0.000000000001$, black) leads to a loss of accuracy in the finite-difference approximation due to machine round-off error.
+:::
+
+Evanescent $h$ doesn't produce reliable results in the machine arithmetic for finite-difference derivatives, which involves subtracting two almost-identical values!
 
 ## Second and higher-order derivatives
 
@@ -161,30 +200,35 @@ There are third-order derivatives, fourth-order, and on up, although they are no
 
 To compute a second-order derivative $\partial_{xx} f(x)$, first differentiate $f(x)$ to produce $\partial_x f(x)$. Then, still using the techniques described earlier in this chapter, differentiate $\partial_x f(x)$. 
 
-There is a shortcut for constructing high-order derivatives using `D()` in a single step. On the right-hand side of the tilde expression, list the with-respect-to name repeatedly. For instance:
+There is a shortcut for constructing high-order derivatives using `D()` in a single step. On the right-hand side of the tilde expression, list the with-respect-to name repeatedly. For instance, look at the functions produced in the following active R chunks:
 
 - The second derivative $\partial_{xx} \sin(x)$:
 
-```{r}
+```{webr-r}
 D(sin(x) ~ x & x)
 ```
 
 - The third derivative $\partial_{xxx} \ln(x)$:
 
-```{r}
+```{webr-r}
 D(log(x) ~ x & x & x)
 ```
 
-::: {.example data-latex=""}
+::: {#thm-dd-for-g style="display: none;"}
+:::
+::: {.callout-note}
+## @thm-dd-for-g Constant acceleration
 Physics students learn a formula for the position of an object in free fall dropped from a height $x_0$ and at an initial velocity $v_0$:
 $$ x(t) \equiv -\frac{1}{2} g t^2 + v_0 t + x_0\ .$$
 The acceleration of the object is the second derivative $\partial_{tt} x(t)$. Use `D()` to find the object's acceleration.
 
-The second derivative of $x(t)$ with respect to $t$ is:
+The second derivative of $x(t)$ with respect to $t$ is calculated in @lst-dd-for-g. Run that code.
 
-```{r warning=FALSE}
+::: {#lst-dd-for-g}
+```{webr-r}
 D(0.5*g*t^2 + v0*t + x0 ~ t & t)
 ```
+:::
 
 The acceleration does not depend on $t$; it is the constant $g$. No wonder $g$ is called "gravitational acceleration."
 

@@ -19,10 +19,10 @@ There are other aspects of functions, introduced in @sec-concavity-intro, that a
 
 It often happens in building models that the modeler (you!) knows something about the concavity or the curvature of a function. For example, ***concavity*** is essential in classical economics; the curve for supply as a function of price is concave down while the curve for demand as a function of price is concave up. For a train, car, or plane, sideways forces depend on the curvature of the track, road, or trajectory. Road designers need to calculate the curvature to know if the road is safe at the indicated speed.
 
-It turns out that quantifying these properties of functions or shapes is naturally done by calculating derivatives.  
+It turns out that quantifying these properties of functions or shapes is naturally done by calculating second derivatives.  
 
 ::: {#thm-highway-curves  style="display: none;"}
----Concavity on the highway.
+---Designing a highway curve
 :::
 ::: {.callout-note icon=false data-latex=""}
 ## @thm-highway-curves Designing a highway curve
@@ -36,13 +36,6 @@ Real-world highway on- and off-ramps are usually not precisely sections of a cir
 *Any motor vehicle follows a transition path as it enters or leaves a circular horizontal curve. The steering change and the consequent gain or loss of centrifugal force cannot be effected instantly. For most curves the average driver can effect a suitable transition path within the limits of normal lane width. However, with combinations of high speed and sharp curvature the resultant longer transition can result in crowding and sometimes actual occupation of adjoining lanes. In such instances transition curves would be appropriate because they make it easier for a driver to confine the vehicle to his or her own lane. The employment of transition curves between tangents and sharp circular curves and between circular curves of substantially different radii warrants consideration.*
 :::
 
-::: {.column-margin}
-Remember that $f()$ is just a *pronoun* so that we can refer to a particular function without naming it. Likewise with $g()$, $h()$, etc. 
-:::
-
-We will frame the calculations in terms of a function $f(x)$. Depending on the setting, $x$ might be the price of a product and $f(x)$ the demand for that product. Alternatively, the graph of $f(x)$ might represent the path of a road drawn in $(x,y)$ coordinates or the reach of a robot arm as a function of time. 
-
-
 
 ## Concavity {#sec-concavity-deriv}
 
@@ -50,39 +43,30 @@ Recall that to find the slope of a function $f(x)$ at any input $x$, you compute
 
 Now we want to show how differentiation can quantify the concavity of a function. First, remember that when we speak of the "derivative" of a function, we mean the ***first derivative*** of the function. That full name naturally suggests that there will be a ***second derivative***, a ***third derivative***, and higher-order derivatives.
 
-@fig-changing-slope shows a simple function that is concave down.
 
-```{r echo=FALSE}
-#| label: fig-changing-slope
-#| fig-cap: "A function that is concave down."
-#| column: margin
+As introduced in @sec-fun-describing, the concavity of a function describes not the slope but the ***change in the slope***. In @fig-changing-slope2, consider the slope of the function in each of the three boxes labelled A, B, and C.  In the subdomain marked A, the function slope is positive, while in the subdomain B, the function slope is negative. This ***transition*** from the slope at A to the slope at B corresponds to the negative concavity of the function between A and B. 
+
+::: {#fig-changing-slope2}
+```{r echo=FALSE, warning=FALSE}
 fraw <- doodle_fun(~ x, seed=93872)
 f <- makeFun(fraw((x-5.5)/3) ~ x )
-slice_plot(f(x) ~ x, bounds(x=0.4:4))
-```
-
-Notice that the concavity is not about the slope. The curve in @fig-changing-slope is concave down everywhere in the domain $0 \leq x \leq 4$, but the slope is positive for $0 \leq x \leq 1$ and negative for larger $x$. Slope and concavity are two different aspects of a function.
-
-As introduced in @sec-fun-describing, the concavity of a function describes not the slope but the ***change in the slope***. @fig-changing-slope2 adds some annotations on top of the graph in @fig-changing-slope. In the subdomain marked A, the function slope is positive, while in the subdomain B, the function slope is negative. This ***transition*** from the slope at A to the slope at B corresponds to the concavity of the function between A and B. 
-
-```{r echo=FALSE, warning=FALSE}
-#| label: fig-changing-slope2
-#| fig-cap: "Concavity is about how the slope *changes* from one place in the domain to another."
-#| column: margin
 graph_with_boxes(f,
                  interval = tibble(x=c(.4, 1.5, 3),
                                    xend=c(1, 2, 3.5)),
                  bounds(x=0.4 : 4))
 ```
 
+Concavity is about how the slope *changes* from one place in the domain to another.
+:::
+
 Similarly, the function's concavity in the interval B to C reflects the ***transition*** in the instantaneous slope at B to the different instantaneous slope at C.
 
 Let's look at this using symbolic notation. Keep in mind that the function graphed is $f(x)$ while the slope is the function $\partial_x\,f(x)$. We've seen that the concavity is indicated by the change in slope of $f()$, that is, the change in $\partial_x\, f(x)$. We will go back to our standard way of describing the rate of change near an input $x$:
 
-$$\text{concavity.of.f}(x) \equiv\ \text{rate of change in}\ \partial_x\, f(x) = \partial_x [\partial_x f(x)] \\
-\\
+$$\text{concavity.of.f}(x) \equiv\ \text{rate of change in}\ \partial_x\, f(x) = $$
+$$= \partial_x \left(\strut\partial_x f(x)\right) 
 = \lim_{h\rightarrow 0}\frac{\partial_x f(x+h) - \partial_x f(x)}{h}$$
-We are defining the concavity of a function $f()$ at any input $x$ to be $\partial_x [\partial_x f(x)]$. We create the concavity_of_f(x) function by applying differentiation **twice** to the function $f()$. 
+We are defining the concavity of a function $f()$ at any input $x$ to be $\partial_x \left(\strut\partial_x f(x)\right)$. We create the concavity_of_f(x) function by applying differentiation **twice** to the function $f()$. 
 
 Such a double differentiation of a function $f(x)$ is called the ***second derivative*** of $f(x)$. The second derivative is so important in applications that it has its own compact notation:
 $$\text{second derivative of}\ f()\ \text{is written}\ \partial_{xx} f(x)$$
@@ -95,13 +79,14 @@ dx_f  <- D(   f(x) ~ x)   # First deriv. of f()
 dxx_f <- D(dx_f(x) ~ x)   # Second deriv. of f()
 ```
 
-::: {.column-margin}
+::: {.callout-tip}
+## A shortcut for second derivatives
 A notation shortcut for the two-step process above: double up on the `x` on the right-hand side of the tilde: 
+
 `dxx_f <- D(f(x) ~ x & x)`
+
+Read the `~ x & x` as "differentiate by $x$ and then once more by $x$ again."
 :::
-
-
-
 
 ## Curvature {#sec-curvature-definition}
 
@@ -109,17 +94,28 @@ As you see from @sec-concavity-deriv, it is easy to quantify the concavity of a 
 
 To illustrate, consider the square function, $f(x) \equiv x^2$. (See @fig-square34.)
 
+::: {#fig-square34}
 ```{r echo=FALSE}
-#| label: fig-square34
-#| fig-cap: "Does the concavity of the square function vary with $x$?"
-#| column: margin
 slice_plot(x^2 ~ x, bounds(x=-2:2)) %>%
   gf_labs(title="Square function")
 ```
+Does the concavity of the square function vary with $x$?
+:::
 
 The square function is concave up. Now a test: Looking at the graph of the square function, where is the concavity the largest? **Don't read on until you've pointed where you think the concavity is largest.**
 
-With the answer to the test question in mind, we can calculate the concavity of the square function using derivatives.
+-----
+
+ 
+
+*Have you decided where the concavity is largest?*
+
+ 
+
+-----
+
+
+With your answer to the test question in mind, we can calculate the concavity of the square function using derivatives.
 
 $$f(x) \equiv x^2\ \text{      so     }\ 
 \partial_x f(x) = 2 x\ \text{     and therefore     }\ \partial_{xx} f(x) = 2$$
@@ -130,10 +126,8 @@ The concavity-related property that the human eye reads from the function graph 
 
 @fig-inscribed-circles illustrates the changing curvature of $f(x) \equiv x^2$ by inscribing tangent circles at several points on the function graph, marked with dots. That the function's thin black line goes right down the middle of the broader lines used to draw the circles shows the tangency of the circle to the function graph.
 
-```{r echo=FALSE}
-#| label: fig-inscribed-circles
-#| fig-cap: "At any point on the graph of a smooth function, there is a circle tangent to the graph. The radius of this circle is $1/{\\cal K}$."
-#| fig-cap-location: margin
+::: {#fig-inscribed-circles}
+```{r echo=FALSE, warning=FALSE}
 slice_plot(x^2 ~ x, bounds(x=-2:2)) %>%
   gf_path(y ~ x, data = inscribed_circle(x^2 ~ x, 1), color="tan", size=2, alpha=0.4) %>%
   gf_path(y ~ x, data = inscribed_circle(x^2 ~ x, 0.0), color="blue", size=2, alpha=0.5) %>%
@@ -144,17 +138,48 @@ slice_plot(x^2 ~ x, bounds(x=-2:2)) %>%
   gf_refine(coord_fixed(xlim=c(-3,3), ylim=c(-1, 4)))
 ```
 
+At any point on the graph of a smooth function, there is a circle tangent to the graph. The radius of this circle is $1/{\cal K}$.
+:::
+
 Black dots along the graph at the points indicate where the function graph is tangent to the inscribed circle. The visual sign of tangency is that the function graph goes right down the circle's center.
 
 The inscribed circle at $x=0$ is tightest, the circle at $x=1$ larger and the radius of the circle at $x=-1.5$ is the largest of all. Whereas the concavity is the same at all points on the graph, the visual impression that the function is most highly curved near $x=0$ is better captured by the radius of the inscribed circle. The radius of the inscribed circle at any point is the reciprocal of a quantity ${\cal K}$ called the ***curvature***.
 
 The curvature ${\cal K}$ of a function $f(x)$ depends on both the first and second derivative. The formula for curvature $K$ is somewhat off-putting; **you are not expected to memorize it**. But you can see where $\partial x f()$ and $\partial_{xx}f()$ come into play.
 
-$${\cal K}_f  \equiv \frac{\left|\partial_{xx} f(x)\right|}{\ \ \ \ \left|1 + \left[\strut\partial_x f(x)\right]^2\right|^{3/2}}$$
+$${\cal K}_f(x)  \equiv \frac{\left|\partial_{xx} f(x)\right|}{\ \ \ \ \left|1 + \left[\strut\partial_x f(x)\right]^2\right|^{3/2}}$$
 
-Mathematically, the curvature $\cal K$ corresponds to the reciprocal of the radius of the tangent circle. When the tangent circle is tight, $\cal K$ is large. When radius of the tangent circle is large, that is, when the function is very close to approximating a straight line, $\cal K$ is very small.
+Mathematically, the curvature function $\cal K()$ corresponds to the reciprocal of the radius of the tangent circle. When the tangent circle is tight, the output of $\cal K()$ is large. When radius of the tangent circle is large, that is, when the function is very close to approximating a straight line, the output of $\cal K()$ is very small.
 
+::: {#try-curvature-of-square style="display: none;"}
+:::
+::: {.callout-important}
+## @try-curvature-of-square Calculate the curvature
 
+Calculate the curvature of the square function: $f(x) \equiv x^2$. @lst-curvature-of-square will get you started by defining some of the functions needed:
+
+<!-- K <- makeFun( abs(dx_f(x))/abs(1 + (dxx_f(x)^2))^(2/3) ~ x) -->
+
+::: {#lst-curvature-of-square}
+```{webr-r}
+f <- makeFun(x^2 ~ x)
+dx_f = D(f(x) ~ x)
+dxx_f = D(f(x) ~ x & x)
+K <- makeFun( .......  ~ x)
+slice_plot(K(x) ~ x, domain(x = -3:3))
+```
+:::
+
+Is the curvature constant as a function of $x$? 
+
+::: {.callout-tip collapse=true}
+## Hint
+The formula for $K()$ is 
+
+`abs(dx_f(x))/abs(1 + (dxx_f(x)^2))^(2/3)`.
+:::
+
+:::
 
 ::: {#thm-highway-curves2  style="display: none;"}
 ---Centripetal force on the highway
