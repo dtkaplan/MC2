@@ -131,7 +131,7 @@ Remarkably, each coefficient in the approximating polynomial involves only the c
 Now we can explain where the polynomial that started this section, $x - \frac{1}{6} x^3$ came from and why those coefficients make the polynmomial approximate the sinusoid near $x=0$.
 
 Order | $\sin(x)$ derivative | $x - \frac{1}{6}x^3$ derivative
-------|----------------------|--------------------------------   
+------|:----------------------:|:--------------------------------:   
 0   | $\sin(x) \left.{\Large\strut}\right|_{x=0} = 0$ | $\left( 1 - \frac{1}{6}x^3\right)\left.{\Large\strut}\right|_{x=0} = 0$ 
   1   | $\cos(x) \left.{\Large\strut}\right|_{x=0} = 1$ | $\left(1 - \frac{3}{6} x^2\right) \left.{\Large\strut}\right|_{x=0}= 1$
   2   | $-\sin(x) \left.{\Large\strut}\right|_{x=0} = 0$ | $\left(- \frac{6}{6} x\right) \left.{\Large\strut}\right|_{x=0} = 0$
@@ -149,7 +149,9 @@ Let's construct a 3rd-order Taylor polynomial approximation to $f(x) = e^x$ arou
 We know it will be a 3rd order polynomial:
 $$g_{\exp}(x) \equiv a_0 + a_1 x + a_2 x^2 + a_3 x^3$$
 The exponential function is particularly nice for examples because the function value and all its derivatives are identical: $e^x$. So 
+
 $$f(x= 0) = 1$$  
+
 $$ \partial_x f(x=0) = 1$$
 $$\partial_{xx} f(x=0) = 1$$
 $$\partial_{xxx} f(x=0) = 1$$ and so on.
@@ -171,19 +173,24 @@ Result: the 3rd-order Taylor polynomial approximation to the exponential at $x=0
 
 @fig-taylor-exp-3 shows the exponential function $e^x$ and its 3th-order Taylor polynomial approximation near $x=0$:
 
+::: {#fig-taylor-exp-3}
 ```{r echo=FALSE, class.source="code-hide"}
-#| label: fig-taylor-exp-3
-#| fig-cap: "The 3th-order Taylor polynomial approximation to $e^x$ arount $x=0$"
-slice_plot(exp(x) ~ x, bounds(x=c(-2,2)), size=3, alpha = 0.25) %>%
-  slice_plot(1 + x + x^2/2 + x^3/6  ~ x, color="magenta")
+slice_plot(exp(x) ~ x, domain(x=-2:2), size=3, 
+           alpha = 0.5, label_x=.99, label_text="exp(x)") |>
+  slice_plot(1 + x + x^2/2 + x^3/6  ~ x, color="magenta", 
+             label_x = 0.1, label_text="Polynomial")
 ```
+The 3th-order Taylor polynomial approximation ([magenta]{style="color: magenta;"}) to $e^x$ around $x=0$
+:::
 
 The polynomial is exact at $x=0$. The ***error*** ${\cal E}(x)$ grows with increasing distance from $x=0$:
 
-```{r echo=FALSE, class.source="code-hide", fig.show="hold"}
-#| label: fig-taylor-exp-5
-#| fig-cap: "The error from a 3rd-order Taylor polynomial approximation to $e^x$ around $x=0$ is a power-law function with exponent $4$." 
-#| out-width: "50%"
+::: {#fig-taylor-exp-5}
+```{r echo=FALSE}
+#| layout-ncol: 2
+#| fig-subcap:
+#| - linear axes
+#| - log-log scale
 Pts <- tibble(x = seq(-2, 2, length=100),
               y = exp(x),
               y_approx = 1 + x + x^2/2 + x^3/6,
@@ -196,6 +203,9 @@ gf_path(log10(y_error) ~ log10(x_abs), data = Pts, color=~sign(x)) %>%
   gf_labs(y="Log10(Error(x))") %>%
   gf_refine(scale_color_continuous(guide = 'none'))
 ```
+
+The error from a 3rd-order Taylor polynomial approximation to $e^x$ around $x=0$ is a power-law function with exponent $4$.
+:::
 
 The plot of $\log_{10} {\cal E}(x)$ versus $\log_{10} | x |$ in @fig-taylor-exp-5 shows that the error grows from zero at $x=0$ as a power-law function. Measuring the exponent of the power-law from the slope of the graph on log-log axes give ${\cal E}(x) = a |x-x_0|^5$. This is typical of Taylor polynomials: for a polynomial of degree $n$, the error will grow as a power-law with exponent $n+1$. This means that the higher is $n$, the faster $\lim_{x\rightarrow x_0}{\cal E}(x) \rightarrow 0$. On the other hand, since ${\cal E}_x$ is a power law function, as $x$ gets further from $x_0$ the error grows as $\left(x-x_0\right)^{n+1}$.
 :::
@@ -228,31 +238,34 @@ On the other hand, $\sin(0) = 0$ as well, so the sinc function evaluated at zero
 
 Still another answer is suggested by plotting out sinc($x$) near $x=0$ and reading the value off the graph: sinc(0) = 1.
 
-::: {#fig-sinc-near-zero}
-```{r}
+::: {#lst-sinc-near-zero}
+```{webr-r}
 slice_plot(sin(x) / x ~ x, domain(x=c(-10,10)), npts=500)
 ```
-To judge from this plot, $\sin(0) / 0 = 1$.
 :::
+
+To judge from the output of @lst-sinc-near-zero, $\sin(0) / 0 = 1$.
+
 
 
 The graph of sinc() looks smooth and the shape makes sense. Even if we zoom in very close to $x=0$, the graph continues to look smooth. We call such functions ***well behaved***.
 
 Compare the well-behaved sinc() to a very closely related function (which does not seem to be so important in applied work): $\frac{\sin(x)}{x^3}$.
 
-Both $\sin(x)/x$ and $\sin(x) / x^3$, evaluated at $x=0$ involve a divide by zero. Both are indeterminate forms 0/0 at $x=0$. But the graph of $\sin(x) / x^3$ (see @fig-sinc2) is not we will behaved.  $\sin(x) / x^3$ does not have any particular value at $x=0$; instead, it has an asymptote. 
+Both $\sin(x)/x$ and $\sin(x) / x^3$, evaluated at $x=0$ involve a divide by zero. Both are indeterminate forms 0/0 at $x=0$. But the graph of $\sin(x) / x^3$ (see @lst-sinc2) is not will behaved.  $\sin(x) / x^3$ does not have any particular value at $x=0$; instead, it has an asymptote. 
 
-::: {#fig-sinc2}
+::: {#lst-sinc2}
 ```{webr-r}
 slice_plot(sin(x) / x ~ x, 
-           domain(x=c(-0.1, 0.1)), npts=500) %>%
+           domain(x=c(-0.1, 0.1)), npts=500) |>
   gf_refine(scale_y_log10())
 slice_plot(sin(x) / x^3 ~ x, 
-           domain(x=c(-0.1, 0.1)), npts=500) %>%
+           domain(x=c(-0.1, 0.1)), npts=500) |>
   gf_refine(scale_y_log10())
 ```
-Zooming in around the division by zero. Top: The graph of $\sin(x)/x$ versus $x$. Bottom: The graph of $\sin(x)/x^2$. The vertical scales on the two graphs are utterly different.
 :::
+
+@lst-sinc2 zooms in around the division by zero. Top: The graph of $\sin(x)/x$ versus $x$. Bottom: The graph of $\sin(x)/x^2$. The vertical scales on the two graphs are utterly different.
 
 Since both $\sin(x)/x\left.{\Large\strut}\right|_{x=0}$ and $\sin(x)/x^3\left. {\Large\strut}\right|_{x=0}$ involve a divide-by-zero, the answer to the utterly different behavior of the two functions is not to be found at zero. Instead, it is to be found ***near*** zero. For any non-zero value of $x$, the arithmetic to evaluate the functions is straight-forward. Note that $\sin(x) / x^3$ starts its mis-behavior away from zero. The slope of $\sin(x) / x^3$ is very large near $x=0$, while the slope of $\sin(x) / x$ smoothly approaches zero.
 
@@ -281,7 +294,7 @@ Let's try this out with our two example functions around $x=0$:
 
 $$\lim_{x\rightarrow 0} \frac{\sin(x)}{x} = \frac{\lim_{x\rightarrow 0} \cos(x)}{\lim_{x \rightarrow 0} 1} = \frac{1}{1} = 1$$
 
-$$\lim_{x\rightarrow 0} \frac{\sin(x)}{x^3} = \frac{\lim_{x\rightarrow 0} \cos(x)}{\lim_{x \rightarrow 0} 3x^2} = \frac{1}{0} \ \ \text{indeterminate}!$$
+$$\lim_{x\rightarrow 0} \frac{\sin(x)}{x^3} = \frac{\lim_{x\rightarrow 0} \cos(x)}{\lim_{x \rightarrow 0} 3x^2} = \frac{1}{0} \ \ \ \ \text{Indeterminate}!$$
 
 ## Computing with indeterminate forms
 
@@ -291,12 +304,12 @@ As you've seen, modern computers have adopted a convention that simplifies progr
 
 `Inf` is the output for  the simple case of dividing zero into a non-zero number, for instance:
 
-```{r}
+```{webr-r}
 17/0
 ```
 `NaN`, standing for "not a number," is the output for more challenging cases: dividing zero into zero, or multiplying `Inf` by zero, or dividing `Inf` by `Inf`.
 
-```{r}
+```{webr-r}
 0/0
 0 * Inf
 Inf / Inf

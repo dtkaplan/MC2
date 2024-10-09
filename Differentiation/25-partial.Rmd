@@ -4,85 +4,34 @@
 source("../starter.R")
 ```
 
-We have two ways by which we represent functions:
+For a function with one input, the derivative function (with respect to that input) outputs a single quantity at each input value. We have often drawn the quantity as a sloping line. This is easy to do on the two-dimensional surface of paper or a screen.
 
-1. As a ***computational algorithm*** for generating the output from an input(s), typically involving arithmetic and such. 
-2. As a geometrical entity, specifically the graph of a function which can be a ***curve*** or, for functions of two inputs, a ***surface***.
+It would be silly to restrict our models to using functions of a single variable just so that we can show them on paper or a screen. For functions with multiple inputs, the output of the derivative function will not be a single quantity, but a *set of quantities*, one for each input. The derivative of a function of multiple inputs *with respect to only one of those inputs* is called a **partial derivative**. "Partial" is a reasonable word here, because each partial derivative gives only part of the information about the overall derivative with respect to *all of the inputs*. The set of all the partial derivatives, called the **gradient**, is a way of representing the "slope" of a function of multiple inputs.
 
-These two modes are sometimes intertwined, as when we use the name "line" to refer to a computational object: $\line(x) \equiv a x + b$.
-
-Unfortunately for functions of two inputs, a ***surface*** is hard to present in the formats that are most easily at hand: a piece of paper, a printed page, a computer screen. That isbecause a curved surface is naturally a 3-dimensional object, while paper and screens provide two-dimensional images. Consequently, the graphics mode we prefer for presenting functions of two inputs is the contour plot, which is not a single geometrical object but a set of many objects: contours, labels, colored tiles.  
-
-We've been doing calculus on functions with one input because it is so easy to exploit both the computational mode and the graphical mode. And it might fairly be taken as a basic organizing theme of calculus that  
-
-> a line segment approximates a curve in a small region around a point.
-
-When figuring out the derivative function $\partial_x f(x)$ from a graph of $f(x)$, we find the tangent to the graph at each of many input values, record the slope of the line (and throw away the intercept) and then write down the series of slopes as a function of the input, typically by representing the slope by position along the vertical axis and the corresponding input by position along the horizontal axis. @fig-segment-deriv shows the process. 
-
-```{r echo=FALSE, warning=FALSE}
-f <- doodle_fun(~ x, seed=977)
-df <- D(f(x) ~ x)
-dom = c(-3, 3)
-touches = seq(dom[1] + 0.3, dom[2] - 0.3, by = 0.25)
-Pts <- tibble(x = touches, y = f(x), dy = df(x), 
-              label=LETTERS[1:length(x)],
-              slope = df(x), slopeval = signif(slope,2),
-              slope_color = ifelse(slope < 0, "orange3", "dodgerblue"),
-              color = rainbow(length(x), start=0.6)) 
-Segments <- Pts %>%
-  mutate(xend = lag(x), y = dy, yend=lag(y))
-graph_with_tangents(f, domain=dom, 
-                    touches = touches,
-                    offsets=rep(1, length(touches))) %>%
-  gf_text(y-1 ~ x, data=Pts, color=~slope_color, label=~ slopeval) %>%
-  gf_labs(y="f(x)", title="(A) Value of function f(x)")
-```
-
-```{r echo=FALSE, warning=FALSE}
-#| label: fig-segment-deriv
-#| fig-cap: "(A) The graph of a smooth function annotated with small line segments that approximate the function locally. The color of each labeled segment corresponds to the value of $x$ for that segment. The slope of each segment is written numerically below the segment.  (B) The labeled dots show the slope of each segment from (A). The slope is encoded using vertical position (as usual) and carries over the numerical label from (A). Connecting the dots sketches out the derivative of the function in (A)."
-#| fig-cap-location: margin
-gf_point(dy ~ x, data = Pts, color = ~ color) %>%
-  gf_refine(scale_color_identity()) %>%
-  gf_segment(dy + yend ~ x + xend, data = Segments, color = ~ color) %>%
-  gf_lims(x = c(-3,3)) %>%
-  gf_text(dy ~ I(x+0.2), data=Segments, color=~slope_color, label=~ slopeval) %>%
-  gf_text(dy ~ -3, data=Segments, color=~slope_color, label=~ slopeval) %>%
-  gf_labs(y="Slope of f(x)", title="(B) Slope of f(x)") %>%
-  gf_text(I(dy+1) ~ x, data = Segments, color=~ color, label=~label)
-```
-
-Panel (A) in @fig-segment-deriv shows a smooth function $f(x)$ (thin black curve). To find the function $\partial_x f(x)$, we take the slope of $f(x)$ at many closely spaced inputs. In Panel (A), we've highlighted short, tangent line segments at the closely-spaced points labeled A through V. The slope of each tangent line segment can be calculated by the usual rise-over-run method; the numerical value of the slope is written underneath the segment. To plot the derivative $\partial_x f(x)$, I have taken the slope information from (A) and plotted it as a function of $x$. 
-
-To restate what you already know, in the neighborhood of any input value $x$, the slope of any local straight-line approximation to $f(x)$ is given by the value of of $\partial_x f(x)$. 
 
 ## Calculus on two inputs
 
-Although we use contour plots for good practical reasons, the ***graph*** of a function $g(x,y)$ with two inputs is a surface, as described in Section \@ref(surface-plot). The derivative of $g(x,y)$ should encode the information needed to approximate the surface at any input $(x,y)$. In particular, we want the derivative of $g(x,y)$ to tell us the orientation of the ***tangent plane*** to the surface.
+Although we use contour plots for good practical reasons, the ***graph*** of a function $g(x,y)$ with two inputs is a surface, as depicted in @fig-first-surface. The derivative of $g(x,y)$ should encode the information needed to approximate the surface at any input $(x,y)$. In particular, we want the derivative of $g(x,y)$ to tell us the orientation of the ***tangent plane*** to the surface.
 
 A tangent plane is infinite in extent. Let's use the word ***facet*** to refer to a little patch of the tangent plane centered at the point of contact. Each facet is flat. (it is part of a plane!) @fig-melon-facets shows some facets tangent to a familiar curved surface. No two of the facets are oriented the same way.
 
-```{r echo=FALSE}
-#| label: fig-melon-facets
-#| fig-cap: "A melon as a model of a curved surface such as the graph of a function of two inputs. Each tangent facet has its own orientation. (Disregard the slight curvature of the small pieces of paper. Summer humidity has interfered with my attempt to model a flat facet with a piece of Post-It paper!"
-#| column: margin
-knitr::include_graphics("www/tangent-planes-on-melon.png")
-```
+::: {#fig-melon-facets}
+![](www/tangent-planes-on-melon.png){width="50%"}
+
+
+A melon as a model of a curved surface such as the graph of a function of two inputs. Each tangent facet has its own orientation. (Disregard the slight curvature of the small pieces of paper. Summer humidity has interfered with my attempt to model a flat facet with a piece of Post-It paper!
+:::
 
 Better than a picture of a summer melon, pick up a hardcover book and place it on a curved surface such as a basketball. The book cover is a flat surface: a facet. The orientation of the cover will match the orientation of the surface at the point of tangency. Change the orientation of the cover and you will find that the point of tangency will change correspondingly.  
 
 If melons and basketballs are not your style, you can play the same game on an interactive graph of a function with two inputs. The snapshot below is a link to an applet that shows the graph of a function as a **blue** surface. You can specify a point on the surface by setting the value of the (x, y) input using the sliders. Display the tangent plane (which will be **green**) at that point by check-marking the "Tangent plane" input. (Acknowledgments to Alfredo Sánchez Alberca who wrote the applet using the GeoGebra math visualization system.) 
 
-``` {asis eval=knitr::is_html_output()}
-<a href="https://www.geogebra.org/m/wTh7KKd3" target="_blank"><img src="www/geogebra-tangent-app.png" width="70%"></a>
-```
- 
-```{r echo=FALSE, eval=knitr::is_latex_output()}
-#| label: fig-tangent-app
-#| fig-cap: "An interactive app for visualizing tangent planes. To open, go to <https://www.geogebra.org/m/wTh7KKd3>."
-#| fig-cap-location: margin
-knitr::include_graphics("www/geogebra-tangent-app.png")
-```
+::: {#fig-tangent-app}
+[![](www/geogebra-tangent-app2.png){width="70%"}](https://www.geogebra.org/m/wTh7KKd3)
+
+
+An interactive app for visualizing tangent planes. To open, go to <https://www.geogebra.org/m/wTh7KKd3>.or simply click on the image. You will want to mark the tangent-plane checkbox in the app to show the green tangent plane. 
+:::
 
 
 For the purposes of computation by eye, a contour graph of a surface can be easier to deal with. @fig-whole-plot shows the contour graph of a smoothly varying function. Three points have been labeled A, B, and C.  
@@ -104,58 +53,96 @@ dy <- D(g(x, y) ~ y)
 xA <- -1
 yA <- 1
 gA <- function(x, y) {g(xA, yA) + dx(xA, yA)*(x-xA) + dy(xA,yA)*(y-yA)}
-PA <- contour_plot(gA(x, y) ~ x + y, bounds(x=xA + 3*c(-.1, .1), y=yA +3*c(-.1, .1))) %>%
-  gf_text(y ~ x, data = Pts |> filter(label=="A"), label=~label, color="magenta", size=12)%>%
+PA <- contour_plot(gA(x, y) ~ x + y, bounds(x=xA + 3*c(-.1, .1), y=yA +3*c(-.1, .1))) |>
+  gradient_plot(gA(x, y) ~ x + y, domain(x=xA + 3*c(-.15, .15)/2, y=yA + 3*c(-.15, .15)/2), 
+                bounds, npts=3, color="orange3", alpha=1) |>
   gf_refine(coord_fixed())
-PzA <- contour_plot(g(x, y) ~ x + y, bounds(x=xA + 3*c(-.1, .1), y=yA +3*c(-.1, .1))) %>%
-  gf_text(y ~ x, data = Pts |> filter(label=="A"), label=~label, color="magenta", size=12)%>%
+PzA <- contour_plot(g(x, y) ~ x + y, bounds(x=xA + 3*c(-.1, .1), y=yA +3*c(-.1, .1))) |>
+  gradient_plot(g(x, y) ~ x + y, domain(x=xA + 3*c(-.15, .15)/2, y=yA +3*c(-.15, .15)/2), 
+                bounds, npts=3, color="orange3", alpha=1) |>
   gf_refine(coord_fixed())
 
 xB <- 1.5
 yB <- 1.2
 gB <- function(x, y) {g(xB, yB) + dx(xB, yB)*(x-xB) + dy(xB,yB)*(y-yB)}
-PB<-   contour_plot(gB(x, y) ~ x + y, bounds(x=c(xB-.1, xB+.1), y=c(yB-.1, yB+.1))) %>%
-  gf_text(y ~ x, data = Pts |> filter(label=="B"), label=~label, color="magenta", size=12)%>%
-  gf_refine(coord_fixed())
-PzB <- contour_plot(g(x, y) ~ x + y, bounds(x=xB + 1*c(-.1, .1), y=yB +1*c(-.1, .1))) %>%
-  gf_text(y ~ x, data = Pts |> filter(label=="B"), label=~label, color="magenta", size=12)%>%
+PB<-   contour_plot(gB(x, y) ~ x + y, bounds(x=c(xB-.25, xB+.25), y=c(yB-.25, yB+.25))) |>
+    gradient_plot(gB(x, y) ~ x + y, domain(x=xB + 1*c(-.25,.25)/2, y=yB +1*c(-.25,.25)/2), 
+                bounds, npts=3, color="orange3", alpha=1) |>
+    gf_refine(coord_fixed())
+PzB <- contour_plot(g(x, y) ~ x + y, bounds(x=xB + 1*c(-.25,.25), y=yB +1*c(-.25,.25))) |>
+  gradient_plot(g(x, y) ~ x + y, domain(x=xB + 1*c(-.25,.25)/2, y=yB +1*c(-.25,.25)/2), 
+                bounds, npts=3, color="orange3", alpha=1) |>
   gf_refine(coord_fixed())
 
 xC <- -1.7
 yC <- -1.7
 gC<- function(x, y) {g(xC, yC) + dx(xC, yC)*(x-xC) + dy(xC,yC)*(y-yC)}
-PC <- contour_plot(gC(x, y) ~ x + y, bounds(x=c(xC-.1, xC+.1), y=c(yC-.1, yC+.1))) %>%
-  gf_text(y ~ x, data = Pts |> filter(label=="C"), label=~label, color="magenta", size=12)%>%
+bounds = bounds(x=c(xC-.1, xC+.1), y=c(yC-.1, yC+.1))
+PC <- contour_plot(gC(x, y) ~ x + y, domain=bounds) |>
+  gradient_plot(gC(x, y) ~ x + y, domain(x=xC + 1*c(-.1, .1)/2, y=yC +1*c(-.1, .1)/2), 
+                bounds, npts=3, color="orange3", alpha=1) |>
   gf_refine(coord_fixed())
-PzC <- contour_plot(g(x, y) ~ x + y, bounds(x=xC + 1*c(-.1, .1), y=yC +1*c(-.1, .1))) %>%
-  gf_text(y ~ x, data = Pts |> filter(label=="C"), label=~label, color="magenta", size=12)%>%
+PzC <- contour_plot(g(x, y) ~ x + y, domain = bounds) |>
+  gradient_plot(g(x, y) ~ x + y, domain(x=xC + 1*c(-.1, .1)/2, y=yC +1*c(-.1, .1)/2), 
+                bounds, npts=3, color="orange3", alpha=1) |>
   gf_refine(coord_fixed())
 
 ```
 
+::: {#fig-whole-plot}
 ```{r echo=FALSE}
-#| label: fig-whole-plot
-#| fig-cap: "A function of 2 inputs with 3 specific inputs marked A, B, and C"
-#| fig-cap-location: margin
 P
 ```
+
+A contour plot of a function of 2 inputs with 3 specific inputs marked A, B, and C. 
+:::
 
 
 Zooming in on each of the marked points presents a simpler picture for each of them, although one that is different for each point. Each zoomed-in plot contains almost parallel, almost evenly spaced contours. If the surface had been exactly planar over the entire zoomed-in domain, the contours would be *exactly* parallel and exactly evenly spaced. We can approach such exact parallelness by zooming in more closely around the labeled point. 
 
+:::: {#fig-zoomed-plot}
+
+::: {.panel-tabset}
+## Near point A
 ```{r echo=FALSE}
-#| label: fig-zoomed-plot
-#| fig-cap: "Zooming in on the neighborhoods of A, B, and C in @fig-whole-plot shows a simple, almost planar, local landscape. The bottom row shows the contours of the tangent plane near each of the neighborhoos in the top row."
-#| column: page-right
-Pc <- PzC
-Pa <- PzA
-Pb <- PzB
-gridExtra::grid.arrange(Pa, Pb, Pc, PA, PB, PC, ncol=3)
+#| layout-ncol: 2
+#| fig-subcap: 
+#| - Actual function
+#| - Linear approximation
+PzA
+PA
 ```
 
-Just as the function $\line(x) \equiv a x + b$ describes a straight line, the function $\text{plane}(x, y) \equiv a + b x + c y$ describes a plane whose orientation is specified by the value of the parameters $b$ and $c$. (Parameter $a$ is about the vertical location of the plane, not it is orientation.) 
+## Near point B
+```{r echo=FALSE}
+#| layout-ncol: 2
+#| fig-subcap: 
+#| - Actual function
+#| - Linear approximation
+PzB
+PB
+```
 
-In the bottom row of @fig-zoomed-plot, the facets tangent to the original surface at A, B, and C are displayed. Comparing the top and bottom rows of @fig-zoomed-plot)  you can see that each facet has the same orientation as the surface; the contours face in the same way. 
+
+## Near point C
+```{r echo=FALSE}
+#| layout-ncol: 2
+#| fig-subcap: 
+#| - Actual function
+#| - Linear approximation
+PzC
+PC
+```
+
+:::
+
+
+Zooming in on the neighborhoods of points A, B, and C in @fig-whole-plot shows a simple, almost planar, local landscape. The tangent plane for each point is the linear approximation. The [brown arrows]{style="color: brown;"} are *gradient vectors*, which will be introduced in @sec-gradient-vector. 
+:::
+
+Just as the function $\line(x) \equiv a x + b$ describes a straight line, the function $\text{plane}(x, y) \equiv a + b x + c y$ describes a plane whose orientation is specified by the value of the parameters $b$ and $c$. (Parameter $a$ is about the vertical location of the plane, not its orientation.) 
+
+The linear approximation shown in each panel of @fig-zoomed-plot has the same orientation as the actual function; the contours face in the same way. 
 
 
 Remember that the point of constructing such facets is to generalize the idea of a derivative from a function of one input $f(x)$ to functions of two or more inputs such as $g(x,y)$. Just as the derivative $\partial_x f(x_0)$ reflects the ***slope*** of the *line* tangent to the graph of $f(x)$ at $x=x_0$, our plan for the "derivative" of $g(x_0,y_0)$ is to represent the ***orientation*** of the facet tangent to the graph of $g(x,y)$  at $(x=x_0, y=y_0)$. The question for us now is what information is needed to specify an orientation. 
@@ -164,53 +151,52 @@ One clue comes from the formula for a function whose graph is a plane oriented i
 
 $$\text{plane}(x,y) \equiv a + b x + cy$$
 
-::: {.callout-tip icon=false  data-latex=""}
-## R/mosaic: Orientation of a plane
-To explore the roles of the parameters $b$ and $c$ in setting the orientation of the line, open an R/mosaic session. The R/mosaic code below generates a particular instance of $\text{plane}(x,y)$ and plots it in two ways: a contour plot and a surface plot. Change the numerical values of $b$ and $c$ and observe how the orientation of the planar surface changes in the graphs. You can also see that the value of $a$ is irrelevant to the orientation of the plane, just as the intercept of a straight-line graph is irrelevant to the slope of that line.[Note: The `gf_refine(coord_fixed())` part of the contour-plot command makes numerical intervals on the horizontal and vertical axes have the same length.)]{.aside}
+::: {#try-plane-orientation style="display: none;"}
+:::
+::: {.callout-important icon=false}
+## @try-plane-orientation R/mosaic: Orientation of a plane
+To explore the roles of the parameters $b$ and $c$ in setting the orientation of the plane, use @thm-plane-orientation.  The R/mosaic code defines `plane()`, a function of two inputs whose surface graph is a planar facet. Then this facet is graphed as a contour plot. Change the numerical values of $b$ and $c$ and observe how the orientation of the planar surface changes in the graphs. 
 
+::: {#lst-plane-orientation .column-page-right}
 ```{r}
-plane <- makeFun(a + b*x + c*y ~ x + y, a = 1, b = -2.5, c = 1.6)
+plane <- makeFun(a + b*x + c*y ~ x + y, 
+                 a = 1, b = -2.5, c = 1.6)
+
 contour_plot(plane(x, y) ~ x + y, 
-             bounds(x=c(-2, 2), y=c(-2, 2))) %>%
-  gf_refine(coord_fixed())
+             domain(x=-2:2, y=-2:2)) |>
+  gradient_plot(plane(x, y) ~ x + y, domain(x=-1:1, y=-1:1), 
+                bounds, npts=3, color="orange3", alpha=1) |>
+  gf_refine(coord_fixed()) # make it look square
 ```
+:::
 
-```{r eval=FALSE}
-interactive_plot(plane(x, y) ~ x + y, 
-                 bounds(x=c(-2, 2), y=c(-2, 2)))
-```
-
-```{r echo=FALSE}
-if (knitr::is_html_output()){
-  interactive_plot(plane(x, y) ~ x + y, 
-                   bounds(x=c(-2, 2), y=c(-2, 2)))
-  } else {
-  knitr::include_graphics("www/plane-3d.png")
-}
-```
-
-As always it can be difficult to extract quantitative information from a surface plot. For the example here, you can see that the high-point on the surface is when $x$ is most negative and $y$ is most positive. Compare that to the contour plot to verify that two modes are displaying the same surface. 
+By varying $a$ while holding $b$ and $c$ constant, you can that the value of $a$ is irrelevant to the orientation of the plane, just as the intercept of a straight-line graph is irrelevant to the slope of that line. @sec-gradient-vector introduces the *gradient vector*. As a preview of things to come, we've drawn the gradient vector at each of nine positions as [brown arrows]{style="color: brown;"}.
 
 :::
 
+::: {#try-move-book style="display: none;"}
+:::
+::: {.callout-important icon=false}
+## @try-move-book Plane orientation, analog version
+
 An instructive experience is to pick up a rigid, flat object, for instance a smartphone or hardcover book. Hold the object level with pinched fingers at the mid-point of each of the short ends, as shown in @fig-hold-book (left).  
 
-```{r echo=FALSE}
-#| label: fig-hold-book
-#| fig-cap: "Combining two simple movements can tip a plane to all sorts of different orientations."
-#| fig-subcap: 
-#|   - "A level surface"
-#|   - "Rotated along the axis running top to bottom"
-#|   - "Rotated along the axis running left to right"
-#| column: page-right
-#| layout-ncol: 3
-knitr::include_graphics("www/level-book.png")
-knitr::include_graphics("www/rotated-book.png")
-knitr::include_graphics("www/tipped-book.png")
-```
-You can tip the object in one direction by raising or lowering one hand. (middle picture) And you can tip the object in the other coordinate direction by rotating the object around the line joining the points grasped by the left and right hands. (right picture) By combining these two motions, you can orient the surface of the object in a wide range of directions.^[In describing the orientation of aircraft and ships, three parameters are used: pitch, roll, and yaw. For a geometrical plane (as opposed to an aircraft or ship, which have distinct front and back ends), yaw isn't applicable.] 
+::: {#fig-hold-book layout-ncol=3}
+![(a) A level surface](www/level-book.png)
 
-The purpose of this lesson is to show that two-numbers are sufficient to dictate the orientation of a plane. In terms of @fig-hold-book these are 1) the amount that one hand is raised relative to the other and 2) the angle of rotation around the hand-to-hand axis. 
+![(b) Rotated along the axis running top to bottom](www/rotated-book.png)
+
+![(c) Rotated along the axis running left to right](www/tipped-book.png)
+
+Two orientations for tipping a planar facet (the black pad). A dog (the paw) is supervising the activity.
+:::
+
+You can tip the object in one direction by raising or lowering one hand. (panel b) You can tip the object in the other coordinate (panel c) by rotating your thumb and forefinger while keeping hand level constant. By combining these two motions, you can orient the surface of the object in a wide range of directions.
+
+Pilots or sailors know that the orientation of an object---a plane or a boat---is described by three parameter: pitch, roll, and yaw. What's different for a planar facet? It has no front or back end, unlike a plane or boat, so yaw doesn't apply. Only pitch and roll are needed to describe the orientation of the facet.
+:::
+
+The point here is to show that two-numbers are sufficient to dictate the orientation of a plane. In terms of @fig-hold-book these are 1) the amount that one hand is raised relative to the other and 2) the angle of rotation around the hand-to-hand axis. 
 
 Similarly, in the formula for a plane, the orientation is set by two numbers, $b$ and $c$ in $\text{plane}(x, y) \equiv a + b x + c y$.
 
@@ -224,12 +210,12 @@ The parameters $b$ and $c$ can be read out from the derivatives of the respectiv
 $$b = \partial_x \text{slice}_1(x)\left.\strut\right|_{x=x_0} \ \ \text{and}\ \ c=\partial_y \text{slice}_2(y)\left.\strut\right|_{y=y_0}$$
 These derivatives of slice functions are called ***partial derivatives***. The word "partial" refers to examining just one input at a time. In the above formulas, the ${\large |}_{x=x_0}$ means to evaluate the derivative at $x=x_0$ and  ${\large |}_{y=y_0}$ means something similar. 
 
-You don't need to create the slices explicitly to calculate the partial derivatives. 
+You need not create the slices explicitly to calculate the partial derivatives. 
 Simply differentiate $g(x, y)$ with respect to $x$ to get parameter $b$ and differentiate $g(x, y)$ with respect to $y$ to get parameter $c$. To demonstrate, we will make use of the ***sum*** rule:
 $$\partial_x g(x, y) = \underbrace{\partial_x a}_{=0} + \underbrace{\partial_x b x}_{=b} + \underbrace{\partial_x cy}_{=0} = b$$
 Similarly, $$\partial_y g(x, y) = \underbrace{\partial_y a}_{=0} + \underbrace{\partial_y b x}_{=0} + \underbrace{\partial_y cy}_{=c} = c$$
 
-::: {.takenote  data-latex=""}
+::: {.callout-tip}
 Get in the habit of noticing the subscript on the differentiation symbol $\partial$. When taking, for instance, $\partial_y f(x,y,z, \ldots)$, all inputs other than $y$ are to be ***held constant***. Some examples: 
 
 $$\partial_y 3 x^2 = 0\ \ \text{but}\ \ \ 
@@ -241,7 +227,7 @@ $$
 :::
 
 
-## All other things being equal ...
+## All other things being equal
 
 Recall that the derivative of a function with one input, say, $\partial_x f(x)$ tells you, at each possible value of the input $x$, how much the output will change proportional to a small change in the value of the input. 
 
@@ -251,13 +237,13 @@ With this notation, we write the first-order polynomial approximation to a funct
 Applying this notation to functions of two inputs, we have:
 $$g(x + \color{magenta}{dx}, y) = g(x,y) + \color{magenta}{\partial_x} g(x,y) \times \color{magenta}{dx}$$ and $$g(x, y+\color{brown}{dy}) = g(x,y) + \color{brown}{\partial_y} g(x,y) \times \color{brown}{dy}$$
 
-Each of these statements is about *changing one input* while *holding the other input(s) constant*. Or, as the more familiar expression goes, "The effect of changing one input  **all other things being equal** or **all other things held constant**.^[The Latin phrase for this is *ceteris paribus*, often used in economics.] 
+Each of these statements is about *changing one input* while *holding the other input(s) constant*. Or, as the more familiar expression goes, "The effect of changing one input  **all other things being equal** or **all other things held constant**. (The Latin phrase for this is *ceteris paribus*, often used in economics.)
 
 
 Everything we've said about differentiation rules applies not just to functions of one input, $f(x)$, but to functions with two or more inputs, $g(x,y)$, $h(x,y,z)$ and so on.  
 
 
-## Gradient vector
+## Gradient vector {#sec-gradient-vector}
 
 For functions of two inputs, there are two partial derivatives. For functions of three inputs, there are three partial derivatives. We can, of course, collect the partial derivatives into Cartesian coordinate form. This collection is called the ***gradient vector***. 
 
@@ -271,7 +257,6 @@ The graphics convention for drawing a gradient vector for a particular input, th
 ```{r echo=FALSE, cache=FALSE,warning=FALSE}
 #| label: fig-one-grad-arrow 
 #| fig-cap: "The gradient vector $\\nabla g(x=1,y=2)$. The vector points in the steepest uphill direction. Consequently, it is perpendicular to the contour passing through its root."
-#| fig-cap-location: margin
 graw <- doodle_fun( ~ x + y, seed=562)
 g <- makeFun(graw(x, y)  ~ x & y)
 contour_plot(g(x, y+.2) ~ x + y, bounds(x=c(-2,2), y=c(0, 4))) %>%
@@ -285,99 +270,10 @@ A ***gradient field*** (see @fig-gradient-field-A) is the value of the gradient 
 ```{r echo=FALSE, cache=FALSE, warning=FALSE}
 #| label: fig-gradient-field-A
 #| fig-cap: "A plot of the gradient field $\\nabla g(x,y)$." 
-#| fig-cap-location: margin
 contour_plot(g(x, y+.2) ~ x + y, bounds(x=-2:2, y=0:4)) %>%
   gradient_plot(g(x, y) ~ x + y, bounds(x=-2:2, y=0:4),
               color="orange3", alpha=1) %>%
   gf_refine(coord_fixed())
 ```
-
-
-## Total derivative (optional)
-
-The name "partial derivative" suggests the existence of some kind of derivative that is  not just a part, but the whole thing. The ***total derivative*** is such a whole and gratifyingly made up of its parts, that is, the partial derivatives.
-
-Suppose you are modeling the temperature of some volume of the atmosphere, given as $T(t, x, y, z)$. This merely says that the temperature depends on both time and location, something that is familiar from everyday life.
-
-The partial derivatives have an easy interpretation: $\partial_t T()$ tells how the temperature is changing over time at a given location, perhaps because of the evaporation or condensation of water vapor. $\partial_x T()$ tells how the temperature changes in the $x$ direction, and so on.
-
-The total derivative gives an overall picture of the changes in a parcel of air, which you can thnk of as a tiny balloon-like structure but without the balloon membrane. The temperature inside the "balloon" may change with time (e.g. condensation or evaporation of water), but as the ballon drifts along with the motion of the air (that is, the wind), the evolving location can change the temperature as well. Think of a balloon caught in an updraft: the temperature goes down as the balloon ascends. 
-
-For an imaginary observer located in the balloon, the temperature is changing with time. Part of this change is the instrinsic change measured by $\partial_t T$ but we need to add to that the changes induces by the evolving location of the balloon.  The partial change in temperature due to a change in altitude is $\partial_z T$, but it is important to realize that the coordinates of the location are themselves functions of time: $x(t), y(t), z(t)$. Seeing the function $T()$ for the observer in the balloon as a function of $t$, we have $T(t, x(t), y(t), z(t))$.  This is a function composition: $T()$ composed with each of $x()$, $y()$, and $z()$. Recall in the chain rule $\partial_v f(g(v)) = \partial_v f(g(v)) \partial_v g(v)$ that the derivative of the composed quantity is the product of two derivatives.
-
-Likewise, the total derivative of temperature with respect to the observer riding in the balloon will be add together the parts due to changes in time (holding position constant), x-coordinate (holding time and the other space coordinates constant), and the like. Signifying the total differentiation with a capital $D$, we have
-$$D\, T(t) = \partial_t T() + \partial_x T() \cdot\partial_t x + \partial_y T()\cdot \partial_t y + \partial_z T() \cdot\partial_t z$$
-Note that $\partial_t x$ is the velocity of the balloon in the x-direction, and similarly for the other coordinate directions. Writing these velocities as $v_x, v_y, v_z$, the total derivative for temperature of a parcel of air embedded in a moving atmosphere is
-
-$$D\ T(t) = \partial_t T + v_x\, \partial_x T + v_y\, \partial_y T + v_z\, \partial_z T$$
-Formulations like this, which put the parts of change together into a whole, are often seen in the mathematics of fluid flow as applied in meteorology and oceanology.
-
-<!-- ## Other optimization algorithms
-
-Nelder-Mead, etc.
-
-`rrr insert_calcZ_exercise("XX.XX", "kcblMf", "Exercises/pony-run-bed.Rmd")`
-
--->
-
-## Differentials {#sec-differential-skier}
-
-> *A little bit of this, a little bit of that.* --- Stevie Wonder, "The Game of Love"
-
-We have framed calculus in terms of ***functions***: transformations that take one (or more!) quantities as input and return a quantity as output. This was not the original formulation. In this section, we will use the original style to demonstrate how you can sometimes skip the step of constructing a function before differentiating to answer a question of the sort: "If this quantity changes by a little bit, how much will another, related quantity change?"
-
-As an example, consider the textbook-style problem of a water skier being pulled along the water by a rope pulled in from the top of a tower of height $H$. The skier is distance $x$ from the tower. As the rope is winched in at a constant rate, does the skier go faster or slower as she approaches the tower.
-
-```{r echo=FALSE}
-knitr::include_graphics("www/water-skier.png")
-```
-
-In the function style of approach, we can write the position function $x(t)$ with input the length of the rope $L(t)$. Using the diagram, you can see that
-$$x(t) = \sqrt{\strut L(t)^2 - H^2}\ .$$
-
-Differentiate both sides with respect to $t$ to get the velocity of the skier: $\partial_t x(t)$ through the chain rule:
-$$\underbrace{\partial_t x(t)}_{\partial_t f(g(t))} = \underbrace{\frac{1}{2\sqrt{\strut L(t)^2 - H^2}}}_{\left[ \partial_t f \right](g(t)) } \times \underbrace{\left[2 \partial_t L(t)\right]}_{\partial_t g(t)} = \frac{\partial_t L(t)}{\strut\sqrt{L(t)^2 - H^2}}$$
-
-Now to reformulate the problem without defining a function.
-
-Newton referred to "flowing quantities" or "*fluents*" and to what today is universally called derivatives as "*fluxions*." Newton did not have a notion of ***inputs*** and ***output***.^[The meaning of "output" as "to produce" dates from more than 100 years after Newton's death.]
-
-At about the same time as Newton's inventions, very similar ideas were being given very different names by mathematicians on the European continent. There, an infinitely small change in a quantity was called a "*differential*" and the differential of $x$ was denoted $dx$. 
-
-The first calculus textbook was subtitled, *Of the Calculus of Differentials*, in other words, how to calculate differentials. (See @fig-calcul-des-differences.) Section I of this 1696 text is entitled, "Where we give the rules of this calculation," those rules being recognizably the same as presented in @sec-prod-comp-rules of this book.
-
-
-
-```{r echo=FALSE}
-#| label: fig-calcul-des-differences
-#| column: margin
-#| fig-cap: "From the start of the first calculus textbook, by le marquis de l'Hôpital, 1696."
-knitr::include_graphics("www/Hopital-part-1.png")
-```
-Definition I of Section I states, 
-
-> "*We call quantities *variable* that grow or decrease continuously; and to the contrary *constant* quantities are those that remain the same while the others change. ... The infinitely small amount by which a continuous quantity increases or decreases is called the **differential**.*"
-
-The differential is not a derivative. The differential is an ***infinitely small change*** in a quantity and a derivative is a ***rate of change***. The differential of a quantity $x$ is written $dx$ in the textbook.^[A "warning" is given in the textbook that the symbol $d$ will always be used to mark the differential of a variable quantity and that $d$ will never be used to indicate a parameter.]
-
-The point of Section I of de l'Hôpital's textbook is to present the rules by which the differentials of complex quantities can be calculated. You will recognize the product rule in de l'Hôpital's notation: 
-
-```{r echo=FALSE}
-#| fig-cap: "The differential of $x\\,y$ is $y\\,dx + x\\,dy$"
-#| column: margin
-knitr::include_graphics("www/lhopitals-product-rule.png")
-```
-
-The Pythagorean theorem relates the various quantities this way: 
-
-$$L^2 = x^2 + H^2$$
-
-The differential of each side of the equation refers to "a little bit" of increase in the quantity on that side of the equation:
-$$d(L^2) = d(x^2)\ \ \ \implies\ \ \ 2 L\, dL = 2 x\, dx$$ where we've used one of the "rules" for calculating differentials. This gives us
-$$dx = \frac{L}{x} dL$$
-Think of this as a recipe for calculating $dx$. If you tell me $L$, $x$, and $dL$ then you can calculate the value of $dx$. For instance, suppose the tower is 52 feet tall and that there is $L=173$ feet of tow-rope extending to the skier. The Pythagorean theorem tells us the skier is $x=165$ feet from the base of the tower.  The rope is, let us suppose, being pulled in at the top of the tower at $dL = 10$ feet per second. How fast is $x$ changing?
-$$dx = \frac{173\ \text{ft}}{165\ \text{ft}} \times 10 \text{ft s}^{-2} = 10.05\ \text{ft s}^{-1}$$
-
-We will return to "a little bit of this" when we explore how to add up little bits to get the whole in @sec-accum-symbolic.
 
 

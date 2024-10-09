@@ -1,0 +1,51 @@
+We have two ways by which we represent functions:
+
+1. As a ***computational algorithm*** for generating the output from an input(s), typically involving arithmetic and such. 
+2. As a geometrical entity, specifically the graph of a function which can be a ***curve*** or, for functions of two inputs, a ***surface***.
+
+These two modes are sometimes intertwined, as when we use the name "line" to refer to a computational object: $\line(x) \equiv a x + b$.
+
+Unfortunately for functions of two inputs, a ***surface*** is hard to present in the formats that are most easily at hand: a piece of paper, a printed page, a computer screen. That is because a curved surface is naturally a 3-dimensional object, while paper and screens provide two-dimensional images. Consequently, in *MOSAIC Calculus* we prefer the contour plot as the  mode for presenting functions of two inputs. A contour plot is not a single geometrical object but a set of many objects: contours, labels, colored tiles.  
+
+We've been doing calculus on functions with one input because it is so easy to exploit both the computational mode and the graphical mode. And it might fairly be taken as a basic organizing theme of calculus that  
+
+> a line segment approximates a curve in a small region around a point.
+
+When figuring out the derivative function $\partial_x f(x)$ from a graph of $f(x)$, we find the tangent to the graph at each of many input values, record the slope of the line (and throw away the intercept) and then write down the series of slopes as a function of the input, typically by representing the slope by position along the vertical axis and the corresponding input by position along the horizontal axis. @fig-segment-deriv shows the process. 
+
+```{r echo=FALSE, warning=FALSE}
+f <- doodle_fun(~ x, seed=977)
+df <- D(f(x) ~ x)
+dom = c(-3, 3)
+touches = seq(dom[1] + 0.3, dom[2] - 0.3, by = 0.25)
+Pts <- tibble(x = touches, y = f(x), dy = df(x), 
+              label=LETTERS[1:length(x)],
+              slope = df(x), slopeval = signif(slope,2),
+              slope_color = ifelse(slope < 0, "orange3", "dodgerblue"),
+              color = rainbow(length(x), start=0.6)) 
+Segments <- Pts %>%
+  mutate(xend = lag(x), y = dy, yend=lag(y))
+graph_with_tangents(f, domain=dom, 
+                    touches = touches,
+                    offsets=rep(1, length(touches))) %>%
+  gf_text(y-1 ~ x, data=Pts, color=~slope_color, label=~ slopeval) %>%
+  gf_labs(y="f(x)", title="(A) Value of function f(x)")
+```
+
+```{r echo=FALSE, warning=FALSE}
+#| label: fig-segment-deriv
+#| fig-cap: "(A) The graph of a smooth function annotated with small line segments that approximate the function locally. The color of each labeled segment corresponds to the value of $x$ for that segment. The slope of each segment is written numerically below the segment.  (B) The labeled dots show the slope of each segment from (A). The slope is encoded using vertical position (as usual) and carries over the numerical label from (A). Connecting the dots sketches out the derivative of the function in (A)."
+#| fig-cap-location: margin
+gf_point(dy ~ x, data = Pts, color = ~ color) %>%
+  gf_refine(scale_color_identity()) %>%
+  gf_segment(dy + yend ~ x + xend, data = Segments, color = ~ color) %>%
+  gf_lims(x = c(-3,3)) %>%
+  gf_text(dy ~ I(x+0.2), data=Segments, color=~slope_color, label=~ slopeval) %>%
+  gf_text(dy ~ -3, data=Segments, color=~slope_color, label=~ slopeval) %>%
+  gf_labs(y="Slope of f(x)", title="(B) Slope of f(x)") %>%
+  gf_text(I(dy+1) ~ x, data = Segments, color=~ color, label=~label)
+```
+
+Panel (A) in @fig-segment-deriv shows a smooth function $f(x)$ (thin black curve). To find the function $\partial_x f(x)$, we take the slope of $f(x)$ at many closely spaced inputs. In Panel (A), we've highlighted short, tangent line segments at the closely-spaced points labeled A through V. The slope of each tangent line segment can be calculated by the usual rise-over-run method; the numerical value of the slope is written underneath the segment. To plot the derivative $\partial_x f(x)$, I have taken the slope information from (A) and plotted it as a function of $x$. 
+
+To restate what you already know, in the neighborhood of any input value $x$, the slope of any local straight-line approximation to $f(x)$ is given by the value of of $\partial_x f(x)$. 
