@@ -23,12 +23,13 @@ As a motivating example, consider the programming of robotic arms as in the vide
 
 Since this isn't a robots course, we will simplify. The arm has a resting position. When a car frame comes into place, the arm moves so that its welding electrodes are at a specific, known place in space near the car body. Then it moves in sequence to other places where a weld is required, perhaps passing through waypoints to avoid obstacles.
 
-The problem of converting the discrete list of weld and waypoints into a continuous signal for the actuator is an instance of a mathematical process called **interpolation**. In real robot arms, there are multiple joints that need to be controlled simultaneously. For our illustration, we will use a simple setup where the robot hand rolls along a set of rails in the y-direction and another x-rail running crosswise to the y direction.
+The problem of converting the discrete list of weld and waypoints into a continuous signal for the actuator is an instance of a mathematical process called **interpolation**. In real robot arms, there are multiple joints that need to be controlled simultaneously. For our illustration, we will use a simple setup (see @fig-x-y-cnc) where the robot hand rolls along a set of rails in the y-direction and another x-rail running crosswise to the y direction.
 
-```{r echo=FALSE}
-#| column: margin
-knitr::include_graphics("www/x-y-cnc.png")
-```
+::: {#fig-x-y-cnc}
+![](www/x-y-cnc.png)
+
+A CNC (Computer Numerical Control) carving machine. The cutting head (which plays the role of our "hand" in the narrative) is at the bottom of the rig mounted vertically. It can ove left-to-right along the bar labeled "XCARVE". That bar, in turn, can move to-and-fro along the two parallel panels. 
+:::
 
 
 The task for our example robot will be to visit the points shown in @fig-robot-points in order, taking 15 seconds to traverse the whole path.
@@ -36,7 +37,7 @@ The task for our example robot will be to visit the points shown in @fig-robot-p
 ```{r echo=FALSE}
 #| label: fig-robot-points
 #| fig-cap: "The waypoints on a path the robot hand is supposed to follow. All the action is taking place in roughly 1x1 meter area."
-#| fig-cap-location: margin
+#| 
 nudges <- rep(40, 16)
 nudges[c(3,12)] <- -40
 gf_path(y ~ x, data = Robot_stations, size = 2) %>%
@@ -78,7 +79,7 @@ For instance, let's look at $\partial_t y(t)$. Since $y$ is a position along the
 ```{r echo=FALSE, warning=FALSE}
 #| label: fig-y-velocity
 #| fig-cap: "Velocity versus time time along the path defined by $x(t)$ and $y(t)$ as shown in Figure @fig-piecewise-linear-path."
-#| fig-cap-location: margin
+#| 
 labels <- latex2exp::TeX(c('\\partial_t x(t)  (mm/s)', "\\partial_t y(t)  (mm/s)"))
 dt_xl <- D(xl(t) ~ t)
 dt_yl <- D(yl(t) ~ t)
@@ -110,7 +111,7 @@ As an accommodation to the physical existence of the robot hand, we've softened 
 ```{r echo=FALSE}
 #| label: fig-ramp-force
 #| fig-cap: "A smoothed x-trajectory near station 2. The position of the station is marked with a dot."
-#| fig-cap-location: margin
+#| 
 vx <- antiD(ddt_xl(t) ~ t)
 xx <- antiD(vx(t) ~ t)
 slice_plot(xx(t) + 500 ~ t, bounds(t=1.9:2.1)) |> 
@@ -135,7 +136,7 @@ The piecewise linear interpolating function is easily constructed and is shown a
 ```{r echo=FALSE}
 #| label: fig-quadratic-spline
 #| fig-cap: "Two interpolating functions of the four discrete points (orange). One is piecewise linear (dotted curve), the other is piecewise quadratic (multi-color curve)."
-#| fig-cap-location: margin
+#| 
 Pts <- tibble(
   t = 1:4,
   y = c(0, 2, 0.5, 1.7),
@@ -216,11 +217,9 @@ We will choose to have the sixth equation specify what the derivative of the int
 We can set this value to anything we like. For instance, in @fig-quadratic-spline the right-most derivative is set to zero; you can see this from the curve being flat at the right-most knot point.
 
 
-
+::: {#fig-four-quads}
 ```{r echo=FALSE}
-#| label: fig-four-quads
-#| fig-cap: "Four different $C^1$ piecewise quadratic functions that interpolate the knot points. The functions have different values of the derivative at the right end of the domain."
-#| fig-cap-location: margin
+#| layout-ncol: 2
 free_slopes <- c(-5, -1, 2, 5)
 P <- list()
 for (k in 1:4) {
@@ -237,17 +236,23 @@ for (k in 1:4) {
 gridExtra::grid.arrange(P[[1]], P[[2]], P[[3]], P[[4]], nrow=2)
 ```
 
+Four different $C^1$ piecewise quadratic functions that interpolate the knot points. The functions have different values of the derivative at the right end of the domain.
+:::
+
 Keeping in mind the piecewise nature of the interpolating polynomial, it may seem surprising that changing the slope at $t_4$ leads to a change in value of the function almost everywhere. Yet the **stiffness** of the parabolic segments means that conditions in one segment have an impact on adjacent segments. In turn, the segments adjacent to these also change, a change that percolates down to every segment in turn.
 
-::: {.rmosaic data-latex=""}
+::: {#try-quad-spline style="display: none;"}
+:::
+::: {.callout-important icon=false}
+## @try-quad-spline Splining through the robot stations
 Quadratic spline functions can be created with the R/mosaic `qspliner()` function. The second argument is a data frame giving the knot locations. The first argument is a tilde expression specifying the variables to use from the data frame.
 
-```{r results="hide"}
+```{webr-r}
 xfun <- qspliner(x ~ t, data = Robot_stations)
 yfun <- qspliner(y ~ t, data = Robot_stations)
 ```
 
-```{r echo=FALSE}
+```{webr-r}
 # evaluate the functions for 1 < t < 16
 Path <- tibble(
   t = seq(1,16,length=1000),
@@ -256,24 +261,32 @@ Path <- tibble(
 )
 ```
 
-
+::: {#fig-qspline-x}
 ```{r echo=FALSE}
-#| label: fig-qspline-x
-#| fig-cap: "A quadratic spline interpolation of the $x$-coordinates of the robot-path knots. The data hardly speak for themselves, since the interpolationg function tends to alternate between concave up and concave down in adjacent segments between the knots."
-#| fig-cap-location: margin
-slice_plot(xfun(t) ~ t, bounds(t=1:16), npts=500) %>%
-  gf_point(x ~ t, data = Robot_stations, color="orange", alpha=0.5, size=4) %>%
+xfun <- qspliner(x ~ t, data = Robot_stations)
+yfun <- qspliner(y ~ t, data = Robot_stations)
+slice_plot(xfun(t) ~ t, bounds(t=1:16), npts=500) |>
+  gf_point(x ~ t, data = Robot_stations, 
+           color="orange", alpha=0.5, size=4) |>
   gf_labs(y="x(t)")
 ```
+
+A quadratic spline interpolation of the $x$-coordinates of the robot-path knots. The data hardly speak for themselves, since the interpolationg function tends to alternate between concave up and concave down in adjacent segments between the knots.
+:::
+
 :::
 
 Putting together the $x(t)$ and $y(t)$ interpolating functions, each of which has that extremum between knot points, leads to an absurdly complicated path, as seen in @fig-quad-robot-points-quad.
 
-
+::: {#fig-quan-robot-points-quad}
 ```{r echo=FALSE}
-#| label: fig-quad-robot-points-quad
-#| fig-cap: "Connecting the robot-path knots with a piecewise quadratic polynomial, constructed to be $C^1$. The path is pretty perhaps, but absurd."
-#| fig-cap-location: margin
+xfun <- qspliner(x ~ t, data = Robot_stations)
+yfun <- qspliner(y ~ t, data = Robot_stations)
+Path <- tibble(
+  t = seq(1,16,length=1000),
+  x = xfun(t),
+  y = yfun(t)
+)
 nudges <- rep(40, 16)
 nudges[c(3,12)] <- -40
 gf_path(y ~ x, data = Path) %>%
@@ -282,6 +295,9 @@ gf_path(y ~ x, data = Path) %>%
   gf_refine(coord_fixed()) %>%
   gf_labs(x="x (mm)", y="y (mm)")
 ```
+
+Connecting the robot-path knots with a piecewise quadratic polynomial, constructed to be $C^1$. The path is pretty perhaps, but absurd.
+:::
 
 Quadratic splines are rarely used in practice. (A ***cubic spline*** provides helpful flexibility. See @sec-cubic-splines.) In @fig-qspline-x you can see one of the reasons: the quadratic form is so ***stiff*** that the interpolating function tends to shift from concave up to concave down (or vice versa) at each knot point. This results in the interpolating function tending to have a local minimum or maximum *between* adjacent knots, even if the data themselves to not indicate such a structure.
 
@@ -295,7 +311,8 @@ With the ability to match piecewise cubic polynomials to a set of knots, we can 
 
 
 
-::: {.rmosaic data-latex=""}
+::: {.callout-tip}
+## Cubic splines have smoother joints
 Cubic spline functions can be created with the R/mosaic `spliner()` function. The second argument is a data frame giving the knot locations. The first argument is a tilde expression specifying the variables to use from the data frame.
 
 ```{r results="hide"}
@@ -313,10 +330,8 @@ Path <- tibble(
 ```
 :::
 
+::: {#fig-smooth-robot-points}
 ```{r echo=FALSE}
-#| label: fig-smooth-robot-points
-#| fig-cap: "Connecting the robot-path knots with a piecewise cubic polynomial, constructed to be $C^2$. This is a much smoother  path than produced by interpolation with quadratic polynomials."
-#| fig-cap-location: margin 
 nudges <- rep(40, 16)
 nudges[c(3,12)] <- -40
 gf_path(y ~ x, data = Path) %>%
@@ -326,15 +341,20 @@ gf_path(y ~ x, data = Path) %>%
   gf_labs(x="x (mm)", y="y (mm)")
 ```
 
+Connecting the robot-path knots with a piecewise cubic polynomial, constructed to be $C^2$. This is a much smoother  path than produced by interpolation with quadratic polynomials.
+:::
 
+::: {#fig-cubic-spline-x}
 ```{r echo=FALSE}
-#| label: fig-cubic-spline-x
-#| fig-cap: "A cubic spline interpolation of the $x$-coordinates of the robot-path knots. The cubic spline respects the monotonicity of consecutive knot points."
-#| fig-cap-location: margin
 slice_plot(xfun(t) ~ t, bounds(t=1:16), npts=500) %>%
   gf_point(x ~ t, data = Robot_stations, color="orange", alpha=0.5, size=4) %>%
   gf_labs(y="x(t)")
 ```
+
+A cubic spline interpolation of the $x$-coordinates of the robot-path knots. The cubic spline respects the monotonicity of consecutive knot points.
+:::
+
+
 ::: {#thm-infinite-force style="display: none;"}
 ---Continuous second derivatives keep motion smooth.
 :::

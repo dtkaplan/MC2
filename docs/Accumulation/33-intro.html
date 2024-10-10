@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     document.body.classList.add('hypothesis-enabled');
   });
 </script>
-</head><body class="nav-sidebar floating nav-fixed slimcontent"><span class="math inline" style="display: none;">
+</head><body class="nav-sidebar floating nav-fixed"><span class="math inline" style="display: none;">
 \(\newcommand{\line}{\text{line}}
 \newcommand{\hump}{\text{hump}}
 \newcommand{\sigmoid}{\text{sigmoid}}
@@ -329,12 +329,6 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling and the scientific method</span></span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../Modeling/Modeling-projects.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Projects</span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -385,7 +379,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Differentiation/23-rules.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions (optional)</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -633,7 +627,7 @@ window.Quarto = {
 <div class="toc-actions"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Accumulation/33-intro.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../accumulation-part.html">BLOCK IV. Accumulation</a></li><li class="breadcrumb-item"><a href="../Accumulation/33-intro.html"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></a></li></ol></nav>
 <div class="quarto-title">
@@ -654,42 +648,64 @@ window.Quarto = {
 </header>
 
 
-<p>Every 10 years, starting in 1790, the US Census Bureau carries out a constitutionally mandated census: a count of the current population. The overall count as a function of year is shown in <a href="#fig-pop-graph" class="quarto-xref">Figure&nbsp;<span>34.1</span></a>. [<a href="https://en.wikipedia.org/wiki/Demographic_history_of_the_United_States">Source</a>]</p>
+<p>Every 10 years, starting in 1790, the US Census Bureau carries out a constitutionally mandated census: a count of the current population. The overall count as a function of year is shown in <a href="#fig-pop-graph" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-pop-graph</span></a>. [<a href="https://en.wikipedia.org/wiki/Demographic_history_of_the_United_States">Source</a>]</p>
 <p>In the 230 years spanned by the census data, the US population has grown 100-fold, from about 4 million in 1790 to about 330,000,000 in 2020.</p>
-<div class="cell page-columns page-full" data-layout-align="center">
-<div class="cell-output-display page-columns page-full">
-<div id="fig-pop-graph" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-fig-align="center" data-cap-location="margin">
-<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div id="fig-pop-graph" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pop-graph-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="33-intro_files/figure-html/fig-pop-graph-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+<div>
+
 </div>
-<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-pop-graph-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;34.1: US population since 1790. Left: linear axes. Right: semi-log axes
-</figcaption>
+<div class="cell quarto-layout-panel" data-layout-align="center" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="33-intro_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption>Linear scale</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="33-intro_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption>Semi-log scale</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>It is tempting to look for simple patterns in such data. Perhaps the US population has been growing exponentially. A semi-log plot of the same data suggests that the growth is only very roughly exponential. A truly exponential process would present as a curve with a constant derivative, but the derivative of the function in the graph is decreasing over the centuries.</p>
-<p>Insofar as the slope over the semi-log graph is informative, it amounts to this quantity: <span class="math display">\[\partial_t \ln(\text{pop}(t)) = \frac{\partial_t\, \text{pop}(t)}{\text{pop}}\]</span> This is the <em>per-capita</em> rate of growth, that is, the rate of change in the population divided by the population. Conventionally, this fraction is presented as a percentage: percentage growth in the population per year, as in <a href="#fig-pop-growth" class="quarto-xref">Figure&nbsp;<span>34.2</span></a>.</p>
-<div class="cell page-columns page-full" data-layout-align="center">
-<pre data-cap-location="margin"><code>## Warning: Using the `size` aesthetic with geom_line was deprecated in ggplot2 3.4.0.
-## ℹ Please use the `linewidth` aesthetic instead.</code></pre>
-<div class="cell-output-display page-columns page-full">
-<div id="fig-pop-growth" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full" data-fig-align="center" data-cap-location="margin">
-<figure class="quarto-float quarto-float-fig figure page-columns page-full">
-<div aria-describedby="fig-pop-growth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="33-intro_files/figure-html/fig-pop-growth-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
 </div>
-<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-pop-growth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pop-graph-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;34.1: US population since 1790
+</figcaption>
+</figure>
+</div>
+<p>It is tempting to look for simple patterns in such data. Perhaps the US population has been growing exponentially. A semi-log plot of the same data suggests that the growth is only very roughly exponential. A truly exponential process would present as a curve with a constant derivative, but the derivative of the function in the graph is decreasing over the centuries.</p>
+<p>Insofar as the slope over the semi-log graph is informative, it amounts to this quantity: <span class="math display">\[\partial_t \ln(\text{pop}(t)) = \frac{\partial_t\, \text{pop}(t)}{\text{pop}}\]</span> This is the <em>per-capita</em> rate of growth, that is, the rate of change in the population divided by the population. Conventionally, this fraction is presented as a percentage: percentage growth in the population per year, as in <a href="#fig-pop-growth" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-pop-growth</span></a>.</p>
+<div id="fig-pop-growth" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pop-growth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell" data-layout-align="center">
+<pre><code>## Warning: Using the `size` aesthetic with geom_line was deprecated in ggplot2 3.4.0.
+## ℹ Please use the `linewidth` aesthetic instead.</code></pre>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="33-intro_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pop-growth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;34.2: Annual per capita growth rate of the US population (percent)
 </figcaption>
 </figure>
 </div>
-</div>
-</div>
 <p>The dots in the graph are a direct calculation from the census data. There is a lot of fluctuation, but an overall trend stands out: the population growth rate has been declining since the mid-to late 1800s. The deviations from the trend are telling and correspond to historical events. There is a relatively low growth rate seen from 1860 to 1870: that is the effect of the US Civil War. The Great depression is seen in the very low growth from 1930 to 1940. Baby Boom: look at the growth from 1950-1960. The bump from 1990 to 2000? Not coincidentally, the 1990 Immigration Act substantially increased the yearly rate of immigration.</p>
-<p>If the trend in the growth rate continues, the US will reach zero net growth about 2070, then continue with negative growth. Of course, negative growth is just decline. A simple prediction from <a href="#fig-pop-growth" class="quarto-xref">Figure&nbsp;<span>34.2</span></a> is that the argmax of the US population—that is, the year that the growth rate reaches zero—will occur around 2070.</p>
+<p>If the trend in the growth rate continues, the US will reach zero net growth about 2070, then continue with negative growth. Of course, negative growth is just decline. A simple prediction from <a href="#fig-pop-growth" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-pop-growth</span></a> is that the argmax of the US population—that is, the year that the growth rate reaches zero—will occur around 2070.</p>
 <p>How large will the population be when it reaches its maximum?</p>
 <p>In Block 2, we dealt with situations where we know the function <span class="math inline">\(f(t)\)</span> and want to find the rate of change <span class="math inline">\(\partial_t f(t)\)</span>. Here, we know the rate of change of the population and we need to figure out the population itself, in other words to figure out from a known <span class="math inline">\(\partial_t f(t)\)</span> what is the unknown function <span class="math inline">\(f(t)\)</span>.</p>
 <p>The process of figuring out <span class="math inline">\(f(t) \longrightarrow \partial_t f(t)\)</span> is, of course, called <strong><em>differentiation</em></strong>. The opposite process, <span class="math inline">\(\partial_t f(t) \longrightarrow f(t)\)</span> is called <strong><em>anti-differentiation</em></strong>.</p>
@@ -703,11 +719,11 @@ Figure&nbsp;34.2: Annual per capita growth rate of the US population (percent)
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<a href="#thm-US-pop-growth" class="quarto-xref">Application area&nbsp;<span>34.1</span></a> Population growth
+<a href="#thm-US-pop-growth" class="quarto-xref">Application area&nbsp;<span class="quarto-unresolved-ref">thm-US-pop-growth</span></a> Population growth
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The predictions from the accumulate-population-growth model are shown as a <span class="math inline">\(\color{magenta}{\text{magenta}}\)</span> line in <a href="#fig-pop-prediction-bad" class="quarto-xref">Figure&nbsp;<span>34.3</span></a>.</p>
+<p>The predictions from the accumulate-population-growth model are shown as a <span class="math inline">\(\color{magenta}{\text{magenta}}\)</span> line in <a href="#fig-pop-prediction-bad" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-pop-prediction-bad</span></a>.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div id="fig-pop-prediction-bad" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -723,7 +739,7 @@ Figure&nbsp;34.3: Predicted US population based on the historical linear decline
 </div>
 </div>
 <p>According to the accumulation model, the population peaks in 2075 at 390 million. We will be back down to the present population level in about 100 years.</p>
-<p>Professional demographers make much more sophisticated models using detailed data from many sources. The demographers at the US Census Bureau predict that the population will reach a maximum of 404 million in 2060, shown by the little blue dot in <a href="#fig-pop-prediction-bad" class="quarto-xref">Figure&nbsp;<span>34.3</span></a>. that is not too different from what we got by analyzing just the raw census numbers.</p>
+<p>Professional demographers make much more sophisticated models using detailed data from many sources. The demographers at the US Census Bureau predict that the population will reach a maximum of 404 million in 2060, shown by the little blue dot in <a href="#fig-pop-prediction-bad" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-pop-prediction-bad</span></a>. that is not too different from what we got by analyzing just the raw census numbers.</p>
 </div>
 </div>
 <section id="accumulation" class="level2" data-number="34.1">

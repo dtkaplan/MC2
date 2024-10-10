@@ -12,9 +12,8 @@ Like functions, vectors can be scaled and added. In one sense, this is just a ma
 
 To scale a vector means to change its length without altering its direction. For instance, scaling by a negative number flips the vector tip-for-tail. @fig-scaling shows two vectors $\vec{v}$ and $\vec{w}$ together with several scaled versions.
 
-```{r echo=FALSE}
-#| label: fig-scaling
-#| fig-cap: "Vectors $\\vec{v}$ and $\\vec{w}$ and some scaled versions of them."
+::: {#fig-scaling}
+```{r echo=FALSE, warning=FALSE}
 Znotes::gvec(from=c(0,2), to=c(1/2, 1.5), color="magenta", label="W", where=0.5, nudge=0.2, flip=TRUE) %>%
   Znotes::gvec(from=c(0.8,1.8), to=c(1.8,0.8), color="magenta", label="2W", nudge=0.2, flip=FALSE) %>%
   Znotes::gvec(from=c(3,0.7), to=c(1.5,2.2), color="magenta", label="--3W", nudge= 0.2, flip=TRUE) %>%
@@ -26,6 +25,9 @@ Znotes::gvec(from=c(0,2), to=c(1/2, 1.5), color="magenta", label="W", where=0.5,
   gf_refine(coord_fixed(xlim=c(0,4), ylim=c(0,4))) %>%
   Znotes::graph_paper(xticks=seq(0,4,by=0.25))
 ```
+
+Vectors $\\vec{v}$ and $\\vec{w}$ and some scaled versions of them.
+:::
 
 Arithmetically, scaling a vector is accomplished by multiplying each component of the vector by the scalar, e.g.
 
@@ -40,13 +42,11 @@ The ***subspace*** associated with a single vector is the set of all possible jo
 
 To add two vectors, place them tip to tail (without changing the direction). The sum is the new vector running from the tail of the first one to the tip of the second. (@fig-add-yellow-green)
 
-```{r echo=FALSE}
-#| label: fig-add-yellow-green
-#| fig-align: "center" 
-#| out-width: "50%"
-#| fig-cap: "Adding two vectors, yellow and green, by placing them tail to tip. The result is the vector going from the tail of yellow to the tip of green. The blue vector shows this result."
-knitr::include_graphics("www/pencils/addition.png")
-```
+::: {#fig-add-yellow-green}
+![](www/pencils/addition.png){align="center" width="50%"}
+
+Adding two vectors, yellow and green, by placing them tail to tip. The result is the vector going from the tail of yellow to the tip of green. The blue vector shows this result."
+:::
 
 Adding vectors in this way takes advantage of the rootlessness of a vector. So long as we keep the direction and length the same, we can move a vector to any convenient place. For adding vectors, the convenient arrangement is to place the tail of the second vector at the tip of the first. The result---the blue pencil in @fig-add-yellow-green---runs from the first (yellow) pencil's tail to the second (green) pencil's tip. 
 
@@ -63,13 +63,11 @@ $$\underbrace{\left[\begin{array}{r}1.5\\-1\\2\\6\end{array}\right]}_\vec{v} {\L
 
 From a geometrical point of view, many people like to think of $\vec{v} - \vec{w}$ in terms of placing the two vectors **tail to tail** as in @fig-subtract-blue-from-yellow. Read the result as the vector running from the tip of $\vec{v}$ to the tip of $\vec{w}$. In @fig-subtract-blue-from-yellow, the yellow vector is $\vec{v}$ and the blue vector is $\vec{w}$. The result of the subtraction is the green vector.
 
-```{r echo=FALSE} 
-#| label: fig-subtract-blue-from-yellow 
-#| fig-align: "center"
-#| out-width: "50%" 
-#| fig-cap: "Subtracting blue from yellow gives green."
-knitr::include_graphics("www/pencils/subtraction.png")
-```
+::: {#fig-subtract-blue-from-yellow}
+![](www/pencils/subtraction.png){align="center" width="50%"}
+
+With these vectors, subtracting blue from yellow gives green.
+:::
 
 ## Linear combinations
 
@@ -77,7 +75,7 @@ Thinking of a scaled vector as a "step" of a given length in a given direction l
 
 As a fanciful example of getting to a "place," consider a treasure hunt. Here are the instructions to get there:
 
-> i. On June 1, go to the flagpole before sunrise.
+i. On June 1, go to the flagpole before sunrise.
 ii. At 6:32, walk 213 paces away from the Sun.
 iii. At 12:19, walk 126 paces toward the Sun.
 
@@ -192,13 +190,18 @@ In symbolic form, the linear combination of the columns of $\mathit{M}$ using re
 
 Naturally, the operation only makes sense if there are as many components to $\vec{w}$ as columns in $\mathit{M}$.
 
-::: {.takenote data-latex=""}
+::: {.callout-tip}
 "Matrix multiplication" might better have been called "$\mathit{M}$ linearly combined by $\vec{w}$." Nevertheless, "matrix multiplication" is the standard term for such linear combinations.
 :::
 
-::: {.rmosaic data-latex=""}
+::: {#try-making-matrices style="display: none;"}
+:::
+::: {.callout-important}
+## @try-making-matrices Making matrices
+
 In R, make vectors with the `rbind()` command, short for "bind rows," as in 
-```{r}
+
+```{webr-r}
 rbind(2, 5, -3)
 ```
 
@@ -208,35 +211,31 @@ Collect multiple vectors into a matrix with the `cbind()` command, short for "bi
 $$\mathit{A} \equiv \left[\vec{u}\ \ \vec{v}\right]\ \ \text{where}\ \ \vec{u} \equiv \left[\begin{array}{r}2\\5\\-3\end{array}\right]\ \ \text{and}\ \ \vec{v} \equiv \left[\begin{array}{r}1\\-4\\0\end{array}\right]$$
 can be constructed in R with these commands.
 
-
-
-```{r}
+```{webr-r}
 u <- rbind(2, 5, -3)
 v <- rbind(1, -4, 0)
 A <- cbind(u, v)
 A
 ```
 
-To compute the linear combination $3 \vec{u} + 1 \vec{v}$, that is, $\mathit{A} \cdot \left[\begin{array}{r}3\\1\end{array}\right]$ you use the matrix multiplication operator `%*%`. For instance, the following defines a vector $$\vec{x} \equiv \left[\begin{array}{r}3\\1\end{array}\right]$$ to do the job in a way that is  easy to read:
+To compute the linear combination $3 \vec{u} + 1 \vec{v}$, that is, $\mathit{A} \cdot \left[\begin{array}{r}3\\1\end{array}\right]$ you use the matrix multiplication operator `%*%`. For instance, the following defines a vector 
+$$\vec{x} \equiv \left[\begin{array}{r}3\\1\end{array}\right]$$ 
+to do the job in a way that is  easy to read:
 
-```{r}
+```{webr-r}
 x <- rbind(3, 1)
 A %*% x
 ```
 :::
 
-
-::: {.takenote data-latex=""}
 It is a mistake to use `*` instead of `%*%` for matrix multiplication. Remember that `*` is for **componentwise multiplication**, which is different from matrix multiplication. Componentwise multiplication with vectors and matrices will usually give an error message as with:
 
-```{r error=TRUE}
+```{webr-r}
 A * x
 ```
 
 The phrase "non-conformable arrays" is R-speak for "I do not know how to do componentwise multiplication with two incompatibly shaped objects. 
 :::
-
-
 
 ## Sub-spaces
 
@@ -252,46 +251,21 @@ As an example, consider the clubhouse that is open to any and all vectors with t
 
 Any vector can individually sponsor a subspace. In @fig-two-vecs the subspace sponsored by $\color{blue}{\vec{u}}$ is the extended line through $\color{blue}{\vec{u}}$, that is, all the possible scaled versions of $\color{blue}{\vec{u}}$. Similarly, the subspace sponsored by $\color{magenta}{\vec{v}}$ is the extended line through $\color{magenta}{\vec{v}}$. Each of these subspaces is one-dimensional.
 
-```{r child="../www/spaces-A.html", eval=knitr::is_html_output()}
-```
+::: {#fig-two-vecs}
+{{< include ../www/spaces-A.html >}}
 
-::: {.column-margin .content-visible when-format="pdf"}
-A stand-alone, interactive version of this diagram is available at <../www/spaces-A.html>.
+Two vectors $\color{blue}{\vec{u}}$ and $\color{magenta}{\vec{v}}$ embedded in 3-dimensional space. The subspace spanned by an individual vector is shown as a line. You can interact with the display with the cursor: rotating, zooming, etc.
 :::
 
-
-```{r echo=FALSE, out.width=ifelse(knitr::is_html_output(), "1%", "50%")}
-#| label: fig-two-vecs
-#| fig-cap: "Two vectors $\\color{blue}{\\vec{u}}$ and $\\color{magenta}{\\vec{v}}$ embedded in 3-dimensional space. The subspace spanned by an individual vector is shown as a line."
-if (knitr::is_html_output()) {
-  knitr::include_graphics("www/tiny-blank.png")
-} else {
-  knitr::include_graphics("www/fig-two-vecs.png")
-}
-```
 
 
 Multiple vectors can sponsor a subspace. The subspace sponsored by both $\color{blue}{\vec{u}}$ and $\color{magenta}{\vec{v}}$ contains all the vectors that can be constructed as linear combinations of $\color{blue}{\vec{u}}$ and $\color{magenta}{\vec{v}}$; the gray subspace in @fig-two-vecs-planes.
 
-```{r child="../www/spaces-C.html", eval=knitr::is_html_output()}
-```
+::: {#fig-two-vecs-planes}
+{{< include ../www/spaces-C.html >}}
 
-::: {.column-margin .content-visible when-format="pdf"}
-A stand-alone, interactive version of this diagram is available at <../www/spaces-C.html>.
+Two vectors $\vec{u}$ and $\vec{w}$. The subspace spanned by two vectors is a plane, shown here as a gray surface. You can interact with the display.
 :::
-
-
-```{r echo=FALSE, out.width=ifelse(knitr::is_html_output(), "1%", "50%")}
-#| label: fig-two-vecs-planes
-#| fig-cap: "Two vectors $\\vec{u}$ and $\\vec{w}$. The subspace spanned by two vectors is a plane, shown here as a gray surface." 
-if (knitr::is_html_output()) {
-  knitr::include_graphics("www/tiny-blank.png")
-} else {
-  knitr::include_graphics("www/fig-two-vecs-planes.png")
-}
-```
-
-
 
 On the other hand, the subspace sponsored by $\color{magenta}{\vec{v}}$ and $\color{blue}{\vec{u}}$ is not the entire clubhouse. $\color{magenta}{\vec{v}}$ and $\color{blue}{\vec{u}}$ lie in a common plane, but not all the vectors in the 3-dimensional clubhouse lied in that plane. In fact, if you rotate @fig-two-vecs-planes to "look down the barrel" of either $\color{magenta}{\vec{v}}$ or $\color{blue}{\vec{u}}$, the plane will entirely disappear from view. A subspace is an infinitesimal slice of the embedding space.
 
@@ -308,6 +282,3 @@ One can replace the pencils with line segments drawn on the card underneath each
 Notice that one can also lay a card along a *single* vector. What is different here is that the card can be rolled around the pencil while still staying in contact; there are many different orientations for such a card even while the vector stays fixed. So a single fixed vector does not uniquely determine the orientation of the planar surface in which the vector can reside. It takes two vectors to determine a unique planar surface. 
 
 
-## Exercises
-
-`r insert_exercises("linear-combinations", "linear combinations")`

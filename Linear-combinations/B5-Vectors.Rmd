@@ -43,21 +43,42 @@ A vector is a mathematical idea deeply rooted in everyday physical experience. G
 
 A pencil is a physical metaphor for a vector, but a pencil has other non-vector qualities such as diameter, color, and an eraser. And, being a physical object, a pencil has a *position* in space. 
 
-```{r echo=FALSE}
-#| label: fig-two-vectors-pencils 
-#| fig-cap: "Three pencils, but just two vectors. The yellow and blue pencils have the same length and direction, so they are the same vector. A pencil has a position, but vectors do not. The green pencil shares the same direction but has a different length, so it differs from the blue/yellow vector." 
-#| column: margin
-knitr::include_graphics("www/pencils/two-vectors.png")
-```
+:::: {.columns}
+
+::: {.column width=47%}
+
+::: {#fig-two-vectors-pencils }
+![](www/pencils/two-vectors.png)
+
+Three pencils, but just two vectors. The yellow and blue pencils have the same length and direction, so they are the same vector. A pencil has a position, but vectors do not. The green pencil shares the same direction but has a different length, so it differs from the blue/yellow vector.
+:::
+
+::::
+
+::: {.column width=6%}
+<!-- horizontal space -->
+:::
+
+::: {.column width=47%}
+
+::: {#fig-opposing-pencils}
+
+ 
+
+ 
+
+![](www/pencils/opposing-vectors.png){width=125%}
+
+Two different vectors. They have the same length and are parallel but point in opposite directions.
+:::
+
+:::
+
+::::
+
 
 A line segment has an orientation but no forward or backward direction. In contrast, a vector has a unique direction: like an arrow, one end is the ***tip*** and the other the ***tail***. In the pencil metaphor, the writing end is the tip; the eraser is the tail.
 
-```{r echo=FALSE}
-#| label: fig-opposing-pencils  
-#| fig-cap: "Two different vectors. They have the same length and are parallel but point in opposite directions." 
-#| column: margin
-knitr::include_graphics("www/pencils/opposing-vectors.png")
-```
 
 Vectors are always ***embedded*** in a ***vector space***. Our physical stand-ins for vectors, the pencils, were photographed on a tabletop: a two-dimensional space. Naturally, pencils are embedded in everyday three-dimensional space. (The tabletop is a kind of two-dimensional ***subspace*** of three-dimensional space.)
 
@@ -67,42 +88,39 @@ The gradients that we studied with partial differentiation (Chapter `r Chaps$gra
 
 Vectors often represent a change in position, that is, a ***step*** or ***displacement*** in the sense of "step to the left" or "step forward."  As we will see, constructing instructions for reaching a target is a standard mathematical task. Such instructions have a form like, "take three and a half steps along the green vector, then turn and take two steps backward along the yellow vector." An individual vector describes a step of a specific length in a particular direction. 
 
-Vectors are a practical tool to keep track of relative motion. For instance, consider the problem of finding an aircraft heading and speed to intercept another plane that is also moving. The US Navy training movie from the 1950s shows how to perform such calculations with paper and pencil.
+Vectors are a practical tool to keep track of relative motion. For instance, consider the problem of finding an aircraft heading and speed to intercept another plane that is also moving. @fig-video-navy, a US Navy training movie from the 1950s, shows how to perform such calculations with paper and pencil.
 
-::: {.column-margin}
-`r if (knitr::is_html_output()) '<iframe width="300" height="169" src="https://www.youtube.com/embed/j197C0XuNUA?start=20" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'`
+::: {#fig-video-navy}
+{{< video https://www.youtube.com/embed/j197C0XuNUA start=20 >}} 
+
+
+A 1958 US Navy training film on calculations with relative motion. Available at <https://youtu.be/j197C0XuNUA>
 :::
-
-
-```{r echo=FALSE, eval=knitr::is_latex_output()}
-#| fig-cap: "A 1958 US Navy training film on calculations with relative motion. Available at <https://youtu.be/j197C0XuNUA> "
-#| column: margin
-knitr::include_graphics("www/Navy-film.png")
-```
-
-
 
 Nowadays, the computer performs such calculations. On the computer, vectors are represented not by pencils (!) but by columns of numbers. For instance, two numbers will do for a vector embedded in two-dimensional space and three for a vector embedded in three-dimensional space. From these numbers, simple arithmetic can produce the vector magnitude and direction. 
 
 Representing a vector as a set of numbers requires the imposition of a framework: a coordinate system. In @fig-vector-graph-paper, the vector (shown by the green pencil) lies in a two-dimensional coordinate system. The two coordinates assigned to the vector are the difference between the tip and the tail along each coordinate direction. In the figure, there are 20 units horizontally and 16 units vertically, so the vector is $(20, 16)$. 
 
-```{r echo=FALSE}
-#| label: fig-vector-graph-paper
-#| fig-cap: "Representing a vector as a set of numbers requires reference to a coordinate system, shown here as graph paper." 
-#| column: margin
-knitr::include_graphics("www/pencils/graph-paper.png")
-```
+::: {#fig-vector-graph-paper}
+![](www/pencils/graph-paper.png)
+
+Representing a vector as a set of numbers requires reference to a coordinate system, shown here as graph paper.
+:::
 
 By convention, when we write a vector as a set of coordinate numbers, we write the numbers in a ***column***. For instance, the vector in @fig-vector-graph-paper, which we will call $\vec{green}$,  is written numerically as:
 
 $$\vec{green} \equiv \left[\begin{array}{c}20\\16\end{array}\right]$$
 In more advanced linear algebra, the distinction between a ***column vector*** (like $\vec{green}$) and a ***row vector*** (like $\left[20 \ 16\right]$) is important. For our purposes in this block, we need only column vectors. 
 
-::: {.rmosaic data-latex=""}
+::: {#try-rbind style="display: none;"}
+:::
+::: {.callout-important}
+## @try-rbind Creating column vectors
 Construct column vectors with the `rbind()` function, as in
 
-```{r}
+```{webr-r}
 green <- rbind(20, 16)
+green
 ```
 
 Commas separate the arguments---the coordinate numbers---in the same way as any other R function.
@@ -120,24 +138,18 @@ Living as we do in a palpably three-dimensional space and with senses and brains
 
 A lovely 1884 book, *[Flatland](https://en.wikipedia.org/wiki/Flatland)*  features the inhabitants of a two-dimensional world. The central character in the story, named Square, receives a visitor, Sphere. Sphere is from the three-dimensional world which embeds Flatland. Only with difficulty can Square assemble a conception of the totality of Sphere from the appearing, growing, and vanishing of Sphere's intersection with the flat world. (Among other things, Flatland is a parody of humanity's rigid thinking: Square's attempt to convince Sphere that his three-dimensional world might be embedded in a four-dimensional one leads to rejection and disgrace. Sphere thinks he knows everything.) 
 
-```{r echo=FALSE, eval=knitr::is_latex_output()}
-#| label: fig-flatland-video
-#| column: margin
-#| fig-cap: "A still from the movie *Flatland*. Go to <https://youtu.be/yBbZmwROv84> to see the movie."
-knitr::include_graphics("www/flatland.png")
-```
+::: {#fig-flatland-video}
+{{< video https://youtu.be/yBbZmwROv84 >}}
 
-::: {.column-margin}
-```{asis eval=knitr::is_html_output()}
-<iframe width="305" height="171" src="https://www.youtube.com/embed/yBbZmwROv84" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-```
+
+*Flatland*, a movie based on the 1884 book of the same name
 :::
 
 To use high-dimensional vectors, represent them as a column of numbers. 
 
 $$\left[\begin{array}{r}6.4\\3.0\\-2.5\\17.3\end{array}\right]\ \ \ \left[\begin{array}{r}-14.2\\-6.9\\18.0\\1.5\\-0.3\end{array}\right]\ \ \ \left[\begin{array}{r}5.3\\-9.6\\84.1\\5.7\\-11.3\\4.8\end{array}\right]\ \ \ \cdots\ \ \ \left.\left[\begin{array}{r}7.2\\-4.4\\0.6\\-4.1\\4.7\\\vdots\ \ \\-7.3\\8.3\end{array}\right]\right\} n$$
 
-Sensible people may consider it mathematical ostentation to promote simple columns of numbers into vectors in high-dimensional space. But doing so lets us draw the analogy between data and familiar geometrical concepts: lengths, angles, alignment, etc. Operations that are mysterious as a long sequence of arithmetic steps become concrete when seen as geometry.
+Sensible people may see mathematical ostentation in promoting simple columns of numbers into "vectors in high-dimensional space." But doing so lets us draw the analogy between data and familiar geometrical concepts: lengths, angles, alignment, etc. Operations that are mysterious as a long sequence of arithmetic steps become concrete when seen as geometry.
 
 There is nothing science-fiction-like about so-called "high-dimensional" spaces; they don't correspond to a physical place. Nevertheless, many-component vectors often appear in advanced physics. Famously, the Theory of Relativity involves 4-dimensional space-time. The vector representing the state of an ordinary particle contains the position and velocity, $(x, y, z, v_x, v_y, v_z)$, as well as angular velocity: nine dimensions. In statistics, engineering, and statistical mechanics, the term ***degrees of freedom*** is the preferred alternative to "dimension." Another example: computer-controlled machine tools have 5 degrees of freedom (or more). There is a cutting tool with an $x, y, z$ position and orientation. (If ever you start to freak out about the idea of a 10-dimensional space, close your eyes and remember that this is only shorthand for the set of arrays with ten elements.) 
 
@@ -175,7 +187,10 @@ i. Multiply the two vectors componentwise. For instance:
 $$\underset{\Large \vec{v}}{\left[\begin{array}{r}6\\2\\-4\\\vdots\\1\\8\end{array}\right]}\  \underset{\Large \vec{w}}{\left[\begin{array}{r}-3\\1\\-5\\\vdots\\2\\5\end{array}\right]} = \left[\begin{array}{r}-18\\2\\20\\\vdots\\2\\40 \end{array}\right]$$
 ii. Sum the elements in the componentwise product. For the component-wise product of $\vec{v}$ and $\vec{w}$, this will be $-18 + 2 + 20 + \cdots +2 + 40$. The resulting sum is an ordinary scalar quantity; a dot product takes two vectors as inputs and produces a scalar as an output.
 
-::: {.rmosaic data-latex=""}
+::: {#try-infix-notation style="display: none;"}
+:::
+::: {.callout-important}
+## @try-infix-notation Infix notation
 R/mosaic provides a beginner-friendly function for computing a dot product. To mimic the use of the dot, as in $\vec{v} \bullet \vec{w}$, the function will be invoked using ***infix notation***. You have a lot of infix notation experience, even if you have never heard the term. Some examples:
 
 ```
@@ -186,7 +201,7 @@ Infix notation is distinct from the ***functional notation*** that you are also 
 
 You can, if you like, invoke the `+`, `-`, `*`, `/`, and `^` operations using ***functional*** notation. Nobody does this because the commands are so ugly:
 
-```{r compact=TRUE}
+```{r}
 `+`(3, 2)
 `/`(7, 4)
 `-`(6, 2)
@@ -194,13 +209,13 @@ You can, if you like, invoke the `+`, `-`, `*`, `/`, and `^` operations using **
 `^`(2, 4)
 ```
 
-&nbsp;
+
 
 The R language makes it possible to define new infix operators, but there is a catch. The new operators must always have a name that begins and ends with the `%` symbol, for example, `%>%` or `%*%` or `%dot%`. 
 
 Here is an example of using `%dot%` to calculate the dot product of two vectors embedded in five-dimensional space:
 
-```{r}
+```{webr-r}
 a <- rbind(1, 2, 3, 5, 8, 13)
 b <- rbind(1, 4, 2, 3, 2, -1)
 a %dot% b
@@ -210,7 +225,7 @@ a %dot% b
 
 The vectors combined with `%dot%` must both have the same number of elements. Otherwise, an error message will result, as here:
 
-```{r error=TRUE}
+```{webr-r}
 rbind(2, 1) %dot% rbind(3, 4, 5)
 ```
 

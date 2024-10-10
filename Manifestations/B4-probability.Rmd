@@ -10,10 +10,11 @@ You may well have had some textbook exposure to ***probability*** as an intellec
 
 In this chapter, we will use two basic *imagined* settings where uncertainty comes into play: the risk of disease before the disease is diagnosed and the safety of a self-driving car as it comes out of the factory. The word "imagined" signals that you should not draw conclusions about the facts of any particular disease or any particular self-driving car; we are merely using the imagined settings to lay out concepts and methods for the mathematical presentation and analysis of uncertainty and risk. Of particular importance will be the mathematical means by which we represent our knowledge or belief in these settings and the way we can properly update our knowledge/belief as new information becomes available.
 
-::: {.takenote data-latex=""}
+::: {.callout-tip}
+## Definitions: Probability function names
 The calculus of probability and data introduces an additional convention for describing and naming functions. Throughout this book, the names have reflected the "shape" of the function---exponential, sinusoidal, sigmoid, etc.---or the route by which the function was constructed, e.g. differentiation, anti-differentiation, inversion. Probability calculations involve not only the shapes of functions but also the properties mandated by the role each function plays in the calculation. An analogy is the assembly of an automobile out of different kinds of components: wheels, motors, body, and so on. You cannot put a wheel where the motor should go and produce a proper automobile. All motors play the same sort of role in the function of an automobile, but they can have different "shapes" such as gasoline, diesel, or electric. 
 
-To understand how cars are built, you have to be able easily to distinguish between the different kinds of components. This is second nature to you because you have so much experience with automobiles. Likewise, to understand the probability calculations, you will have to master the distinctions between the roles functions play in a calculation. In this chapter you will see ***probability density functions*** as well as ***likelihood functions*** and ***prior functions*** and ***posterior functions*** and some others. As you get started, you will confuse these roles for functions with one another, just as a newborn child can confuse "wheel" with "motor" until experience is gained. 
+To understand how cars are built, you have to be able easily to distinguish between the different kinds of components. This is second nature to you because you have so much experience with automobiles. Likewise, to understand the probability calculations, you will have to master the distinctions between the roles functions play in a calculation. In this chapter you will see ***probability density functions*** and ***relative density functions*** as well as ***likelihood functions*** and ***prior functions*** and ***posterior functions*** and some others. As you get started, you will confuse these roles for functions with one another, just as a newborn child can confuse "wheel" with "motor" until experience is gained. 
 
 Make sure to note the role-labels given to the functions you are about to encounter. We will start with probability density functions.
 :::
@@ -43,36 +44,39 @@ The probability that the dart lands at a distance somewhere between $a$ and $b$ 
 Since $r$ is a distance, the dimension $[r] =\ $L.  Suppose the units of $r$ are centimeters. We need $\int g(r) dr$ to be a dimensionless number. Since the dimension of the integral is $[r] \cdot [g(r)] = [1]$, it must be that $[g(r)] = [1/r] = \text{L}^{-1}$. Thus, $g(r)$ is not a probability simply because it is not dimensionless. Instead, in the dart example, it is a "probability-per-centimeter." This kind of quantity---probability *per something*---is called a ***probability density*** and $g(r)$ itself is a ***probability density function***.  
 
 To show the aptness of the word "density," let's switch to a graphic of a function that uses literal density of ink as the indicator of the function value. @fig-dart-g) shows what the dart toss's $g(r)$ probability density function might look like:
+
+::: {#fig-dart-g}
 ```{r echo=FALSE, warning=FALSE}
-#| label: fig-dart-g
-#| fig-cap: "Showing a probability density function for the dart distance in two modes: 1) an ordinary function graph and 2) the density of ink."
 dat <- tibble(x=rchisq(1000, df=4))
 
 P1 <-  gf_point(0.10 ~ x, data = dat,## draw horizontal lines instead of points
     shape = 124,
     size = 70,
     alpha = .01
-  ) %>%
+  ) |>
   gf_lims(x=c(0,20)) |> 
-  gf_labs(x="", y="") %>%
+  gf_labs(x="", y="") |>
   gf_refine(scale_y_continuous(breaks = .10, labels="        "))  +
   theme(panel.background = element_blank())
 P2 <- slice_plot(dchisq(x, df=4) ~ x, 
-             bounds(x=0:20), color="magenta") |> 
-  gf_lims(x=c(0,20)) %>%
+             domain(x=0:20), color="magenta") |> 
+  gf_lims(x=c(0,20)) |>
   gf_labs(x="Distance from center of bullseye (cm)", 
           y="Probability density (1/cm)") +
   theme(panel.background = element_blank())
 gridExtra::grid.arrange(P1, P2, heights=c(4,5), ncol=1)
 ```
 
-::: {.example data-latex=""} 
+Showing a probability density function for the dart distance in two modes: 1) an ordinary function graph and 2) the density of ink.
+:::
+
+::: {#thm-jar-of-money style="display: none;"}
+:::
+::: {.callout-note}
+## @thm-jar-of-money Winning a competition
 Consider a simple competition of the sort you might encounter at a fund-raising fair. There is a jar on display, filled with coins that have been donated by one of the fair's sponsors. You pay $1 (which goes to a good cause) to enter the contest. Your play is to describe how much money is in the jar, writing your description down along with your name on an entry form. At the end of the day, an official will open the jar, count the money, and announce who made the best estimate. The winner gets the money in the jar.
 
-```{r echo=FALSE}
-#| column: margin
-knitr::include_graphics("www/jar-coins.png")
-```
+![](www/jar-coins.png){align="center"}
 
 In the usual way these contests are run, the contestants each write down a guess for the amount they think is in the jar, say $18.63. The winner is determined by seeing whose guess was closest to the actual value of the coins in the jar.
 
@@ -80,12 +84,10 @@ In reality, hardly anyone believes they can estimate the amount in the jar to th
 
 In our more mathematical contest, we ask the participants to specify a function that describes their beliefs about the money in the jar. The instructions state,  "On the graph-paper axes below, sketch a continuous function expressing your best belief about how much money is in the jar. The only requirement is that the function value must be zero or greater for all inputs."
 
+::: {#fig-coin-graph-paper}
 ```{r echo=FALSE, warning=FALSE}
-#| label: fig-coin-graph-paper
-#| fig-cap: "The entry form for the money-in-the-jar contest."
-#| column: margin
 Money_graph <-
-  gf_point(cyl ~ mpg, alpha=0, data = mtcars) %>%
+  gf_point(cyl ~ mpg, alpha=0, data = mtcars) |>
   gf_refine(
     scale_x_continuous(
       limits = c(0,100),
@@ -94,36 +96,42 @@ Money_graph <-
       labels = c("0", "$25", "$50", "$75",  "$100")),
     scale_y_continuous(
       limits = c(0,5), breaks=0
-    )) %>%
+    )) |>
   gf_labs(x="Money in the jar", y = "Function output")
 Money_graph |> gf_labs(title="Name: _______________")
 ```
 
+The entry form for the money-in-the-jar contest.
+:::
+
 Take a minute to look at the picture of the jar and draw your function on the axes shown above. Think about why the contest form appropriately does not ask you to scale the vertical axis. 
+:::
 
-Here are contest entries from three competitors. 
+@fig-contest-entries shows the contest entries from three competitors. 
 
+::: {#fig-contest-entries}
 ```{r echo=FALSE, warning=FALSE, message=FALSE} 
-#| label: fig-contest-entries
-#| fig-cap: "Three contestants' contest entries."
-P1 <- Money_graph |> gf_labs(title="Name: Johnny") %>%
+P1 <- Money_graph |> gf_labs(title="Name: Johnny") |>
   slice_plot(ifelse(mpg > 22 & mpg < 30, 5, 0) ~ mpg, 
-             bounds(mpg = 0:100), size=1, npts=300) %>%
-  gf_labs(y = "") |>
-  # gf_vline(xintercept=~32, color="brown", alpha=0.3) %>%
+             domain(mpg = 0:100), size=1, npts=300) |>
+  gf_labs(y = "", x = "") |>
+  # gf_vline(xintercept=~32, color="brown", alpha=0.3) |>
   gf_theme(plot.title = element_text(colour = "magenta") )
-P2 <- Money_graph |> gf_labs(title="Name: Louisa") %>%
-  slice_plot(5 ~ x, bounds(x=0:100), size=1, color="orange") %>%
-  gf_lims(y=c(0,7)) %>%
-  # gf_vline(xintercept=~32, color="brown", alpha=0.3) %>%
-  gf_theme(plot.title = element_text(colour = "orange") )
-P3 <- Money_graph |> gf_labs(title="Name: Geoff") %>%
-  slice_plot(40*dnorm(x, 35, 5) ~ x, bounds(x=0:100), size=1, color="magenta") %>%
-  gf_labs(y = "") |>
-  # gf_vline(xintercept=~32, color="brown", alpha=0.3) %>%
+P2 <- Money_graph |> gf_labs(title="Name: Louisa") |>
+  slice_plot(5 ~ x, domain(x=0:100), size=1, color="orange") |>
+  gf_labs(x = "") |>
+  # gf_vline(xintercept=~32, color="brown", alpha=0.3) |>
+  gf_theme(plot.title = element_text(colour = "orange") ) +
+  scale_y_continuous(limits=c(0,7), breaks=0)
+P3 <- Money_graph |> gf_labs(title="Name: Geoff") |>
+  slice_plot(40*dnorm(x, 35, 5) ~ x, domain(x=0:100), size=1, color="magenta") |>
+  gf_labs(y = "", ) |>
+  # gf_vline(xintercept=~32, color="brown", alpha=0.3) |>
   gf_theme(plot.title = element_text(colour = "magenta") )
 gridExtra::grid.arrange(P1, P2, P3, nrow=3)
 ```
+
+Three contestants' contest entries.
 :::
 
 The functions called for by the contest instructions are ***relative  density*** functions. The "relative" means that the function indicates where the probability is more or less dense, but the function has not yet been scaled to be a probability density function. Suppose $h(x)$ is a relative density function such that
@@ -136,10 +144,10 @@ A relative density function is entirely adequate for describing the distribution
 #| fig-cap: "Comparing the contest entries by normalizing each of them to a probability density function."
 Jar_functions <- 
   slice_plot(ifelse(x > 22 & x < 30, 1/8, 0) ~ x, 
-             bounds(x = 0:100), size=1, npts=300) %>%
-  slice_plot(dnorm(x, 35, 5) ~ x, bounds(x=0:100), 
-             size=.8, color="magenta", npts=300, alpha=0.8) %>%
-  slice_plot(0.01 ~ x, bounds(x=0:100), size=1, color="orange") %>%
+             domain(x = 0:100), size=1, npts=300) |>
+  slice_plot(dnorm(x, 35, 5) ~ x, domain(x=0:100), 
+             size=.8, color="magenta", npts=300, alpha=0.8) |>
+  slice_plot(0.01 ~ x, domain(x=0:100), size=1, color="orange") |>
   gf_refine(
     scale_x_continuous(
       limits = c(0,100),
@@ -148,8 +156,8 @@ Jar_functions <-
       labels = c("0", "$25", "$50", "$75",  "$100")),
     scale_color_manual(name='Contestants:',
                      breaks=c('Johnny', 'Louisa', 'Geoff'),
-                     values=c('Johnny'='black', 'Louisa'='orange', 'Geoff'='magenta'))) %>%
-  gf_theme(legend.position=c(0.6, 0.75)) %>%
+                     values=c('Johnny'='black', 'Louisa'='orange', 'Geoff'='magenta'))) |>
+  gf_theme(legend.position=c(0.6, 0.75)) |>
   gf_labs(y="Probability Density", x="Money in the jar")
 Jar_functions
 ```
@@ -164,28 +172,26 @@ Three commonly used families of probability density functions are:
 
 @fig-three-density-funs shows their shapes.
 
+::: {#fig-three-density-funs .column-page-right}
 ```{r echo=FALSE}
-#| label: fig-three-density-funs
-#| fig-cap: "Three probability density functions that are often used in applied work." 
-#| column: page-right
 #| layout-ncol: 3
 #| fig-subcap: 
-#|   - "Uniform density"
 #|   - "Gaussian density"
 #|   - "Exponential density"
+#|   - "Uniform density"
 First = tibble(x=seq(-.5,1, by=0.01),
                 bottom = 0, 
                 top = 1/1.5)
-P3 <- slice_plot(ifelse(x < 1 & x>-.5, 1/1.5, 0) ~ x, bounds(x=-2:2.5), npts=301,
-           singularities = c(-.5, 1)) %>%
+P3 <- slice_plot(ifelse(x < 1 & x>-.5, 1/1.5, 0) ~ x, domain(x=-2:2.5), npts=301,
+           singularities = c(-.5, 1)) |>
   gf_refine(scale_x_continuous(breaks = c(-.5, 1), labels=c("a","b")),
             scale_y_continuous(
               breaks=c(0, 0.2, 0.4, 0.6, 0.666), 
               labels = c("0", "0.2", "0.4", "0.6", "2/3"),
-              limits=c(0,.8))) %>%
-  gf_labs(y="") %>%
+              limits=c(0,.8))) |>
+  gf_labs(y="") |>
     gf_ribbon(bottom + top ~ x, data = First, 
-            color=NA, fill="orange", alpha=0.2, inherit=FALSE) %>%
+            color=NA, fill="orange", alpha=0.2, inherit=FALSE) |>
   gf_text(.3 ~ .25, label= "100%", color="orange", inherit=FALSE)
 
 First = tibble(x=seq(0,4, by=0.01),
@@ -203,17 +209,17 @@ Labels = tibble(
   label=c("34.13%", "13.59%", "2.14%", "0.135% -->"),
   color=c("magenta", "orange", "brown", "blue")
 )
-P1 <- slice_plot(dnorm(x, 0, 4) ~ x, bounds(x=-15:17)) %>%
+P1 <- slice_plot(dnorm(x, 0, 4) ~ x, domain(x=-15:17)) |>
   gf_refine(scale_x_continuous(breaks=c(-12, -8, -4, 0, 4, 8, 12, 16),
                                labels = c("-3sd", "-2sd", "-1sd", "mean", "1sd", "2sd", "3sd", "4sd")),
-            scale_color_identity()) %>%
-  gf_labs(y="") %>%
+            scale_color_identity()) |>
+  gf_labs(y="") |>
   gf_ribbon(bottom + top ~ x, data = First, 
-            color=NA, fill="magenta", alpha=0.2, inherit=FALSE) %>%
+            color=NA, fill="magenta", alpha=0.2, inherit=FALSE) |>
   gf_ribbon(bottom + top ~ x, data = Second, 
-            color=NA, fill="orange", alpha=0.2, inherit=FALSE) %>%
+            color=NA, fill="orange", alpha=0.2, inherit=FALSE) |>
   gf_ribbon(bottom + top ~ x, data = Third, 
-            color=NA, fill="brown", alpha=0.2, inherit=FALSE) %>%
+            color=NA, fill="brown", alpha=0.2, inherit=FALSE) |>
   gf_text(y ~ x, data = Labels, label=~label, color=~ color, inherit=FALSE)
 
 First = tibble(x=seq(0,1, by=0.01),
@@ -228,17 +234,17 @@ Labels = tibble(
   label=c("63.2%", "36.8% -->"),
   color=c("magenta", "orange")
 )
-P2 <- slice_plot(dexp(x) ~ x, bounds(x=0:5)) %>%
+P2 <- slice_plot(dexp(x) ~ x, domain(x=0:5)) |>
   gf_refine(scale_x_continuous(breaks=c(0, 1, 2, 3, 4),
                                labels = c("0", "1/k", "2/k", "3/k", "4/k")),
             scale_y_continuous(breaks = c(0, .25, .5, .75, 1),
                                labels = c(0, "k/4", "k/2", "3k/4", "k")),
-            scale_color_identity()) %>%
-  gf_labs(y="probability density", subtitle="Exponential distribution") %>%
+            scale_color_identity()) |>
+  gf_labs(y="probability density") |>
   gf_ribbon(bottom + top ~ x, data = First, 
-            color=NA, fill="magenta", alpha=0.2, inherit=FALSE) %>%
+            color=NA, fill="magenta", alpha=0.2, inherit=FALSE) |>
   gf_ribbon(bottom + top ~ x, data = Second, 
-            color=NA, fill="orange", alpha=0.2, inherit=FALSE) %>%
+            color=NA, fill="orange", alpha=0.2, inherit=FALSE) |>
   gf_text(y ~ x, data = Labels, label=~label, color=~ color, inherit=FALSE)
 
 #gridExtra::grid.arrange(P1, P2, P3, ncol=1)
@@ -246,6 +252,9 @@ P1
 P2
 P3
 ```
+
+Three probability density functions that are often used in applied work.
+:::
 
 The ***uniform density function***, $u(x, a, b)$ is more or less the equivalent of the constant function. The family has two parameters $a$ and $b$ with the function defined as:
 $$\text{unif}(x, a, b) \equiv \left\{\begin{array}{cl}\frac{1}{b-a} & \text{for}\ a \leq x \leq b\\0& \text{otherwise} \end{array}\right.$$
@@ -274,10 +283,14 @@ Why are you using square braces $\left[\strut\ \ \right]$ rather than parenthese
 We always used parentheses to indicate that the enclosed quantity is the input to a function. But $\mathbb{E}\!\left[{\strut} x\right]$ is not a function, let alone a function of $x$. Instead, $\mathbb{E}\!\left[{\strut} x\right]$ is a numerical summary of a probability density function $f(x)$.
 :::
 
-::: {.example data-latex=""}
+::: {#try-gaussian-integrate style="display: none;"}
+:::
+::: {.callout-important}
+## @try-gaussian-integrate Computing expected value
+
 Find the expected value of the gaussian probability density $\dnorm(x, \text{mean}=6.3, \text{sd}= 17.5)$. Using the R/mosaic `Integrate()` function, we have
-```{r}
-Integrate(x * dnorm(x, 6.3, 17.5) ~ x, bounds(x=-Inf:Inf))
+```{webr-r}
+Integrate(x * dnorm(x, 6.3, 17.5) ~ x, domain(x=-Inf:Inf))
 ```
 The expected value of a gaussian is the same as the parameter called mean which describes the argmax of the gaussian.
 :::
@@ -287,12 +300,15 @@ Another important quantity to describe data or probability distributions is the 
 $$\mathbb{E}\!\left[{\large\strut} (x - \mathbb{E}[x])^2\right] = \int_{-\infty}^{\infty} \left(\strut x - \text{mean}\right)^2\, \dnorm(x, \text{mean}, \text{sd})\, dx\ .$$
 
 
-::: {.example data-latex=""}
+::: {#try-gaussian-variance style="display: none;"}
+:::
+::: {.callout-important}
+## @try-gaussian-variance Computing variance
 Compute the variance of a gaussian probability density $\dnorm(x, \text{mean}=6.3, \text{sd}= 17.5)$. 
 
 To do this, we must first know the mean, then we can carry out the integration.
-```{r}
-Integrate((x-6.3)^2 * dnorm(x, mean=6.3, sd=17.5) ~ x, bounds(x=-Inf:Inf))
+```{webr-r}
+Integrate((x-6.3)^2 * dnorm(x, mean=6.3, sd=17.5) ~ x, domain(x=-Inf:Inf))
 ```
 Again, you might have anticipated this result, since the variance is the square of the standard deviation (`sd`) and we were using a particular gaussian distribution with sd equaling 17.5. Of course, $17.5^2 = 306.25$.
 :::
@@ -301,14 +317,15 @@ Again, you might have anticipated this result, since the variance is the square 
 
 To illustrate the calculations in another setting, we will use an exponential probability function. Just as the R function `dnorm()` gives the density of the "normal"/gaussian distribution, the R function `dexp()` outputs the density of the exponential distribution. We used $k$ as the parameter in the exponential distribution. In R, the parameter is framed in terms of the `rate` at which events happen, that is, the expected number of events per unit time. For instance, the following integrals compute the mean and standard deviation of an exponential process where events happen on average twice per time unit.
 
-```{r}
-Integrate(x * dexp(x, rate=2) ~ x, bounds(x=0:Inf))
+```{webr-r}
+Integrate(x * dexp(x, rate=2) ~ x, domain(x=0:Inf))
 ```
+
 The result shouldn't surprise you. If events are occurring on average twice per unit time, the average time between events should be 0.5 time units.
 
 Here's the variance of the same distribution
-```{r}
-Integrate((x-0.5)^2 * dexp(x, rate=2) ~ x, bounds(x=0:Inf))
+```{webr-r}
+Integrate((x-0.5)^2 * dexp(x, rate=2) ~ x, domain(x=0:Inf))
 ```
 It works out that for an exponential distribution with parameter $k$, the mean is $1/k$ and the standard deviation (square root of the variance) is also $1/k$.
 
@@ -322,12 +339,17 @@ For the variance,
 & =\frac{5^3}{30} - \frac{(-5)^3}{30} = \frac{125}{30} - \frac{-125}{30} = 8 \tiny{\frac{1}{3}}
 \end{eqnarray}
 
-Or, numerically^[Numerical integrals from $-\infty$ to $\infty$ of functions that are zero almost everywhere are challenging. The computer has to figure out where, out of the whole number line, the function has non-zero output. We've given the computer a head start by using 0 in the limits of integration. This would not be a problem for the exponential or gaussian distribution, which are non-zero everywhere (for the gaussian) or for half the number line (for the exponential).]
+Or, numerically
 
-```{r}
-Integrate(x * dunif(x, 0, 10) ~ x, bounds(x=0:Inf))
-Integrate((x-5)^2 * dunif(x, 0, 10) ~ x, bounds(x=0:Inf))
+```{webr-r}
+Integrate(x * dunif(x, 0, 10) ~ x, domain(x=0:Inf))
+Integrate((x-5)^2 * dunif(x, 0, 10) ~ x, domain(x=0:Inf))
 ```
+
+::: {.callout-tip}
+## Where to look first on an infinite domain?
+Numerical integrals from $-\infty$ to $\infty$ of functions that are zero almost everywhere are challenging. The computer has to figure out where, out of the whole number line, the function has non-zero output. We've given the computer a head start by using 0 in the limits of integration. This would not be a problem for the exponential or gaussian distribution, which are non-zero everywhere (for the gaussian) or for half the number line (for the exponential).
+:::
 
 ## Likelihood and data
 
@@ -353,7 +375,8 @@ There are many likelihood functions that might be relevant to the money-in-jar s
 
 This notation of naming functions using a subscript can get awkward when there are a huge number of functions. For instance, for the money-in-jar contest there will be a likelihood function for $0.01, $0.02, $0.03, and all other possibilities such as $21.83 or $47.06$. If we want to be able to refer to the whole set of likelihood functions, better to replace the dollar amount in the subscript with a symbol, say $m$ for money. Then the whole set of likelihood functions potentially relevant to the contest would be written ${\cal L}_m(\text{contestant})$.
 
-::: {.takenote data-latex=""}
+::: {.callout-tip}
+## Notation styles
 There is another style for notation that you may encounter in your future work. In the alternative style, for example, instead of ${\cal L}_m(\text{contestant})$ the likelihood function would be written ${\cal L}(\text{contestant}\, {\mathbf |} m )$. The vertical bar is pronounced "given" and is part of a notational system often used in probability calculations.
 :::
 
@@ -367,13 +390,16 @@ To illustrate, let's return to the jar-of-money contest and the three competitor
 ```{r echo=FALSE}
 #| label: fig-jar_functions2 
 #| fig-cap: "The contest entries shown in @fig-contest-compare."
-Jar_functions %>%
+Jar_functions |>
   gf_vline(xintercept=~32.14, color= "brown", alpha=0.6) 
 ```
 
 The functions shown in the Figure are **not** likelihood functions. But we can use them to construct whatever likelihood function turns out to be relevant in the money-in-jar contest.
 
-::: {.example data-latex=""}
+::: {#thm-who-won style="display: none;"}
+:::
+::: {.callout-note}
+## @thm-who-won Who won? (Bayesian style)
 It is time to calculate who won the jar-of-coins contest! That is, we will calculate whose entry is best. The word "best" should remind you of optimization and indeed the winner of the contest will be the argmax of the relevant likelihood function. At this point, remember that the likelihood functions are ${\cal L}_m(\text{contestant})$, so the argmax will be one of the contestants!
 
 First, we need to pick the relevant likelihood function. Common sense tells us that you can only pick a winner when the jar has been opened and the money counted. That is, we need some data. 
@@ -418,20 +444,20 @@ prior_A <- makeFun(dbeta(x, .5, 5) ~ x)
 prior_B <- makeFun(dbeta(x, 1, 1) ~ x)
 prior_C <- makeFun(dbeta(x, 1.3, 5) ~ x)
 
-P1 <- slice_plot(prior_A(x) ~ x, bounds(x=-.1:1.1), npts=501) %>%
+P1 <- slice_plot(prior_A(x) ~ x, domain(x=-.1:1.1), npts=501) |>
   gf_labs(title = "(A)", x="",
-          y="Relative density") %>%
+          y="Relative density") |>
   gf_refine(scale_x_continuous(breaks=c(0,.5,1), labels=c("0", "50%", "100%")),
             scale_y_continuous(breaks=0))
-P2 <- slice_plot(prior_B(x) ~ x, bounds(x=-.1:1.1), npts=501) %>%
+P2 <- slice_plot(prior_B(x) ~ x, domain(x=-.1:1.1), npts=501) |>
   gf_labs(title = "(B)", x="Risk of disease (R).",
-          y="") %>%
+          y="") |>
   gf_refine(scale_x_continuous(breaks=c(0,.5,1), labels=c("0", "50%", "100%")),
             scale_y_continuous(breaks=0))
 
-P3 <- slice_plot(prior_C(x) ~ x, bounds(x=-.1:1.1), npts=501) %>%
+P3 <- slice_plot(prior_C(x) ~ x, domain(x=-.1:1.1), npts=501) |>
   gf_labs(title = "(C)", x="",
-          y="") %>%
+          y="") |>
   gf_refine(scale_x_continuous(breaks=c(0,.5,1), labels=c("0", "50%", "100%")),
             scale_y_continuous(breaks=0))
 gridExtra::grid.arrange(P1, P2, P3, nrow=1) 
@@ -464,7 +490,8 @@ The formula for updating is called ***Bayes' Rule***: posterior is likelihood ti
 $$\text{posterior}(R) = {\cal L}_\text{data}(R) \times \text{prior}(R)\ .$$
 Recall that the output of a likelihood function is a non-negative quantity. Since the prior is a relative density function, it too is non-negative for all $R$. Therefore the posterior will have a non-negative output and be a valid relative density function.
 
-::: {.takenote data-latex=""}
+::: {.callout-tip}
+## Prior as relative density functions
 Most texts prefer to define priors and posteriors as probability density functions rather than relative density functions. The only difference, of course, is the normalization. But that can be performed at any time, so to streamline the updating process, we will let posteriors and priors be relative density functions.
 :::
 
@@ -498,8 +525,12 @@ After the screening test has been taken by the 1000 people in our example group,
     - 1000 $(1-R)$ without the illness, made up of
         - 1000 $(1-R)\ (1-p_h(-))$ who had a positive test result despite being healthy
         - 1000 $(1-R)\ p_h(-)$ who had a correct negative result.
-        
-::: {.example data-latex=""}
+  
+  
+::: {#thm-likelihood-of-illness style="display: none;"}
+:::
+::: {.callout-note icon=false}
+## @thm-likelihood-of-illness Likelihood of illness
 Suppose that $R=0.2$, $p_d(+) = 80\%$, and $p_h(-) = 70\%$. Then the division would be:
 
 - Whole group of 1000, made up of
@@ -530,8 +561,9 @@ In a real-world situation, we would have to do some experiments to measure $p_h(
 
 Now that we have constructed the likelihood functions for the two possible observations $+$ and $-$, we can use them to update the priors. 
 
-Suppose our first observations are the results of screening tests on ten randomly selected individuals. `r set.seed(101)` 
+Suppose our first observations are the results of screening tests on ten randomly selected individuals, as in @tbl-test-outcome. `r set.seed(101)` 
 
+::: {#tbl-test-outcome}
 Subject ID | Test outcome
 :----------|:-------------
 `r paste0(round(runif(1,1000,9999)),  sample(LETTERS[1:5], 1))` | $+$
@@ -545,116 +577,146 @@ Subject ID | Test outcome
 `r paste0(round(runif(1,1000,9999)),  sample(LETTERS[1:5], 1))` | $-$
 `r paste0(round(runif(1,1000,9999)),  sample(LETTERS[1:5], 1))` | $-$
 
-To summarize: Three $+$ tests out of ten. 
-
-After the first test outcome is available we can calculate the posterior: $$\text{posterior}_1 (R) = {\cal L}_+(R) \times \text{prior(R)}\ .$$ After the second test outcome, the new posterior is $$\text{posterior}_2 (R) = {\cal L}_-(R) \times {\cal L}_+(R) \times \text{prior(R)}\ .$$ And after the third (a $+$ result!) it will be $$\text{posterior}_3 (R) = {\cal L}_+(R) \times {\cal L}_-(R) \times {\cal L}_+(R) \times \text{prior(R)}\ .$$
-We continue on in this way through all ten rows of the data to get the posterior distribution after all 10 test results have been incorporated.
-
-@fig-after-10 shows the posterior after the 10 rows of data have been considered for each of the three priors from @fig-beta-shapes).
+Test outcomes on ten patients. There were three $+$ tests. 
+:::
 
 ```{r echo=FALSE}
 L_pos <- makeFun(0.8*R + 0.3*(1-R) ~ R)
 L_neg <- makeFun(0.2*R + 0.7*(1-R) ~ R)
 posterior <- function(prior, n=10, m=3) {
   f1 <- makeFun(L_pos(R)^m * L_neg(R)^(n-m) * prior(R) ~ R, n=n, m=m)
-  scale <- Integrate(f1(R) ~ R, bounds(R=0:1))
+  scale <- Integrate(f1(R) ~ R, domain(R=0:1))
   
   makeFun(f1(R) / A ~ R, A = scale)
 }
 ```
 
+::: {#fig-after-1}
 ```{r echo=FALSE, warning=FALSE}
-#| label: fig-after-1
-#| fig-cap: "Posteriors (blue) after the first screening test, which was $+$, for each of the priors in @fig-beta-shapes. The prior itself is drawn in gray."
-#| fig-cap-location: margin
+#| layout-ncol: 3
+#| fig-subcap:
+#| - "Using prior (A)"
+#| - "Using prior (B)"
+#| - "Using prior (C)"
 post_A <- posterior(prior_A, 1, 1)
 post_B <- posterior(prior_B, 1, 1)
 post_C <- posterior(prior_C, 1, 1)
 
-P1 <- slice_plot(post_A(R) ~ R, bounds(R=0:1), color="blue") %>%
-  slice_plot(prior_A(R) ~ R, color="gray", size=3, alpha=0.6) %>%
-  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) %>%
-  gf_labs(y = "Probability density", x = "", title="From prior (A)") %>%
+P1 <- slice_plot(post_A(R) ~ R, domain(R=0:1), color="blue") |>
+  slice_plot(prior_A(R) ~ R, color="gray", size=3, alpha=0.6) |>
+  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) |>
+  gf_labs(y = "Probability density", x = "", title="From prior (A)") |>
   gf_lims(y=c(0,4))
 
-P2 <- slice_plot(post_B(R) ~ R, bounds(R=0:1), color="blue") %>%
-  slice_plot(prior_B(R) ~ R, color="gray", size=3, alpha=0.6) %>%
-  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) %>%
-  gf_labs(y = "", x = "Risk of transmission", title="From prior (B)") %>%
+P2 <- slice_plot(post_B(R) ~ R, domain(R=0:1), color="blue") |>
+  slice_plot(prior_B(R) ~ R, color="gray", size=3, alpha=0.6) |>
+  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) |>
+  gf_labs(y = "", x = "Risk of transmission", title="From prior (B)") |>
   gf_lims(y=c(0,4))
 
-P3 <- slice_plot(post_C(R) ~ R, bounds(R=0:1), color="blue") %>%
-  slice_plot(prior_C(R) ~ R, color="gray", size=3, alpha=0.6) %>%
-  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) %>%
-  gf_labs(y = "", x = "", title="From prior (C)") %>%
+P3 <- slice_plot(post_C(R) ~ R, domain(R=0:1), color="blue") |>
+  slice_plot(prior_C(R) ~ R, color="gray", size=3, alpha=0.6) |>
+  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) |>
+  gf_labs(y = "", x = "", title="From prior (C)") |>
   gf_lims(y=c(0,4))
 
-gridExtra::grid.arrange(P1, P2, P3, nrow=1)            
+P1
+P2 
+P3            
 ```
 
-With just one row of data considered, the posteriors depend very much on the particular prior selected. This shouldn't be a surprise; one test result from an imperfect screening test is not going to tell us much. Let's process all of the 
+Posteriors (blue) consider only the first two screening tests, one $+$ and one $-$, for each of the priors in @fig-beta-shapes. The prior itself is drawn in gray.
+:::
 
+After the first test outcome is available we can calculate the posterior: $$\text{posterior}_1 (R) = {\cal L}_+(R) \times \text{prior(R)}\ .$$ After the second test outcome, the new posterior is $$\text{posterior}_2 (R) = {\cal L}_-(R) \times {\cal L}_+(R) \times \text{prior(R)}\ .$$ And after the third (a $+$ result!) it will be $$\text{posterior}_3 (R) = {\cal L}_+(R) \times {\cal L}_-(R) \times {\cal L}_+(R) \times \text{prior(R)}\ .$$
+
+With just two rows of data considered, the posteriors depend very much on the particular prior selected. This shouldn't be a surprise; one test result from an imperfect screening test is not going to tell us much. 
+
+More data might help things! We can continue on in this way through all ten rows of the data to get the posterior distribution after all 10 test results have been incorporated, as in @fig-after-10.
+
+::: {#fig-after-10}
 ```{r echo=FALSE, warning=FALSE}
-#| label: fig-after-10
-#| fig-cap: "Posteriors (blue) after the first ten rows of data, for each of the priors in @fig-beta-shapes. The prior itself is drawn in gray." 
-#| fig-cap-location: margin
+#| layout-ncol: 3
+#| fig-subcap:
+#| - "Using prior (A)"
+#| - "Using prior (B)"
+#| - "Using prior (C)"
 post_A <- posterior(prior_A, 10, 3)
 post_B <- posterior(prior_B, 10, 3)
 post_C <- posterior(prior_C, 10, 3)
 
-P1 <- slice_plot(post_A(R) ~ R, bounds(R=0:1), color="blue") %>%
-  slice_plot(prior_A(R) ~ R, color="gray", size=3, alpha=0.6) %>%
-  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) %>%
-  gf_labs(y = "Probability density", x = "", title="From prior (A)") %>%
+P1 <- slice_plot(post_A(R) ~ R, domain(R=0:1), color="blue") |>
+  slice_plot(prior_A(R) ~ R, color="gray", size=3, alpha=0.6) |>
+  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) |>
+  gf_labs(y = "Probability density", x = "", title="From prior (A)") |>
   gf_lims(y=c(0,4))
 
-P2 <- slice_plot(post_B(R) ~ R, bounds(R=0:1), color="blue") %>%
-  slice_plot(prior_B(R) ~ R, color="gray", size=3, alpha=0.6) %>%
-  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) %>%
-  gf_labs(y = "", x = "Risk of transmission", title="From prior (B)") %>%
+P2 <- slice_plot(post_B(R) ~ R, domain(R=0:1), color="blue") |>
+  slice_plot(prior_B(R) ~ R, color="gray", size=3, alpha=0.6) |>
+  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) |>
+  gf_labs(y = "", x = "Risk of transmission", title="From prior (B)") |>
   gf_lims(y=c(0,4))
 
-P3 <- slice_plot(post_C(R) ~ R, bounds(R=0:1), color="blue") %>%
-  slice_plot(prior_C(R) ~ R, color="gray", size=3, alpha=0.6) %>%
-  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) %>%
-  gf_labs(y = "", x = "", title="From prior (C)") %>%
+P3 <- slice_plot(post_C(R) ~ R, domain(R=0:1), color="blue") |>
+  slice_plot(prior_C(R) ~ R, color="gray", size=3, alpha=0.6) |>
+  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) |>
+  gf_labs(y = "", x = "", title="From prior (C)") |>
   gf_lims(y=c(0,4))
 
-gridExtra::grid.arrange(P1, P2, P3, nrow=1)            
+P1
+P2
+P3
 ```
+
+Posteriors (blue) after the first ten rows of data, for each of the priors in @fig-beta-shapes. The prior itself is drawn in gray.
+:::
+
+
+
 After the first 10 rows of data have been considered, the posteriors are similar despite the different priors.
 
+Let's go on to collect more data, on 100 patients.
 
+::: {#fig-after-100}
 ```{r echo=FALSE, warning=FALSE}
-#| label: fig-after-100
-#| fig-cap: "Posteriors (blue) after 100 subjects have been screen, with 30 $+$ results."
+#| layout-ncol: 3
+#| fig-subcap:
+#| - "Using prior (A)"
+#| - "Using prior (B)"
+#| - "Using prior (C)"
 post_A <- posterior(prior_A, 100, 30)
 post_B <- posterior(prior_B, 100, 30)
 post_C <- posterior(prior_C, 100, 30)
 
-P1 <- slice_plot(post_A(R) ~ R, bounds(R=0:1), color="blue") %>%
-  slice_plot(prior_A(R) ~ R, color="gray", size=3, alpha=0.6) %>%
-  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) %>%
-  gf_labs(y = "Probability density", x = "", title="From prior (A)") %>%
+P1 <- slice_plot(post_A(R) ~ R, domain(R=0:1), color="blue") |>
+  slice_plot(prior_A(R) ~ R, color="gray", size=3, alpha=0.6) |>
+  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) |>
+  gf_labs(y = "Probability density", x = "", title="From prior (A)") |>
   gf_lims(y=c(0,10))
 
-P2 <- slice_plot(post_B(R) ~ R, bounds(R=0:1), color="blue") %>%
-  slice_plot(prior_B(R) ~ R, color="gray", size=3, alpha=0.6) %>%
-  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) %>%
-  gf_labs(y = "", x = "Risk of transmission", title="From prior (B)") %>%
+P2 <- slice_plot(post_B(R) ~ R, domain(R=0:1), color="blue") |>
+  slice_plot(prior_B(R) ~ R, color="gray", size=3, alpha=0.6) |>
+  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) |>
+  gf_labs(y = "", x = "Risk of transmission", title="From prior (B)") |>
   gf_lims(y=c(0,10))
 
-P3 <- slice_plot(post_C(R) ~ R, bounds(R=0:1), color="blue") %>%
-  slice_plot(prior_C(R) ~ R, color="gray", size=3, alpha=0.6) %>%
-  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) %>%
-  gf_labs(y = "", x = "", title="From prior (C)") %>%
+P3 <- slice_plot(post_C(R) ~ R, domain(R=0:1), color="blue") |>
+  slice_plot(prior_C(R) ~ R, color="gray", size=3, alpha=0.6) |>
+  gf_refine(scale_x_continuous(breaks=(0:4)/4, labels=c("0", "25%", "50%", "75%", "100%"))) |>
+  gf_labs(y = "", x = "", title="From prior (C)") |>
   gf_lims(y=c(0,10))
 
-gridExtra::grid.arrange(P1, P2, P3, nrow=1)            
+P1
+P2
+P3            
 ```
+
+Posteriors (blue) after 100 subjects have been screen, with 30 $+$ results.
+:::
+
 As data accumulates, the priors become irrelevant; the knowledge about the risk of disease is being driven almost entirely by the data.
 
-Remarkably, even though 30% of the tests were positive, all the posteriors place almost all the probability density on transmission risks less than 20%. This is because the likelihood functions correctly take into account the imperfections of the screening test.
+Remarkably, even though 30% of the 100 tests were positive, all the posteriors place almost all the probability density on transmission risks less than 20%. This is because the likelihood functions correctly take into account the imperfections of the screening test.
 
 <!--
 ## Monte Carlo (optional)

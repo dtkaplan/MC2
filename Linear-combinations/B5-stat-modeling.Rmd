@@ -41,12 +41,17 @@ to support this focus on the variance of $\vec{b}$, statisticians typically augm
 
 To move forward, we will extract the response variable from the data and construct $\vec{A}$, adding in the vector of ones. We will show the vector/matrix commands for doing this, but you don't have to remember them because statisticians have a more user-friendly interface to the calculations.
 
-::: {.rmosaic data-latex=""}
+::: {#try-matrix-data style="display: none;"}
+:::
+::: {.callout-important icon=false}
+## #try-matrix-data Data frames and matrices
 We will be constructing vectors and matrices from the columns of a data frame. You can do this with the R/mosaic function `df2matrix()` (the `df` stands for "data frame"). The final argument to `df2matrix()` is the name of the data frame. Previous arguments are the columns you want to insert in the matrix. We can make both `b` and `A` using `df2matrix()`. Note the `1` that is inserted as a column into `A`.  
 
-```{r}
+```{webr-r}
 b <- df2matrix(bodyfat, data = Body_fat)
 A <- df2matrix(1, wrist, thigh, forearm, data = Body_fat)
+b
+A
 ```
 
 You can also include interaction terms (e.g. `wrist*thigh`) or transformations (e.g. `log(forearm)`) as columns in the `A` matrix.
@@ -54,24 +59,22 @@ You can also include interaction terms (e.g. `wrist*thigh`) or transformations (
 
 Once we have `b` and `A`, we find the coefficients on the linear model in the usual way, with `qr.solve()`.
 
-```{r}
+```{webr-r}
 x <- qr.solve(A, b)
+x
 ```
 
 Having applied `qr.solve()`, $\vec{x}$ now contains the coefficients on the "best" linear combination of the columns in $\vec{A}$. One of the ways in which the R language is designed to support statistics, is that it keeps track of names of columns, so the elements of $\vec{x}$ are labelled with the name of the column the element applies to.
 
-```{r}
-x
-```
 
 Based on the above, the model for body fat as a function of the explanatory variables is:
 $$\text{body fat} = -40.5 + 0.253\, \mathtt{wrist} - 0.818\, \mathtt{thigh} - 0.223\, \mathtt{forearm}\ .$$
-::: {.Rmosaic data-latex=""}
+
 In invoking `qr.solve(A, b)` we have created a vector `x` containing the solution to the target problem. We can use that vector `x` in the usual ways, for example to construct the model vector (`A %*% x`) or the residual vector (`b - A %*% x`).
 
 Sometimes you will want to create a **function** that implements the linear combination described by `x`. For convenience, the R/mosaic `makeFun()` knows how to accept a vector input and create the corresponding function.  For example:
 
-```{r}
+```{webr-r}
 f <- makeFun(x)
 f
 ```
@@ -87,20 +90,20 @@ As always, "best" depends on the purpose for your model is to be used. This requ
 
 The basic question addressed by R^2^ is: How much of the variation in the response variable `b` is accounted for by the columns of the matrix `A`. The standard way to measure the "amount of variation" in a variable is the ***variance***. In R, you calculate that with
 
-```{r}
+```{webr-r}
 var(b)
 ```
 
 We can also look at the variation in the model vector, $\hat{b}$.
 
-```{r}
+```{webr-r}
 bhat <- A %*% x
 var(bhat)
 ```
 
 R^2^ is simply the ratio of these two variances:
 
-```{r}
+```{webr-r}
 var(bhat) / var(b)
 ```
 
@@ -108,7 +111,7 @@ This result, 31.7%, is interpreted as the fraction of the variance in the respon
 
 In the same spirit, we can ask how much of the variance in the response variable is ***unexplained*** or ***unaccounted for*** by the explanatory variables . To answer this, look at the size of the residual:
 
-```{r}
+```{webr-r}
 var(b - bhat) / var(b)
 ```
 

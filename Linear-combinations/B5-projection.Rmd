@@ -46,26 +46,17 @@ In a typical vector decomposition task, the setting determines the relevant dire
 
 ***Projection*** is the process of finding, from all the vectors in the model subspace, the particular vector $\hat{b}$ that is as close as possible to the target vector $\vec{b}$. To state things another way:  projection is the process of finding the model vector that makes the residual vector as short as possible.
 
-::: {.example data-latex=""}
-@fig-b-onto-u-v2 shows a solved projection problem in 3-dimensional space. The figure can be rotated or set spinning, which makes it much easier to interpret the diagram as a three-dimensional object. In addition to the target vector $\vec{b}$ and the vectors $\vec{u}$ and $\vec{b}$ that constitute the matrix $\mathit{A}$, the diagram includes a translucent plane marking $span(\mathit{A})$. The goal of projection is, given $\vec{b}$ and $\mathit{A}$, to find the model vector (shown in light green). Once the model vector $\vec{x}$ is known, the residual vector is easy to calculate $$\vec{r} \equiv \vec{b} - \hat{b}\ .$$ Another approach to the problem is to find the residual vector $r$ first, then use that to find the model vector as $$\hat{b} \equiv \vec{b} - \vec{r}\ .$$ 
-
-::: {.column-margin .content-visible when-format="pdf"}
-A stand-alone, interactive version of this diagram is available at <../www/diagram7.html>.
+::: {#try-projection-spin style="display: none;"}
 :::
+::: {.callout-important icon=false}
+## @try-projection-spin Projecting in 3 dimensions
+The interactive graphic shows a solved projection problem in 3-dimensional space. The figure can be rotated or set spinning, which makes it much easier to interpret the diagram as a three-dimensional object. 
 
-```{r child="../www/diagram7.html", eval=knitr::is_html_output()}
-```
+{{< include ../www/diagram7.html >}}
 
-```{r echo=FALSE, out.width=ifelse(knitr::is_html_output(), "1%", "50%")}
-#| label: fig-b-onto-u-v2
-#| fig-cap: "A three-dimensional diagram showing the target vector $\\vec{b}$ and the vectors $\\vec{u}$ and $\\vec{v}$. The subspace spanned by $\\vec{u}$ and $\\vec{v}$ is indicated with a translucent plane. The model vector (green) is the result produced in solving the projection problem."
-knitr::include_graphics(
-  ifelse(knitr::is_html_output(), 
-        "www/tiny-blank.png", "www/diagram7.png")
-)
-```
+In addition to the target vector $\vec{b}$ and the vectors $\vec{u}$ and $\vec{b}$ that constitute the matrix $\mathit{A}$, the diagram includes a translucent plane marking $span(\mathit{A})$. The goal of projection is, given $\vec{b}$ and $\mathit{A}$, to find the model vector (shown in light green). Once the model vector $\vec{x}$ is known, the residual vector is easy to calculate $$\vec{r} \equiv \vec{b} - \hat{b}\ .$$ Another approach to the problem is to find the residual vector $r$ first, then use that to find the model vector as $$\hat{b} \equiv \vec{b} - \vec{r}\ .$$ 
 
-Interpreting such three-dimensional diagrams on a printed page can be difficult. Better to rotate them interactively. For instance, to see that the translucent plane in @fig-b-onto-u-v2 contains $\vec{u}$ and $\vec{v}$,  rotate the diagram to look edge-on at the plane so that the plane appears as a line on the screen. At such times, vectors $\vec{u}$ and $\vec{v}$ disappear. There is no component to $\vec{u}$ and $\vec{v}$ that sticks out from the plane; they are entirely embedded in the plane.
+Interpreting such three-dimensional diagrams on a static printed page can be difficult. Being able to interact with the diagrams helps a lot. For instance, to see that the translucent plane in @fig-b-onto-u-v2 contains $\vec{u}$ and $\vec{v}$,  rotate the diagram to look edge-on at the plane so that the plane appears as a line on the screen. At such times, vectors $\vec{u}$ and $\vec{v}$ disappear. There is no component to $\vec{u}$ and $\vec{v}$ that sticks out from the plane; they are entirely embedded in the plane.
 :::
 
 
@@ -94,10 +85,13 @@ Scaling $\vec{a}$ by $\len{a}$ would produce a vector oriented in the model subs
 $$\text{model vector:}\ \ \hat{b} = \left[\vec{b} \bullet \vec{a}\right] \,\vec{a} / {\len{a}^2} = \frac{\vec{b} \bullet \vec{a}}{\vec{a} \bullet \vec{a}}\  \vec{a}.$$
 . <!-- must have some text before a <div> -->
 
-::: {.rmosaic data-latex=""}
-
+::: {#try-project-onto style="display: none;"}
+:::
+::: {.callout-important icon=false}
+## @try-project-onto Projecting one vector onto another
 In R/mosaic, calculate the projection of $\vec{b}$ onto $\vec{a}$ using `%onto%`. For instance
-```{r}
+
+```{webr-r}
 b <- rbind(-1, 2)
 a <- rbind(-2.5, -0.8)
 s <- b %onto% a
@@ -105,7 +99,7 @@ s
 ```
 Having found $\hat{b}$, the residual vector $\vec{r}$ can be calculated as $\vec{b}- \hat{b}$.
 
-```{r}
+```{webr-r}
 r <- b - s
 r
 ```
@@ -113,12 +107,12 @@ The two properties that a projection satisfies are:
 
 1. The residual vector is perpendicular to each and every vector in $\mathit{A}$. Since in this example, $\mathit{A}$ contains only the one vector $\vec{a}$, we need only look at $\vec{r} \cdot \vec{a}$ and confirm that it is zero.
 
-```{r}
+```{webr-r}
 r %dot% a
 ```
 2. The residual vector plus the model vector exactly equals the target vector. Since we computed ` r <- b - s`, we know this must be true, but still ...
 
-```{r}
+```{webr-r}
 (r+s) - b
 ```
 
@@ -137,21 +131,24 @@ $$
 \text{and so on}$$
 The projection of $\vec{b}$ onto $\mathit{A}$ will be the sum $\vec{p_1} + \vec{p2} + \vec{p3}$.
 
-::: {.example data-latex=""}
+::: {#try-projecting-set style="display: none;"}
+::: {.callout-important icon=false}
+## @try-projecting-set Projecting a vector onto a subspace
 Consider the following matrix $\mathit{A}$ made up of mutually orthogonal vectors:
 
-```{r}
+```{webr-r}
 b  <- rbind( 1,  1,  1, 1)
 v1 <- rbind( 1,  2,  0, 0)
 v2 <- rbind(-2,  1,  3, 1)
 v3 <- rbind( 0,  0, -1, 3)
 A <- cbind(v1, v2, v3)
+A
 ```
 
 To confirm that `v1`, `v2`, and `v3` are mutually orthogonal, calculate the dot product between any two of them and observe that, in each case, the result is zero.
 
 Now construct the one-at-a-time projections:
-```{r}
+```{webr-r}
 p1 <- b %onto% v1
 p2 <- b %onto% v2
 p3 <- b %onto% v3
@@ -159,18 +156,20 @@ p3 <- b %onto% v3
 
 To find the projection of $\vec{b}$ onto the subspace spanned by $\mathit{A}$, add up the one-at-a-time projections:
 
-```{r}
+```{webr-r}
 b_on_A <- p1 + p2 + p3
 ```
 
 Now we will confirm that `b_on_A` is the projection of `b` onto `A`.  The strategy is to construct the residual from the projection.
 
-```{r}
+```{webr-r}
 resid <- b - b_on_A
+resid
 ```
+
 All that is  needed is to confirm that the residual is perpendicular to each and every vector in `A`:
 
-```{r}
+```{webr-r}
 resid %dot% v1
 resid %dot% v2
 resid %dot% v3

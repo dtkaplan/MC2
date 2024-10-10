@@ -81,7 +81,7 @@ x_{i+1} = \text{solve-step}(x_{i})\\\ \\
 ```{r echo=FALSE, warning=FALSE}
 #| label: fig-newton-step
 #| fig-cap: "A Newton-step calculation seen graphically. The brown function is approximated as a straight-line function at the initial point $x_0$. The resulting $x_1$ is where that straight line crosses the value $v$ on the output scale. Here, $x_1$ is a little to the left of the actual place where $f()$ crosses $v$. The Newton step produced an improved guess, since $\\|x_1 - x^\\star\\|$ is smaller than $\\| x_0 - x^\\star\\|$."
-#| fig-cap-location: margin
+#| 
 rawf <- doodle_fun(~ x, seed = 1933)
 x0=3.0
 ticks <- latex2exp::TeX(c(r'(x^*)', "x_0", "x_1"))
@@ -179,7 +179,11 @@ The Newton-step process is not guaranteed to work. By exploring cases where it f
 Sometimes there will be multiple zeros on the specified domain. To handle such situations, `Zeros()` returns a data frame with two columns. The first gives input values that correspond to an output near zero. The second column, named `.output.` calculates the output (and will be near zero). 
 We will illustrate by solving $x^3 = 6$ for $x$.
 
-```{r} 
+::: {#try-zero-finding style="display: none;"}
+:::
+::: {.callout-important icon=false}
+## @try-zero-finding "Solving" by finding zeros.
+```{webr-r} 
 Zeros(x^3 - 6 ~ x, bounds(x=c(1,6)))
 ```
 
@@ -206,7 +210,10 @@ We will solve this equation for $x$ and, having in mind the iterative process of
 $$x_1 = x_0 - \frac{f'(x_0)}{f''(x_0)}\ .$$
 In other words, our new guess $x_1$ will be a step away from the old guess $x_0$, with the step being $-f'(x_0) / f''(x_0)$. This also is called a Newton step. What's different from the Newton step of the previous section is that the function whose zeros are being sought is not $f(x)$ but $f'(x)$.
 
-::: {.rmosaic data-latex=""}
+::: {#try-argmax style="display: none;"}
+:::
+::: {.callout-important icon=false}
+## @try-argmax Searching for an argmax
 Use the R/mosaic `argM()` function to find argmaxes and argmins. Like other R/mosaic calculus functions, the first argument is a tilde expression defining the objective function. The second argument is the domain to search.
 
 To illustrate, the following code creates a randomly shaped function (displayed in @fig-argm-ex1) and calls `argM()` to generate the argmaxes and argmins. 
@@ -219,6 +226,7 @@ f <- doodle_fun(~ x, 3215)
 ```{r echo=FALSE}
 #| out-width: "50%"
 #| fig-align: "center"
+f <- doodle_fun(~ x, 3215)
 Xstar <- argM(f(x) ~ x, bounds(-5:5))
 slice_plot(f(x) ~ x, bounds(x=-5:5)) %>%
   gf_labs(y = "f(x)") %>%
@@ -226,7 +234,7 @@ slice_plot(f(x) ~ x, bounds(x=-5:5)) %>%
            color="magenta", size=4, alpha=0.5) 
 ```
 
-```{r}
+```{webr-r}
 argM(f(x) ~ x, bounds(x = -5:5))
 ```
 
@@ -246,7 +254,10 @@ However many iteration steps you take, the output from the final step is what yo
 
 Iteration is the mathematical engine behind many function operations. You've already seen it at work for the "solve" task and the "argmax" task. 
 
-::: {.rmosaic data-latex=""}
+::: {#try-iterate style="display: none;"}
+:::
+::: {.callout-important icon=false}
+## @try-iterate Iterating automatically
 The R/mosaic function `Iterate()` provides a very simple way to see the results of iteration. Typically when iteration is used as part of a function operation, the software has been written specifically for that task and includes logic about when to stop or start over or handle a variety of troublesome cases. The function `Iterate()` is provided in R/mosaic just for demonstration purposes.
 
 `Iterate()` takes arguments specifying the function to be iterated (as a tilde expression), the starting $x_0$, and the number $n$ of steps to take. To illustrate, we will iterate a famous function called the ***logistic map***: $f(x) \equiv \mu x (1-x)$. Depending on the value of the parameter $\mu$, the iterates can show different patterns.

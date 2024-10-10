@@ -1,5 +1,84 @@
 # Integrals step-by-step
 
+<!-- take this out when the CRAN version of mosaicCalc is updated -->
+
+```{webr-r}
+#| context: setup
+doodle_fun <- function (vars = ~x & y, seed = NULL, n = 0) 
+{
+  if (!is.null(seed)) 
+    set.seed(seed)
+  if (!inherits(vars, "formula")) 
+    stop("Must provide a formula, e.g. ~x&y, to identify the variables")
+  nmaxes <- ifelse(n == 0, ceiling(runif(1, min = 4, max = 10)), 
+                   n)
+  varnames <- all.vars(vars)
+  nvars <- length(varnames)
+  locs <- list()
+  for (k in 1:nvars) locs[[k]] <- runif(nmaxes, min = -3, max = 3)
+  signsmax <- runif(nmaxes, min = 3, max = 10) * sign(runif(nmaxes, 
+                                                            min = -1, max = 1))
+  xscales <- runif(nmaxes, min = 0.1, max = 5)
+  if (nvars == 1) {
+    f <- function() {
+      x <- eval(parse(text = varnames[1]))
+      res <- 0
+      for (k in 1:nmaxes) {
+        res <- res + signsmax[k] * exp(-(xscales[k] * 
+                                           (x - locs[[1]][k])^2)/9)
+      }
+      return(res)
+    }
+  }
+  if (nvars == 2) {
+    f <- function() {
+      x <- eval(parse(text = varnames[1]))
+      y <- eval(parse(text = varnames[2]))
+      res <- 0
+      for (k in 1:nmaxes) {
+        res <- res + signsmax[k] * exp(-(xscales[k] * 
+                                           (x - locs[[1]][k])^2 + (y - locs[[2]][k])^2)/9)
+      }
+      return(res)
+    }
+  }
+  if (nvars == 3) {
+    f <- function() {
+      x <- eval(parse(text = varnames[1]))
+      y <- eval(parse(text = varnames[2]))
+      z <- eval(parse(text = varnames[3]))
+      res <- 0
+      for (k in 1:nmaxes) {
+        res <- res + signsmax[k] * exp(-(xscales[k] * 
+                                           (x - locs[[1]][k])^2 + (y - locs[[2]][k])^2 + 
+                                           (z - locs[[3]][k])^2)/9)
+      }
+      return(res)
+    }
+  }
+  if (nvars > 3) {
+    f <- function() {
+      x <- eval(parse(text = varnames[1]))
+      res <- 0
+      for (k in 1:nmaxes) {
+        foo <- xscales[k] * (x - locs[[1]][k])^2
+        for (j in 2:nvars) {
+          x <- eval(parse(text = varnames[j]))
+          foo <- foo + (x - locs[[j]][k])^2
+        }
+        res <- res + signsmax[k] * exp(-foo/9)
+      }
+      return(res)
+    }
+  }
+  tmp <- paste("alist( ", paste(varnames, "=", collapse = ",", 
+                                sep = ""), ")")
+  tmp <- eval(parse(text = tmp))
+  formals(f) <- tmp
+  return(f)
+}
+```
+
 ```{r include=FALSE}
 source("../starter.R")
 ```
@@ -47,10 +126,8 @@ gives rise to a visualization that has been learned by generations of calculus s
 
 We will start the visualization with a simple graph of $f(t)$, which is called the ***integrand*** in the integral $\int_a^b f(t) dt$. @fig-area-integrand shows the graph of $f(t)$. A specific point $t_0$ has been marked on the horizontal axis. Next to it is another mark at $t_0 + dt$. Of course, the distance between these marks is $\color{orange}{dt}$.
 
+::: {#fig-area-integrand}
 ```{r echo=FALSE, warning=FALSE} 
-#| label: fig-area-integrand
-#| fig-cap: "Illustrating the interpretation of $f(t_0) dt$ as an \"area\"."
-#| fig-cap-location: margin
 raw <- doodle_fun( ~ t, seed=541)
 f <- makeFun((raw(t)+10)/2 ~ t) 
 
@@ -64,10 +141,10 @@ slice_plot(f(t) ~ t, bounds(t=-.5:4)) %>%
   gf_text(2.4 ~ 1.0, label=latex2exp::TeX("$f(t_0)$"), angle=0, color="magenta", size=6) %>%
   gf_segment(0 + 0 ~ 1.25 + 1.6, color = "orange", arrow=arrow(ends="both", type="closed", length=unit(0.12, "inches"))) %>%
   gf_text(-.2 ~ 1.425, label="dt", color="orange")
-
-  
-
 ```
+
+Illustrating the interpretation of $f(t_0) dt$ as an "area."
+:::
 
 Per the usual graphical convention, a position along the vertical axis corresponds to a possible output of $f(t)$. The output for $t=t_0$ is $\color{magenta}{f(t_0)}$. That same quantity corresponds to the length of the vertical orange segment connecting $(t_0, 0)$ to $(t_0, f(t_0))$. 
 
@@ -78,7 +155,7 @@ In this sort of visualization, an integral is the accumulation of many of these 
 ```{r echo=FALSE, warning=TRUE}
 #| label: fig-bars-0-3
 #| fig-cap: "Visualizing the integral $\\int_0^3 f(t) dt$ as the total \"area\" of several $f(t) dt$ bars. The width of each of the bars is $dt$. The height depends on the value of the function $f(t)$ at the bar. For illustration, two of the bars are marked with vertical and horizontal line segments."
-#| fig-cap-location: margin
+#| 
 Bars <- Znotes::Riemann_bars(f(t) ~ t, h=0.3, bounds(t=0:3))
 
 gf_text(1.5 ~ 2.2, label=latex2exp::TeX("$\\sim \\int_0^3 f(t)dt$"), size=10, color=alpha("blue", 0.5)) %>%
@@ -104,7 +181,7 @@ As always in calculus, we imagine $dt$ as a "small" quantity. In @fig-bars-0-3B 
 ```{r echo=FALSE, warning=FALSE}
 #| label: bars-0-3B
 #| fig-cap: "Visualizing the integral $\\int_0^3 f(t) dt$ as the total \"area\" of several $f(t) dt$ bars. The width of each of the bars is $dt$. The height depends on the value of the function $f(t)$ at the bar. For illustration, two of the bars are marked with vertical and horizontal line segments."
-#| fig-cap-location: margin
+#| 
 Bars <- Znotes::Riemann_bars(f(t) ~ t, h=0.1, bounds(t=0:3))
 P1 <- 
   slice_plot(f(t) ~ t, bounds(t=-1:4)) %>%
@@ -162,9 +239,16 @@ Another problem is that area is a physical quantity, with dimension L$^2$. The q
 
 The previous section a visualization of an integral in terms of an area on a graph. As you know, a definite integral $\int_a^b f(t) dt$ can also be computed by constructing the anti-derivative $F(t) \equiv \int f(t) dt$ and evaluating it at the upper and lower bounds of integration: $F(b) - F(a)$.  In this section, we will look at the numerical process of constructing an anti-derivative function, which uses many of the same concepts as those involved in finding an integral by combining areas of rectangles.
 
+```{webr-r}
+#| context: setup
+raw <- doodle_fun( ~ t, seed=541)
+f <- makeFun((raw(t)+10)/2 ~ t) 
+```
+
+
 A definite integral produces a **quantity**, not a function. The anti-derivative function constructed by using quantities like $f(t) dt$ will be a ***series of quantities*** rather than a formula. In particular, it will have the form of a data table, something like this:
 
-::: {.column-margin}
+::: {#tbl-fun-table1}
 $t$ | $F(t)$
 ----|-------
 -2  | 10.62
@@ -177,11 +261,11 @@ $t$ | $F(t)$
 $\vdots$ | $\vdots$
 :::
 
-To start, we will need to create a series of $t$ values. We will do this by specifying a starting value for $t$ and then creating successive values by adding a numerical increment $dt$ to the entries one after the other until we reach a terminating value. For instance, in the above table, the starting value for $t$ is $-2$, the numerical increment is $dt=0.5$, and the terminating value is $1$.
+To start in creating $F()$ by anti-differentiating $f()$, we will need to create a series of $t$ values. We will do this by specifying a starting value for $t$ and then creating successive values by adding a numerical increment $dt$ to the entries one after the other until we reach a terminating value. For instance, in the above table, the starting value for $t$ is $-2$, the numerical increment is $dt=0.5$, and the terminating value is $1$.
 
 In previous chapters of this book we have worked with data tables, but always the data table was *given* to us, we did not have to construct it.^[The root  of the word "data" is the Latin for "given".] Now we need to construct the data frame with the $t$ column containing appropriate values. Computer languages provide many ways to accomplish this task. We will use a simple R/mosaic function `Picket()`, which constructs a data table like the one shown above. You provide two arguments: the domain for $t$, that is, the desired upper and lower bounds of integration; the interval size $dt$ (which is called `h` in the argument list). For instance, to construct the $t$ column of the table shown above, you can use `Picket()` this way:
 
-```{r}
+```{webr-r}
 Pts <- Picket(bounds(t = -2:1), h=0.5)
 Pts
 ```
@@ -196,30 +280,25 @@ The next step in using the picket to perform anti-differentiation is to apply th
 
 Adding a new column is a common task when dealing with data. We will do this with a new function, `mutate()`, whose specific function is adding new columns (or modifying old ones). Here's the command to apply $f()$ to `t` and call the new column `vals`:
 
-```{r}
+
+
+```{webr-r}
 # Find the height of the pickets
 Pts <- Pts %>%
   mutate(vals = f(t))
-```
-
-With this modification, the data table looks like:
-
-```{r echo=FALSE}
 Pts
 ```
 
 Now that we know the value of the function at each of the pickets, the next step is to multiply the value by the spacing between pickets. That spacing, which we set with the argument `h = 0.5` in our original call to `Picket()` is in the column called `weight`.  we will call the result of the multiplication `step`. Note that the following R command incorporates the previous calculation of `vals`; we are looking to build up a single command that will do all the work.
 
-```{r}
+```{webr-r}
 # Multiply the height by the picket spacing
 Pts <- Pts %>%
   mutate(vals = f(t),
          step = vals * weight)
-```
-
-```{r}
 Pts
 ```
+
 
 We used the name `step` to identify the product of the height and spacing of the pickets to help you think about the overall calculation as accumulating a series of steps. Each step provides a little more information about the anti-derivative that we will now calculate. In terms of the area metaphor for integration, each step is the area of one vertical bar of the sort presented in the previous section.
 
@@ -228,18 +307,16 @@ We will call these ***Euler steps***, a term that will be especially appropriate
 
 The final step in constructing the anti-derivative is to add up the steps. This is simple addition. But we will arrange the addition one step at a time. That is, for the second row, the result will be the sum of the first *two* steps. For the third row, the result will be the sum of the first *three* steps. And so on. The name for this sort of accumulation of the previous steps is called a ***cumulative sum***. Another name for a cumulative sum is a "running sum": the sum-so-far as we move down the column of steps.  Cumulative sums are computed in R by using `cumsum()`. Here, we are calling the result of the cumulative sum `F` to emphasize that it is the result of anti-differentiating $f()$. But keep in mind that the anti-derivative is not just the `F` column, but the table with both `t` and `F` columns. That is, the table has a column for the input as well as the output. That is what it takes to be a function.
 
-```{r}
+```{webr-r}
 # Doing everything in one command
 Pts <- 
   Picket(bounds(t = -2:1), h=0.5) %>%
   mutate(vals = f(t),
          step = vals * weight,
          F = cumsum(step))
-```
-
-```{r echo=FALSE}
 Pts
 ```
+
 
 We can summarize the steps in this Euler approach to numerical integration graphically:
 
@@ -273,42 +350,36 @@ P4 <- P3 %>%
   gf_lims(y=c(-20,15))
 ```
 
-
-```{r echo=FALSE, fig.height=8, warning=FALSE}
-#| label: fig-euler-integration1,
-gridExtra::grid.arrange(
-  P1 |> 
-    gf_labs(title="1. Create the picket", y="f(t)"), 
-  P2 |> 
-    gf_labs(title="2. Eval function f(x) at picket locations to set height.", y="f(t)"),
-  P3 |> 
-    gf_labs(title = "3. Multiply picket height by width", y = "f(t)"), 
-  nrow=3
-  )
+::: {#fig-euler-integration1}
+```{r echo=FALSE, layout-ncol: 1}
+#| fig-subcap:
+#| - 1. Create the picket
+#| - 2. Eval function f(x) at picket locations to set height.
+#| - 3. Multiply picket height by width
+#| - 4. Cumulative sum of areas versus t
+  P1 |> gf_labs(y = "f(t)")
+  P2 |> gf_labs(y = "f(t)") 
+  P3 |> gf_labs(y = "f(t)") 
+  P4 |> gf_labs(y = "F(t)")
 ```
+
+Steps in a numerical construction of an anti-derivative. (1) Create a set of picket locations over the domain of interest. The locations are spread horizontally by amount dt, so each picket will be dt units wide. (2) evaluate the original function at the picket points to give picket heights. (3) Multiply the picket height by the picket width to create an \"area\". (4) Starting at zero for the left-most picket, add in successive picket areas to construct the points on the anti-derivative function (green). Note that the vertical axis in (4) has a different dimension and units than in steps (1)-(3). In (4) the vertical scale is in the units of the anti-derivative function output.
+:::
+
 
 ```{r echo=FALSE, warning=FALSE}
 #| label: fig-euler-integration2
-#| fig.cap: "Steps in a numerical construction of an anti-derivative. (1) Create a set of picket locations over the domain of interest. The locations are spread horizontally by amount dt, so each picket will be dt units wide. (2) evaluate the original function at the picket points to give picket heights. (3) Multiply the picket height by the picket width to create an \"area\". (4) Starting at zero for the left-most picket, add in successive picket areas to construct the points on the anti-derivative function (green). Note that the vertical axis in (4) has a different dimension and units than in steps (1)-(3). In (4) the vertical scale is in the units of the anti-derivative function output."
-P4 |> gf_labs(title = "4. Cumulative sum of areas versus t", y="F(t)")
+#| fig.cap: ""
+
 ```
 
 @fig-dynamic-anti-d shows a dynamic version of the process of constructing an anti-derivative by Euler steps. The integrand $f(t)$ is shown in the top panel, the anti-derivative $F(t)$ is shown being built up in the bottom panel. The $\color{magenta}{\text{magenta}}$ bar in the top plot is the current Euler step. That step is added to the previously accumulated steps to construct $F(t)$.
 
-```{asis, eval=knitr::is_latex_output()}
-PROVIDE LINK TO MOVIE IN PDF version.
-```
+::: {#fig-dynamic-anti-d}
+![](www/area-plot.gif)
 
-
-```{r echo=FALSE}
-#| label: fig-dynamic-anti-d
-#| fig-cap: "A dynamic view of building $F(t)$ from $f(t)$ by accumulating Euler steps."
-if (knitr::is_html_output()) {   
-  knitr::include_graphics("www/area-plot.gif")
-} else {
-  knitr::include_graphics("www/area-plot-still.png")
-}
-```
+A dynamic view of building $F(t)$ from $f(t)$ by accumulating Euler steps.
+:::
 
 ::: {#thm-russian-covid  style="display: none;"}
 --- What does "daily" tell you?
@@ -316,7 +387,7 @@ if (knitr::is_html_output()) {
 ::: {.callout-note icon=false data-latex=""}
 ## @thm-russian-covid Russian COVID-19 cases
 
-The following graphic from a well-respected news magazine, *[The Economist](https://www.economist.com/img/b/600/653/90/sites/default/files/images/print-edition/20210710_EUC776.png)*, shows the reported number of cases and deaths from Covid-19 during a two-year period in Russia. ("Sputnik" is the name given to a Russian-developed vaccine, named after the [first man-made satellite](https://en.wikipedia.org/wiki/Sputnik_1) in Earth orbit, launched by the Soviet Union on Oct. 4, 1957 and precipitating a Cold-War crisis of confidence in in the US.)
+The following graphic from a well-respected news magazine, *[The Economist](https://www.economist.com/img/b/600/653/90/sites/default/files/images/print-edition/20210710_EUC776.png)*, shows the reported number of cases and deaths from Covid-19 during a two-year period in Russia. 
 
 ::: {#fig-sputnik}
 ![](www/sputnik.png)
@@ -356,7 +427,7 @@ To illustrate how considerably more accuracy can be gained in calculating an ant
 
 One widely used method, called ***Gauss-Legendre quadrature*** can calculate a large segment of an integral accurately (under conditions that are common in practice) with just five evaluations of the integrand $f(t)$. 
 
-::: {#tbl-picket-locations .column-margin}
+::: {#tbl-picket-locations}
 
 location        | weight
 :---------------|:-------

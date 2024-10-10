@@ -65,7 +65,7 @@ To illustrate, let's draw a flow vector for the state space coordinate $(r=2, f 
 
 ```{r echo=FALSE, out.width="40%", fig.align="center"}
 #| label: fig-rf-flow-arrow
-#| fig-cap-location: margin
+#| 
 #| fig-cap: "The flow arrow for the state value $(r=2, f=1/4)$ using $dt=0.1$ month."
 gf_segment(0.217 + 0.283 ~ 1.9865 + 2.0125, color="black",
            arrow = grid::arrow(end="last", type="closed")) %>%
@@ -76,15 +76,11 @@ gf_segment(0.217 + 0.283 ~ 1.9865 + 2.0125, color="black",
 ```
 To draw the entire flow field, repeat this process at many other points in the state space as in @fig-rf-flow-field.
 
+::: {#fig-rf-flow-field .column-page-right fig-cap-location="bottom" layout-ncol=2}
 ```{r echo=FALSE, warning=FALSE}
-#| label: fig-rf-flow-field
-#| fig-cap: "The flow in the rabbit-fox system shown in two ways."
 #| fig-subcap:
 #|   - "The flow field depicted by drawing the state velocity vector (multiplied by $dt = 0.1$ to turn it into a length) for many points in the state space."
-#|   - "Instead of plotting the state velocity vector, small snippets of trajectories of duration 0.1 are shown. The curvature of the trajectories can help to envision the flow more precisely."
-#| column: page-right
-#| layout-ncol: 2
-#| fig-cap-location: bottom
+#|   - "Instead of plotting the state velocity vector, small snippets of trajectories of duration 0.1 are shown."
 vectorfield_plot(r ~ 0.66*r - 1.33*r*f,
                  f ~ -f + r*f,
                  bounds(r=0.1:3, f=0.1:1), transform=I,
@@ -97,6 +93,10 @@ streamlines(dr ~ 0.66*r - 1.33*r*f,
   gf_labs(subtitle="Trajectory segments")
 ```
 
+The flow in the rabbit-fox system shown in two ways.
+:::
+
+
 Some people prefer a visualization of short segments of actual trajectories, as in the right panel in @fig-rf-flow-field, rather than the state velocity vector. This is a matter of personal preference.
 
 
@@ -107,19 +107,12 @@ To trace out a trajectory, select a initial condition for the system. Then follo
 
 The trajectory you draw will be only a sketch, but it can be effective for developing intuition. @fig-calcplot3d1 shows a semi-automated version of the go-with-the-flow method. The computer has been used to draw the arrows. When you click in the plot, the computer also undertakes calculation of the trajectory.
 
+::: {#fig-calcplot3d1}
+{{< include CalcPlot3D/rabbits-foxes.html >}}
 
-```{r child="CalcPlot3D/rabbits-foxes.html", eval=knitr::is_html_output()}
-```
-
-```{r echo=FALSE, out.width=ifelse(knitr::is_html_output(), "0.1%", "50%")} 
-#| label: fig-calcplot3d1
-#| fig-cap: "The flow field for the rabbit/fox dynamics. Click at an initial state to generate the trajectory from that state. You may need to pinch in or out to see the flow arrows clearly."
-knitr::include_graphics("www/rabbits-foxes.png")
-```
-
-::: {.column-margin .content-visible when-format="pdf"}
-A stand-alone, interactive version of this diagram is available at <../www/rabbits-foxes.html>.
+The flow field for the rabbit/fox dynamics. Click at an initial state to generate the trajectory from that state. You may need to pinch in or out to see the flow arrows clearly.
 :::
+
 
 
 Regrettably, from such a sketch of the trajectory, you cannot easily construct $r(t)$ and $f(t)$ for time-series plots. Also, you don't get a sense of how slow or fast the flow is going. Click at different initial conditions in the flow and you will see different trajectories, each of which is a closed loop, the sort of cycles seen in the dice-free Chutes and Ladders game. But the shape of the trajectory does not tell you whether it takes a long time or a short time to complete a loop.
@@ -139,48 +132,69 @@ $$\underbrace{\frac{f(t + dt)- f(t)}{dt}}_{\text{finite-difference approx.}} = \
 Multiplying both sides of the above by $dt$ and re-arranging terms produces
 $$\underbrace{f(t + dt)}_{\text{future state}} = \underbrace{f(t)}_{\text{current state}} +\ \ \  \underbrace{x (1-x) dt}_{\text{step}}$$ We call this last equation the ***Euler formula***.
 
-To use this, we start at the initial condition, say $x(t=0) = 0.2$. This initial condition gives us the first row of a tabular representation of the function $x(t)$:
+To use this, we start at the initial condition, say $x(t=0) = 0.2$. This initial condition gives us the first row of a tabular representation of the function $x(t)$: @tbl-euler-1-row.
 
-::: {.column-margin}
+:::: {.columns}
+
+::: {.column width=30%}
+::: {#tbl-euler-1-row}
 time | state
 -----|-------
 0    | 0.2
+
+Initial state
+:::
 :::
 
-Next, pick a value for $dt$ that we will use for all the following steps, each of which will add a new row to the table. For the example, we will set $dt = 0.1$. When we have constructed the whole table we can go back and check whether that was small enough.
-
-To fill in the next row, we apply the Euler formula. Sine $dt = 0.1$, the next time step will be $0.1$. Plug in the current state---which is 0.2 right now---to calculate the future state. The step will be $0.2 (1-0.2)\, dt = \color{brown}{0.016}$. Add this step to the current state to get the future state. The table now looks like this:
-
-::: {.column-margin}
+::: {.column width=30%}
+::: {#tbl-euler-2-row}
 time | state
 :-----|:-------
 0.0  | $0.2$
 0.1  | $0.2 + \color{brown}{0.016} = \color{blue}{0.216}$
+
+The next time step.
+:::
 :::
 
-The next step will bring us to time $0.2$. Use the Euler formula, pluggin in the value of the present state, $\color{blue}{0.216}$, to find the step. Here that will be $0.216 (1-0.216)\, dt = \color{magenta}{0.0169.}$. Now the table looks like
-
-::: {.column-margin}
+::: {.column width=30%}
+::: {#tbl-euler-3-row}
 time | state
 :-----|:-------
 0.0  | $0.2$
 0.1  | $0.2 + \color{brown}{0.016} = \color{blue}{0.216}$
 0.2  | $\color{blue}{0.216} + \color{magenta}{0.0169} = 0.2329$
+
+Still another time step
+:::
 :::
 
-Add as many rows to the table as you like; the process will be the same.
+::::
+
+Next, pick a value for $dt$ that we will use for all the following steps, each of which will add a new row to the table. For the example, we will set $dt = 0.1$. When we have constructed the whole table we can go back and check whether that was small enough.
+
+To fill in the next row, as in @tbl-euler-2-row, we apply the Euler formula. Sine $dt = 0.1$, the next time step will be $0.1$. Plug in the current state---which is 0.2 right now---to calculate the future state. The step will be $0.2 (1-0.2)\, dt = \color{brown}{0.016}$. Add this step to the current state to get the future state.
+
+The next step is shown in @tbl-euler-3-row and will bring us to time $0.2$. Use the Euler formula, pluggin in the value of the present state, $\color{blue}{0.216}$, to find the step. Here that will be $0.216 (1-0.216)\, dt = \color{magenta}{0.0169.}$. 
+
+
+
+Add as many rows to the table as you like; the process will be the same for each step, the new row being calculated from the values in the previous row.
 
 You will recognize this as an iterative process, as discussed in Chapter `r Chaps$iteration`. 
 
-::: {.example data-latex=""}
-$\ $
+::: {#tip-iterate-only style="display: none;"}
+:::
+::: {.callout-important}
+## Euler iteration
 
 As is so often the case, it is wise to think about carrying out processes in terms of fundamental tasks accomplished by calculus operations---evaluate, differentiate, anti-differentiate, solve, find argmax, iterate. The obvious choice for integrating differential equations is "anti-differentiate," but as described previously, the techniques we covered in Block 3 are not sufficient for the task. Instead, we use iteration to solve differential equations. 
 
 This example uses the software you have already seen, `Iterate()`, to carry out the task. In practice, however, you will use a special form of `Iterate()` called `integrateODE()` that makes use of interpolation techniques to give a more precise answer.
 
 To implement the iteration to solve $\partial_t x = x (1-x)$, we need to create a function that takes the current state as input and produces the next state as output. Our one-step function can be this:
-```{r}
+
+```{webr-r}
 next_step <- function(t, x, dt=0.1) {
   t <- t + dt
   x <- x + x*(1-x)*dt
@@ -188,43 +202,44 @@ next_step <- function(t, x, dt=0.1) {
   c(t=t, x=x) # return value
 }
 ```
+
 Notice that we wrote `next_step()` with an input slot for $dt$. This will not be part of the state being iterated, just a parameter that allows us easily to explore different values for $dt$.
 
 
 Use `Iterate()` to carry out the iteration of `next_step()`. Note that we use the `fargs` argument to `Iterate()` to pass our selected value for `dt` to the function `next_step()`. We will run the iteration for 100 steps. With $dt=0.1$, those 100 steps will 10 units of time.
 
-```{r}
+```{webr-r}
 Soln <- Iterate(next_step, x0=c(t=0, x=0.2), n=100,
                 fargs=list(dt=0.1))
-```
-
-```{r echo=FALSE}
-TAB <- if (knitr::is_html_output()) {
-  Znotes::and_so_on(Soln)
-} else {
-  Znotes::and_so_on(Soln)
-}
-TAB
+rbind(
+  head(Soln),
+  tail(Soln)
+)
 ```
 
 
-We can now plot the time series $x$ vs $t$:
 
-```{r echo=FALSE}
-#| label: fig-logistic-time-series
-#| fig-cap: "The time series by the Euler method with $dt=0.01$."
-#| fig-cap-location: margin
+
+Or, in graphical form ....
+
+
+```{webr-r}
 gf_line(x ~ t, data=Soln)
 ```
 :::
 
-::: {.rmosaic data-latex=""}
-In the previous example using `Iterate()` to solve a differential equation, the output of the iteration was a data frame containing values for the solution at discrete times: 0, 0.1, 0.2, and so on. A data table is a perfectly good way to represent a function, but it is handier to have a function in a form that operations like `slice_plot()` and `D()` can be applied to. Another way to look at things is that, mathematically, the solution to a differential equation should be a ***continuous-time function***. Fortunately, we have at hand the ***interpolation*** techniques covered in Chapter `r Chaps$splines` to carry out the construction of a continuous-time function from a tabular representation. The R/mosaic function `integrateODE()` connects together the iteration and interpolation to provide a solution that is in the form of continuous-time function(s).
+::: {#try-iterate style="display: none;"}
+:::
+::: {.callout-important}
+## @try-iterate Iterate vs integrateODE
+
+The previous example used `Iterate()` to solve a differential equation. The output of the iteration was a data frame containing values for the solution at discrete times: 0, 0.1, 0.2, and so on. A data table is a perfectly good way to represent a function, but it is handier to have a function in a form that operations like `slice_plot()` and `D()` can be applied to. Another way to look at things is that, mathematically, the solution to a differential equation should be a ***continuous-time function***. Fortunately, we have at hand the ***interpolation*** techniques covered in Chapter `r Chaps$splines` to carry out the construction of a continuous-time function from a tabular representation. The R/mosaic function `integrateODE()` connects together the iteration and interpolation to provide a solution that is in the form of continuous-time function(s).
 
 Use the R/mosaic function `integrateODE()` to solve differential equations numerically. It is a specialized function that handles sets of ***first-order differential equations***, but any high-order differential equation can be separated into a set of first-order equations. 
 
 To illustrate, this command will solve the differential equation $\partial_t x = x (1-x)$ that we took on in the previous example with `Iterate()`.
-```{r}
+
+```{webr-r}
 Soln2 <- integrateODE(dx ~ x*(1-x), x = 0.2,
                       bounds(t=0:10), dt=0.01)
 ```
@@ -235,19 +250,20 @@ The next argument is the initial condition. We are starting the integration at $
 
 The output of `integrateODE()` is an R structure of a type called a "list" that is new to us. The list contains the function(s) created by `integrateODE()` which you refer to by name (`x`) using a special form of R punctuation `$` suited to lists.. In other words, `Soln2$x` will be a function, which you can plot like any other function, for instance:
 
-```{r}
+```{webr-r}
 slice_plot(Soln2$x(t) ~ t, bounds(t=0:10))
 ```
 
 This use of the R symbol `$` is new to us. We won't emphasize it here. Instead, we'll use the `traj_plot()` graphics function (introduced in @sec-splines) which already knows how to access the functions created by `integrateODE()`. 
 
-```{r}
+```{webr-r}
 traj_plot(x(t) ~ t, Soln2, bounds(t=0:10))
 ```
 
 An important feature of `integrateODE()` is its ability to handle *sets* of first-order differential equations. For instance, the rabbit/fox system $$\partial_t r = 0.66\, r - 1.33\, r f\\
 \partial_t f = -f + rf$$ will be integrated by this command:
-```{r}
+
+```{webr-r}
 Eco_soln <- integrateODE(
   dr ~ 0.66*r - 1.33*r*f, 
   df ~     -f +      r*f,
@@ -256,17 +272,16 @@ Eco_soln <- integrateODE(
 ```
 You can plot the time series using `slice_plot()`
 
-```{r}
+```{webr-r}
 #| label: fig-fox-rabbit-ts
 #| fig-cap: "Times series of the rabbit and fox densities."
 pA <- traj_plot(r(t) ~ t, Eco_soln, bounds(t=0:5)) |> gf_labs(title="Rabbits")
 pB <- traj_plot(f(t) ~ t, Eco_soln, bounds(t=0:5)) |> gf_labs(title="Foxes")
-gridExtra::grid.arrange(pA, pB, ncol=2)
 ```
 
 To plot the trajectory, simply change the tilde expression used in `traj_plot()`.  which creates a time series plot, `traj_plot()` shows the trajectory.
 
-```{r}
+```{webr-r}
 traj_plot(f(t) ~ r(t), Eco_soln, nt=10)
 ```          
 :::
@@ -312,7 +327,7 @@ Not all differential equations can be separated in this way, and even for those 
 ```{r echo=FALSE, message=FALSE}
 #| label: fig-diff-Euler-separation
 #| fig-cap: "The difference between the Euler and the symbolic solution to $\\partial_t x = x (1-x)$ as a fraction of the symbolic solution. At the worst, the Euler solution is off by 1.5 parts in one-million."
-#| fig-cap-location: margin
+#| 
 Euler <- integrateODE(dx ~ x*(1-x), x=0.01, 
                       bounds(t=0:20), dt=0.1)
 traj_plot((Symb_soln(t, A=1/99) - x(t))/Symb_soln(t, A=1/99) ~ t, 

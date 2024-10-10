@@ -23,10 +23,12 @@ USPop <- USPop |>
 
 In the 230 years spanned by the census data, the US population has grown 100-fold, from about 4 million in 1790 to about 330,000,000 in 2020.
 
-```{r echo=FALSE, fig.margin=TRUE} 
-#| label: fig-pop-graph
-#| fig-cap: "US population since 1790. Left: linear axes. Right: semi-log axes"
-#| fig-cap-location: margin
+::: {#fig-pop-graph}
+```{r echo=FALSE} 
+#| layout-ncol: 2
+#| fig-subcap: 
+#| - Linear scale
+#| - Semi-log scale
 popfun <- spliner(population ~ year, data = USPop)
 USPop <- USPop %>%
   mutate(yearly_growth_rate = 100*((1+growth_rate/100)^(1/10) - 1))
@@ -42,36 +44,33 @@ P2 <- gf_point(population ~ year, data = USPop) %>%
   gf_labs(y="Population (millions)") %>%
   gf_refine(scale_y_log10(breaks=100*(0:5))) %>%
   gf_lims(x = c(1790, 2100))
-gridExtra::grid.arrange(P1, P2, ncol=2)
+P1
+P2
 ```
 
+US population since 1790
+:::
 
 
 
 It is tempting to look for simple patterns in such data. Perhaps the US population has been growing exponentially. A semi-log plot of the same data suggests that the growth is only very roughly exponential. A truly exponential process would present as a curve with a constant derivative, but the derivative of the function in the graph is decreasing over the centuries. 
 
-
-```{r echo=FALSE, fig.margin=TRUE}
-#| label: fig-pop-graph-log
-#| fig-cap: "Population since 1790."
-
-```
-
 Insofar as the slope over the semi-log graph is informative, it amounts to this quantity:
 $$\partial_t \ln(\text{pop}(t)) = \frac{\partial_t\, \text{pop}(t)}{\text{pop}}$$
 This is the *per-capita* rate of growth, that is, the rate of change in the population divided by the population. Conventionally, this fraction is presented as a percentage: percentage growth in the population per year, as in @fig-pop-growth.
 
+::: {#fig-pop-growth}
 ```{r echo=FALSE}
-#| label: fig-pop-growth
-#| fig-cap: "Annual per capita growth rate of the US population (percent)"
-#| fig-cap-location: margin
 growth_mod <- lm(yearly_growth_rate ~ year, data = USPop)
 growth_fun <- makeFun(growth_mod)
 gf_point(yearly_growth_rate ~ year, data = USPop) %>%
   gf_lims(x = c(1790, 2100), y=c(-.5,4)) %>%
   gf_lm() %>%
-  gf_labs(y = "Per capita growth rate (% per year)") 
+  gf_labs(y = "% growth per year") 
 ```
+
+Annual per capita growth rate of the US population (percent)
+:::
 
 The dots in the graph are a direct calculation from the census data.  There is a lot of fluctuation, but an overall trend stands out: the population growth rate has been declining since the mid-to late 1800s. The deviations from the trend are telling and correspond to historical events. There is a relatively low growth rate seen from 1860 to 1870: that is  the effect of the US Civil War. The Great depression is seen in the very low growth from 1930 to 1940. Baby Boom: look at the growth from 1950-1960. The bump from 1990 to 2000? Not coincidentally, the 1990 Immigration Act substantially increased the yearly rate of immigration. 
 
