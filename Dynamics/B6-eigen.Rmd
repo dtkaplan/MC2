@@ -60,17 +60,17 @@ For the example, we will calculate a trajectory starting at the initial conditio
 traj <- integrateODE(dx ~ x + y, dy ~ 2*x, x=-1.1, y=2.1, domain(t=0:2))
 traj_plot(y(t) ~ x(t), traj)
 ```
-
-```{r echo=FALSE}
-#| label: fig-vec-example-1
-#| fig-cap: "The trajectory calculated starting at (-1.1, 2.1). The graph is annotated with the vectors $\\vec{u_1}$ and $\\vec{u_2}$ and the flow field."
-#| 
+::: {#fig-vec-example-1}
 traj_plot(y(t) ~ x(t), traj, inherit=FALSE, nt=2) %>%
   gf_segment(0 + -3 ~ 0 + 1, color="magenta", inherit=FALSE, arrow=arrow(ends="last", type="closed", length=unit(2, "mm"))) %>%
   gf_segment(0 + 0 ~ 0 + 1, color="blue", inherit=FALSE, arrow=arrow(ends="last",type="closed", length=unit(2, "mm"))) %>%
   flow_field(dx ~ x + y, dy ~ 2*x, domain = bounds(x=-2:2, y=-3:2), color="gray", npts=15) %>%
   gf_refine(coord_fixed())
 ```
+
+The trajectory calculated starting at (-1.1, 2.1). The graph is annotated with the vectors $\\vec{u_1}$ and $\\vec{u_2}$ and the flow field.
+:::
+
 The initial condition (marked "0" in @fig-vec-example-1 is, like any other point in the state space, a linear combination of $\vec{u_1}$ and $\vec{u_2}$. We can find the scalar coefficients of the linear combination using any of the methods presented in Block 5, for instance the telescope method. 
 We will illustrate with `qr.solve()`:
 
@@ -90,9 +90,10 @@ traj_u2 <- integrateODE(dx ~ x + y, dy ~ 2*x, x=1, y= 0, domain(t=0:2))
 
 @fig-vec-example-2 shows these trajectories.
 
+::: {#fig-vec-example-2}
 ```{r echo=FALSE}
-#| label: fig-vec-example-2
-#| fig-cap: "Trajectories from the initial conditions $\\color{magenta}{\\vec{u_1}}$ and $\\color{blue}{\\vec{u_2}}$."
+#| label: 
+#| fig-cap: ""
 #| 
 traj_plot(y(t) ~ x(t), traj_u1, bounds(t=0:1),  color="magenta", nt=1) %>%
   traj_plot(y(t) ~ x(t), traj_u2, bounds(t=0:1), color="blue", nt=1) %>%
@@ -108,6 +109,9 @@ traj_plot(y(t) ~ x(t), traj_u1, bounds(t=0:1),  color="magenta", nt=1) %>%
              color="gray", npts=15) %>%
   gf_refine(coord_fixed())
 ```
+
+Trajectories from the initial conditions $\color{magenta}{\vec{u_1}}$ and $\color{blue}{\vec{u_2}}$.
+:::
 
 At first glance, the two trajectories $\vec{u_1(t)}$ and $\vec{u_2(t)}$ in @fig-vec-example-2 that start from $\vec{u_1}$ and $\vec{u_2}$ might not look much like the trajectory in @fig-vec-example-1 that starts from $\vec{w(0)} = -0.7 \vec{u_1} - 0.4 \vec{u_2}$. But in fact there is a very simple relationship between the trajectories:
 $$\vec{w(t)} = -0.7 \vec{u_1(t)} - 0.4 \vec{u_2(t)}\ .$$
@@ -125,7 +129,7 @@ In the previous section, we saw that the solution to any linear differential equ
 
 In this section, we will demonstrate that there is a particular way of selecting $\vec{u_1}$ and $\vec{u_2}$ that makes the solutions $\vec{u_1(t)}$ and $\vec{u_2(t)}$ have a very simple, purely exponential format. The vectors to be chosen are the ***eigenvectors*** of the matrix $\left[\begin{array}{cc}a&b\\c&d\end{array}\right]$. We will call these eigenvectors $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$. (This use of the Greek letter $\Lambda$ (capital "lambda") and it is lower-case version $\lambda$, is conventional in mathematics, physics, and engineering. So it is worth learning to identify the letters.) 
 
-Our task in this section is to show how to compute the eigenvectors $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$ and that the solutions $\vec{\Lambda_1(t)}$ and $\vec{\Lambda_2(t)}$ are in fact simple exponentials. In @sec-second-order-de we will derive the formula for the eigenvectors. Here, we will use the R function `eigen()` to do the calculations for us.
+Our task in this section is to show how to compute the eigenvectors $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$ and that the solutions $\vec{\Lambda_1(t)}$ and $\vec{\Lambda_2(t)}$ are in fact simple exponentials. @sec-second-order-de derives the formula for the eigenvectors. Here, we will use the R function `eigen()` to do the calculations for us.
 
 ::: {#try-eigenvectors style="display: none;"}
 :::
@@ -152,15 +156,19 @@ The calculation also produces ***eigenvalues***. Here that is  $\lambda_1 = 2$ a
 
 We can see what's special about $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$ by plotting them along with the flow field, as in @fig-eigen-flow.
 
+::: {#fig-eigen-flow}
 ```{r echo=FALSE}
 #| label: fig-eigen-flow
-#| fig-cap: "The eigenvectors for the $\\left[\\begin{array}{cc}1&1\\\\2&0\\end{array}\\right]$ plotted along with the flow."
+#| fig-cap: ""
 #| 
   gf_segment(0 + 0.7072 ~ 0 + 0.7071, color="magenta", inherit=FALSE, arrow=arrow(ends="last", type="closed", length=unit(2, "mm"))) %>%
   gf_segment(0 + 0.8944 ~ 0 + -0.4472, color="blue", inherit=FALSE, arrow=arrow(ends="last",type="closed", length=unit(2, "mm"))) %>%
   flow_field(dx ~ x + y, dy ~ 2*x, domain = bounds(x=-1:1, y=-1:1), color="black", npts=15) %>%
   gf_refine(coord_fixed())
 ```
+
+The eigenvectors for the $\left[\begin{array}{cc}1&1\\2&0\end{array}\right]$ plotted along with the flow.
+:::
 
 The eigenvectors mark the directions where the flow is either directly toward the fixed point or directly away from it. Here, the flow on the subspace of $\color{magenta}{\vec{\Lambda_1}}$ is away from the fixed point, while the flow along the subspace of $\color{blue}{\vec{\Lambda_2}}$ is inward to the fixed point.
 

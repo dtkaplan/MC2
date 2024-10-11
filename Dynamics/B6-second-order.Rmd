@@ -56,12 +56,12 @@ A lot of the theory of second-order differential equations was developed in the 
 
 The importance of ballistics to Newton can be seen by a famous diagram he drew, shown in @fig-newton-ballistics. In the diagram, Newton traces the path of a ball shot horizontally from a cannon placed at the top of a mountain. 
 
-```{r echo=FALSE}
-#| label: fig-newton-ballistics
-#| fig-cap: "Newton's diagram showing ballistic motion under the force of gravity." 
-#| 
-knitr::include_graphics("www/Newton-cannon.png")
-```
+
+::: {#fig-newton-ballistics}
+![](www/Newton-cannon.png){align="center" width="60%"}
+
+Newton's diagram showing ballistic motion under the force of gravity.
+:::
 
 Since the motion in Newton's diagram has both vertical and horizontal components, we will need *two* second-order differential equations:
 
@@ -94,7 +94,7 @@ traj <- integrateODE(
 # traj_plot(y(t) ~ x(t), traj)
 # traj_plot(v(t) ~ u(t), traj) 
 ```
-::: {fig-cannon-shot-1}
+::: {#fig-cannon-shot-1}
 ```{r echo=FALSE}
 #| fig-cap: ""
 P1 <- traj_plot(y(t) ~ x(t), traj) %>%
@@ -193,7 +193,7 @@ Instead of using $A \sin(\omega t)$ as the *ansatz* we could have used $A \sin(\
 
 ## Exponential or sinusoid?
 
-In @sec-eigenvalues, we established that solutions to second-order linear differential equations have the form $m_1 e^{\lambda_1 t} + m_2 e^{\lambda_2 t}$. Yet in the previous section, we saw one linear second-order differential equation, $\partial_{tt} y = - \omega^2 y$ where the solution is a linear combination of a sine and a cosine function: $y(t) = A \sin(\omega t) + B \cos(\omega t)$ with $\omega = \sqrt{\frac{s}{m}}$.
+@sec-eigenvalues established that solutions to second-order linear differential equations have the form $m_1 e^{\lambda_1 t} + m_2 e^{\lambda_2 t}$. Yet in the previous section, we saw one linear second-order differential equation, $\partial_{tt} y = - \omega^2 y$ where the solution is a linear combination of a sine and a cosine function: $y(t) = A \sin(\omega t) + B \cos(\omega t)$ with $\omega = \sqrt{\frac{s}{m}}$.
 
 How is it possible for the solution to be both in the form of a linear combination of exponentials and a linear combination of sine and cosine? Sinusoids oscillate up and down and up and down, whereas exponentials are monotonic. 
 
@@ -216,7 +216,7 @@ The "imaginary" in the section title is used in its mathematical sense. In inter
 
 You will only get comfortable with "imaginary" numbers when you start to work with them extensively, as happens in physics and engineering courses. Our goal here is merely to increase your awareness of imaginary numbers and some of the ways they are used in the sciences. To that end, we offer three different approaches to understanding the function $e^{i\omega t}$.
 
-1. Basic, pragmatic understanding. This is the level of understanding that you **must have** to make sense of the rest of this chapter and @sec-forcing. Here it is:
+1. Basic, pragmatic understanding. This is the level of understanding that you **must have** to make sense of the rest of this chapter. Here it is:
 $$e^{i\omega t}\ \text{is simply a shorthand for}\ \cos(\omega t).$$
 So whenever you see $e^{i \omega t}$, think of $\cos(\omega t)$.
 
@@ -261,16 +261,16 @@ Notice that the real part of the result oscillates between negative and positive
 
 We can get a clearer picture by plotting $e^{i\omega t}$ over the domain $0 < t < 10$. As an example, in @fig-complex-exponential-plot we will set $\omega = 2$. We need to be a little careful, since our plotting functions are not arranged to display complex numbers. But there is an easy workaround: plot the "real" and "imaginary" parts separately. The R operators `Re()` and `Im()` do this work.
 
+::: {#fig-complex-exponential-plot}
 ```{r echo=TRUE}
-#| label: complex-exponential-plot
-#| fig-cap: "The real and imaginary parts of $e^{i \\omega t}$ plotted as a function of $t$."
-#| 
 f <- makeFun(exp(1i * omega * t) ~ t, omega = 2)
 slice_plot(Re(f(t)) ~ t, 
-           bounds(t=0:10), color = "magenta") %>%
+           domain(t=0:10), color = "magenta") |>
   slice_plot(Im(f(t)) ~ t, color="brown")
 ```
 
+The real and imaginary parts of $e^{i \omega t}$ plotted as a function of $t$.
+:::
 
 ## Damping
 
@@ -306,15 +306,17 @@ Result: an exponentially decaying sinusoid.
 
 To graph this function, we need to choose appropriate numerical values for $r$ and $b$. Let's set $r=1$. Since $r^2 < 4b$, we must have $\frac{1}{4} < b$: we will choose $b = 6$ which meets this criterion. @fig-decay-sinusoid1 shows the solution to the differential equation:
 
+::: {#fig-decay-sinusoid1}
 ```{r}
-#| label: fig-decay-sinusoid1
-#| fig-cap: "An exponentially decaying sinusoid arising from $r = 1$ and $b = 6$."
-#| 
 traj <- integrateODE(dv~ -r*v - b*y, dy ~ v, 
                      v=10, y=0, r=1, b=6, 
                      bounds(t=0:20))
 traj_plot(y(t) ~ t, traj)
 ```
+
+An exponentially decaying sinusoid arising from $r = 1$ and $b = 6$.
+:::
+
 This is the situation with a swinging door. You shove it to swing open, after which it oscillates with a decreasing amplitude.
 
 
@@ -338,13 +340,11 @@ Finally, consider the case where $r^2 - 4 b = 0$, a balance between resistance a
 
 ::: {#fig-critically-damped}
 ```{r echo=TRUE}
-#| label: fig-critically-damped
-#| fig-cap: ""
-#| 
 traj3 <- integrateODE(dv~ -r*v - b*y, dy ~ v, v=10, y=0, r=1, b=0.25, bounds(t=0:20))
 traj_plot(y(t) ~ t, traj3) %>%
   gf_lims(y = c(0, NA))
 ```
+
 A critically damped oscillation with $r=1$, $b=0.25$.
 :::
 

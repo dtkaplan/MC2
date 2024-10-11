@@ -1,6 +1,6 @@
 # Vector-valued functions
 
-The functions we have worked with up to now have **outputs** that are single quantities: e.g., height or speed or fuel consumed. In @sec-cubic-spline, to present the programmed position versus time of a robot arm, we needed to construct two functions, one giving the x-coordinate of the arm, the other giving the y-coordinate. Using differentiation with respect to time, we can calculate from the x- and y-position functions the x- and y-velocity functions and the x- and y-acceleration functions. All six functions are shown in @fig-robot-functions.
+The functions we have worked with up to now have **outputs** that are single quantities: e.g., height or speed or fuel consumed. @sec-cubic-spline presents the programmed position versus time of a robot arm implemented by constructing two functions: one gives the x-coordinate of the arm; the other the y-coordinate. Using differentiation with respect to time, we can calculate from the x- and y-position functions the x- and y-velocity functions and the x- and y-acceleration functions. All six functions are shown in @fig-robot-functions.
 
 ```{r results="hide"}
 pos_x <- spliner(x ~ t, data = Robot_stations)
@@ -11,9 +11,8 @@ accel_x <- D(xfun(t) ~ t & t)
 accel_y <- D(yfun(t) ~ t & t)
 ```
 
+::: {#fig-robot-functions}
 ```{r echo=FALSE}
-#| label: fig-robot-functions
-#| fig-cap: "The position, velocity, and acceleration of the robot arm as a function of time. The x-coordinate is the left column, the y-coordinate the right column."
 P1 <- slice_plot(pos_x(t) ~ t, domain(t=1:15)) %>%
   gf_labs(y = "x position")
 P2 <- slice_plot(pos_y(t) ~ t, domain(t=1:15)) %>%
@@ -29,6 +28,9 @@ P6 <- slice_plot(accel_y(t) ~ t, domain(t=1:15), color="magenta") %>%
                    
 gridExtra::grid.arrange(P1, P2, P3, P4, P5, P6, ncol=2 )
 ```
+
+The position, velocity, and acceleration of the robot arm as a function of time. The x-coordinate is the left column, the y-coordinate the right column.
+:::
 
 Relating the various functions in @fig-robot-functions is, at best, difficult. So difficult, in fact, that you may have trouble perceiving any relationships between the x- and y-functions or between, say, velocity and position.
 
@@ -48,9 +50,8 @@ The advantage of having pulled out the plant by the roots is that we can place i
 
 To illustrate, consider the movement of the robot arm. In particular, we will look at both velocity $\partial_t\, pos(t)$ and acceleration $\partial_{tt}\, pos(t)$.  @fig-robot-functions shows this as four distinct graphs, but @fig-robot-vectors does it in just a single graph.
 
+::: {#fig-robot-vectors}
 ```{r echo=FALSE}
-#| label: fig-robot-vectors
-#| fig-cap: "A vector presentation of the velocity (blue) and acceleration (magenta) of the robot arm as functions of time."
 set.seed(102)
 Vecs <- tibble(
   t = seq(1, 15, by=1),
@@ -89,3 +90,6 @@ gf_segment(y0 + vy ~ t + vx, data = Vecs, color="blue",
            scale_x_continuous(limits=c(.5,15.4), breaks = 1:15)) %>%
   gf_labs(y="")
 ```
+
+A vector presentation of the velocity (blue) and acceleration (magenta) of the robot arm as functions of time.
+:::

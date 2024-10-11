@@ -49,15 +49,15 @@ The standard parameterization for the exponential function is $e^{kt}$. The para
 $$0.2\, \text{day}^{-1} \cdot 10\, \text{days} = 2\ .$$
 The use of a parameter like $k$ does more than handle the formality of converting input quantities into pure numbers. Having a choice for $k$ allows us to stretch or compress the function to align with the data. @fig-covid-exp2 plots the modeling version of the exponential function to the COVID-case data:
 
+::: {#fig-covid-exp2}
 ```{r echo=FALSE, warning=FALSE}
-#| label: fig-covid-exp2
-#| fig-cap: "Using the function form $A e^{kt}$ with parameters $k=0.19$ per day and $A = 0.0573$ cases (in 10000s) matches the COVID-case data well."
 Pcases %>%
   slice_plot(.0573*exp(0.19*t) ~ t, bounds(t=0:31), color="blue", label_x=0.5,
              label_text="A exp(k t)\nA = 593 cases\nk=0.19 per day\n", label_vjust = "left")
 ```
 
-
+Using the function form $A e^{kt}$ with parameters $k=0.19$ per day and $A = 0.0573$ cases (in 10000s) matches the COVID-case data well.
+:::
 
 ## Parallel scales
 
@@ -83,9 +83,9 @@ $$\text{cm(inches)} \equiv 2.54 \, (\text{inches}-0)\ .$$
 Both of these scale conversion functions have the form of the straight-line function, which can be written as 
 $$f(x) \equiv a x + b\ \ \ \text{or, equivalently as}\ \ \ \ f(x) \equiv a(x-x_0)\ ,$$ where $a$, $b$, and $x_0$ are ***parameters***.
 
-In @sec-input-scaling, we will use the $ax + b$ form of scale conversion, to scale the **input** to pattern-book functions, but we could equally well have used $a(x-x_0)$.
+@sec-input-scaling will use the $ax + b$ form of scale conversion to scale the **input** to pattern-book functions. But we could equally well have used $a(x-x_0)$.
 
-In @sec-output-scaling we will introduce a second scale conversion function, for the **output** from pattern-book functions. That scaling will also be in the form of a straight-line function: $A x + B$. The use of the lower-case parameter names ($a$, $b$) versus the upper-case parameter names ($A$, $B$) will help us distinguish the two different uses for scale conversion, namely ***input scaling*** versus ***output scaling***.
+@sec-output-scaling introduces a second scale conversion function, for the **output** from pattern-book functions. That scaling will also be in the form of a straight-line function: $A x + B$. The use of the lower-case parameter names ($a$, $b$) versus the upper-case parameter names ($A$, $B$) will help us distinguish the two different uses for scale conversion, namely ***input scaling*** versus ***output scaling***.
 
 ## Input scaling {#sec-input-scaling}
 
@@ -128,9 +128,8 @@ scale_shift(0, 53, r=2, x0=-1, nticks=10) %>%
 
 By comparing the two axes, we can estimate that $\color{blue}{10} \rightarrow 4$ and $\color{blue}{100} \rightarrow 49$. With these two coordinate points, we can find the straight-line function that turns $\color{blue}{\mathbf{\text{blue}}}$ into **black** by plotting the coordinate pairs $(\color{blue}{0},1)$ and $(\color{blue}{100}, 51)$ and finding the straight-line function that connects the points.
 
+::: {#fig-blue-to-black-1}
 ```{r echo=FALSE, warning=FALSE}
-#| label: fig-blue-to-black-1
-#| fig-cap: "The input scaling function must transform 10 into 4 and transform 100 into 49 to properly arrange the time scale with the scale for the pattern-book function."
 Pts <- tibble(x=c(10, 100), y=c(4, 49), text=c("(10,4)","(100,49)"))
 gf_point(y ~ x, data = Pts) %>%
   gf_vline(xintercept = ~ x, color="blue", alpha=0.5) %>%
@@ -150,15 +149,17 @@ gf_point(y ~ x, data = Pts) %>%
   gf_refine(coord_fixed())
 ```
 
+The input scaling function must transform 10 into 4 and transform 100 into 49 to properly arrange the time scale with the scale for the pattern-book function.
+:::
+
 You can calculate for yourself that the function that relates $\color{blue}{\mathbf{\text{blue}}}$ to **black** is $$t(\color{blue}{time}) = \underbrace{\frac{1}{2}}_a \color{blue}{time}  \underbrace{-1\LARGE\strut}_b$$
 
 Replacing the pure number $t$ as the input to pattern-book $\sin(t)$ with the transformed $\frac{1}{2} \color{blue}{time}$ we get a new function:
 $$g(\color{blue}{time}) \equiv \sin\left(\strut {\small\frac{1}{2}}\color{blue}{time} - 1\right)\ .$$
 @fig-tides-ri2 plots $g()$ along with the actual tide data.
 
+::: {#fig-tides-ri2}
 ```{r echo=FALSE}
-#| label: fig-tides-ri2
-#| fig-cap: "The sinusoid with input scaling (black) aligns nicely with the tide-level data."
 g1 <- ggplotGrob(Pa)
 Pb2 <- slice_plot(sin(time/2 - 1) ~ time,
                   bounds(time=0:107), npts=500) %>%
@@ -176,6 +177,9 @@ grid::grid.draw(g)
  
 #gridExtra::grid.arrange(Pa, Pb2,widths=c(.95, 1), ncol=1)
 ```
+
+The sinusoid with input scaling (black) aligns nicely with the tide-level data.
+:::
 
 ## Output scaling {#sec-output-scaling}
 
@@ -205,9 +209,8 @@ scale_shift(-1.5, 1.75, r=.5, x0=-2, color="magenta", nticks=10) %>%
 
 We can figure out parameters $A$ and $B$ by finding the straight-line function that connects the coordinate pairs $(-1, \color{magenta}{0.5})$ and $(1, \color{magenta}{1.5})$ as in @fig-black-to-magenta-1.
 
+::: {#fig-black-to-magenta-1}
 ```{r echo=FALSE}
-#| label: fig-black-to-magenta-1
-#| fig-cap: "Finding the straight-line function that converts $-1 \\rightarrow \\color{magenta}{0.5}$ and converts $1 \\rightarrow \\color{magenta}{1.5}$"
 Pts <- tibble(x=c(-1, 1), y=c(0.5, 1.5), text=c("(-1,0.5)","(+1,1.5)"))
 gf_point(y ~ x, data = Pts) %>%
   gf_vline(xintercept = ~ x, color="black", alpha=0.5) %>%
@@ -226,6 +229,10 @@ gf_point(y ~ x, data = Pts) %>%
              size=3, alpha=.4) %>%
   gf_refine(coord_fixed())
 ```
+
+Finding the straight-line function that converts $-1 \rightarrow \color{magenta}{0.5}$ and converts $1 \rightarrow \color{magenta}{1.5}$
+:::
+
 You can confirm for yourself that the function that does the job is $${\color{magenta}{\text{level}}} = 0.5 g({\color{blue}{time}}) + 1\ .$$
 
 
@@ -244,7 +251,7 @@ $$\text{model}(x) \equiv A\, {g_{pattern\_book}}(ax + b) + B\ ,$$ where $g_{patt
 
 1. Pick the specific pattern-book function whose shape resembles that of the relationship you are trying to model. For instance, we picked $e^x$ for modeling COVID cases versus time (at the start of the pandemic). We picked $\sin(x)$ for modeling tide levels versus time.
 
-2. Find numerical values for the parameters $A$, $B$, $a$, and $b$. In @sec-fitting-by-feature shows some ways to make this part of the task easier.
+2. Find numerical values for the parameters $A$, $B$, $a$, and $b$.  @sec-fitting-by-feature shows some ways to make this part of the task easier.
 
 It is remarkable that models of a very wide range of real-world relationships between pairs of quantities can be constructed by picking one of a handful of functions, then scaling the input and the output. As we move on to other Blocks in *MOSAIC Calculus*, you will see how to generalize this to potentially complicated relationships among more than two quantities. That is a big part of the reason you're studying calculus.
 

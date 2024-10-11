@@ -18,22 +18,20 @@ For ease of reference, we will name the dynamical function for the rest of this 
 
 The flow itself appears as the example in @fig-phase-line-intro. The state space is the number line and the flow vectors are, as usual arrows that point from place to place in the state space.
 
-```{r echo=FALSE}
-#| label: fig-phase-line-intro
-#| fig-cap: "A one-dimensional state space shown with its flow vectors."
-#| 
+::: {#fig-phase-line-intro}
 # raw <- doodle_fun( ~ x, seed=920)
 # Znotes::phase_line(raw(x) - 2 ~ x, bounds(x=-4:4),
 #                    nix_dyn=TRUE, narrows=25,
 #                    transform=function(x) x^.75) 
-knitr::include_graphics("www/phase-line.png")
-```
+![](www/phase-line.png)
+
+A one-dimensional state space shown with its flow vectors.
+:::
+
 Because the state space can be drawn without using the vertical coordinate of the page, we can use that vertical coordinate to show something else: the dynamical function, as in @fig-phase-line-intro2.
 
+::: {#fig-phase-line-intro2}
 ```{r echo=FALSE}
-#| label: fig-phase-line-intro2
-#| fig-cap: "A one-dimensional state space shown with its flow vectors."
-#| 
 raw <- doodle_fun( ~ x, seed=920)
 Znotes::phase_line(raw(x) - 2 ~ x, bounds(x=-4:4), 
                    nix_dyn=FALSE, 
@@ -41,40 +39,47 @@ Znotes::phase_line(raw(x) - 2 ~ x, bounds(x=-4:4),
                    transform=function(x) x^.75) 
 ```
 
+A one-dimensional state space shown with its flow vectors.
+:::
+
 The correspondence between the dynamical function and the flow field is easy to see in such a presentation. Where the output of the dynamical is large and positive (say, near $x=0$), the flow is in the positive direction and relatively fast, as shown by a long, right-pointing flow vector. When the output of the dynamical function is negative (around $x=3$, for instance) the flow is in the negative direction: a left pointing arrow.
 
 Near a zero crossing of the dynamical function, the flow arrows are negligibly short: the state velocity is very slow. Indeed, at the zero crossings, the state velocity is exactly zero. Such zero crossings are called ***fixed points***: since the state velocity is zero, the state never moves!
 
 We can see the dynamics near fixed points more closely by zooming in, as in @fig-phase-line-intro3 which shows two of the system's fixed points.
 
+::: {#fig-phase-line-intro3}
 ```{r echo=FALSE}
-#| label: fig-phase-line-intro3
-#| fig-cap: "Zooming in on the flow for the system shown in \\@fig-phase-line-intro2."
-#| 
 raw <- doodle_fun( ~ x, seed=920)
 Znotes::phase_line(raw(x) - 2 ~ x, bounds(x=-3.5:-1.25), 
                    nix_dyn=FALSE, 
                    narrows=15, 
                    transform=function(x) x^.75) 
 ```
+
+Zooming in on the flow for the system shown in @fig-phase-line-intro2.
+:::
+
 Notice in @fig-phase-line-intro3 that the flow is slower the nearer the state is to the fixed point, but it is only exactly zero at the fixed point.
 
 A calculus technique you will be familiar with from previous Blocks is zooming in a region that we want to examine in detail. 
 
+::: {#fig-phase-line-zoom1}
 ```{r echo=FALSE}
-#| label: fig-phase-line-zoom1
-#| fig-cap: "Zooming in closely on each of the fixed points seen in \\@fig-phase-line-intro3."
+#| layout-ncol: 2
 raw <- doodle_fun( ~ x, seed=920)
-pA <- Znotes::phase_line(raw(x) - 2 ~ x, bounds(x=-3.07:-3.05), 
+Znotes::phase_line(raw(x) - 2 ~ x, bounds(x=-3.07:-3.05), 
                    nix_dyn=FALSE, 
                    narrows=15, 
                    transform=function(x) x^1.03) 
-pB <- Znotes::phase_line(raw(x) - 2 ~ x, bounds(x=-1.59:-1.58), 
+Znotes::phase_line(raw(x) - 2 ~ x, bounds(x=-1.59:-1.58), 
                    nix_dyn=FALSE, 
                    narrows=15, 
                    transform=function(x) x^1.03) 
-gridExtra::grid.arrange(pA, pB, ncol=2)
 ```
+
+Zooming in closely on each of the fixed points seen in @fig-phase-line-intro3.
+:::
 
 The short pieces of the dynamical function shown in @fig-phase-line-zoom1, are, like short pieces of any continuous function: almost exactly straight lines. For the left fixed point, the dynamical function is $f(x) \approx -2.804 (x + 3.055)$ while for the right it is $f(x) \approx 5.065 (x + 1.586)$. In Section \@ref(symbolic-solutions-ODE) we found symbolically the solutions for dynamical functions in this form. 
 For $x_0\approx-3.055$ the solution is  $$x(t) \approx (x_0 + 3.055)e^{-2.804 t} - 3.055\ ,$$ while for $x_0\approx -1.586$ the solution is $$x(t) \approx (x_0 +1.586)\, e^{5.065 t} - 1.586\ .$$
@@ -111,10 +116,8 @@ A stand-alone, interactive version of this diagram is available at <../www/Stabi
 
 So long as two dynamical systems  have similar fixed points with the same stability, their trajectories will be much the same. For example, our model dynamical function might be  different in detail, as in @fig-phase-line-random, and still produce the same behavior.
 
+::: {#fig-phase-line-random}
 ```{r echo=FALSE, warning=FALSE}
-#| label: fig-phase-line-random
-#| fig-cap: "The dynamical function shown in black is a distortion of $f(x)$ from the previous plots. Yet the flow field is practically identical and leads to the same outcomes as $f(x)$ for any initial condition."
-#| 
 Pts <- tibble::tibble(x=seq(-4,4,length=100),
                       y=rnorm(length(x))/2)
 raw <- doodle_fun( ~ x, seed=920)
@@ -125,14 +128,15 @@ Znotes::phase_line(3*sin((raw(x) - 2)/5) ~ x,
   slice_plot(raw(x) - 2 ~ x, color="magenta", alpha=.5)
 ```
 
+The dynamical function shown in black is a distortion of $f(x)$ from the previous plots. Yet the flow field is practically identical and leads to the same outcomes as $f(x)$ for any initial condition.
+:::
+
 So long as two flows have similar fixed points with the same stability, their trajectories will be much the same. Consequently, studying the fixed points without worrying about the details of the dynamics gives a huge amount of information about the system.
 
 For example, @fig-many-trajs-1 shows a score of different time series following the solutions from a score of initial conditions. The long-term behaviors for all the time series is similar: they converge to one or another of the stable fixed points.
 
+::: {#fig-many-trajs-1}
 ```{r echo=FALSE}
-#| label: fig-many-trajs-1
-#| fig-cap: "Time series from the differential equation $\\partial_t x = f(x)$ starting at many initial conditions. The locations of the three fixed points are marked with horizontal lines. All the solutions convert to one or the other of the two stable fixed points in the system, and depart from the unstable fixed point."
-#| 
 raw <- doodle_fun( ~ x, seed=920)
 Pts <- tibble(
   x = seq(-4, 4, length=100),
@@ -157,6 +161,9 @@ P |> gf_hline(yintercept = ~-3.06, color="blue",
            size=2, alpha=.3) %>%
   gf_labs(y="Initial condition")
 ```
+
+Time series from the differential equation $\partial_t x = f(x)$ starting at many initial conditions. The locations of the three fixed points are marked with horizontal lines. All the solutions convert to one or the other of the two stable fixed points in the system, and depart from the unstable fixed point.
+:::
 
 It is worth pointing out a consequence of the mathematics of continuous functions: if a system with a continuous dynamical function has a region of state space with two different fixed points, there must be an unstable fixed point in between them. 
 
@@ -260,9 +267,8 @@ This biomass production model corresponds to a sustainable system. Once the biom
 
 But biomass production is not the only thing going on in the pasture. The grazing animals---let's imagine they are cows---are consuming the grass. To start very simply, suppose that each cow consumes amount $C$ of biomass each day. If there are $H$ cows, the total consumption is $H C$ per day. This modifies the dynamics to a slightly new form $$\partial_t v = r \,v(1-\frac{v}{K}) - HC$$. The original, ungrazed dynamics are compared with the grazed dynamics in @fig-grazing-comparison.
 
+::: {#fig-grazing-comparison}
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
-#| label: fig-grazing-comparison
-#| fig-cap: "Comparing the pasture dynamics for different herd sizes." #| 
 r = .3; K=10; C=0.1; H=3
 pA <- Znotes::phase_line(r*x*(1-x/K) ~ x, 
                    bounds(x=0:10.5),
@@ -294,6 +300,10 @@ pD <- Znotes::phase_line(r*x*(1-x/K) - 8*C~ x,
   gf_lims(y=c(-1,1))
 gridExtra::grid.arrange(pA, pB, pC, pD, ncol=2)
 ```
+
+Comparing the pasture dynamics for different herd sizes.
+:::
+
 With grazing, the ***net*** growth of biomass is reduced due to the removal of the consumed biomass by the cows' consumption. For a moderate herd size, there is still a stable fixed point, but it is at a lower level of biomass than would be seen in the ungrazed field. But if the herd size is too large, the ecosystem completely collapses.
 
 This is an example of a tipping point or catastrophe. For moderate herd sizes, there remains a stable fixed point. A farmer might be tempted to add another cow to the pasture, and that is  sustainable: there is still a stable fixed point. Indeed, the movement of the stable fixed point might not even be noticed.  But add even one cow too many and the fixed point entirely disappears. Still, herd management can fix the problem; take away the cow that tipped the pasture and the fixed point will return.
@@ -304,28 +314,28 @@ This is an example of a tipping point or catastrophe. For moderate herd sizes, t
 ::: {.callout-note icon=false data-latex=""} 
 ## @thm-cows-eat-grass Cows eat grass
 
-In @sec-modeling-science-method we illustrated the iterative process for building models: using the results of a model to suggest possible improvements in the model. Let's look again at how cows eat grass.
+@sec-modeling-science-method illustrated the iterative process for building models: using the results of a model to suggest possible improvements in the model. Let's look again at how cows eat grass.
 
 Missing from the pasture model is a simple idea of how cows eat. If there is very little biomass, the cows cannot continue to eat their fill. Will the reduction in consumption per cow preserve the stable fixed point?
 
 In his *Nature* article, May modeled the consumption rate by a single cow with the functional form $$C(v) \equiv \frac{\beta v^2}{v_0 - v^2}$$ which is graphed for $\beta=0.1$ and $v_0 = 3$ in @fig-cow-consumption
 
+::: {#fig-cow-consumption}
 ```{r}
-#| label: fig-cow-consumption
-#| fig-cap: "Consumption of vegetation by a single cow as a function of the amount available in the pasture."
-#| 
 consumption <- makeFun((beta*v^2/(v0^2 + v^2))~ v, beta=0.1, v0=1)
 slice_plot(consumption(v) ~ v, bounds(v=0:10)) %>%
   gf_labs(y="Consumption (tons/day)", x="v: available biomass (tons)")
 ```
+
+Consumption of vegetation by a single cow as a function of the amount available in the pasture.
+:::
+
 You can recognize this as a form of sigmoid. When the amount of vegetation is very large, a cow will eat her fill. That is the saturation of the sigmoid. For small $v$, the cow needs to hunt around for vegetation tall enough to eat, reducing the consumption steeply.
 
 @fig-grazing-comparison2 modifies the pasture dynamics to incorporate this sigmoid model of consumption.
 
+::: {#fig-grazing-comparison2}
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
-#| label: fig-grazing-comparison2
-#| fig-cap: "Pasture dynamics for a sigmoid consumption function."
-#| 
 consumption <- makeFun(0.1*v^2/(1+v^2) ~ v)
 r = .3; K=10; C=0.1; H=3
 pA <- Znotes::phase_line(r*x*(1-x/K) -3*consumption(x)~ x, 
@@ -358,6 +368,9 @@ pD <- Znotes::phase_line(r*x*(1-x/K) - 8*consumption(x)~ x,
   gf_lims(y=c(-1,0.5))
 gridExtra::grid.arrange(pA, pB, pC, pD, ncol=2)
 ```
+
+Pasture dynamics for a sigmoid consumption function.
+:::
 
 We can start the story with 3 cows in the pasture. Vegetation growth is more than sufficient to provide for these cows. You can see this from the stable fixed point at about 9 tons of biomass, which is more than enough to reach saturation of the sigmoid consumption function. 
 

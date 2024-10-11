@@ -139,9 +139,8 @@ $$\int_{-\infty}^\infty h(x)\, dx = A \neq 1\ .$$ Although $h(x)$ is not a proba
 
 A relative density function is entirely adequate for describing the distribution of probability. However, when comparing two or more probability distributions, it is important that they all be on the same scale. Normalizing the relative density functions to probability density functions accomplishes this. @fig-contest-compare compares the three relative probability functions in @fig-contest-entries. Johnny makes the density large over a narrow domain and zero elsewhere, while Louisa specifies a small density over a large domain. All three competitors' functions have an area-under-the-curve of dimensionless 1.
 
+::: {#fig-contest-compare}
 ```{r echo=FALSE, warning=FALSE}
-#| label: fig-contest-compare
-#| fig-cap: "Comparing the contest entries by normalizing each of them to a probability density function."
 Jar_functions <- 
   slice_plot(ifelse(x > 22 & x < 30, 1/8, 0) ~ x, 
              domain(x = 0:100), size=1, npts=300) |>
@@ -161,6 +160,9 @@ Jar_functions <-
   gf_labs(y="Probability Density", x="Money in the jar")
 Jar_functions
 ```
+
+Comparing the contest entries by normalizing each of them to a probability density function.
+:::
 
 ## Three density functions
 
@@ -273,7 +275,7 @@ Probability theory was originally motivated by problems in gambling, specificall
 
 This logic is often applied to summarizing a probability density function. If $x$ is the outcome of the random event described by a probability density $f(x)$, the ***expected value*** of the probability density is defined as 
 $$\mathbb{E}\!\left[{\strut} x\right] \equiv \int_{-\infty}^\infty x\, f(x) \, dx\ .$$
-In @sec-center-of-mass, we will see this same form of integral for computing the ***center of mass*** of an object.
+@sec-center-of-mass uses this same form of integral for computing the ***center of mass*** of an object.
 
 ::: {.callout-note icon=false  data-latex=""}
 ## Why square braces for expected value?
@@ -387,12 +389,14 @@ Likelihood functions provide the link between data and hypotheses. The idea is t
 
 To illustrate, let's return to the jar-of-money contest and the three competitors' entries as shown  in @fig-contest-compare. For convenience, that Figure is reproduced here:
 
+::: {#fig-jar_functions2}
 ```{r echo=FALSE}
-#| label: fig-jar_functions2 
-#| fig-cap: "The contest entries shown in @fig-contest-compare."
 Jar_functions |>
   gf_vline(xintercept=~32.14, color= "brown", alpha=0.6) 
 ```
+
+The contest entries shown in @fig-contest-compare.
+:::
 
 The functions shown in the Figure are **not** likelihood functions. But we can use them to construct whatever likelihood function turns out to be relevant in the money-in-jar contest.
 
@@ -437,9 +441,8 @@ In communicating with the public about risk, it is common to present risk as a n
 
 Before there is enough evidence responsibly to form a solid idea, it is best to present risk not as a probability but as a probability density function. To illustrate, @fig-beta-shapes) shows three different examples of what such probability density functions might look like for vague, preliminary ideas of risk. 
 
+::: {#fig-beta-shapes}
 ```{r echo=FALSE}
-#| label: fig-beta-shapes
-#| fig-cap: "Three different opinions about the risk of a disease."
 prior_A <- makeFun(dbeta(x, .5, 5) ~ x)
 prior_B <- makeFun(dbeta(x, 1, 1) ~ x)
 prior_C <- makeFun(dbeta(x, 1.3, 5) ~ x)
@@ -462,6 +465,9 @@ P3 <- slice_plot(prior_C(x) ~ x, domain(x=-.1:1.1), npts=501) |>
             scale_y_continuous(breaks=0))
 gridExtra::grid.arrange(P1, P2, P3, nrow=1) 
 ```
+
+Three different opinions about the risk of a disease.
+:::
 
 Panel (A) in @fig-beta-shapes is a strong statement that the risk is believed to be small. Even so, the density function is non-zero even for values of the risk near 100%. This is an honest admission that, as with COVID-19, something that we don't know might be going on. In the case of COVID-19, what most people didn't realize is 1) that the reported numbers were completely unrepresentative of the extent of spread, since most cases are asymptomatic and 2) that the illness can spread even by those who are asymptomatic. Epidemiologists and other public health workers knew enough from previous experience to be aware of their lack of knowledge about (1) and (2), but the rest of us, including many policy makers, didn't even know what they didn't know. The word "unk-unk" is sometimes used by engineers to refer to such an "unknown unknown". 
 

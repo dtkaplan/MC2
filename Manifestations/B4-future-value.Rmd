@@ -6,7 +6,7 @@ source("../starter.R")
 
 Comparison is an important element of human decision making. Often, comparison amounts to translating each of the options at hand into a scalar score. (Recall that a ***scalar*** is just an ordinary quantity, e.g. 73 inches. As we get more deeply involved with ***vectors*** it will become more important to be perfectly clear when we are talking about a vector and when about a scalar. So we will be using "scalar" a lot.) Scalars are easy to compare; the skill is taught in elementary school. Scalar comparison is completely objective. Putting aside the possibility of error, everyone will agree on which of two numbers is bigger. Importantly, comparison of scalars is ***transitive***, that is if $a > b$ and $b > c$ then it is impossible that $a \leq c$.
 
-The comparison of scalars can be extended to situations where the options available form a continuum and the score for each option $x$ is represented by a function, $f(x)$. As we saw in @sec-optim-and-shape and @sec-optimization-and-constraint, selecting the highest scoring option is a matter of finding the argmax.
+The comparison of scalars can be extended to situations where the options available form a continuum and the score for each option $x$ is represented by a function, $f(x)$. @sec-optim-and-shape and @sec-optimization-and-constraint showed that selecting the highest scoring option is a matter of finding the argmax.
 
 Many decisions involve options that have two or more attributes that are not directly comparable. Expenditure decisions have this flavor: Is it worth the money to buy a more reliable or prettier or more capable version of a product? The techniques of ***constrained optimization*** (@sec-optimization-and-constraint) provide one useful approach for informing decisions when there are multiple objectives.
 
@@ -41,10 +41,8 @@ The income stream stops for $30 < t$.
 
 Altogether, the income stream is $$\text{income}(t) = \text{sale}(t) + \text{rental}(t) - \text{construction}(t) - \text{maintenance}(t)\ .$$ Notice that construction and maintenance are considered as *negative income*. @fig-rental-graph1 shows a graph of $\text{income}(t)$. 
 
+::: {#fig-rental-graph1}
 ```{r echo=FALSE, warning=FALSE}
-#| label: fig-rental-graph1
-#| fig-cap: "The income stream for an apartment-building project. Following convention, positive income is \"in the green\", and negative income is \"in the red\"."
-#| 
 construction <- makeFun(ifelse(t < 3 & t > 0, 1e6, 0) ~ t)
 rental <- makeFun(ifelse(3 <= t & t < 30, 2.5e5, 0) ~ t)
 maintenance <- makeFun(ifelse(3 <= t & t < 30, 5e4 + 1.5e5*(t-3)/(30-3), 0) ~ t)
@@ -60,6 +58,10 @@ gf_rect(0 + -1.1e6 ~ -.2 + 31, fill="red", color=NA, alpha=0.2) %>%
 Rental1 |> 
   gf_labs(subtitle="Income stream projection for apartment project")
 ```
+
+The income stream for an apartment-building project. Following convention, positive income is "in the green", and negative income is "in the red".
+:::
+
 :::
 
 
@@ -124,14 +126,15 @@ Let's return to the entrepreneur considering the apartment-building project in @
 
 The entrepreneur goes to the bank with her business plan and financial forecasts. The bank proposes to lend money for the project at an interest rate of 7% per year.
 
+::: fig-rental-graph2
 ```{r echo=FALSE}
-#| label: fig-rental-graph2
-#| fig-cap: "Blue curve: The apartment project income stream discounted at 7% per year. Black curve: The undiscounted income stream."
-#| 
 Rental1 %>%
   slice_plot(total(t)/(1.07^t) ~ t, bounds(t=0:30),
              color="blue", size=2,  npts=500)
 ```
+
+Blue curve: The apartment project income stream discounted at 7% per year. Black curve: The undiscounted income stream.
+:::
 
 @fig-rental-graph2 shows the income stream discounted at 7% per year. The net present value of the income stream for the apartment project is the accumulation of the discounted income stream:
 $$\text{NPV}(7\%) = \int_0^{30} (1 + 0.07)^{-t} {\cal M}(t) \ dt \ .$$ This works out to be negative $1,095,000. As things stand, the apartment building will be a money pit.

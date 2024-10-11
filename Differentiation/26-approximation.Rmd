@@ -6,7 +6,7 @@ source("../starter.R")
 
 We have now encountered three concepts in Calculus that will prove a great help in building models.
 
-1. Local functions. In @sec-pattern-book-functions we looked at two functions that describe local behavior: the sigmoid and its derivative, the gaussian. In fact, any function can be used as a local function, so long as the modeler considers only a small part of the domain. 
+1. Local functions. @sec-pattern-book-functions looks at two functions that describe local behavior: the sigmoid and its derivative, the gaussian. In fact, any function can be used as a local function, so long as the modeler considers only a small part of the domain. 
 2. Rates of change. Often, information about a system comes in the form of how the output from the system *changes* with respect to the input.
 
 3. Partial derivatives. We can greatly simplify a complex system by looking at the output *with respect to* only one of the inputs at a time. In science, experiments are often arranged to accomplish this: the output is monitored while one input is changed and the others forced to be constant. 
@@ -109,9 +109,8 @@ Consider what happens if $c = 0$. The function becomes simply $a + bx$, the stra
 
 With the appropriate choice of parameters, the form $a + bx + cx^2$ is  capable of representing four of the ***eight simple shapes***. What about the remaining four? This is where the idea of ***local*** becomes important. Those remaining four shapes are the sides of parabolas, as in @fig-four-shapes. 
 
+::: {#fig-four-shapes}
 ```{r echo=FALSE, warning=FALSE}
-#| label: fig-four-shapes
-#| fig-cap: "Four of the ***eight simple shapes*** correspond to the sides of the parabola. The labels refer to the graphs in @fig-eight-simple-shapes2."
 f1 <- makeFun(a + b*x + c*x^2 ~ x, a=-2, b=1, c=1)
 f2 <- makeFun(a + b*x + c*x^2 ~ x, a=-2, b=1, c=-1)
 P1 <- graph_with_boxes(f1, bounds(x=-1.1:0.1), my_letters = c("C", "D"), 
@@ -121,6 +120,8 @@ P2 <- graph_with_boxes(f2, bounds(x=-.3:1.4), my_letters = c("E", "F"),
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
 
+Four of the ***eight simple shapes*** correspond to the sides of the parabola. The labels refer to the graphs in @fig-eight-simple-shapes2.
+:::
 
 ## The low-order polynomial with two inputs {#sec-low-order-two}
 
@@ -133,12 +134,12 @@ The subscripts on the coefficients describes exactly which term in the polynomia
 
 Each of $a_0, a_x,$ $a_y,$ $a_{xy}, a_{yy}$, and $a_{xx}$ will, in the final model, be a constant quantity. Don't be confused by the use of $x$ or $y$ in the name of the coefficients. Each coefficient is a constant and not a function of the inputs. Often, your prior knowledge of the system being modeled will tell you something about one or more of the coefficients, for example, whether it is positive or negative. Finding a precise value is often based on quantitative data about the system.  
 
-It helps to have different names for the various terms. It is not too bad to say something like, "the $a_{xy}$ term." (Pronounciation: "a sub x y" or  "a x y") But the proper names are: ***linear terms***, ***quadratic terms***, and ***interaction term***. And a shout out to $a_0$, the ***constant term***. 
+As discussed in @sec-low-order-two, there are generic names for the various terms: **linear**, **quadratic**, **interaction term**, and **constant term**. 
 
 $$g(x, y) \equiv a_0 + \underbrace{a_x x + a_y y}_\text{linear terms} \ \ \ + 
 \underbrace{a_{xy} x y}_\text{interaction term} +\ \ \  \underbrace{a_{yy} y^2 + a_{xx} x^2}_\text{quadratic terms}$$
 
-```{r echo=FALSE, warning=FALSE}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
 make_gxy <- function(seed=1) {
   set.seed(seed)
   f <- makeFun(a0 + ax*x + ay*y + axy*x*y + axx*x^2 + ayy*y^2 ~ x + y,
@@ -160,16 +161,13 @@ Four <- show_poly2(104)
 Four$P1
 ```
 
+::: {#fig-saddle2}
 ```{r echo=FALSE}
-#| label: fig-saddle2
-#| fig-cap: "A saddle" 
-if (knitr::is_html_output()) {
-  Four$P2
-} else {
-  knitr::include_graphics("www/show_poly2_104.png")
-}
+Four$P2
 ```
 
+A saddle
+:::
 
 ## Thinking partially {#sec-partial-thought}
 

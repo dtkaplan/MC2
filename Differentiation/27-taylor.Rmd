@@ -21,9 +21,8 @@ $$a_0 + a_1 x^1 + a_2 x^2 + a_3 x^3$$
 
 The ***domain*** of polynomials, like the power-law functions they are assembled from, is the ***real numbers***, that is, the entire number line $-\infty < x < \infty$. But for the purposes of understanding the shape of high-order polynomials, it is helpful to divide the domain into three parts: a ***wriggly domain*** at the center and two ***tail domains*** to the right and left of the center.
 
+::: {#fig-wriggly-polynomial}
 ```{r echo=FALSE}
-#| label: fig-wriggly-polynomial
-#| fig-cap: "A $n$th-order polynomial can have up to $n-1$ critical points that it wriggles among. A 7-th order polynomial is shown here in which there are six local maxima or minima alternatingly."
 set.seed(101)
 n <- 8
 Pts <- tibble(x = runif(n, -3, 3), y = rnorm(n))
@@ -38,6 +37,9 @@ slice_plot(fmod(x) ~ x, bounds(x=c(-2.8, 1.65))) %>%
   gf_text(-20 ~ 2.2, label="Positive tail domain", color="tan", angle=-90, size=8) %>%
   gf_labs(x = "input")
 ```
+
+A $n$th-order polynomial can have up to $n-1$ critical points that it wriggles among. A 7-th order polynomial is shown here in which there are six local maxima or minima alternatingly.
+:::
 
 @fig-wriggly-polynomial shows a 7th order polynomial---that is, the highest-order term is $x^7$. In one of the tail domains the function value heads off to $\infty$, in the other to $-\infty$. This is a necessary feature of all odd-order polynomials: 1, 3, 5, 7, ...
 
@@ -66,23 +68,24 @@ Since the highest-order term is $x^3$ this is a third-order polynomial. (As you 
 
 Our example polynomial, $g(x) \equiv x - \frac{1}{6}x^3$, graphed in color in @fig-small-sine, does not look exactly like the sinusoid. If we increased the extent of the graphics domain, the disagreement would be even more striking, since the sinusoid's output is always in $-1 \leq \sin(x) \leq 1$, while the polynomial's tails are heading off to $\infty$ and $-\infty$.  But, for a small interval around $x=0$, exactly aligns with the sinusoid.
 
-
+::: {#fig-small-sine}
 ```{r echo=FALSE}
-#| label: fig-small-sine
-#| fig-cap: "The polynomial $g(x) \\equiv x -x^3 / 6$ is remarkably similar to $\\sin(x)$ near $x=0$."
 slice_plot(sin(x) ~ x, bounds(x=c(-2.85, 2.85)), size=3, alpha=0.25) %>%
   slice_plot(x - x^3/6 ~ x, color="magenta")
 ```
+
+The polynomial $g(x) \equiv x -x^3 / 6$ is remarkably similar to $\sin(x)$ near $x=0$.
+:::
 
 It is clear from the graph that the approximation is excellent near $x=0$ and gets worse as $x$ gets larger. The approximation is poor for $x \approx \pm 2$. We know enough about polynomials to say that the approximation will not get better for larger $x$; the sine function has a range of $-1$ to $1$, while the left and right tails of the polynomial are heading off to $\infty$ and $-\infty$ respectively.
 
 
 One way to measure the quality of the approximation is the ***error*** ${\cal E}(x)$ which gives, as a function of $x$, the difference between the actual sinusoid and the approximation: $${\cal E}(x) \equiv |\strut\sin(x) - g(x)|$$ The absolute value used in defining the error reflects our interest in how ***far*** the approximation is from the actual function and not so much in whether the approximation is below or above the actual function. @fig-sin-error shows ${\cal E}(x)$ as a function of $x$. Since the error is the same on both sides of $x=0$, only the positive $x$ domain is shown.
 
-
+::: {#fig-sin-error}
 ```{r echo=FALSE}
 #| label: fig-sin-error
-#| fig-cap: "The error ${\\cal E}(x)$ of $x - x^3/6$ as an approximation to $\\sin(x)$. Top panel: linear scale. Bottom panel: on a log-log scale."
+#| fig-cap: ""
 P <- slice_plot(abs(sin(x) - (x - x^3/6)) ~ x, 
                 bounds(x=c(0.001, 3)), npts=500) |> 
   gf_labs(y = "Error(x)")
@@ -98,7 +101,8 @@ gridExtra::grid.arrange(P, P2, nrow=2)
 
 ```
 
-
+The error ${\cal E}(x)$ of $x - x^3/6$ as an approximation to $\sin(x)$. Top panel: linear scale. Bottom panel: on a log-log scale.
+:::
 
 @fig-sin-error shows that for $x < 0.3$, the error in the polynomial approximation to $\sin(x)$ is in the 5th decimal place. For instance, $\sin(0.3) = 0.2955202$ while $g(0.3) = 0.2955000$. 
 
@@ -215,11 +219,11 @@ The plot of $\log_{10} {\cal E}(x)$ versus $\log_{10} | x |$ in @fig-taylor-exp-
 
 [Brooke Taylor](https://en.wikipedia.org/wiki/Brook_Taylor) (1685-1731), a near contemporary of Newton, published his work on approximating polynomials in 1715. Wikipedia reports: "[T]he importance of [this] remained unrecognized until 1772, when Joseph-Louis Lagrange realized its usefulness and termed it 'the main [theoretical] foundation of differential calculus'."[Source](https://en.wikipedia.org/wiki/Brook_Taylor#/media/File:Taylor_Brook_Goupy_NPG.jpg)
 
-```{r echo=FALSE, out.width = "40%", fig.align="center"} 
-#| label: fig-brook-taylor
-#| fig-cap: "Brook Taylor" 
-knitr::include_graphics("www/Brook_Taylor.jpg")
-```
+::: {#fig-brooke-taylor}
+![](www/Brook_Taylor.jpg){width="40%" align="center"}
+
+Brooke Taylor
+:::
 
 Due to the importance of Taylor polynomials in the development of calculus, and their prominence in many calculus textbooks, many students assume their use extends to constructing models from data. They also assume that third- and higher-order monomials are a good basis for modeling data. Both these assumptions are wrong. Least squares is the proper foundation for working with data.
 

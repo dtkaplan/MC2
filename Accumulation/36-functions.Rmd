@@ -27,6 +27,7 @@ We will revisit the idea of linear combinations of functions using our new tools
 Given two functions, $f(t)$ and $g(t)$ defined over some domain $D$, we will compute the dot product of the functions as a sum of the product of the two functions, that is:
 $$f(t) \bullet g(t) \equiv \int_{D} f(t)\,g(t)\,dt\ .$$
 ::: {#try-function-length style="display: none;"}
+<!-- don't show -->
 :::
 ::: {.callout-important icon=false}
 ## @try-function-length Function length
@@ -99,9 +100,8 @@ As you may know, the physical stimuli involved in sound are rapid oscillations i
 
 The shapes of the "e" (as in "eel") and "o" (as in "stone") sound waves---in short, the ***waveforms***---are drawn in @fig-sound-waves. 
 
+::: {#fig-sound-waves}
 ```{r echo=FALSE, warning=FALSE}
-#| label: sound-waves
-#| fig-cap: "The waveforms of two vowel sounds. Only about five hundredths of a second is shown."
 P1 <- gf_line(y ~ I(t-.352), data = Vowel_ee) |> 
   gf_labs(x="time (s)", title="e as in 'eel'") %>%
   gf_lims(x=c(0,0.051))
@@ -110,6 +110,9 @@ P2 <- gf_line(y ~ I(t-.151), data = Vowel_oh) |>
   gf_lims(x=c(0,0.051))
 gridExtra::grid.arrange(P1, P2, ncol=1)
 ```
+
+The waveforms of two vowel sounds. Only about five hundredths of a second is shown.
+:::
 
 The function resembles none of our small set of pattern-book functions. It is more complicated, more detailed, more irregular than any of the basic modeling functions featured in this book. 
 
@@ -196,10 +199,8 @@ slice_plot(waveA(t)*waveB(t) ~ t, bounds(t=0:1), npts=300) %>%
 
 In contrast, waveform A is **not** orthogonal to waveform C, and similarly for waveform B. @fig-AC-BC shows this graphically: the positive and negative areas in the two integrals do not cancel out to zero.
 
-
+::: {#fig-AC-BC}
 ```{r echo=FALSE}
-#| label: AC-BC
-#| fig-cap: "The dot products between waveforms A and C (top panel) and between B and C (bottom panel)."
 Pts <- tibble::tibble(
   t = seq(0, 1, length=300),
   y = waveA(t)*waveC(t),
@@ -222,6 +223,10 @@ P2 <- slice_plot(waveB(t)*waveC(t) ~ t, bounds(t=0:1), npts=300) %>%
   gf_labs(subtitle=latex2exp::TeX("$B \\bullet C$"), y="")
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
+
+The dot products between waveforms A and C (top panel) and between B and C (bottom panel).
+:::
+
 
 We can project waveform C onto the 2-dimensional subspace spanned by A and B. Since waveforms A and B are orthogonal, This can be done simply by projecting C onto each of A and B one at a time. Here's a calculation of the scalar multipliers for A and for B and the model vector (that is, the component of C in the A-B subspace):
 
@@ -271,15 +276,16 @@ For our purposes here, we will need only the Pythagorean sum and will ignore the
 
 @fig-cello-seg (top) shows the waveform of a note played on a cello. The note lasts about 1 second. The bottom panel zooms in on the waveform, showing 82 ms (that is, 0.082 s).
 
-
+::: {#fig-cello-seg}
 ```{r echo=FALSE}
-#| label: cello-seg
-#| fig-cap: "Waveform recorded from a cello."
-P1 <- gf_line(y ~ t, data = Cello) %>%
+#| layout-ncol: 2
+gf_line(y ~ t, data = Cello) |>
   gf_line(y ~ t, data=Cello_seg, color="blue")
-P2 <- gf_line(y ~ t, data=Cello_seg, color="blue")
-gridExtra::grid.arrange(P1, P2, nrow=2)
+gf_line(y ~ t, data=Cello_seg, color="blue")
 ```
+
+Waveform recorded from a cello.
+:::
 
 The whole note starts with a sharp "attack," followed by a long period called a "sustain," and ending with a "decay." Within the sustain and decay, the waveform is remarkably repetitive, seen best in the bottom panel of the figure.
 
@@ -428,7 +434,7 @@ The analogous procedure for stringed musical instruments such as the cello or vi
 ::: {.callout-note icon=false}
 ## Calculus history---From Taylor to Lagrange
 
-In @sec-polynomials we met a method introduced by Brook Taylor (1685–1731) to construct a polynomial of order-$n$ that approximates any smooth function $f(x)$ close enough to some center $x_0$. The method made use of the ability to differentiate $f(x)$ at $x_0$ and produced the general formula:
+@sec-polynomials describes a method introduced by Brook Taylor (1685–1731) to construct a polynomial of order-$n$ that approximates any smooth function $f(x)$ close enough to some center $x_0$. The method made use of the ability to differentiate $f(x)$ at $x_0$ and produced the general formula:
 $$f(x) \approx f(x_0) + \frac{f'(x_0)}{1} \left[x-x_0\right] + \frac{f''(x_0)}{2!} \left[x-x_0\right]^2 + \frac{f'''(x_0)}{3!} \left[x-x_0\right]^3 + \cdots + \frac{f^{(n)}(x_0)}{n!} \left[x-x_0\right]^n$$ where $f'(x_0) \equiv \partial_x f(x)\left.{\Large\strut}\right|_{x=x_0}$ and so on.
 
 Using polynomials as approximating functions has been an important theme in mathematics history. Brook Taylor was neither the first nor the last to take on the problem.
@@ -436,9 +442,8 @@ Using polynomials as approximating functions has been an important theme in math
 In 1795, [Joseph-Louis Lagrange](https://en.wikipedia.org/wiki/Joseph-Louis_Lagrange)
 (1736 – 1813) published another method for constructing an approximating polynomial of order $n$. Whereas the Taylor polynomial builds the polynomial that exactly matches the first $n$ derivatives at the center point $x_0$, the Lagrange polynomial has a different objective: to match exactly the values of the target function $f(x)$ at a set of ***knots*** (input values) $x_0$, $x_1$, $x_2$, $\ldots, x_n$. @fig-lagrange-sine shows the situation with the knots shown as orange dots.
 
+::: {#fig-lagrange-sin}
 ```{r echo=FALSE}
-#| label: fig-lagrange-sin
-#| fig-cap: "The Lagrange polynomial of order $n$ is arranged to pass exactly through $n+1$ points on the graph of a function $f(x)$."
 f <- sin
 make_lagrange_unit <- function(x, x0) {
   bottom <- paste("(",
@@ -474,6 +479,9 @@ lp <- make_lagrange_poly(Pts$x, Pts$y)
   gf_point(y ~ x, data = Pts, color="orange", size=6, alpha=0.5) %>%
   gf_lims(y=c(-1.5, 1.5))
 ```
+
+The Lagrange polynomial of order $n$ is arranged to pass exactly through $n+1$ points on the graph of a function $f(x)$.
+:::
 
 The Lagrange polynomial is constructed of a linear combinations of functions, one for each of the knots. In the example of Figure \@ref(fig:lagrange-sine), there are 6 knots, hence six functions being combined. For knot 2, for instance, has coordinates $\left(\strut x_2, f(x_2)\right)$ and the corresponding function is:
 

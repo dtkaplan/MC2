@@ -45,10 +45,8 @@ If there are no fixed points, then the only possible dynamics are continuous inc
 
 @fig-four-S-funs shows four generic dynamical function shapes where these is one fixed point. The location of the fixed point is, of course, the $S_0$ at which $f(S_0)=0$, that is, the intersection of the function and the blue dashed line.
 
+::: {#fig-four-S-funs}
 ```{r echo=FALSE}
-#| label: fig-four-S-funs
-#| fig-cap: "Four generic functions shapes with one state variable having one fixed point."
-#| 
 kill_scales <- function(P) {
   P |> gf_refine(
     scale_x_continuous(breaks=NULL),
@@ -80,6 +78,8 @@ gridExtra::grid.arrange(L1, L2, B1, B2, ncol=2)
 
 ```
 
+Four generic dynamics function shapes with one state variable having one fixed point.
+:::
 
 The fundamental distinction is between models with stable and models with unstable fixed points. When the situation being modeled has a steady equilibrium, only the stable shapes of $f(S)$ are relevant. A second distinction is between functions with a bounded shape and those with a linear shape. Use a linear shape when you are concerned only with the behavior near the fixed point. But when your model needs to account for behavior far from the fixed point, you need first to have a way to represent what is meant by "far from." That is represented by the location of the shoulder of the curve relative to the fixed point.
 
@@ -118,8 +118,6 @@ ii. According to the given information about splitting, when the initial conditi
 $$S(1/3) = S_0 e^{a/3} = e^{a/3} = 2\ .$$
 
 iii. Working from $e^{a/3} = 2$ gives the parameter value we see: $a = 3 \ln(2)$.
-
-
 :::
 
 For bacteria, the linear unstable model may be realistic for short periods of time, or, more precisely, for as long as the population is small compared to the ***carrying capacity***. (See @sec-nonlinear-on-line.) In contrast, human and other animal populations often have an important age structure, which is just to say that neither a 6 nor a 60 year old person has the same reproduction rate as a 26 year old. Such an age structure calls for a dynamical state with multiple components.
@@ -344,10 +342,8 @@ We usually think of recovery in terms of a time span, for instance taking a week
 
 Of course, the solution to this simplified differential equation is $I(t) = I_0 e^{-\alpha t}$; the size of the infective group gets smaller exponentially. @fig-recovery-pattern compares what $I(t)$ would look like if it takes, say, one week to recover and what $I(t)$ looks like under the model's  $\partial_t I = =\alpha I$ dynamics.
 
+::: {#fig-recovery-pattern}
 ```{r echo=FALSE}
-#| label: fig-recovery-pattern
-#| fig-cap: "Comparing $I(t)$ for the \"takes a week to recover\" model and the $\\partial_t I = -\\alpha I$ model."
-#| 
 P1 <- slice_plot(ifelse(t < 7, 100, 0) ~ t, bounds(t=0:20)) %>%
   gf_refine(scale_y_continuous(breaks = c(0, 100), labels=c("0", "I(t=0)"))) %>%
   gf_labs(subtitle="Recover after 7 days.", y="Number of infectives.", x="Time (days)")
@@ -356,14 +352,17 @@ P2 <- slice_plot(100*exp(-(.38)*t) ~ t, bounds(t=0:20)) %>%
   gf_labs(subtitle="Exponential recovery", y="", x="Time (days)")
 gridExtra::grid.arrange(P1, P2, ncol=2)
 ```
+
+Comparing $I(t)$ for the "takes a week to recover" model and the $\partial_t I = -\alpha I$ model.
+:::
+
+
 To show the dynamics of the SIR model, we need to propose numerical values for $\alpha$ and $\beta$. This is not a trivial matter if the goal is to match the dynamics to a particular disease and size of population. For our purposes here, we will imagine that $S(0) = 0.999$ and $I(0) = 0.001$, which is to say we are looking at the *proportion* of the population that is susceptible or infective. 
 
 @fig-SIR-half-seventh shows the flow field for $\beta = 1/2$ and $\alpha = 1/7$.
 
+::: {#fig-SIR-half-seventh}
 ```{r echo=FALSE, message=FALSE}
-#| label: fig-SIR-half-seventh
-#| fig-cap: "SIR flow field for $\\beta=1/2, \\alpha = 1/7$, and the trajectory for initial conditions $S_0 = 0.999, I_0 = 0.001$."
-#| 
 T1 <- integrateODE(dS ~ -.5*S*I, dI ~ .5*S*I - I/7,
                    S=0.999, I=0.001, bounds(t=0:100))
 
@@ -376,7 +375,8 @@ traj_plot(I(t) ~ S(t), T1, nt=10) %>%
             domain=bounds(S=0:.5, I=.3:.35), nsteps=5, dt=.1, npts=5) 
 ```
 
-
+SIR flow field for $\beta=1/2, \alpha = 1/7$, and the trajectory for initial conditions $S_0 = 0.999, I_0 = 0.001$.
+:::
 <!--
 - S-BOXLN: Identify and interpret mechanistically interaction terms in a two-state variable system.
 

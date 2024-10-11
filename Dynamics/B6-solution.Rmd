@@ -63,10 +63,8 @@ The conversion produces a vector whose components are denominated in the same wa
 
 To illustrate, let's draw a flow vector for the state space coordinate $(r=2, f = 1/4)$. Above, we already calculated the components of the state velocity vector;Given the value $\partial_t f = 0.25$ and $\partial_t f = 0.66$. For the sake of illustration, we will set $dt = 0.1$ month.  Consequently, the vector to be plotted will be $(0.25, 0.66) dt = (0.025, 0.066)$$ with units of rabbit density and fox density respectively.  the right. This flow arrow is drawn in @fig-rf-flow-arrow.
 
+::: {#fig-rf-flow-arrow}
 ```{r echo=FALSE, out.width="40%", fig.align="center"}
-#| label: fig-rf-flow-arrow
-#| 
-#| fig-cap: "The flow arrow for the state value $(r=2, f=1/4)$ using $dt=0.1$ month."
 gf_segment(0.217 + 0.283 ~ 1.9865 + 2.0125, color="black",
            arrow = grid::arrow(end="last", type="closed")) %>%
   gf_point(0.25 ~ 2, color="black") %>%
@@ -74,6 +72,9 @@ gf_segment(0.217 + 0.283 ~ 1.9865 + 2.0125, color="black",
   gf_labs(y = "Fox density", x = "Rabbit density", subtitle="A small part of Rabbit/Fox state space") %>%
   gf_refine(coord_fixed())
 ```
+
+The flow arrow for the state value $(r=2, f=1/4)$ using $dt=0.1$ month.
+:::
 To draw the entire flow field, repeat this process at many other points in the state space as in @fig-rf-flow-field.
 
 ::: {#fig-rf-flow-field .column-page-right fig-cap-location="bottom" layout-ncol=2}
@@ -273,10 +274,11 @@ Eco_soln <- integrateODE(
 You can plot the time series using `slice_plot()`
 
 ```{webr-r}
-#| label: fig-fox-rabbit-ts
-#| fig-cap: "Times series of the rabbit and fox densities."
-pA <- traj_plot(r(t) ~ t, Eco_soln, bounds(t=0:5)) |> gf_labs(title="Rabbits")
-pB <- traj_plot(f(t) ~ t, Eco_soln, bounds(t=0:5)) |> gf_labs(title="Foxes")
+traj_plot(r(t) ~ t, Eco_soln, bounds(t=0:5)) |>
+  gf_labs(title="Rabbits")
+
+traj_plot(f(t) ~ t, Eco_soln, bounds(t=0:5)) |>
+  gf_labs(title="Foxes")
 ```
 
 To plot the trajectory, simply change the tilde expression used in `traj_plot()`.  which creates a time series plot, `traj_plot()` shows the trajectory.
@@ -324,16 +326,16 @@ slice_plot(Symb_soln(t, A=0.2) ~ t, bounds(t=-5:10))
 
 Not all differential equations can be separated in this way, and even for those that can, the integrals may not be tractable. So this route to a solution is not a general-purpose one, unlike the Euler method. Still, the Euler method gives only an approximate solution, so with Euler we need to take care that the approximation is close enough for the purpose at hand. In this case, we have both an Euler solution (with $dt=0.1$) and a symbolic solution. @fig-diff-Euler-separation shows the *difference* between the two solutions, which ideally should be zero. To show more of the time domain of the solution, we will reset the initial condition to $x_0 = 0.01$. This corresponds to $A = 1/99$.
 
+::: {#fig-diff-Euler-separation}
 ```{r echo=FALSE, message=FALSE}
-#| label: fig-diff-Euler-separation
-#| fig-cap: "The difference between the Euler and the symbolic solution to $\\partial_t x = x (1-x)$ as a fraction of the symbolic solution. At the worst, the Euler solution is off by 1.5 parts in one-million."
-#| 
 Euler <- integrateODE(dx ~ x*(1-x), x=0.01, 
                       bounds(t=0:20), dt=0.1)
 traj_plot((Symb_soln(t, A=1/99) - x(t))/Symb_soln(t, A=1/99) ~ t, 
           Euler, bounds(t=0:20))
 ```
 
+The difference between the Euler and the symbolic solution to $\partial_t x = x (1-x)$ as a fraction of the symbolic solution. At the worst, the Euler solution is off by 1.5 parts in one-million.
+:::
 
 <!--
 - O-TEOG4: Recognize a first-order differential equation.

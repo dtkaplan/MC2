@@ -49,13 +49,11 @@ We typically use the word ***system*** rather than "set," so a dynamical system 
 
 Let's illustrate the idea of a dynamical system with a children's game: "Chutes and Ladders". Since hardly any children have studied calculus, the game isn't presented as differential equations, but as a simple board and the rules for the movement along the board.
 
-```{r echo=FALSE}
-#| label: fig-chutes-and-ladders
-#| fig-cap: "The game of *Chutes and Ladders*"
-#| out-width: "60%"
-#| fig-align: "center"
-knitr::include_graphics("www/Chutes-and-ladders.png")
-```
+::: {#fig-chutes-and-ladders}
+![](www/Chutes-and-ladders.png){align="center" width="60%"}
+
+The game of *Chutes and Ladders*
+:::
 
 A player's state in this game is shown by the position of a token, but we will define the state to be the number of the square that the player's token is on. In Chutes and Ladders the state is one of the integers from 1 to 100. In contrast, the dynamical systems that we will study with calculus have a state that is a point on the number line, or in the coordinate plane, or higher-dimensional space. Our calculus dynamical system describe the change of state using derivatives with respect to time, whereas in chutes and ladders the state jumps from one value to the next value. 
 
@@ -68,7 +66,7 @@ The small drawings on the board are not  part of the action of the game. Rather,
 Our dice-free version of Chutes and Ladders is an example of a ***discrete-time, discrete-state dynamical system***. Since there is no randomness involved, the movement of the state is ***deterministic***. (With dice, the movement would be ***stochastic***.)
 
 The differential equations of a dynamical system correspond to a 
-***continuous-time, continuous-space system***. This continuity is the reason we use derivatives to describe the motion of the state. The movement in the systems we will explore is also deterministic. (In @sec-forcing we will encounter briefly some instances of stochastic systems.)
+***continuous-time, continuous-space system***. This continuity is the reason we use derivatives to describe the motion of the state. The movement in the systems we will explore is also deterministic. <!-- (In @sec-forcing we will encounter briefly some instances of stochastic systems.) -->
 
 :::
 
@@ -129,12 +127,14 @@ News reports of the COVID pandemic usually focus on the number of new cases each
 
 From a history of new-case counts over time (e.g. @fig-NYT-covid-history) you can see that the number of new cases waxes and wanes. Knowing that the number of cases today is, say, 100 thousand does not tell you what the number of cases *will be* in two weeks: 100 thousand is encountered both on the way up and on the way down.
 
-```{r echo=FALSE}
-#| label: fig-NYT-covid-history
-#| fig-cap: "COVID-19 new-case counts in the US over the first two years of the pandemic. [Source: [*New York Times*]](https://www.nytimes.com/interactive/2021/us/covid-cases.html)]"
-#| 
-knitr::include_graphics("www/NYT-covid-report.png")
+::: {#fig-NYT-covid-history}
+![](www/NYT-covid-report.png)
 ```
+
+COVID-19 new-case counts in the US over the first two years of the pandemic. [Source: [*New York Times*]](https://www.nytimes.com/interactive/2021/us/covid-cases.html)]
+:::
+
+
 :::
 
 ## Dynamics
@@ -229,10 +229,8 @@ To make a plot, we need numerical values for all the parameters in those equatio
 
 The vector field corresponding to the dynamics is called a ***flow***, as if it were a pool of swirling water. @fig-rabbit-fox-vectors shows the flow of the rabbit/fox system.
 
+::: {#fig-rabbit-fox-vectors}
 ```{r echo=FALSE}
-#| label: fig-rabbit-fox-vectors
-#| fig-cap: "The dynamics of the rabbit/fox system shown as a vector field over the state space. The parameters have been set, for the purpose of illustration, to $\\alpha = 2/3$, $\\beta = 4/3$, $\\gamma = 1$, and $\\delta = 1$."
-#| 
 vectorfield_plot(r ~ 0.66*r - 1.33*r*f, 
                  f ~ 1*f*r -1*f, 
                  bounds(r=0.1:2, f=0:1), npts=20, 
@@ -240,9 +238,13 @@ vectorfield_plot(r ~ 0.66*r - 1.33*r*f,
   gf_labs(x="Rabbit density", y="Fox density")
 ```
 
+The dynamics of the rabbit/fox system shown as a vector field over the state space. The parameters have been set, for the purpose of illustration, to $\\alpha = 2/3$, $\\beta = 4/3$, $\\gamma = 1$, and $\\delta = 1$.
+:::
+
+
 Staying with the analogy to a pool of swirling water or the currents in a river, you can place a lightweight marker such as a leaf at some point in the flow and follow its path over time. This path---position in state space as a function of time---is called the ***trajectory*** of the flow. There are many possible trajectories, depending on where you place the leaf.
 
-In @sec-splines we considered the path followed by a robot arm. In that chapter, we separated out the $x$- and $y$-components of the arm's position over time, calling them functions $x(t)$ and $y(t)$. Analogously, the decomposition of a trajectory from an initial condition in the flow---this would be $r(t)$ and $f(t)$ for the rabbit/fox system---gives us the ***solution*** to the differential equation. 
+@sec-splines considered the path followed by a robot arm, separating out the $x$- and $y$-components of the arm's position over time and calling them functions $x(t)$ and $y(t)$. Analogously, the decomposition of a trajectory from an initial condition in the flow---this would be $r(t)$ and $f(t)$ for the rabbit/fox system---gives us the ***solution*** to the differential equation. 
 
 Each component of the solution is called a ***time series*** and is often plotted as a function of time, for instance $r(t)$ versus $t$.
 
@@ -259,9 +261,8 @@ $$\partial_t \theta = v\\
 
 @fig-pendulum-in-air shows the flow field of the pendulum. Also shown is a trajectory and the two time series corresponding to that trajectory.
 
+::: {#fig-pendulum-in-air}
 ```{r echo=FALSE}
-#| label: fig-pendulum-in-air
-#| fig-cap: "The flow field of a pendulum with air resistance. From the initial condition (marked by $\\color{red}{\\text{x}}$), a trajectory is sketched out for $0 \\leq t \\leq 20$. The individual components of that trajectory are graphed as time series." 
 theta_exp <- latex2exp::TeX("$\\theta$")
 v_exp <- latex2exp::TeX("$v_\\theta$$")
 soln <- integrateODE(dtheta ~ v, dv ~ -sin(theta) - 0.1*2*sign(v)*v^2, theta = pi/4, v=+1, bounds(t=0:20))
@@ -283,6 +284,10 @@ Flow
 gridExtra::grid.arrange(TS_theta, TS_v, nrow=2)
 ```
 
+The flow field of a pendulum with air resistance. From the initial condition (marked by $\color{red}{\text{x}}$), a trajectory is sketched out for $0 \leq t \leq 20$. The individual components of that trajectory are graphed as time series.
+:::
+
+
 The pendulum was started out by lifting it to an angle of $45^\circ$ and giving it an initial upward velocity. The bob swings up for a bit before being reversed by gravity and swinging toward $\theta = 0$ and beyond. Due to air resistance, the amplitude of swinging decreases over time. 
 
 :::
@@ -302,12 +307,12 @@ Returning to the Chutes and Ladders game used as an example near the start of th
 
 The state in chutes and ladders is one of the hundred numbers 1, 2, $\ldots$, 100. This is a discrete state space. Therefore, we can describe the "flow" in a very concrete way: how each state is directly connected to another. @fig-chutes-flow shows these connections. There is no velocity involved because there is no infinitesimal movement of state. For instance, state 47 connects directly to state 26.
 
-```{r echo=FALSE}
-#| label: fig-chutes-flow
-#| fig-cap: "The \"flow\" connecting the discrete states in the dice-free Chutes and Ladders game. Source: Maj. Austin Davis"
-#| 
-knitr::include_graphics("www/chutes-and-ladders-flow.png")
-```
+::: {#fig-chutes-flow}
+![](www/chutes-and-ladders-flow.png)
+
+The "flow" connecting the discrete states in the dice-free Chutes and Ladders game. Source: Maj. Austin Davis
+:::
+
 In the no-dice game, the state follows the arrows. Looking carefully at @fig-chutes-flow, you can see that each state has a forward connection to at most one state. This is the hallmark of determinism.
 
 In the children's game, the play is not deterministic because a die is used to indicate which state follows from each other state. A die has six faces with the six numbers 1 to 6. So, each state is connected to *six* other states in the forward direction. Which of the six is to be followed depends on the number that comes up on the die. Multiple forward connections means the dynamics are ***stochastic*** (random).
@@ -324,16 +329,14 @@ Straightforward examination of the flow often tells you a lot about the big pict
 
 One fantastic illustration of the idea shows a building constructed in the form of an inside-out globe.  [Source](https://www.cabinetmagazine.org/issues/27/foer.php) At each of many points on the globe, there is a business. (You can see this most easily in the foreground, which shows several boxes of workers.) 
 
-```{r echo=FALSE}
-#| label: fig-richardson-globe
-#| fig-cap: "An artist's depiction of the organization of calculations for weather forecasting by Richardson's system."
-#| 
-knitr::include_graphics(("www/Richardson-globe.jpg"))
-```
+::: {#fig-richardson-globe}
+![](www/Richardson-globe.jpg)
+
+An artist's depiction of the organization of calculations for weather forecasting by Richardson's system.
+:::
+
 
 In each business there is a person who will report the current air pressure at that point on the globe, another person who reports the temperature, another reporting humidity, and so on. To compute the predicted weather for the next day, the business has a staff assigned to visit the neighboring businesses to find out the pressure, temperature, humidity, etc. Still other staffers take the collected output from the neighbors and carry out the arithmetic to translate those outputs into the forecast for tomorrow. For instance, knowing the pressure at neighboring points enables the direction of wind to be calculated, thus the humidity and temperature of air coming in to and out of the region the business handles. In today's numerical weather prediction models, the globe is divided very finely by latitude, longitude, and altitude, and software handles both the storage of present conditions and the calculation from that of the future a few minutes later. Repeating the process using the forecast enables a prediction to be made for a few minutes after that, and so on. 
-
-
 
 Some of the most important concepts in calculus relate to the process of collecting outputs from neighboring points and combining them: for instance finding the difference or the sum. To illustrate, here is the first set of equations from Richardson's *Weather forecasting ...* written in the notation of calculus: 
 

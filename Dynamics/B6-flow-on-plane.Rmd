@@ -9,10 +9,7 @@ Let's return the rabbit/fox system as an example of flow. Since there are two st
 
 The flow itself is a ***vector field***. This is an assignment of a vector to each point of the state space. Graphically, we depict a flow field by selecting a grid of points in the state space, finding the flow vector for each grid point, and drawing those vectors positioned at their respective grid points.
 
-```{r echo=FALSE}
-#| label: fig-rf-flow-2
-#| fig-cap: "The flow field has a vector at each point in state space but legibility requires that we draw arrows at only a handful of points. Zooming in on a region produces more detail."
-#| 
+::: {#fig-rf-flow-2}
 # commands to make the individual plots in the figure
 # vectorfield_plot(r ~ 0.66*r - 1.33*r*f,
 #                  f ~ -f + r*f,
@@ -30,8 +27,10 @@ The flow itself is a ***vector field***. This is an assignment of a vector to ea
 #                  bounds(r=.95:1.02, f=.47:.53)) %>%
 #   gf_rect(.47 + .53 ~ .95 + 1.02, color="green", size=2, fill=NA) %>%
 #   gf_refine(coord_fixed())
-knitr::include_graphics("www/rf-zoom.png")
-```
+![][(www/rf-zoom.png)
+
+The flow field has a vector at each point in state space but legibility requires that we draw arrows at only a handful of points. Zooming in on a region produces more detail.
+:::
 
 Recall from Block 5 that it is conventional to specify a vector by giving a coordinate pair for the tip of the vector with the understanding that the tail is at the origin. For the rabbit/fox system, the tip's coordinate is $\left({\Large\strut} g_r(r, f),\  g_f(r, f)\right)$. This notation is potentially confusing, because the letters $r$ and $f$ appear in so many places. Each each vector in @fig-rf-flow-2 is drawn at a particular point, say $(r=0.96, f=0.48)$. At that point, evaluate the dynamical functions: $g_r(r=0.96, f=0.48) = 0.0207$ and $g_r(r=0.96, f=0.48)= 0.941$. 
 
@@ -43,10 +42,8 @@ The state space has coordinates $r$ and $f$, and since $r$ and $f$ are quantitie
 
 A ***fixed point*** of the dynamics is a point in the state space where the dynamical functions both evaluate to zero. It is convenient to mark fixed points as the intersection of zero contours of the dynamical functions. @fig-rf-nullclines shows these zero contours (red for rabbits, blue for foxes) laid on top of the flow field. Such zero contours of dynamical functions are called ***nullclines***. (The word means "zero slope". "Null" corresponds to zero and "cline" is the root of words like "incline" or "decline.")
 
+::: {#fig-rf-nullclines}
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
-#| label: fig-rf-nullclines
-#| fig-cap: "Flow field and nullclines for the rabbit/fox dynamics."
-#| 
 dt_rabbit <- function(r, f, alpha=2/3, beta=4/3) {
   alpha*r - beta*r*f
 }
@@ -65,6 +62,9 @@ contour_plot(dt_rabbit(r,f) ~ r & f, bounds(r=0.2:2, f=0.05:1),
 
 ```
 
+Flow field and nullclines for the rabbit/fox dynamics.
+:::
+
 Due to the nature of fixed points, if the initial condition is at the intersection of the nullclines the state will not change. But is the fixed point stable or unstable.
 
 As you will see, in two and higher dimensional dynamical systems, there is more than one kind of stability and more than one kind of instability. These different kinds of stability and instability have a direct correspondence to different kinds of behavior in real-world systems.
@@ -75,22 +75,25 @@ Very near the fixed point, dynamics are approximately linear. We will return to 
 
 On a nullcline of a dynamical variable $x$, the $x$-component of the flow must be zero. The flow will point to positive $x$ on one side of the nullcline and negative $x$ on the other. This is really nothing more than saying that on one side of a zero contour the function value is positive and on the other side negative. We will indicate this on the following diagrams by shading the positive side of the nullcline with the same color as the nullcline itself. @fig-shaded-nullcline shows the nullclines of a linear system on separate plots. Notice that flow in the shaded side of the $x$ (red) nullcline the flow always has a positive component to the right. Similarly, in the shaded side of the $y$ (blue) nullcline, the flow always has a positive component to the right. 
 
+::: {#fig-shaded-nullcline}
 ```{r echo=FALSE}
-#| label: fig-shaded-nullcline
-#| fig-cap: "The nullclines of a linear dynamical system near the fixed point. $x$ nullcline is red, $y$ nullcline is blue"
-pA <- Znotes::show_abcd(.5, 1, 1, -.7, which="y", pow=.2)
-pB <- Znotes::show_abcd(.5, 1, 1, -.7, which="x", pow=.2)
-gridExtra::grid.arrange(pA, pB, ncol=2)
+#| layout-ncol: 2 
+Znotes::show_abcd(.5, 1, 1, -.7, which="y", pow=.2)
+Znotes::show_abcd(.5, 1, 1, -.7, which="x", pow=.2)
 ```
+
+The nullclines of a linear dynamical system near the fixed point. $x$ nullcline is red, $y$ nullcline is blue.
+:::
 
 Placing both nullclines on the same plot divides the region near the fixed point into four parts. This is generic behavior. Unless the two nullclines are the same as each other, the two nullclines split the region into four quadrants.
 
+::: {#fig-four-parts}
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
-#| label: fig-four-parts
-#| fig-cap: "Four quadrants of linear dynamics near the fixed point."
-#| 
 Znotes::show_abcd(.5, 2, 3, -.7, pow=.2)
 ```
+
+Four quadrants of linear dynamics near the fixed point.
+:::
 We can identify the quadrants by their color---white, red, blue, purple. In each quadrant, the "compass direction" of all flow vectors point to one quadrant of the compass: white to the south-west, red to the south-east, blue to the north-west, and purple to the north-east. 
 
 This particular linear flow is unstable. Notice that any initial condition in the purple quadrant will lead to a NE trajectory, away from the fixed point. Similarly, any initial condition in the white quadrant leads to a SW trajectory, again away from the fixed point. For an initial condition in the red or blue quadrants, the flow will take the trajectory into either the white or purple quandrants. The initial part of the trajectory may be towards the fixed point, but as soon as the trajectory crosses into white or purple territory, the trajectory leads away from the fixed point. So, the overall flow is unstable. This particular type of instability, where the initial path might be toward the fixed point but eventually leads away from it, is called a ***saddle***. The flow is analogous to the movement of a marble placed on a horse saddle; it might start to roll toward the center of the saddle, but eventually it will roll off to the side. 
@@ -165,10 +168,8 @@ $$
 
 As for the orbits, one in a clockwise direction and the other counter-clockwise, we cannot yet say from this simple theory whether they are stable or unstable. The orbit we have already met, the rabbit-fox dynamics, has counter-clockwise trajectories that form closed loops. This is called ***neutral stability***. 
 
+::: {#fig-rf-orbit}
 ```{r echo=FALSE,  message=FALSE, warning=FALSE} 
-#| label: fig-rf-orbit
-#| fig-cap: "The rabbit/fox system has orbits that are neutrally stable."
-#| 
 traj1 <- integrateODE(dr ~ dt_rabbit(r, f), 
                       df ~ dt_fox(r,f), r=1.5, f=.25,
                       bounds(t=0:7.5)
@@ -190,6 +191,9 @@ inequality_constraint(dt_rabbit(r, f) < 0 ~ r&f,
                    transform=function(x) x^0.3) %>%
   gf_lims(x = c(.35,2), y=c(0,1.1))
 ```
+
+The rabbit/fox system has orbits that are neutrally stable.
+:::
 
 
 
@@ -216,9 +220,10 @@ We will use $u$ and $w$ as the dynamical variables in the linear approximation t
 $$\partial_t u = \ \ w\\
 \partial_t w = - u$$
 
+::: {#fig-linearized-pendulum}
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
-#| label: fig-linearized-pendulum
-#| fig-cap: "Flow field, nullclines, and trajectories of the pendulum (black) and the linearized pendulum ($\\color{magenta}{\\text{magenta}}) from three different initial conditions."
+#| label: 
+#| fig-cap: ""
 #| 
 tnl0 <- integrateODE(dtheta ~ v, dv ~ - sin(theta), theta=1, v = 0, bounds(t=0:6))
 tnl1 <- integrateODE(dtheta ~ v, dv ~ - sin(theta), theta=2, v = 0, bounds(t=0:6))
@@ -244,6 +249,9 @@ vectorfield_plot(theta ~ v, v ~ -sin(theta), bounds(theta=-3:3, v=-2.5:2.5)) %>%
   gf_lims(y=c(-2.5,2.5), x = c(-3, 3)) %>%
   gf_refine(coord_fixed())
 ```
+
+Flow field, nullclines, and trajectories of the pendulum (black) and the linearized pendulum ($\color{magenta}{\text{magenta}}) from three different initial conditions.
+:::
 
 
 
