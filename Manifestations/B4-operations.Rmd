@@ -77,11 +77,8 @@ x_{i+1} = \text{solve-step}(x_{i})\\\ \\
 \text{until eventually}\ \|f(x_{i+1}) - v\|\ \text{is practically zero.}$$
 
 
-
+::: {#fig-newton-step}
 ```{r echo=FALSE, warning=FALSE}
-#| label: fig-newton-step
-#| fig-cap: "A Newton-step calculation seen graphically. The brown function is approximated as a straight-line function at the initial point $x_0$. The resulting $x_1$ is where that straight line crosses the value $v$ on the output scale. Here, $x_1$ is a little to the left of the actual place where $f()$ crosses $v$. The Newton step produced an improved guess, since $\\|x_1 - x^\\star\\|$ is smaller than $\\| x_0 - x^\\star\\|$."
-#| 
 rawf <- doodle_fun(~ x, seed = 1933)
 x0=3.0
 ticks <- latex2exp::TeX(c(r'(x^*)', "x_0", "x_1"))
@@ -103,17 +100,20 @@ slice_plot(fun(x) ~ x, bounds(x=-2:5), color="brown", label_text="f(x)", label_v
   theme(axis.text.x = element_text(size = 15))
 ```
 
+A Newton-step calculation seen graphically. The brown function is approximated as a straight-line function at the initial point $x_0$. The resulting $x_1$ is where that straight line crosses the value $v$ on the output scale. Here, $x_1$ is a little to the left of the actual place where $f()$ crosses $v$. The Newton step produced an improved guess, since $\|x_1 - x^\\star\|$ is smaller than $\| x_0 - x^\star\|$.
+:::
 
-
-
-::: {.example data-latex=""}
+::: {#try-newton-step style="display: none;"}
+:::
+::: {.callout-important icon=false}
+## @try-newton-step Taking a Newton step
 
 Construct the Newton-step function for finding zeros of the function $$f(x) \equiv x^2 - x\ $$
 
 Since $\partial_x f(x) = 2 x - 1$, the custom-built Newton-step function will be:
 $$\text{solve-step}(z) = z - \frac{z^2 - z - 4}{2 z - 1}$$
 
-```{r echo=FALSE}
+```{webr-r}
 f <- makeFun(x^2 - x ~ x)
 solve_step <- function(z) {z - (z^2 - z - 4)/(2*z-1)}
 ```
@@ -121,7 +121,7 @@ solve_step <- function(z) {z - (z^2 - z - 4)/(2*z-1)}
 The algorithm requires a starting guess. We will use $x_0 = 2$. After each application of `solve_step()`, we will print out the refined value as well as the function output at that refined value.
 
 
-```{r}
+```{webr-r}
 x0 <- 2 
 
 x1 <- solve_step(x0)

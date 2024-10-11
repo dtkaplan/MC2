@@ -65,15 +65,15 @@ $$\begin{array}{c}\partial_t x(0)  =   \lambda_1 A  +  \lambda_2 B\\x(0)  = \ \ 
  \left[\begin{array}{c}\lambda_1 \ \ \ \ \ \lambda_2\\1 \ \ \ \ \ \  1\end{array}\right] \left[\begin{array}{c}A\\ B\end{array}\right] = \left[\begin{array}{c}\partial_t x(0)\\ x(0)\end{array}\right] .$$
 From Block 5, we know how to solve such matrix equations. So, given the initial values $x(0)$ and $\partial_t x(0)$---position and velocity---we can find an exact, quantitative solution to the differential equation. 
 
-::: {.example data-latex=""}
-$\ $
+::: {#try-flow-ts style="display: none;"}
+:::
+::: {.callout-important icon=false}
+## @try-flow-ts Trajectories and their time series
 
-@fig-bc-system shows the flow field, some trajectories and their time series for the system $$\partial_t x = b y\\ \partial_t y = c x$$ for $b=1$ and $c=2$.
+@fig-bc-system shows the flow field, some trajectories and their corresponding time series for the system $$\partial_t x = b y\\ \partial_t y = c x$$ for $b=1$ and $c=2$.
 
+::: {#fig-bc-system}
 ```{r echo=FALSE, message=FALSE}
-#| label: fig-bc-system
-#| fig-cap: "Three trajectories from the system $\\partial_t x = y$ & $\\partial_t y = 2 x$"
-#| 
 t1 <- integrateODE(dx ~ y, dy ~ 2*x, 
                    bounds(t=0:2), x=-.8, y= 1)
 t2 <- integrateODE(dx ~ y, dy ~ 2*x, x=.70, y= -1, bounds(t=0:3.7))
@@ -85,16 +85,21 @@ vectorfield_plot(x ~ y, y ~ 2*x, bounds(x=-1:1, y=-1:1)) %>%
     gf_refine(coord_fixed())
 ```
 
+Three trajectories from the system $\\partial_t x = y$ & $\\partial_t y = 2 x$
+:::
+
 Each of these trajectories starts out by heading toward the fixed point at (0,0). Then, each turns and heads away toward $\pm \infty$ from the fixed point, 
 
+::: {#fig-bc-system-ts}
 ```{r echo=FALSE}
-#| label:  fig-bc-system-ts
-#| fig-cap: "The time series $x(t)$ for the three different trajectories in @fig-bc-system."
-#| 
 traj_plot(x(t) ~ t, t1, color="blue") %>%
 traj_plot(x(t) ~ t, t2, color="magenta") %>%
 traj_plot(x(t) ~ t, t3, color="black") 
 ```
+
+The time series $x(t)$ for the three different trajectories in @fig-bc-system.
+:::
+
 Each of the time series is similar, first showing exponential decay toward 0 then exponential growth toward $\pm \infty$.
 
 The initial conditions for the black and $\color{magenta}{\text{magenta}}$ trajectories are very similar. You can imagine a trajectory starting between those initial conditions that would go down the middle of the "trumpet." This trajectory would be exponential decay toward 0, but would be hard to see since $x=0, y=0$ is an unstable fixed point (a saddle).
@@ -104,18 +109,19 @@ The initial condition for the black trajectory is $x(0)=0.72$ and   $y(0)=\parti
 By plugging in the parameters $a=0$, $b=1$, $c=2$, $d=0$ in the dynamical functions, we find that $$\lambda = \pm \sqrt{\strut 2} \approx \pm 1.4142 \ .$$ Therefore, we solve
 $$\left[\begin{array}{c}1.4142 \ \ \  -1.4142\\1 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \   1\end{array}\right] \left[\begin{array}{c}A\\ B\end{array}\right] = \left[\begin{array}{c}\partial_t\,x(0)\\x(0)\end{array}\right] .$$
 
-```{r}
+```{webr=r}
 M <- cbind(rbind(1.4142, 1), rbind(-1.4142,1))
 b_black = rbind(-1, 0.72)
 b_magenta = rbind(-1, 0.70)
 qr.solve(M, b_black)
 qr.solve(M, b_magenta)
 ```
+
 The two trajectories are therefore
 
 $x_\text{black}(t) = 0.0064 e^{1.4142 t} + 0.7136 e^{-1.4142}$
 
-$\color{magenta}{x_\text{magenta}(t)} & = -0.00356 e^{1.4142 t} + 0.70356 e^{-1.4142 t}$.
+$\color{magenta}{x_\text{magenta}(t)} = -0.00356 e^{1.4142 t} + 0.70356 e^{-1.4142 t}$.
 
 For both trajectories, the initial amplitude of the decaying exponential is much larger than for the growing exponential. That is why the time series decay toward zero initially. As $t$ grows, the exponential growth become much more important. For the black trajectory, the exponential growth has a positive coefficient, so the growth is toward $\infty$. But for the $\color{magenta}{\text{magenta}}$ trajectory, the exponential growth has a negative coefficient, thus that trajectory grows toward $-\infty$.
 :::

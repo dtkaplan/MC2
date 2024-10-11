@@ -26,7 +26,6 @@ ggplot2::theme_set(theme_bw(base_size = 16))
 
 knitr::opts_chunk$set(out.width = "90%", 
                       fig.align = "center", 
-                      fig.margin = TRUE,
                       collapse = TRUE # don't split code output box from input.
                       )
 #for regular pdf but not Tufte add:            fig.pos = "h", out.extra = "")

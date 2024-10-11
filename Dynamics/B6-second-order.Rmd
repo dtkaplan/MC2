@@ -163,16 +163,13 @@ Adding air resistance to the model changes the trajectory. For reference, the tr
 
 Consider the motion of a weight attached to a spring, as in @fig-spring-mass. We will denote the vertical position of the mass by $y(t)$. Such a spring-mass system has a fixed point where the spring is stretched just enough to cancel out gravity and the velocity is zero. We will measure $y$ relative to this fixed point. 
 
-```{r echo=FALSE}
-#| label: fig-spring-mass1
-#| fig.cap = "A spring-mass system in motion. [Source: Svjo](https://commons.wikimedia.org/wiki/File:Animated-mass-spring.gif) [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0) via Wikimedia Commons"
-#| column: margin
-if (knitr::is_html_output()) {
-  knitr::include_graphics("www/Animated-mass-spring.gif")
-} else {
-  knitr::include_graphics("www/Animated-mass-spring.png")
-}
-```
+::: {#fig-spring-mass1}
+
+![](www/Animated-mass-spring.gif){align="center"}
+
+
+A spring-mass system in motion. [Source: Svjo](https://commons.wikimedia.org/wiki/File:Animated-mass-spring.gif) [CC BY-SA](https://creativecommons.org/licenses/by-sa/3.0) via Wikimedia Commons
+:::
 
 According to Hooke's Law, a stretched or compressed spring exerts a force that is proportional to the amount of extension or compression. With our measuring $y$ relative to the fixed point, the Hooke's Law force will be
 $$m\, \partial_{tt} y = - s\, y\ ,$$ where $m$ is the amount of mass and $s$ is the stiffness of the spring.
@@ -190,7 +187,7 @@ Differentiating again gives
 $$- \omega^2 A\sin(\omega\, t) = - \frac{s}{m}\, A\sin(\omega t)\ .$$
 Simplifying this by cancelling out the $A \sin(\omega t)$ term gives $\omega^2 = \frac{s}{m}$, where $\omega$ is the angular frequency of the oscillation.
 
-::: {.takenote data-latex=""}
+::: {.callout-tip}
 Instead of using $A \sin(\omega t)$ as the *ansatz* we could have used $A \sin(\omega t) + B \cos(\omega t)$. Working through this ansatz would produce the same result, that $\omega^2 = \frac{s}{m}$. So the solution to the spring-mass system will be, in general, a linear combination of the sine and the cosine functions with angular frequency $\omega$.
 :::
 
@@ -225,7 +222,7 @@ So whenever you see $e^{i \omega t}$, think of $\cos(\omega t)$.
 
 2. Algebraic understanding via Taylor Polynomials. (optional) This level of understanding can give you confidence that the basic, pragmatic understanding in (1) has honest roots. It also shows the way that (1) is not 100% on target (although good enough for a large fraction of mathematical work). But for many people, algebra is a rocky road to understanding.
 
-The starting point for the algebraic understanding is the Taylor polynomial approximation for $e^{\omega t}$. Recall from Chapter `r Chaps$taylor` that
+The starting point for the algebraic understanding is the Taylor polynomial approximation for $e^{\omega t}$. Recall from @sec-polynomials that
 $$e^{\omega t} = 1 + \omega t + \frac{1}{2!}\omega^2 t^2 + \frac{1}{3!}\omega^3 t^3 + \frac{1}{4!} \omega^4 t^4 + \frac{1}{5!} \omega^5 t^5 + \frac{1}{6!} \omega^6 t^6 + \cdots$$
 You may also recall the Taylor polynomial expansion of sine and cosine:
 $$ \cos(\omega t) = 1 - \frac{1}{2!} \omega^2 t^2 + \frac{1}{4!}\omega^4 t^4 - \frac{1}{6!} \omega^6 t^6 + \cdots$$
@@ -323,35 +320,44 @@ This is the situation with a swinging door. You shove it to swing open, after wh
 
 In contrast, suppose the spring is weak compared to the damping such that $4b < r^2$. Now $\sqrt{\strut r^2 - 4b}$ is a positive number, not imaginary. What's more, since $b$ is positive, $\sqrt{\strut r^2 - 4 b} < r$.  This means that both eigenvalues are negative. We will illustrate the situation with $r=1, b=0.2$:
 
+::: {#fig-overdamped1}
 ```{r echo=TRUE}
-#| label: fig-overdamped1
-#| fig-cap: "A heavily damped spring-mass system with  $r = 1$ and $b = 0.1$."
-#| 
 traj2 <- integrateODE(dv~ -r*v - b*y, dy ~ v, 
                       v=10, y=0, r=1, b=0.1, 
                       bounds(t=0:20))
 traj_plot(y(t) ~ t, traj2) %>%
   gf_lims(y = c(0, NA))
 ```
+
+A heavily damped spring-mass system with  $r = 1$ and $b = 0.1$.
+:::
+
 The situation in @fig-overdamped1 is the sort of behavior one expects when giving a shove to an exit door in theater or stadium. The shove causes the door to swing open, after which it slowly returns to the closed position. That gives plenty of time for the people following you to get to the door before it closes.
 
 Finally, consider the case where $r^2 - 4 b = 0$, a balance between resistance and springiness. In this case, both eigenvalues are $\lambda = -r/2$.
 
+::: {#fig-critically-damped}
 ```{r echo=TRUE}
 #| label: fig-critically-damped
-#| fig-cap: "A critically damped oscillation with $r=1$, $b=0.25$."
+#| fig-cap: ""
 #| 
 traj3 <- integrateODE(dv~ -r*v - b*y, dy ~ v, v=10, y=0, r=1, b=0.25, bounds(t=0:20))
 traj_plot(y(t) ~ t, traj3) %>%
   gf_lims(y = c(0, NA))
 ```
+A critically damped oscillation with $r=1$, $b=0.25$.
+:::
+
+
 This is a situation called ***critically damped***. The door swings open, then closes as fast as it can without any oscillation.
 
 
-::: {.example data-latex=""}
-$\ $
+::: {#thm-second-order style="display: none;"}
+:::
+::: {.callout-important icon=false}
+## @thm-second-order Stability and eigenvalues
 Consider the second-order linear differential equation
-$$\partial_{tt}\ y + 2\, \partial_t\, y - 3\, y = 0\ .$$ Is this system stable?
+$$\partial_{tt}\ y + 2\, \partial_t\, y - 3\, y = 0\ .$$ Is the equilibrium point for this system stable?
 
 For this system, $a=2$ and $b = - 3$, so the eigenvalues are 
 $$\lambda = \left(-2 \pm \sqrt{\strut 4 + 12}\right)/2 = 1 \pm \sqrt{\strut 16}/2 = -1 \pm 2$$
@@ -359,7 +365,7 @@ In other words, $\lambda_1 = -3$ and $\lambda_2 = +1$. This indicates that the s
 
 To confirm our work, let's use `eigen()` to find the eigenvalues of the matrix $\left[\begin{array}{cc}2 & 3\\1 & 0\end{array}\right]$:
 
-```{r}
+```{webr-r}
 M <- cbind(rbind(-2,1), rbind(3,0))
 eigen(M)
 ```

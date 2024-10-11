@@ -7,7 +7,7 @@ source("../starter.R")
 Many problems in physics and engineering involve the task of ***decomposing*** a vector $\vec{b}$ into two perpendicular component vectors $\hat{b}$ and $\vec{r}$, such that $\hat{b} + \vec{r} = \vec{b}$ and 
 $\hat{b} \cdot \vec{r} = 0$. There are infinite ways to accomplish such a decomposition, one for each way or orienting $\hat{b}$ relative to $\vec{b}$. @fig-decompose-1 shows a few examples.
 
-::: {.takenote data-latex=""}
+::: {.callout-tip}
 The hat-shaped crown in $\hat{b}$, pronounced "b-hat,"  often appears in statistics and machine learning. The hat indicates that the quantity is an *estimate* made from data.
 :::
 
@@ -18,16 +18,18 @@ The hat-shaped crown in $\hat{b}$, pronounced "b-hat,"  often appears in statist
 #| out-width: "60%"
 knitr::include_graphics("www/decompose-1.png")
 ```
-::: {.example data-latex=""}
+
+::: {#thm-decompose-gravity style="display: none;"}
+:::
+::: {.callout-note icon=false}
+## @thm-decompose-gravity Decomposing gravity
 The gravitational force on an object always points downward toward the center of the Earth. For an isolated object---often the word "mass" is used instead of "object"---acceleration is in the same downward direction. However, often the mass is just one component in a mechanically interconnected system, such as the three systems shown in @fig-gravity-settings: a ramp, a pendulum, and an inclined plane. The other components of the system counteract, to some extent, the gravitational force on the mass. The net force on the mass---taking into account gravity and the forces imposed by the other elements of the system---is in a direction $\vec{s}$ determined by the system, respectively pointing down the ramp or perpendicular to the pendulum strut or aligned with the gradient vector of the inclined plane.
 
-```{r echo=FALSE, out.width="100%"}
-#| label: fig-gravity-settings
-#| fig.cap: "Three different mechanical systems consisting of a mass (in black) constrained in its movement by the other components of a system: left: a mass on a ramp; center: a mass as part of a pendulum; right: a round mass constrained to roll on a planar surface."
-#| fig.align: "center"
-#| fig.cap.location: "margin"
-knitr::include_graphics("www/gravity-settings.png")
-```
+::: {#fig-gravity-settings}
+![](www/gravity-settings.png){align="center", width="100%"}
+
+Three different mechanical systems consisting of a mass (in black) constrained in its movement by the other components of a system: left: a mass on a ramp; center: a mass as part of a pendulum; right: a round mass constrained to roll on a planar surface.
+:::
 
 The $\vec{r}$ in each diagram gives the component of gravitational force that the structure counteracts: the pull down into the ramp, the pull along the pendulum strut, or the pull into the inclined plane.  Finding $\vec{s}$ and $\vec{r}$ is a matter of *decomposing* the gravitational force into two components: one whose direction is set by the structure and another component perpendicular to that one.
 :::
@@ -223,10 +225,14 @@ iii. Take the third vector from $\mathit{A}$ and project it onto $\left[\strut \
 iv. Continue onward, taking the next vector in $\mathit{A}$, projecting it onto the q-vectors already assembled, and finding the residual from that projection.
 v. Repeat step (iv) until all the vectors in $\mathit{A}$ have been handled. 
 
-::: {.example data-latex=""}
+::: {#try-project-in-10 style="display: none;"}
+:::
+::: {.callout-important icon=false}
+## @thm-project-in-10 Projecting in 10-dimensional space
+
 Project a $\vec{b}$ that lives in 10-dimensional space onto the subspace sponsored by five vectors that are not mutually orthogonal:
 
-```{r}
+```{webr-r}
 b <- rbind(3,2,7,3,-6,4,1,-1, 8, 2) # or any set of 10 numbers
 v1 <- rbind(4, 7, 1, 0, 3, 0, 6, 1, 1, 2)
 v2 <- rbind(8, 8, 4, -3, 3, -2, -4, 9, 6, 0)
@@ -239,7 +245,7 @@ Confirm using dot products that the `v`-vectors are **not** mutually orthogonal.
 
 Now to construct the vectors in $\mathit{Q}$.
 
-```{r}
+```{webr-r}
 q1 <- v1
 q2 <- v2 %perp% q1
 q3 <- v3 %perp% cbind(q1, q2)
@@ -250,7 +256,7 @@ Q <- cbind(q1, q2, q3, q4, q5)
 
 Since `Q` consists of mutually orthogonal vectors, the projection of `b` onto `Q` can be made one vector at a time.
 
-```{r}
+```{webr-r}
 p1 <- b %onto% q1
 p2 <- b %onto% q2
 p3 <- b %onto% q3
