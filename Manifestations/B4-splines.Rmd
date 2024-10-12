@@ -17,7 +17,7 @@ This chapter introduces yet another important method for constructing functions 
 
 ## Generating smooth motion
 
-As a motivating example, consider the programming of robotic arms as in the video:
+As a motivating example, consider the programming of robotic arms of the sort displayed in @fig-robot-movement-factory:
 
 ::: {#fig-robot-movement-factory}
 
@@ -57,11 +57,14 @@ The waypoints on a path the robot hand is supposed to follow. All the action is 
 
 Even so, functions can be a useful way of describing the $(x,y)$ path. The key is the plural: function**s**. For the path in @fig-robot-points  we need *two* quantities varying with time in a coordinated way. One approach, familiar to navigators, is to specify direction of movement and velocity at each instant of time. Perhaps not as familiar, but more fundamental mathematically, is to specify $x$ as a function of time and, separately, $y$ as a function of time. Using this formalism, the trajectory of the robot arm will consist of two functions, $x(t)$ and $y(t)$. To build those functions, we start with the waypoints stored in the data frame `Robot_stations`.
 
+::: {#tab-robot-stations}
 ```{r echo=FALSE}
 TAB <- Znotes::and_so_on(Robot_stations)
 
 TAB # |> kableExtra::kable_paper("hover", full_width = FALSE)
 ```
+The data frame `Robot_stations"
+:::
 
 The $x(t)$ and $y(t)$ functions in this table aren't complete enough to operate the robot. We need to provide the $x,y$-location data in the form of two **continuous** functions of $t$ so that the robot, at any time $t$, can look up where it is supposed to be, what its velocity should be, and how that velocity should be changing in time (acceleration).
 
@@ -196,34 +199,38 @@ We require these things of each of the interpolating polynomials:
 
 How to accomplish (1) and (2)?
 
-Notice first that because we wrote each of the polynomials in the style of Taylor polynomials, we can read the values of $a_1$, $a_2$, and $a_3$ directly from the data table: $$p_1(t_1) = a_1 = y_1\\p_2(t_2) = a_2 = y_2\\p_3(t_3) = a_3 = y_3\\$$
+Notice first that because we wrote each of the polynomials in the style of Taylor polynomials, we can read the values of $a_1$, $a_2$, and $a_3$ directly from the data table: 
+
+$$p_1(t_1) = a_1 = y_1$$
+$$p_2(t_2) = a_2 = y_2$$
+$$p_3(t_3) = a_3 = y_3$$
 
 
 We can find other coefficients from the requirement that the right side of each segment pass through the knot on that side. This gives:
 
-$$p_1(t_2) = y_2 = a_1 + b_1 \left[t_2-t_1\right] + c_1\left[t_2-t_1\right]^2\\
-p_2(t_c) = y_3 = a_2 + b_2 \left[t_3-t_2\right] + c_2\left[t_3-t_2\right]^2\\
-p_3(t_c) = y_4 = a_3 + b_3 \left[t_4-t_3\right] + c_3\left[t_4-t_3\right]^2$$ 
+$$p_1(t_2) = y_2 = a_1 + b_1 \left[t_2-t_1\right] + c_1\left[t_2-t_1\right]^2$$
+$$p_2(t_c) = y_3 = a_2 + b_2 \left[t_3-t_2\right] + c_2\left[t_3-t_2\right]^2$$
+$$p_3(t_c) = y_4 = a_3 + b_3 \left[t_4-t_3\right] + c_3\left[t_4-t_3\right]^2$$ 
 (Notice that $t_2 - t_1$ and the like are simply numbers that can be computed from the known knot points.)
 
 Another two conditions are that the derivatives of the polynomials from either side of each interior knot point must match at the knot point. Finding the derivatives of the segments is a simple exercise:
 
-$$\partial_t p_1(t) = b_1 + 2 c_1 \left[t - t_1\right]\\
-\partial_t p_1(t) = b_2 + 2 c_2 \left[t - t_2\right]\\
-\partial_t p_1(t) = b_3 + 2 c_3 \left[t - t_3\right]$$
+$$\partial_t p_1(t) = b_1 + 2 c_1 \left[t - t_1\right]$$
+$$\partial_t p_1(t) = b_2 + 2 c_2 \left[t - t_2\right]$$
+$$\partial_t p_1(t) = b_3 + 2 c_3 \left[t - t_3\right]$$
+
 Matching these derivatives at the $t_2$ and $t_3$ knot points---the interior knots where two segments come together---gives two more equations:
-$$
-\partial_t p_1(t_2) = b_1 + 2 c_1 \left[t_2 - t_1\right] = b_2 = \partial_t p_2(t_2)\\
-\partial_t p_2(t_3) = b_2 + 2 c_2 \left[t_3 - t_2\right] = b_3 = \partial_t p_3(t_3) $$
+$$\partial_t p_1(t_2) = b_1 + 2 c_1 \left[t_2 - t_1\right] = b_2 = \partial_t p_2(t_2)$$
+$$\partial_t p_2(t_3) = b_2 + 2 c_2 \left[t_3 - t_2\right] = b_3 = \partial_t p_3(t_3) $$
 All together, we have **five** equations in **six** unknowns: $b_1, b_2, b_3$ and $c_1, c_2, c_3$.
 
 Plugging in the specific values $t_1$ through $t_4$, and $x_1$ through $x_4$ from the data table translates the equations for the polynomial values and derivatives gives this system of equations:
-$$
-b_1 + c_1 = x_2 - x_1 = \ \ \ \ \ \ 2\\
-b_2 + c_2 = x_3 - x_2 = -1.5\\
-b_3 + c_3 = x_4 - x_3= \ \ 1.2\\
-b_1 + 2 c_1 - b_2 = 0\\
-b_2 + 2 c_2 - b_3 = 0$$
+
+$$b_1 + c_1 = x_2 - x_1 = \ \ \ \ \ \ 2$$
+$$b_2 + c_2 = x_3 - x_2 = -1.5$$
+$$b_3 + c_3 = x_4 - x_3= \ \ 1.2$$
+$$b_1 + 2 c_1 - b_2 = 0$$
+$$b_2 + 2 c_2 - b_3 = 0$$
 
 This is not the place to go into the details of solving the five equations to find the six unknowns. (Block 5 introduces the mathematics of such things, which turns out to the same math used to find model parameters to "fit" data.)
 But there are some simple things to say about the task. 
@@ -272,14 +279,10 @@ xfun <- qspliner(x ~ t, data = Robot_stations)
 yfun <- qspliner(y ~ t, data = Robot_stations)
 ```
 
-::: {#lst-find-the-path}
+Having constructed the functions, we can plot them in the ordinary way, here adding [orange]{style="color: orange;"} dots at the $x$-values of the knots.
+
+::: {#lst-find-the-path .column-page-right}
 ```{webr-r}
-# evaluate the functions for 1 < t < 16
-Path <- tibble(
-  t = seq(1, 16, length = 1000),
-  x = xfun(t),
-  y = yfun(t)
-)
 ## Plot the x time series and the knots
 slice_plot(xfun(t) ~ t, domain(t = 1:16), npts=500) |>
   gf_point(x ~ t, data = Robot_stations, 
@@ -317,7 +320,7 @@ gf_path(y ~ x, data = Path) %>%
 Connecting the robot-path knots with a piecewise quadratic polynomial, constructed to be $C^1$. The path is pretty perhaps, but absurd.
 :::
 
-Quadratic splines are rarely used in practice. (A ***cubic spline*** provides helpful flexibility. See @sec-cubic-splines.) In @fig-qspline-x you can see one of the reasons: the quadratic form is so ***stiff*** that the interpolating function tends to shift from concave up to concave down (or vice versa) at each knot point. This results in the interpolating function tending to have a local minimum or maximum *between* adjacent knots, even if the data themselves to not indicate such a structure.
+Quadratic splines are rarely used in practice. (A ***cubic spline*** provides helpful flexibility. See @sec-cubic-splines.) In @fig-four-quads you can see one of the reasons: the quadratic form is so ***stiff*** that the interpolating function tends to shift from concave up to concave down (or vice versa) at each knot point. This results in the interpolating function tending to have a local minimum or maximum *between* adjacent knots, even if the data themselves to not indicate such a structure.
 
 ## C^2^ smooth functions {#sec-cubic-splines}
 
@@ -346,10 +349,9 @@ Path <- tibble(
   y = yfun(t)
 )
 ```
-:::
 
 ::: {#fig-smooth-robot-points}
-```{r echo=FALSE}
+```{r echo=FALSE, warning=FALSE}
 nudges <- rep(40, 16)
 nudges[c(3,12)] <- -40
 gf_path(y ~ x, data = Path) %>%
@@ -372,6 +374,7 @@ slice_plot(xfun(t) ~ t, bounds(t=1:16), npts=500) %>%
 A cubic spline interpolation of the $x$-coordinates of the robot-path knots. The cubic spline respects the monotonicity of consecutive knot points.
 :::
 
+:::
 
 ::: {#thm-infinite-force style="display: none;"}
 ---Continuous second derivatives keep motion smooth.
@@ -438,11 +441,14 @@ Consider the path followed by a Bézier curve as it leaves one of the endpoints.
 A Bézier curve leaves each endpoint in a direction that is tangent to the line drawn between the endpoint and its control point.
 :::
 
+:::
+
 Algebraically, each Bézier segement is a pair of cubic functions, $x(t)$ for the x-coordinate and $y(t)$ for the y-coordinate. The input $t$ varies between 0 and 1 for each segment. The coordinate pair $\left({\large\strut} x(0), y(0)\right)$ is one endpoint of the curve, while $\left({\large\strut} x(1), y(1)\right)$. Each intermediate value of $t$ corresponds to a point on the interior of the curve.
 
 The $x(t)$ and $y(t)$ functions have the same form, the difference between the functions being only the values of the end values ($x_1$ and $x_4$ for the $x(t)$ function, and similarly $y_1$ and $y_4$ for the $y(t)$ function), as well as the control-point values ($x_2$ and $x_3$ for one function, $y_2$ and $y_3$ for the other.) 
 
-$$x(t) = (1-t)^3\, x_1 + 3(1-t)^2 t\, x_2 + 3(1-t) t^2\, x_3 + t^3\, x_4$$ $$ and
+$$x(t) = (1-t)^3\, x_1 + 3(1-t)^2 t\, x_2 + 3(1-t) t^2\, x_3 + t^3\, x_4$$
+and
 $$y(t) = (1-t)^3\, y_1 + 3(1-t)^2 t\, y_2 + 3(1-t) t^2\, y_3 + t^3\, y_4$$
 
 

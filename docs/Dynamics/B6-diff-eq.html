@@ -587,8 +587,6 @@ window.Quarto = {
   <li><a href="#dynamical-systems" id="toc-dynamical-systems" class="nav-link active" data-scroll-target="#dynamical-systems"><span class="header-section-number">40.1</span> Dynamical systems</a></li>
   <li><a href="#state" id="toc-state" class="nav-link" data-scroll-target="#state"><span class="header-section-number">40.2</span> State</a></li>
   <li><a href="#state-space" id="toc-state-space" class="nav-link" data-scroll-target="#state-space"><span class="header-section-number">40.3</span> State space</a></li>
-  <li><a href="#dynamics" id="toc-dynamics" class="nav-link" data-scroll-target="#dynamics"><span class="header-section-number">40.4</span> Dynamics</a></li>
-  <li><a href="#state-space-and-flow-field" id="toc-state-space-and-flow-field" class="nav-link" data-scroll-target="#state-space-and-flow-field"><span class="header-section-number">40.5</span> State space and flow field</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Dynamics/B6-diff-eq.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -660,26 +658,22 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <p>Let’s illustrate the idea of a dynamical system with a children’s game: “Chutes and Ladders”. Since hardly any children have studied calculus, the game isn’t presented as differential equations, but as a simple board and the rules for the movement along the board.</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-chutes-and-ladders" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-chutes-and-ladders" class="quarto-float quarto-figure quarto-figure-center anchored" data-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-chutes-and-ladders-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="www/Chutes-and-ladders.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%">
+<img src="www/Chutes-and-ladders.png" class="img-fluid figure-img" style="width:60.0%" data-align="center">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chutes-and-ladders-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;40.1: The game of <em>Chutes and Ladders</em>
 </figcaption>
 </figure>
 </div>
-</div>
-</div>
 <p>A player’s state in this game is shown by the position of a token, but we will define the state to be the number of the square that the player’s token is on. In Chutes and Ladders the state is one of the integers from 1 to 100. In contrast, the dynamical systems that we will study with calculus have a state that is a point on the number line, or in the coordinate plane, or higher-dimensional space. Our calculus dynamical system describe the change of state using derivatives with respect to time, whereas in chutes and ladders the state jumps from one value to the next value.</p>
 <p>The game board displays not only the set of possible states but also the rule for <del>changing state</del> jumping from one state to another.</p>
 <p>In the real game, players roll a die to determine how many steps to take to the next state. But we will play a simpler game: Just move one step forward on each turn, except … from place to place there are ladders that connect two squares. When the state reaches a square holding the foot of a ladder, the state is swept up to the higher-numbered square at the top of the ladder. Similarly, there are chutes. These work much like the ladders but carry the state from a higher-numbered square to a lower-numbered square.</p>
 <p>The small drawings on the board are not part of the action of the game. Rather, they represent the idea that good deeds lead the player to progress, while wrong-doing produces regression. Thus, the productive gardener in square 1 is rewarded by being moved upward to the harvest in square 38. In square 64 a brat is pulling on his sister’s braids. This misdeed results in punishment: he is moved back to square 60.</p>
 <p>Our dice-free version of Chutes and Ladders is an example of a <strong><em>discrete-time, discrete-state dynamical system</em></strong>. Since there is no randomness involved, the movement of the state is <strong><em>deterministic</em></strong>. (With dice, the movement would be <strong><em>stochastic</em></strong>.)</p>
-<p>The differential equations of a dynamical system correspond to a <strong><em>continuous-time, continuous-space system</em></strong>. This continuity is the reason we use derivatives to describe the motion of the state. The movement in the systems we will explore is also deterministic. (In <span class="quarto-unresolved-ref">?sec-forcing</span> we will encounter briefly some instances of stochastic systems.)</p>
+<p>The differential equations of a dynamical system correspond to a <strong><em>continuous-time, continuous-space system</em></strong>. This continuity is the reason we use derivatives to describe the motion of the state. The movement in the systems we will explore is also deterministic. <!-- (In @sec-forcing we will encounter briefly some instances of stochastic systems.) --></p>
 </div>
 </div>
 </section>
@@ -738,66 +732,181 @@ Figure&nbsp;40.1: The game of <em>Chutes and Ladders</em>
 <div class="callout-body-container callout-body">
 <p>What does it take to describe the dynamical state of an epidemic?</p>
 <p>News reports of the COVID pandemic usually focus on the number of new cases each day and the fraction of the population that has been vaccinated. But this is not adequate, even for a simple description of the dynamics.</p>
-<p>From a history of new-case counts over time (e.g. <span class="quarto-unresolved-ref">?fig-NYT-covid-history</span>) you can see that the number of new cases waxes and wanes. Knowing that the number of cases today is, say, 100 thousand does not tell you what the number of cases <em>will be</em> in two weeks: 100 thousand is encountered both on the way up and on the way down.</p>
-<div class="cell" data-layout-align="center">
+<p>From a history of new-case counts over time (e.g. <a href="#fig-NYT-covid-history" class="quarto-xref">Figure&nbsp;<span>40.2</span></a>) you can see that the number of new cases waxes and wanes. Knowing that the number of cases today is, say, 100 thousand does not tell you what the number of cases <em>will be</em> in two weeks: 100 thousand is encountered both on the way up and on the way down.</p>
+<div id="fig-NYT-covid-history" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-NYT-covid-history-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><img src="www/NYT-covid-report.png" class="img-fluid figure-img"></p>
+<pre><code>
+COVID-19 new-case counts in the US over the first two years of the pandemic. [Source: [*New York Times*]](https://www.nytimes.com/interactive/2021/us/covid-cases.html)]
+:::
+
+
+:::
+
+## Dynamics
+
+The ***dynamics*** of a system is a description of how the individual components of the *state* change as a *function of the entire set of components of the state.* 
+
+At any instant in time, the state is a set of quantities. We will use $x$, $y$, and $z$ for the purpose of illustration, although most of our work in this introduction will be with systems that have just one or two state variables.
+
+The differential equations describing the $x, y, z$ system have a particular form:
+
+$$\partial_t x(t) = f(x(t), y(t), z(t))\ \, \\
+\partial_t y(t) = g(x(t), y(t), z(t))\ \, \\
+\partial_t z(t) = h(x(t), y(t), z(t))\ .$$
+
+The way these equations are written is practically impossible to read: the expression $(t)$ is repeated 12 times! It takes concentration to look beyond the $(t)$ to see the overall structure of the equations. to avoid this problem of not seeing the forest for the $(t)$s, the convention is to omit the $(t)$:
+$$\partial_t x = f(x, y, z)\\
+\partial_t y = g(x, y, z)\\
+\partial_t z = h(x, y, z)$$
+This leaves it to the reader to remember that $x$ is really $x(t)$ and so on.
+
+This more concise way of writing the differential equations makes it easier to describe how to interpret the equations. Formally, $\partial_t x$ is a function, the derivative of the function $x(t)$ with respect to time. But try to put this highly literal interpretation on a back burner. Think of the expression $\partial_t x =$ as meaning, "the way the $x$-component of state changes in time is described by ...." We need three differential equations because there are three components of state in the $x,y,z$ system, and we need to describe for each component the way that component changes.
+
+On the right side of each equation is a function that takes the state quantities as inputs. Each individual equation can be interpreted as completing the elliptical sentence (that is, ending in "...") in the previous paragraph, so that the whole equation reads like, "The way the $x$-component of state changes at any instant in time is specified by the function $h()$ evaluated at the instantaneous state." These functions are called ***dynamical functions*** since they give the rules for the dynamics.
+
+Remember that $x$, $y$, and $z$ are state variables, so they are all *functions of time*. At any instant in time, the values $x$, $y$, $z$ have a specific value. Thus, at any instant in time, evaluating the functions $f(x, y, z)$, $g(x, y, z)$, and $h(x, y, z)$  at the current state produces a specific, scalar value. If we wanted to make this perfectly explicit, we could write $g_x(x(t), y(t), z(t))$, which makes it clear that the output of $g_x()$ is a function of time.
+
+
+::: {.callout-tip}
+Mathematically, a ***dynamical system*** consists of two things:
+
+i. The state variables, which is a set of quantities that vary in time.
+ii. The dynamics, which is the set of dynamical functions, one function for each of the state variables.
+
+:::
+
+
+A simple example is the dynamics of retirement-account interest. In a retirement account, you put aside money---this is called "contributing"---each month. The value $V(t)$ of the account accumulates over time, both due to new monthly deposits and to the interest $r$ earned on the current account value. If you are setting aside $M$ dollars per month, the dynamics are:
+$$\partial_t V = r V + M\ .$$
+The left-hand side of this equation is boilerplate for "the way the $V$ component of state changes is described by the dynamical function $rV + M$." This is a function of $V$ with parameters $r$ and $M$.  In this example, there is just the one state variable $V$, so the dynamical function has only one argument: $V$. 
+
+Remember that the dynamical function is something that the modeler constructs from her knowledge of the system. To model the dynamics of a pendulum requires some knowledge of physics. Without getting involved with the physics, we note that the oscillatory nature of pendulum movement means that there must be at least two state variables. A physicist learns that a good way to describe the motion uses these two quantities: the angle $\theta(t)$ of the pendulum rod with respect to the vertical and the angular velocity $v(t)$ telling how the velocity changes with time. Since there are two state variables, there must be two dynamical functions. For a pendulum, one of the functions, the one for $\partial_t v$ comes from applying Newton's Second Law: $F = m a$. (Remember that $\partial_t v$ is an acceleration.) So one of the differential equations is $$\partial_t v  =  f(\theta, v) \equiv - \sin(\theta)$$
+
+
+The other equation comes from the definition that the derivative of the position $\theta$ is the velocity.
+$$\partial_t \theta  =  g(\theta, v) \equiv  v\\
+$$
+
+::: {.callout-note icon=false data-latex=""}
+## Why?
+
+Why define a state variable $v$ when it is, by definition, the same as $\partial_t \theta(t)$?
+
+Even though the dynamical equation $\partial_t \theta(t) = v$ is a calculus tautology, we need always to be explicit about what are the two quantities in the dynamical state. The $\partial_t \theta$ differential equation comes for free from basic calculus concepts. The second equation is about the physics, that is, the relationship between forces and acceleration.
+
+There is a style of writing dynamics equations that discards such tautologies. For example, the pendulum dynamics are often written $$\partial_{tt} \theta(t) = - \sin(\theta)\ .$$ This sort of equation, containing a second-order derivative, is called a ***second-order differential equation***. In contrast, the two equations, one for $\partial_t \theta$ and one for $\partial_t v$ are called  ***first-order differential equations*** because each involves a first-order derivative. We will return to this second-order style in @sec-second-order-de since it is often encountered in physics and engineering. For now, we are avoiding the second-order style because it obscures the fact that there are two state variables: $\theta(t)$ and $v(t)$.
+:::
+
+::: {#thm-interacting-species style="display: none;"}
+:::
+::: {.callout-note icon=false}
+## @thm-interacting-species Interacting species
+Consider the population of two interacting species, say rabbits and foxes. As you know, the relationship between rabbits and foxes is rather unhappy from the rabbits' point of view even if it is fulfilling for the foxes.
+
+Many people assume that such populations are more or less fixed: that the rabbits are in a steady balance with the foxes. In fact, as any gardener can tell you, some years there are lots of rabbits and others not: an oscillation. Just from this fact, we know that the dynamical state must have at least two components. 
+
+In a simple, but informative, model, the two components of the dynamical state are $r(t)$ and $f(t)$, the population of rabbits and foxes respectively. In the absence of foxes, the dynamics of rabbits are exponential growth; each successive generation is larger than the previous one. This can be described by a dynamical equation $\partial_t r(t) = \alpha r(t)$, where $\alpha$ is a fixed quantity that describes rabbit fecundity.
+
+Similarly, in the absence of food (rabbits are fox food), the foxes will starve or emigrate, so the dynamical equation for foxes is very similar $\partial_t f(t) = - \gamma f(t)$, where $\gamma$ is a fixed quantity that indicates the rate at which foxes die or emigrate.
+
+Of course, in real ecosystems there are many other quantities that change and that are relevant. For instance, foxes eat not only rabbits, but birds and frogs and earthworms and berries. And the diet of rabbits eat weeds and grass (which is generally in plentiful supply), but also the gardener's flowers and carrots (and other vegetables). Growth in the rabbit population leads to decrease in available flowers and vegetables, which in turn leads to slower growth (or even population decline) for rabbits.
+
+In the spirit of illustrating dynamics, we will leave out these important complexities and imagine that the state consists of just two numbers: how many rabbits there are and how many foxes. The dynamics therefore involve two equations, one for $\partial_t r$ and one for $\partial_t f$. For the rabbit/fox model, we will allow the rabbit population change ($\partial_t r$) to be affected by fox prediation and similarly let the fox population change ($\partial_t f$) reflect the consumption of rabbits as food, writing:
+$$\partial_t r = \ \ \ \ \ \alpha\, r - \overbrace{\beta\, f r}^{\text{fox predation}}\\
+\partial_t f = \underbrace{\delta\, r f}_{\text{rabbits as food}} - \gamma\, f$$ 
+
+The quantities $\alpha$, $\beta$, $\gamma$, and $\delta$ are parameters quantify the biology of the system: the reproduction rate of rabbits, the need of foxes for food (rabbits) to reproduce, the hunting success of foxes, and the death or emigration of foxes in response to a shortage of food.
+
+How are you supposed to know that $r$ and $f$ are state variables while quantities like $\beta$ and $\gamma$ are parameters? Because there is a differential equation involving $\partial_t r$ and $\partial_t f$, while no differential equation has been given describing $\partial_t \beta$ or $\partial_t \alpha$.
+
+Coming up with this description of dynamics requires knowing something about rabbits and foxes. The particular forms used, for instance the ***interaction term*** $r f$, come from modeling experience. The interaction term is well named because it is about the literal, biological interaction of foxes and rabbits. 
+:::
+
+## State space and flow field
+
+For the purpose of developing intuition it is helpful to represent the instantaneous state as a point in a graphical frame and the dynamics as a field of vectors showing how, for each possible state, the state changes. For instance, in the Rabbit-Fox dynamics, the state is the pair $(r, f)$ and the ***state space*** is the coordinate plane spanned by $r$ and $f$.
+
+The present state of the system might be any point in the state space. But once we know the present state, the dynamical functions *evaluated at the present state* tell us how the state changes over a small increment in time. The step over a small increment of time can be represented by a vector.
+
+Let's illustrate with the Rabbit-Fox system, whose dynamical equations are given above. The dynamical functions take a position in state space as input. Each of the functions returns a scalar. 
+
+To make a plot, we need numerical values for all the parameters in those equations. 
+
+The vector field corresponding to the dynamics is called a ***flow***, as if it were a pool of swirling water. @fig-rabbit-fox-vectors shows the flow of the rabbit/fox system.
+
+::: {#fig-rabbit-fox-vectors}
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![](B6-diff-eq_files/figure-html/unnamed-chunk-2-1.png){fig-align='center' width=90%}
+:::
+:::
+
+The dynamics of the rabbit/fox system shown as a vector field over the state space. The parameters have been set, for the purpose of illustration, to $\\alpha = 2/3$, $\\beta = 4/3$, $\\gamma = 1$, and $\\delta = 1$.
+:::
+
+
+Staying with the analogy to a pool of swirling water or the currents in a river, you can place a lightweight marker such as a leaf at some point in the flow and follow its path over time. This path---position in state space as a function of time---is called the ***trajectory*** of the flow. There are many possible trajectories, depending on where you place the leaf.
+
+@sec-splines considered the path followed by a robot arm, separating out the $x$- and $y$-components of the arm's position over time and calling them functions $x(t)$ and $y(t)$. Analogously, the decomposition of a trajectory from an initial condition in the flow---this would be $r(t)$ and $f(t)$ for the rabbit/fox system---gives us the ***solution*** to the differential equation. 
+
+Each component of the solution is called a ***time series*** and is often plotted as a function of time, for instance $r(t)$ versus $t$.
+
+From the flow field, you can approximate the trajectory that will be followed from any initial condition. Starting from the ***initial condition***, just follow the flow. You already have some practice following a flow from your study of the ***gradient ascent*** method of optimization described in @sec-optim-and-shape. At the argmax, the gradient is nil. Thus, the gradient ascent method stops at the argmax. We will see an analogous behavior in dynamical systems: any place where the flow is nil is a potential resting point for the state, called a ***fixed point***. 
+
+::: {#thm-pendulum-flow style="display: none;"}
+:::
+::: {.callout-note icon=false}
+## @thm-pendulum-flow Flow field for a pendulum
+Let's return to the pendulum and examine its flow field. We will modify the equations just a little bit to include air resistance in the model. Air resistance is a force, so we know it will appear in the $\partial_t v_\theta(t)$ equation. A common model for air resistance has it proportional in size to the square of the velocity and with a direction that is the opposite of the velocity. In a differential equation, the model of air resistance can be written as $- \alpha\, L\, \text{sign}(v(t))\ v(t)^2$, where $\text{sign}()$ is a piecewise function that has the value $+1$ when the argument is positive and $-1$ when the argument is negative. $L$ is the length of the pendulum.
+$$\partial_t \theta = v\\
+\partial_t v = - \sin(\theta) - \alpha\,L^2\, \text{sign}(v)\ v^2$$
+(Keep in mind as always that for dynamical systems a state variable like $\theta$ is also a function of time $\theta(t)$.) Whenever you have a state variable, you know that it is a function of time and so the explicit $(t)$ is often omitted for the sake of conciseness.
+
+@fig-pendulum-in-air shows the flow field of the pendulum. Also shown is a trajectory and the two time series corresponding to that trajectory.
+
+::: {#fig-pendulum-in-air}
+
+
+
+
+
+::: {.cell layout-align="center"}
+</code></pre>
+<section id="solution-containing-functions-thetat-vt." class="level2" data-number="40.4">
+<h2 data-number="40.4" class="anchored" data-anchor-id="solution-containing-functions-thetat-vt."><span class="header-section-number">40.4</span> Solution containing functions theta(t), v(t).</h2>
+<p>```</p>
 <div class="cell-output-display">
-<p>![COVID-19 new-case counts in the US over the first two years of the pandemic. <a href="https://www.nytimes.com/interactive/2021/us/covid-cases.html">Source: [<em>New York Times</em>]</a>]](www/NYT-covid-report.png){#fig-NYT-covid-history fig-align=‘center’ width=90%}</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B6-diff-eq_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
 </div>
 </div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B6-diff-eq_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
 </div>
 </div>
 </section>
-<section id="dynamics" class="level2" data-number="40.4">
-<h2 data-number="40.4" class="anchored" data-anchor-id="dynamics"><span class="header-section-number">40.4</span> Dynamics</h2>
-<p>The <strong><em>dynamics</em></strong> of a system is a description of how the individual components of the <em>state</em> change as a <em>function of the entire set of components of the state.</em></p>
-<p>At any instant in time, the state is a set of quantities. We will use <span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span>, and <span class="math inline">\(z\)</span> for the purpose of illustration, although most of our work in this introduction will be with systems that have just one or two state variables.</p>
-<p>The differential equations describing the <span class="math inline">\(x, y, z\)</span> system have a particular form:</p>
-<p><span class="math display">\[\partial_t x(t) = f(x(t), y(t), z(t))\ \, \\
-\partial_t y(t) = g(x(t), y(t), z(t))\ \, \\
-\partial_t z(t) = h(x(t), y(t), z(t))\ .\]</span></p>
-<p>The way these equations are written is practically impossible to read: the expression <span class="math inline">\((t)\)</span> is repeated 12 times! It takes concentration to look beyond the <span class="math inline">\((t)\)</span> to see the overall structure of the equations. to avoid this problem of not seeing the forest for the <span class="math inline">\((t)\)</span>s, the convention is to omit the <span class="math inline">\((t)\)</span>: <span class="math display">\[\partial_t x = f(x, y, z)\\
-\partial_t y = g(x, y, z)\\
-\partial_t z = h(x, y, z)\]</span> This leaves it to the reader to remember that <span class="math inline">\(x\)</span> is really <span class="math inline">\(x(t)\)</span> and so on.</p>
-<p>This more concise way of writing the differential equations makes it easier to describe how to interpret the equations. Formally, <span class="math inline">\(\partial_t x\)</span> is a function, the derivative of the function <span class="math inline">\(x(t)\)</span> with respect to time. But try to put this highly literal interpretation on a back burner. Think of the expression <span class="math inline">\(\partial_t x =\)</span> as meaning, “the way the <span class="math inline">\(x\)</span>-component of state changes in time is described by ….” We need three differential equations because there are three components of state in the <span class="math inline">\(x,y,z\)</span> system, and we need to describe for each component the way that component changes.</p>
-<p>On the right side of each equation is a function that takes the state quantities as inputs. Each individual equation can be interpreted as completing the elliptical sentence (that is, ending in “…”) in the previous paragraph, so that the whole equation reads like, “The way the <span class="math inline">\(x\)</span>-component of state changes at any instant in time is specified by the function <span class="math inline">\(h()\)</span> evaluated at the instantaneous state.” These functions are called <strong><em>dynamical functions</em></strong> since they give the rules for the dynamics.</p>
-<p>Remember that <span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span>, and <span class="math inline">\(z\)</span> are state variables, so they are all <em>functions of time</em>. At any instant in time, the values <span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span>, <span class="math inline">\(z\)</span> have a specific value. Thus, at any instant in time, evaluating the functions <span class="math inline">\(f(x, y, z)\)</span>, <span class="math inline">\(g(x, y, z)\)</span>, and <span class="math inline">\(h(x, y, z)\)</span> at the current state produces a specific, scalar value. If we wanted to make this perfectly explicit, we could write <span class="math inline">\(g_x(x(t), y(t), z(t))\)</span>, which makes it clear that the output of <span class="math inline">\(g_x()\)</span> is a function of time.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
 </div>
-<div class="callout-title-container flex-fill">
-Tip
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-NYT-covid-history-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;40.2
+</figcaption>
+</figure>
+</div>
+<p>The flow field of a pendulum with air resistance. From the initial condition (marked by <span class="math inline">\(\color{red}{\text{x}}\)</span>), a trajectory is sketched out for <span class="math inline">\(0 \leq t \leq 20\)</span>. The individual components of that trajectory are graphed as time series.</p>
 </div>
 </div>
-<div class="callout-body-container callout-body">
-<p>Mathematically, a <strong><em>dynamical system</em></strong> consists of two things:</p>
-<ol type="i">
-<li>The state variables, which is a set of quantities that vary in time.</li>
-<li>The dynamics, which is the set of dynamical functions, one function for each of the state variables.</li>
-</ol>
-</div>
-</div>
-<p>A simple example is the dynamics of retirement-account interest. In a retirement account, you put aside money—this is called “contributing”—each month. The value <span class="math inline">\(V(t)\)</span> of the account accumulates over time, both due to new monthly deposits and to the interest <span class="math inline">\(r\)</span> earned on the current account value. If you are setting aside <span class="math inline">\(M\)</span> dollars per month, the dynamics are: <span class="math display">\[\partial_t V = r V + M\ .\]</span> The left-hand side of this equation is boilerplate for “the way the <span class="math inline">\(V\)</span> component of state changes is described by the dynamical function <span class="math inline">\(rV + M\)</span>.” This is a function of <span class="math inline">\(V\)</span> with parameters <span class="math inline">\(r\)</span> and <span class="math inline">\(M\)</span>. In this example, there is just the one state variable <span class="math inline">\(V\)</span>, so the dynamical function has only one argument: <span class="math inline">\(V\)</span>.</p>
-<p>Remember that the dynamical function is something that the modeler constructs from her knowledge of the system. To model the dynamics of a pendulum requires some knowledge of physics. Without getting involved with the physics, we note that the oscillatory nature of pendulum movement means that there must be at least two state variables. A physicist learns that a good way to describe the motion uses these two quantities: the angle <span class="math inline">\(\theta(t)\)</span> of the pendulum rod with respect to the vertical and the angular velocity <span class="math inline">\(v(t)\)</span> telling how the velocity changes with time. Since there are two state variables, there must be two dynamical functions. For a pendulum, one of the functions, the one for <span class="math inline">\(\partial_t v\)</span> comes from applying Newton’s Second Law: <span class="math inline">\(F = m a\)</span>. (Remember that <span class="math inline">\(\partial_t v\)</span> is an acceleration.) So one of the differential equations is <span class="math display">\[\partial_t v  =  f(\theta, v) \equiv - \sin(\theta)\]</span></p>
-<p>The other equation comes from the definition that the derivative of the position <span class="math inline">\(\theta\)</span> is the velocity. <span class="math display">\[\partial_t \theta  =  g(\theta, v) \equiv  v\\
-\]</span></p>
-<div class="callout callout-style-default callout-note no-icon callout-titled" data-latex="">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Why?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Why define a state variable <span class="math inline">\(v\)</span> when it is, by definition, the same as <span class="math inline">\(\partial_t \theta(t)\)</span>?</p>
-<p>Even though the dynamical equation <span class="math inline">\(\partial_t \theta(t) = v\)</span> is a calculus tautology, we need always to be explicit about what are the two quantities in the dynamical state. The <span class="math inline">\(\partial_t \theta\)</span> differential equation comes for free from basic calculus concepts. The second equation is about the physics, that is, the relationship between forces and acceleration.</p>
-<p>There is a style of writing dynamics equations that discards such tautologies. For example, the pendulum dynamics are often written <span class="math display">\[\partial_{tt} \theta(t) = - \sin(\theta)\ .\]</span> This sort of equation, containing a second-order derivative, is called a <strong><em>second-order differential equation</em></strong>. In contrast, the two equations, one for <span class="math inline">\(\partial_t \theta\)</span> and one for <span class="math inline">\(\partial_t v\)</span> are called <strong><em>first-order differential equations</em></strong> because each involves a first-order derivative. We will return to this second-order style in <a href="B6-second-order.html" class="quarto-xref"><span>Chapter 47</span></a> since it is often encountered in physics and engineering. For now, we are avoiding the second-order style because it obscures the fact that there are two state variables: <span class="math inline">\(\theta(t)\)</span> and <span class="math inline">\(v(t)\)</span>.</p>
-</div>
-</div>
-<div id="thm-interacting-species" class="theorem" style="display: none;">
+<p>The pendulum was started out by lifting it to an angle of <span class="math inline">\(45^\circ\)</span> and giving it an initial upward velocity. The bob swings up for a bit before being reversed by gravity and swinging toward <span class="math inline">\(\theta = 0\)</span> and beyond. Due to air resistance, the amplitude of swinging decreases over time.</p>
+<p>:::</p>
+<p>The flow of a dynamical system tells how different points in state space are connected. Because movement of the state is continuous in time and the state space itself is continuous, the connections cannot be stated in the form “this point goes to that point.” Instead, as has been the case all along in calculus, we describe the movement in terms of a “velocity” vector. Each dynamical function specifies one component of the “velocity” vector, taken together they tell the <strong><em>direction</em></strong> and <strong><em>speed</em></strong> of movement of the state at each instant in time.</p>
+<p>Perhaps it would be better to use the term <strong><em>state velocity</em></strong> instead of “velocity.” In physics and most aspects of everyday life, “velocity” refers to the rate of change of physical <strong><em>position</em></strong> of an object. Similarly, the state velocity tells the rate of change of the position of the state. It is a useful visualization technique to think of the state as an object skating around the state space in a manner directed by the dynamical functions. But the state space almost always includes components other than physical position. For instance, in the rabbit/fox model, the state says nothing about where individual rabbits and foxes are located in their environment; it is all about the <strong><em>density</em></strong> of animals in a region.</p>
+<p>In physics, often the state space consists of position in physical state as well as the physical velocity in physical space. For instance, the state might consist of the three <span class="math inline">\(x, y, z\)</span> components of physical position as well as the three <span class="math inline">\(v_x, v_y, v_z\)</span> components of physical velocity. Altogether, that is a six-dimensional state space. The <strong><em>state velocity</em></strong> also has six components. Three of those components will be the “velocity of the velocity,” that is, the direction and speed with which the physical velocity is changing.</p>
+<div id="thm-chutes-and-ladders2" class="theorem" style="display: none;">
 <p><span class="theorem-title"><strong>Application area 40.3</strong></span> &nbsp;</p>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -806,129 +915,25 @@ Why?
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<a href="#thm-interacting-species" class="quarto-xref">Application area&nbsp;<span>40.3</span></a> Interacting species
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Consider the population of two interacting species, say rabbits and foxes. As you know, the relationship between rabbits and foxes is rather unhappy from the rabbits’ point of view even if it is fulfilling for the foxes.</p>
-<p>Many people assume that such populations are more or less fixed: that the rabbits are in a steady balance with the foxes. In fact, as any gardener can tell you, some years there are lots of rabbits and others not: an oscillation. Just from this fact, we know that the dynamical state must have at least two components.</p>
-<p>In a simple, but informative, model, the two components of the dynamical state are <span class="math inline">\(r(t)\)</span> and <span class="math inline">\(f(t)\)</span>, the population of rabbits and foxes respectively. In the absence of foxes, the dynamics of rabbits are exponential growth; each successive generation is larger than the previous one. This can be described by a dynamical equation <span class="math inline">\(\partial_t r(t) = \alpha r(t)\)</span>, where <span class="math inline">\(\alpha\)</span> is a fixed quantity that describes rabbit fecundity.</p>
-<p>Similarly, in the absence of food (rabbits are fox food), the foxes will starve or emigrate, so the dynamical equation for foxes is very similar <span class="math inline">\(\partial_t f(t) = - \gamma f(t)\)</span>, where <span class="math inline">\(\gamma\)</span> is a fixed quantity that indicates the rate at which foxes die or emigrate.</p>
-<p>Of course, in real ecosystems there are many other quantities that change and that are relevant. For instance, foxes eat not only rabbits, but birds and frogs and earthworms and berries. And the diet of rabbits eat weeds and grass (which is generally in plentiful supply), but also the gardener’s flowers and carrots (and other vegetables). Growth in the rabbit population leads to decrease in available flowers and vegetables, which in turn leads to slower growth (or even population decline) for rabbits.</p>
-<p>In the spirit of illustrating dynamics, we will leave out these important complexities and imagine that the state consists of just two numbers: how many rabbits there are and how many foxes. The dynamics therefore involve two equations, one for <span class="math inline">\(\partial_t r\)</span> and one for <span class="math inline">\(\partial_t f\)</span>. For the rabbit/fox model, we will allow the rabbit population change (<span class="math inline">\(\partial_t r\)</span>) to be affected by fox prediation and similarly let the fox population change (<span class="math inline">\(\partial_t f\)</span>) reflect the consumption of rabbits as food, writing: <span class="math display">\[\partial_t r = \ \ \ \ \ \alpha\, r - \overbrace{\beta\, f r}^{\text{fox predation}}\\
-\partial_t f = \underbrace{\delta\, r f}_{\text{rabbits as food}} - \gamma\, f\]</span></p>
-<p>The quantities <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\gamma\)</span>, and <span class="math inline">\(\delta\)</span> are parameters quantify the biology of the system: the reproduction rate of rabbits, the need of foxes for food (rabbits) to reproduce, the hunting success of foxes, and the death or emigration of foxes in response to a shortage of food.</p>
-<p>How are you supposed to know that <span class="math inline">\(r\)</span> and <span class="math inline">\(f\)</span> are state variables while quantities like <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\gamma\)</span> are parameters? Because there is a differential equation involving <span class="math inline">\(\partial_t r\)</span> and <span class="math inline">\(\partial_t f\)</span>, while no differential equation has been given describing <span class="math inline">\(\partial_t \beta\)</span> or <span class="math inline">\(\partial_t \alpha\)</span>.</p>
-<p>Coming up with this description of dynamics requires knowing something about rabbits and foxes. The particular forms used, for instance the <strong><em>interaction term</em></strong> <span class="math inline">\(r f\)</span>, come from modeling experience. The interaction term is well named because it is about the literal, biological interaction of foxes and rabbits.</p>
-</div>
-</div>
-</section>
-<section id="state-space-and-flow-field" class="level2" data-number="40.5">
-<h2 data-number="40.5" class="anchored" data-anchor-id="state-space-and-flow-field"><span class="header-section-number">40.5</span> State space and flow field</h2>
-<p>For the purpose of developing intuition it is helpful to represent the instantaneous state as a point in a graphical frame and the dynamics as a field of vectors showing how, for each possible state, the state changes. For instance, in the Rabbit-Fox dynamics, the state is the pair <span class="math inline">\((r, f)\)</span> and the <strong><em>state space</em></strong> is the coordinate plane spanned by <span class="math inline">\(r\)</span> and <span class="math inline">\(f\)</span>.</p>
-<p>The present state of the system might be any point in the state space. But once we know the present state, the dynamical functions <em>evaluated at the present state</em> tell us how the state changes over a small increment in time. The step over a small increment of time can be represented by a vector.</p>
-<p>Let’s illustrate with the Rabbit-Fox system, whose dynamical equations are given above. The dynamical functions take a position in state space as input. Each of the functions returns a scalar.</p>
-<p>To make a plot, we need numerical values for all the parameters in those equations.</p>
-<p>The vector field corresponding to the dynamics is called a <strong><em>flow</em></strong>, as if it were a pool of swirling water. <a href="#fig-rabbit-fox-vectors" class="quarto-xref">Figure&nbsp;<span>40.2</span></a> shows the flow of the rabbit/fox system.</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-rabbit-fox-vectors" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-rabbit-fox-vectors-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="B6-diff-eq_files/figure-html/fig-rabbit-fox-vectors-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rabbit-fox-vectors-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;40.2: The dynamics of the rabbit/fox system shown as a vector field over the state space. The parameters have been set, for the purpose of illustration, to <span class="math inline">\(\alpha = 2/3\)</span>, <span class="math inline">\(\beta = 4/3\)</span>, <span class="math inline">\(\gamma = 1\)</span>, and <span class="math inline">\(\delta = 1\)</span>.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>Staying with the analogy to a pool of swirling water or the currents in a river, you can place a lightweight marker such as a leaf at some point in the flow and follow its path over time. This path—position in state space as a function of time—is called the <strong><em>trajectory</em></strong> of the flow. There are many possible trajectories, depending on where you place the leaf.</p>
-<p>In <a href="../Manifestations/B4-splines.html" class="quarto-xref"><span>Chapter 49</span></a> we considered the path followed by a robot arm. In that chapter, we separated out the <span class="math inline">\(x\)</span>- and <span class="math inline">\(y\)</span>-components of the arm’s position over time, calling them functions <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span>. Analogously, the decomposition of a trajectory from an initial condition in the flow—this would be <span class="math inline">\(r(t)\)</span> and <span class="math inline">\(f(t)\)</span> for the rabbit/fox system—gives us the <strong><em>solution</em></strong> to the differential equation.</p>
-<p>Each component of the solution is called a <strong><em>time series</em></strong> and is often plotted as a function of time, for instance <span class="math inline">\(r(t)\)</span> versus <span class="math inline">\(t\)</span>.</p>
-<p>From the flow field, you can approximate the trajectory that will be followed from any initial condition. Starting from the <strong><em>initial condition</em></strong>, just follow the flow. You already have some practice following a flow from your study of the <strong><em>gradient ascent</em></strong> method of optimization described in <a href="../Differentiation/24-optim.html" class="quarto-xref"><span>Chapter 24</span></a>. At the argmax, the gradient is nil. Thus, the gradient ascent method stops at the argmax. We will see an analogous behavior in dynamical systems: any place where the flow is nil is a potential resting point for the state, called a <strong><em>fixed point</em></strong>.</p>
-<div id="thm-pendulum-flow" class="theorem" style="display: none;">
-<p><span class="theorem-title"><strong>Application area 40.4</strong></span> &nbsp;</p>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<a href="#thm-pendulum-flow" class="quarto-xref">Application area&nbsp;<span>40.4</span></a> Flow field for a pendulum
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Let’s return to the pendulum and examine its flow field. We will modify the equations just a little bit to include air resistance in the model. Air resistance is a force, so we know it will appear in the <span class="math inline">\(\partial_t v_\theta(t)\)</span> equation. A common model for air resistance has it proportional in size to the square of the velocity and with a direction that is the opposite of the velocity. In a differential equation, the model of air resistance can be written as <span class="math inline">\(- \alpha\, L\, \text{sign}(v(t))\ v(t)^2\)</span>, where <span class="math inline">\(\text{sign}()\)</span> is a piecewise function that has the value <span class="math inline">\(+1\)</span> when the argument is positive and <span class="math inline">\(-1\)</span> when the argument is negative. <span class="math inline">\(L\)</span> is the length of the pendulum. <span class="math display">\[\partial_t \theta = v\\
-\partial_t v = - \sin(\theta) - \alpha\,L^2\, \text{sign}(v)\ v^2\]</span> (Keep in mind as always that for dynamical systems a state variable like <span class="math inline">\(\theta\)</span> is also a function of time <span class="math inline">\(\theta(t)\)</span>.) Whenever you have a state variable, you know that it is a function of time and so the explicit <span class="math inline">\((t)\)</span> is often omitted for the sake of conciseness.</p>
-<p><span class="quarto-unresolved-ref">?fig-pendulum-in-air</span> shows the flow field of the pendulum. Also shown is a trajectory and the two time series corresponding to that trajectory.</p>
-<div class="cell" data-layout-align="center">
-<pre><code>## Solution containing functions theta(t), v(t).</code></pre>
-<div class="cell-output-display">
-<div id="fig-pendulum-in-air-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-pendulum-in-air-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="B6-diff-eq_files/figure-html/fig-pendulum-in-air-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pendulum-in-air-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;40.3: The flow field of a pendulum with air resistance. From the initial condition (marked by <span class="math inline">\(\color{red}{\text{x}}\)</span>), a trajectory is sketched out for <span class="math inline">\(0 \leq t \leq 20\)</span>. The individual components of that trajectory are graphed as time series.
-</figcaption>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div id="fig-pendulum-in-air-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-pendulum-in-air-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="B6-diff-eq_files/figure-html/fig-pendulum-in-air-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pendulum-in-air-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;40.4: The flow field of a pendulum with air resistance. From the initial condition (marked by <span class="math inline">\(\color{red}{\text{x}}\)</span>), a trajectory is sketched out for <span class="math inline">\(0 \leq t \leq 20\)</span>. The individual components of that trajectory are graphed as time series.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>The pendulum was started out by lifting it to an angle of <span class="math inline">\(45^\circ\)</span> and giving it an initial upward velocity. The bob swings up for a bit before being reversed by gravity and swinging toward <span class="math inline">\(\theta = 0\)</span> and beyond. Due to air resistance, the amplitude of swinging decreases over time.</p>
-</div>
-</div>
-<p>The flow of a dynamical system tells how different points in state space are connected. Because movement of the state is continuous in time and the state space itself is continuous, the connections cannot be stated in the form “this point goes to that point.” Instead, as has been the case all along in calculus, we describe the movement in terms of a “velocity” vector. Each dynamical function specifies one component of the “velocity” vector, taken together they tell the <strong><em>direction</em></strong> and <strong><em>speed</em></strong> of movement of the state at each instant in time.</p>
-<p>Perhaps it would be better to use the term <strong><em>state velocity</em></strong> instead of “velocity.” In physics and most aspects of everyday life, “velocity” refers to the rate of change of physical <strong><em>position</em></strong> of an object. Similarly, the state velocity tells the rate of change of the position of the state. It is a useful visualization technique to think of the state as an object skating around the state space in a manner directed by the dynamical functions. But the state space almost always includes components other than physical position. For instance, in the rabbit/fox model, the state says nothing about where individual rabbits and foxes are located in their environment; it is all about the <strong><em>density</em></strong> of animals in a region.</p>
-<p>In physics, often the state space consists of position in physical state as well as the physical velocity in physical space. For instance, the state might consist of the three <span class="math inline">\(x, y, z\)</span> components of physical position as well as the three <span class="math inline">\(v_x, v_y, v_z\)</span> components of physical velocity. Altogether, that is a six-dimensional state space. The <strong><em>state velocity</em></strong> also has six components. Three of those components will be the “velocity of the velocity,” that is, the direction and speed with which the physical velocity is changing.</p>
-<div id="thm-chutes-and-ladders2" class="theorem" style="display: none;">
-<p><span class="theorem-title"><strong>Application area 40.5</strong></span> &nbsp;</p>
-</div>
-<div class="callout callout-style-default callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<a href="#thm-chutes-and-ladders2" class="quarto-xref">Application area&nbsp;<span>40.5</span></a> Board-game flow
+<a href="#thm-chutes-and-ladders2" class="quarto-xref">Application area&nbsp;<span>40.3</span></a> Board-game flow
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p>Returning to the Chutes and Ladders game used as an example near the start of this chapter …</p>
-<p>The state in chutes and ladders is one of the hundred numbers 1, 2, <span class="math inline">\(\ldots\)</span>, 100. This is a discrete state space. Therefore, we can describe the “flow” in a very concrete way: how each state is directly connected to another. <a href="#fig-chutes-flow" class="quarto-xref">Figure&nbsp;<span>40.5</span></a> shows these connections. There is no velocity involved because there is no infinitesimal movement of state. For instance, state 47 connects directly to state 26.</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-chutes-flow" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<p>The state in chutes and ladders is one of the hundred numbers 1, 2, <span class="math inline">\(\ldots\)</span>, 100. This is a discrete state space. Therefore, we can describe the “flow” in a very concrete way: how each state is directly connected to another. <a href="#fig-chutes-flow" class="quarto-xref">Figure&nbsp;<span>40.3</span></a> shows these connections. There is no velocity involved because there is no infinitesimal movement of state. For instance, state 47 connects directly to state 26.</p>
+<div id="fig-chutes-flow" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-chutes-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="www/chutes-and-ladders-flow.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+<img src="www/chutes-and-ladders-flow.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chutes-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;40.5: The “flow” connecting the discrete states in the dice-free Chutes and Ladders game. Source: Maj. Austin Davis
+Figure&nbsp;40.3: The “flow” connecting the discrete states in the dice-free Chutes and Ladders game. Source: Maj. Austin Davis
 </figcaption>
 </figure>
 </div>
-</div>
-</div>
-<p>In the no-dice game, the state follows the arrows. Looking carefully at <a href="#fig-chutes-flow" class="quarto-xref">Figure&nbsp;<span>40.5</span></a>, you can see that each state has a forward connection to at most one state. This is the hallmark of determinism.</p>
+<p>In the no-dice game, the state follows the arrows. Looking carefully at <a href="#fig-chutes-flow" class="quarto-xref">Figure&nbsp;<span>40.3</span></a>, you can see that each state has a forward connection to at most one state. This is the hallmark of determinism.</p>
 <p>In the children’s game, the play is not deterministic because a die is used to indicate which state follows from each other state. A die has six faces with the six numbers 1 to 6. So, each state is connected to <em>six</em> other states in the forward direction. Which of the six is to be followed depends on the number that comes up on the die. Multiple forward connections means the dynamics are <strong><em>stochastic</em></strong> (random).</p>
-<p>Straightforward examination of the flow often tells you a lot about the big picture of the system. In dice-free Chutes and Ladders, The 100 states are divided into three isolated islands. State 1 is part of the island in the lower right corner of <a href="#fig-chutes-flow" class="quarto-xref">Figure&nbsp;<span>40.5</span></a>. Follow the arrows starting from any place on that island and you will eventually reach state 84. And state 84 is part of a cycle <span class="math inline">\(84 \rightarrow 85 \rightarrow \cdots \rightarrow 28 \rightarrow 84 \rightarrow \cdots\)</span>. Once you are on that cycle, you never get off. We will see such cycles in continuous-time dynamical systems as well.</p>
+<p>Straightforward examination of the flow often tells you a lot about the big picture of the system. In dice-free Chutes and Ladders, The 100 states are divided into three isolated islands. State 1 is part of the island in the lower right corner of <a href="#fig-chutes-flow" class="quarto-xref">Figure&nbsp;<span>40.3</span></a>. Follow the arrows starting from any place on that island and you will eventually reach state 84. And state 84 is part of a cycle <span class="math inline">\(84 \rightarrow 85 \rightarrow \cdots \rightarrow 28 \rightarrow 84 \rightarrow \cdots\)</span>. Once you are on that cycle, you never get off. We will see such cycles in continuous-time dynamical systems as well.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled" data-latex="">
@@ -943,19 +948,15 @@ Calculus history—Numerical weather forecasting
 <div class="callout-body-container callout-body">
 <p><em><a href="https://archive.org/details/weatherpredictio00richrich/page/184/mode/2up?view=theater">Weather forecasting by numerical process</a></em> is a highly influential book, from 1922, by <a href="https://en.wikipedia.org/wiki/Lewis_Fry_Richardson">Lewis Fry Richardson</a>. He envisioned a calculation for a weather forecast as a kind of function. The domain for the forecast is the latitude and longitude of a point on the globe, rather than the rectilinear organization of corridor.</p>
 <p>One fantastic illustration of the idea shows a building constructed in the form of an inside-out globe. <a href="https://www.cabinetmagazine.org/issues/27/foer.php">Source</a> At each of many points on the globe, there is a business. (You can see this most easily in the foreground, which shows several boxes of workers.)</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-richardson-globe" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-richardson-globe" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-richardson-globe-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="www/Richardson-globe.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+<img src="www/Richardson-globe.jpg" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-richardson-globe-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;40.6: An artist’s depiction of the organization of calculations for weather forecasting by Richardson’s system.
+Figure&nbsp;40.4: An artist’s depiction of the organization of calculations for weather forecasting by Richardson’s system.
 </figcaption>
 </figure>
-</div>
-</div>
 </div>
 <p>In each business there is a person who will report the current air pressure at that point on the globe, another person who reports the temperature, another reporting humidity, and so on. To compute the predicted weather for the next day, the business has a staff assigned to visit the neighboring businesses to find out the pressure, temperature, humidity, etc. Still other staffers take the collected output from the neighbors and carry out the arithmetic to translate those outputs into the forecast for tomorrow. For instance, knowing the pressure at neighboring points enables the direction of wind to be calculated, thus the humidity and temperature of air coming in to and out of the region the business handles. In today’s numerical weather prediction models, the globe is divided very finely by latitude, longitude, and altitude, and software handles both the storage of present conditions and the calculation from that of the future a few minutes later. Repeating the process using the forecast enables a prediction to be made for a few minutes after that, and so on.</p>
 <p>Some of the most important concepts in calculus relate to the process of collecting outputs from neighboring points and combining them: for instance finding the difference or the sum. To illustrate, here is the first set of equations from Richardson’s <em>Weather forecasting …</em> written in the notation of calculus:</p>

@@ -426,7 +426,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"options":{"autorun":"false","editor-word-wrap":"true","results":"markup","fig-width":7,"warning":"true","out-width":"700px","context":"interactive","fig-cap":"","classes":"","editor-max-height":"","read-only":"false","editor-quick-suggestions":"false","fig-height":5,"out-height":"","output":"true","message":"true","comment":"","label":"unnamed-chunk-1","editor-font-scale":"1","dpi":72},"id":1,"code":"M <- cbind(rbind(1,2), rbind(1,0))\neigen(M)"}];
+globalThis.qwebrCellDetails = [{"options":{"message":"true","fig-height":5,"autorun":"false","out-height":"","editor-word-wrap":"true","read-only":"false","fig-width":7,"context":"interactive","out-width":"700px","editor-font-scale":"1","fig-cap":"","output":"true","editor-quick-suggestions":"false","warning":"true","editor-max-height":"","label":"unnamed-chunk-1","comment":"","classes":"","results":"markup","dpi":72},"id":1,"code":"M <- cbind(rbind(1,-3), rbind(1,0))\nw0 <- rbind(-1.1, 2.1)\nqr.solve(M, w0)"},{"options":{"message":"true","fig-height":5,"autorun":"false","out-height":"","editor-word-wrap":"true","read-only":"false","fig-width":7,"context":"interactive","out-width":"700px","editor-font-scale":"1","fig-cap":"","output":"true","editor-quick-suggestions":"false","warning":"true","editor-max-height":"","label":"unnamed-chunk-2","comment":"","classes":"","results":"markup","dpi":72},"id":2,"code":"M <- cbind(rbind(1,2), rbind(1,0))\neigen(M)"}];
 
 </script>
 <script type="module">
@@ -2452,8 +2452,10 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 \end{eqnarray}\]</span> which, in vector/matrix form are <span class="math display">\[\partial_t \vec{w(t)} = \left[\begin{array}{cc}1&amp;1\\2&amp;0\end{array}\right] \vec{w(t)}\ .\]</span> Imagine that we choose, arbitrarily, <span class="math display">\[\vec{u_1} = \color{magenta}{\left[\begin{array}{r}1\\-3\end{array}\right]}\ \ \ \text{and}\ \ \ \vec{u_2} = \color{blue}{\left[\begin{array}{r}1.0\\0\end{array}\right]}\ .\]</span></p>
 <p>For the example, we will calculate a trajectory starting at the initial condition <span class="math inline">\(\vec{w(0)} = \left[\begin{array}{r}-1.1\\ 2.1\end{array}\right]\)</span>:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>traj <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>(dx <span class="sc">~</span> x <span class="sc">+</span> y, dy <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x, <span class="at">x=</span><span class="sc">-</span><span class="fl">1.1</span>, <span class="at">y=</span><span class="fl">2.1</span>, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>))</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">traj_plot</span>(<span class="fu">y</span>(t) <span class="sc">~</span> <span class="fu">x</span>(t), traj)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>traj <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>(dx <span class="sc">~</span> x <span class="sc">+</span> y, dy <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x, <span class="co"># dynamics</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">x=</span><span class="sc">-</span><span class="fl">1.1</span>, <span class="at">y=</span><span class="fl">2.1</span>, <span class="co"># initial conditions</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">traj_plot</span>(<span class="fu">y</span>(t) <span class="sc">~</span> <span class="fu">x</span>(t), traj)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -2462,49 +2464,57 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-vec-example-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-vec-example-1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-vec-example-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="B6-eigen_files/figure-html/fig-vec-example-1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vec-example-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;46.1: The trajectory calculated starting at (-1.1, 2.1). The graph is annotated with the vectors <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span> and the flow field.
-</figcaption>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B6-eigen_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>The initial condition (marked “0” in <a href="#fig-vec-example-1" class="quarto-xref">Figure&nbsp;<span>46.1</span></a> is, like any other point in the state space, a linear combination of <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span>. We can find the scalar coefficients of the linear combination using any of the methods presented in Block 5, for instance the telescope method. We will illustrate with <code>qr.solve()</code>:</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">rbind</span>(<span class="dv">1</span>,<span class="sc">-</span><span class="dv">3</span>), <span class="fu">rbind</span>(<span class="dv">1</span>,<span class="dv">0</span>))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>w0 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="sc">-</span><span class="fl">1.1</span>, <span class="fl">2.1</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">qr.solve</span>(M, w0)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="do">##      [,1]</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="do">## [1,] -0.7</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="do">## [2,] -0.4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vec-example-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;46.1: The trajectory calculated starting at (-1.1, 2.1). The graph is annotated with the vectors <span class="math inline">\(\\vec{u_1}\)</span> and <span class="math inline">\(\\vec{u_2}\)</span> and the flow field.
+</figcaption>
+</figure>
+</div>
+<p>The initial condition (marked “0” in <a href="#fig-vec-example-1" class="quarto-xref">Figure&nbsp;<span>46.1</span></a> is, like any other point in the state space, a linear combination of <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span>. We can find the scalar coefficients of the linear combination using any of the methods presented in Block 5, for instance the telescope method. We will illustrate with <code>qr.solve()</code>:</p>
+<div id="qwebr-insertion-location-1"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>So, <span class="math inline">\(\vec{w(0)} = -0.7 \vec{u_1} - 0.4 \vec{u_2}\)</span>. Keep these scalar coefficients, <span class="math inline">\(-0.7\)</span> and <span class="math inline">\(-0.4\)</span> in mind for the next example.</p>
 <p>We can use <code>integrateODE()</code> to find the solution starting at any initial condition. In particular, we can find the solution <span class="math inline">\(\vec{u_1}\)</span> as the initial condition and, similarly, using <span class="math inline">\(\vec{u_2}\)</span> as the initial condition.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>traj_u1 <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>(dx <span class="sc">~</span> x <span class="sc">+</span> y, dy <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x, <span class="at">x=</span><span class="dv">1</span>, <span class="at">y=</span><span class="sc">-</span><span class="dv">3</span>, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>))</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>traj_u2 <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>(dx <span class="sc">~</span> x <span class="sc">+</span> y, dy <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x, <span class="at">x=</span><span class="dv">1</span>, <span class="at">y=</span> <span class="dv">0</span>, <span class="fu">domain</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>traj_u1 <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  dx <span class="sc">~</span> x <span class="sc">+</span> y, dy <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x, <span class="co"># dynamics</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x=</span><span class="dv">1</span>, <span class="at">y=</span><span class="sc">-</span><span class="dv">3</span>,  <span class="co">#initial conditions</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">domain</span>(<span class="at">t =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>traj_u2 <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  dx <span class="sc">~</span> x <span class="sc">+</span> y, dy <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x, <span class="co">#dynamics</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">x=</span><span class="dv">1</span>, <span class="at">y=</span> <span class="dv">0</span>,  <span class="co">#initial conditions</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">domain</span>(<span class="at">t =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><a href="#fig-vec-example-2" class="quarto-xref">Figure&nbsp;<span>46.2</span></a> shows these trajectories.</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-vec-example-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-vec-example-2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-vec-example-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="B6-eigen_files/figure-html/fig-vec-example-2-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B6-eigen_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vec-example-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;46.2: Trajectories from the initial conditions <span class="math inline">\(\color{magenta}{\vec{u_1}}\)</span> and <span class="math inline">\(\color{blue}{\vec{u_2}}\)</span>.
 </figcaption>
 </figure>
-</div>
-</div>
 </div>
 <p>At first glance, the two trajectories <span class="math inline">\(\vec{u_1(t)}\)</span> and <span class="math inline">\(\vec{u_2(t)}\)</span> in <a href="#fig-vec-example-2" class="quarto-xref">Figure&nbsp;<span>46.2</span></a> that start from <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span> might not look much like the trajectory in <a href="#fig-vec-example-1" class="quarto-xref">Figure&nbsp;<span>46.1</span></a> that starts from <span class="math inline">\(\vec{w(0)} = -0.7 \vec{u_1} - 0.4 \vec{u_2}\)</span>. But in fact there is a very simple relationship between the trajectories: <span class="math display">\[\vec{w(t)} = -0.7 \vec{u_1(t)} - 0.4 \vec{u_2(t)}\ .\]</span> To state the situation more generally, any solution to the differential equations can be written as a linear combination of the solutions starting at <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span>, regardless of how <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span> were chosen.</p>
 <p>We can see this algebraically. Since <span class="math inline">\(\vec{u_1(t)}\)</span> and <span class="math inline">\(\vec{u_2(t)}\)</span> are solutions to the linear differential equation, it must be that <span class="math display">\[\partial_t \vec{u_1(t)} = \left[\begin{array}{cc}1&amp;1\\2&amp;0\end{array}\right] \vec{u_1(t)}\ \ \text{and}\ \ \partial_t \vec{u_2(t)} = \left[\begin{array}{cc}1&amp;1\\2&amp;0\end{array}\right] \vec{u_2(t)}\ .\]</span> Taking a linear combination of these equations gives<br>
@@ -2513,8 +2523,8 @@ Figure&nbsp;46.2: Trajectories from the initial conditions <span class="math inl
 <section id="eigenvectors-and-eigenvalues" class="level2" data-number="46.2">
 <h2 data-number="46.2" class="anchored" data-anchor-id="eigenvectors-and-eigenvalues"><span class="header-section-number">46.2</span> Eigenvectors and eigenvalues</h2>
 <p>In the previous section, we saw that the solution to any linear differential equation starting at any initial condition can be written as a linear combination <span class="math inline">\(m_1 \vec{u_1(t)} + m_2 \vec{u_2(t)}\)</span>, where <span class="math inline">\(\vec{u_1(t)}\)</span> is the solution starting at an initial condition <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2(t)}\)</span> is the solution starting at <span class="math inline">\(\vec{u_2}\)</span>. It does not matter how <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span> are chosen, so long as they are not colinear, that is, so long as they span the state space.</p>
-<p>In this section, we will demonstrate that there is a particular way of selecting <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span> that makes the solutions <span class="math inline">\(\vec{u_1(t)}\)</span> and <span class="math inline">\(\vec{u_2(t)}\)</span> have a very simple, purely exponential format. The vectors to be chosen are the <strong><em>eigenvectors</em></strong> of the matrix <span class="math inline">\(\left[\begin{array}{cc}a&amp;b\\c&amp;d\end{array}\right]\)</span>. We will call these eigenvectors <span class="math inline">\(\vec{\Lambda_1}\)</span> and <span class="math inline">\(\vec{\Lambda_2}\)</span>. (This use of the Greek letter <span class="math inline">\(\Lambda\)</span> (capital “lambda”) and it is lower-case version <span class="math inline">\(\lambda\)</span>, is conventional in mathematics, physics, and engineering. So it is worth learning to identify the letters.)</p>
-<p>Our task in this section is to show how to compute the eigenvectors <span class="math inline">\(\vec{\Lambda_1}\)</span> and <span class="math inline">\(\vec{\Lambda_2}\)</span> and that the solutions <span class="math inline">\(\vec{\Lambda_1(t)}\)</span> and <span class="math inline">\(\vec{\Lambda_2(t)}\)</span> are in fact simple exponentials. In <a href="B6-second-order.html" class="quarto-xref"><span>Chapter 47</span></a> we will derive the formula for the eigenvectors. Here, we will use the R function <code>eigen()</code> to do the calculations for us.</p>
+<p>In this section, we demonstrate that there is a particular way of selecting <span class="math inline">\(\vec{u_1}\)</span> and <span class="math inline">\(\vec{u_2}\)</span> that makes the solutions <span class="math inline">\(\vec{u_1(t)}\)</span> and <span class="math inline">\(\vec{u_2(t)}\)</span> have a very simple, purely exponential format. The vectors to be chosen are the <strong><em>eigenvectors</em></strong> of the matrix <span class="math inline">\(\left[\begin{array}{cc}a&amp;b\\c&amp;d\end{array}\right]\)</span>. We will call these eigenvectors <span class="math inline">\(\vec{\Lambda_1}\)</span> and <span class="math inline">\(\vec{\Lambda_2}\)</span>. (This use of the Greek letter <span class="math inline">\(\Lambda\)</span> (capital “lambda”) and it is lower-case version <span class="math inline">\(\lambda\)</span>, is conventional in mathematics, physics, and engineering. So it is worth learning to identify the letters.)</p>
+<p>Our task in this section is to show how to compute the eigenvectors <span class="math inline">\(\vec{\Lambda_1}\)</span> and <span class="math inline">\(\vec{\Lambda_2}\)</span> and that the solutions <span class="math inline">\(\vec{\Lambda_1(t)}\)</span> and <span class="math inline">\(\vec{\Lambda_2(t)}\)</span> are in fact simple exponentials. <a href="B6-second-order.html" class="quarto-xref"><span>Chapter 47</span></a> derives the formula for the eigenvectors. Here, we use the R function <code>eigen()</code> to do the calculations for us.</p>
 <div id="try-eigenvectors" class="quarto-float quarto-figure quarto-figure-center anchored" style="display: none;">
 <figure class="quarto-float quarto-float-try figure">
 <div aria-describedby="try-eigenvectors-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -2540,7 +2550,7 @@ Try it!&nbsp;46.1
 <p>Eigenvectors can be calculated using the R function <code>eigen()</code> applied to the abcd matrix that defines the linear differential equation.</p>
 <p>For the system of first-order differential equations <span class="math display">\[\partial_t x = x + y\\\partial_t y = 2x\ \ \ \ \ \]</span> the matrix is, as we’ve seen, <span class="math display">\[\left[\begin{array}{cc}1&amp;1\\2&amp;0\end{array}\right]\ .\]</span></p>
 <p>Carrying out the eigenvector calculation is straightforward:</p>
-<div id="qwebr-insertion-location-1"></div>
+<div id="qwebr-insertion-location-2"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>The eigenvectors are the two columns of the matrix labeled <code>vectors</code> returned by the calculation. Here, that is<br>
 <span class="math display">\[\vec{\Lambda_1} = \left[\begin{array}{r}0.7071\\0.7071\end{array}\right]
@@ -2550,43 +2560,61 @@ Try it!&nbsp;46.1
 </div>
 </div>
 <p>We can see what’s special about <span class="math inline">\(\vec{\Lambda_1}\)</span> and <span class="math inline">\(\vec{\Lambda_2}\)</span> by plotting them along with the flow field, as in <a href="#fig-eigen-flow" class="quarto-xref">Figure&nbsp;<span>46.3</span></a>.</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-eigen-flow" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-eigen-flow" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-eigen-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="B6-eigen_files/figure-html/fig-eigen-flow-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B6-eigen_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-eigen-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;46.3: The eigenvectors for the <span class="math inline">\(\left[\begin{array}{cc}1&amp;1\\2&amp;0\end{array}\right]\)</span> plotted along with the flow.
 </figcaption>
 </figure>
 </div>
-</div>
-</div>
 <p>The eigenvectors mark the directions where the flow is either directly toward the fixed point or directly away from it. Here, the flow on the subspace of <span class="math inline">\(\color{magenta}{\vec{\Lambda_1}}\)</span> is away from the fixed point, while the flow along the subspace of <span class="math inline">\(\color{blue}{\vec{\Lambda_2}}\)</span> is inward to the fixed point.</p>
 <p>The consequence of this alignment of the flow with the eigenvectors is that the trajectory from any initial condition <span class="math inline">\(m_1 \vec{\Lambda_1}\)</span> will have the form <span class="math inline">\(m_1(t) \vec{\Lambda_1}\)</span> and similarly for an initial condition <span class="math inline">\(m_2(t) \vec{\Lambda_2}\)</span>.</p>
-<p>As we did in the previous section, let’s calculate the trajectories <span class="math inline">\(\color{magenta}{\vec{\Lambda_1(t)}}\)</span> and <span class="math inline">\(\color{blue}{\vec{\Lambda_2(t)}}\)</span> starting at the two eigenvectors and plot out the <span class="math inline">\(y(t)\)</span> component of the solution. Since we are anticipating an exponential form for the function, we will use semi-log axes, where an exponential will look like a straight line.</p>
+<p>As we did in the previous section, let’s calculate the trajectories <span class="math inline">\(\color{magenta}{\vec{\Lambda_1(t)}}\)</span> and <span class="math inline">\(\color{blue}{\vec{\Lambda_2(t)}}\)</span> starting at the two eigenvectors and plot out the <span class="math inline">\(y(t)\)</span> component of the solution. Since we are anticipating an exponential form for the function, we use semi-log axes, where an exponential looks like a straight line.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>traj_eigen1 <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>(dx <span class="sc">~</span> x <span class="sc">+</span> y, dy <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x, </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">bounds</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>), </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">x=</span><span class="fl">0.7071</span>, <span class="at">y=</span><span class="fl">0.7071</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Solution containing functions x(t), y(t).</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>traj_eigen2 <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>(dx <span class="sc">~</span> x <span class="sc">+</span> y, dy <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x, </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">bounds</span>(<span class="at">t=</span><span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>),</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">x=</span><span class="sc">-</span><span class="fl">0.4472</span>, <span class="at">y=</span><span class="fl">0.8944</span>)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="do">## Solution containing functions x(t), y(t).</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">traj_plot</span>(<span class="fu">y</span>(t) <span class="sc">~</span> t, traj_eigen1, <span class="at">color=</span><span class="st">"magenta"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a> <span class="fu">traj_plot</span>(<span class="fu">y</span>(t) <span class="sc">~</span> t, traj_eigen2, <span class="at">color=</span><span class="st">"blue"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_log10</span>(</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks=</span><span class="fu">c</span>(<span class="fl">0.3290</span>, <span class="fl">0.7071</span>, <span class="fl">0.8944</span>, <span class="fl">5.2248</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>traj_eigen1 <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  dx <span class="sc">~</span> x <span class="sc">+</span> y, dy <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x,  <span class="co"># dynamics</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fl">0.7071</span>, <span class="at">y =</span> <span class="fl">0.7071</span>, <span class="co"># initial conditions</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">domain</span>(<span class="at">t =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>) </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Solution containing functions x(t), y(t).</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>traj_eigen2 <span class="ot">&lt;-</span> <span class="fu">integrateODE</span>(</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  dx <span class="sc">~</span> x <span class="sc">+</span> y, dy <span class="sc">~</span> <span class="dv">2</span><span class="sc">*</span>x,  <span class="co"># dynamics</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">x=</span><span class="sc">-</span><span class="fl">0.4472</span>, <span class="at">y=</span><span class="fl">0.8944</span>,   <span class="co"># initial conditions</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">domain</span>(<span class="at">t =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="do">## Solution containing functions x(t), y(t).</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="fig-eigen-time-series" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-eigen-time-series-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">traj_plot</span>(<span class="fu">y</span>(t) <span class="sc">~</span> t, traj_eigen1, <span class="at">color=</span><span class="st">"magenta"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a> <span class="fu">traj_plot</span>(<span class="fu">y</span>(t) <span class="sc">~</span> t, traj_eigen2, <span class="at">color=</span><span class="st">"blue"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_refine</span>(<span class="fu">scale_y_log10</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks=</span><span class="fu">c</span>(<span class="fl">0.3290</span>, <span class="fl">0.7071</span>, <span class="fl">0.8944</span>, <span class="fl">5.2248</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="B6-eigen_files/figure-html/eigen-time-series-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+<p><img src="B6-eigen_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-eigen-time-series-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;46.4: Two time series, one showing stability, the other instability.
+</figcaption>
+</figure>
 </div>
 <p>We have marked the <span class="math inline">\(y\)</span> axis with the starting and ending values of each function, so that you can find the exponential parameter <span class="math inline">\(k\)</span> for each function.</p>
 <p><span class="math inline">\(\color{magenta}{y_1(t) = 0.7071 e^{k_1 t}}\)</span></p>

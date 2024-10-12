@@ -54,13 +54,14 @@ Modern practice often calls for solving $\mathit{A}\vec{x} = \vec{b}$ in setting
 
 To illustrate such a setting, recall the problems from @sec-exponential-water of finding the linear combination of the functions $f(\mathtt{time})=1$ and $g(\mathtt{time}) = e^{-0.019 \mathtt{time}}$ that best matches the `CoolingWater` data:
 
+::: {#tbl-cooling-water-table}
 ```{r echo=FALSE}
-if (knitr::is_html_output()) {
-  Znotes::and_so_on(CoolingWater)
-} else {
-  Znotes::and_so_on(CoolingWater)
-}
+Znotes::and_so_on(CoolingWater)
 ```
+
+The `CoolingWater` data.
+:::
+
 We seek scalars $C$ and $D$ such that the function $C f(\mathtt{time}) + D g(\mathtt{time})$ gives the best possible match to `temp`.
 
 We can compactly write the problem of finding the best linear combination into matrix form by evaluating $f()$ and $g()$ at the values listed in the `time` column:
@@ -118,7 +119,11 @@ $$\vec{b} = 1.6 \vec{u} - 2.8 \vec{v}\ .$$
 
 To handle vectors in spaces where telescopes are not available, we need an arithmetic algorithm. In R, that algorithm is packaged up as `qr.solve()`. We will pick this up again the next section.
 
-::: {.example data-latex=""}
+::: {#try-moving-pencils style="display: none;"}
+:::
+
+::: {.callout-important}
+## @try-moving-pencils Working in 3 dimensions
 In 3-dimensional space, visualization of the solution to the target problem is possible, at least for those who have the talent of rotating three-dimensional objects in their head. For the rest of us, a physical model can help; take three pencils labeled $\vec{u}$, $\vec{v}$, and $\vec{b}$ and bury their tails in a small ball of putty. (Chemistry molecular construction kits are a good alternative.)
 
 In case putty, pencils, or a molecular model kit are not available, use the interactive diagram in @fig-b-onto-u-v. This diagram also includes $\hat{b}$ and $\vec{r}$ with the hope that this will guide you into orienting the diagram appropriately to see where the solution comes from.
@@ -126,7 +131,7 @@ In case putty, pencils, or a molecular model kit are not available, use the inte
 ::: {#fig-b-onto-u-v}
 {{< include CalcPlot3D/diagram8.Rmd >}}
 
-Showing the relative orientation of the three vectors $\\vec{u}$, $\\vec{v}$ and $\\vec{b}$. Drag the image to rotate it.
+Showing the relative orientation of the three vectors $\vec{u}$, $\vec{v}$ and $\vec{b}$. Drag the image to rotate it.
 :::
 
 $\vec{u}$ and $\vec{v}$ are fixed in length. However, their lengths will appear to change as you rotate the space. This might be called the "gun-barrel" effect; a tube looks very short when you look down its longitudinal axis, but looks longer when you look at it from the side.  Rotate the space until **both** $\vec{u}$ and $\vec{v}$ reach their maximum apparent length. The viewpoint that accomplishes this is looking downward perpendicularly onto the $\left[\vec{u},\vec{v}\right]$-plane. In this orientation, you will be looking down the barrel of the $\vec{r}$ gun. Vector $\vec{b}$ is not in that plane, as you can confirm by rotating the plot a bit out of the $\left[\vec{u},\vec{v}\right]$-plane. Returning to the perspective looking down perpendicularly on the place, you can see how $\vec{b}$ corresponds to $\hat{b}$, the point in the plane where the projection of $\vec{b}$ will fall. 
@@ -148,20 +153,21 @@ $${\mathbf A} \equiv \left[\strut \begin{array}{ccc}|&|&|\\\vec{u} & \vec{v} & \
 
 For the sake of example, we will make up some vectors. In your own explorations, you can change them to anything you like.
 
-```{r}
+```{webr-r}
 # the three vectors
 u <- rbind(6, 4, 9, 3, 1)
 v <- rbind(1, 5,-2, 0, 7)
 w <- rbind(3,-5, 2, 8, 4)
+# assembled into a matrix
 A <- cbind(u, v, w)
-# the target
+# defining the target
 b <- rbind(8, 2,-5, 7, 0)
 ```
 
 
 The operator `%onto%` model vector and from that we can calculate the residual vector.
 
-```{r}
+```{webr-r}
 s <- b %onto% A 
 r <- b - s
 ```
@@ -171,39 +177,31 @@ Those two simple commands constitute a complete solution to the ***projection pr
 In the ***target problem*** we want more: How to express $\hat{b}$ as a linear combination of the columns in $\mathit{A}$. At the risk of being repetitive, this means finding $\color{magenta}{\vec{x}}$ in $$\mathit{A}\ \color{magenta}{\large\vec{x}} = \vec{b}$$ where $\mathit{A}$ and $\vec{b}$ are given.
 
 The function `qr.solve()` finds $\vec{x}$.
-```{r}
+
+```{webr-r}
 x <- qr.solve(A, b)
 ```
-```{r echo=FALSE}
-x
-```
+
 
 How can we confirm that this really is the solution to the target problem for this set of vectors? Easy! Just multiply $\mathit{A}$ by the $\vec{x}$ that we found. The result should be the target vector $\hat{b}$:
 
-```{r}
+```{webr-r}
 A %*% x
 s
 ```
-
-
-
-::: {.callout-tip}
-You should add `qr.solve()` to your computational toolbox of R functions.
-:::
-
 
 ## Application of the target problem
 
 @sec-linear-equations translates into vector/matrix form the problem, originally stated in Block 1, of finding the best linear combination of $f(\mathtt{time}) \equiv 1$ and $g(\mathtt{time}) \equiv e^{-0.019 \mathtt{time}}$. Let's solve that problem now. 
 
-::: {.rmosaic data-latex=""}
+
 Earlier we introduced `rbind()` for the purpose of making column vectors, as in
 ```{r}
 rbind(3,7,-1)
 ```
 Now we will work with ***columns of data*** stored in the `CoolingWater` data frame. A good way to extract a column from a data frame is using the `with()` function. For instance,
 
-```{r}
+```{webr-r}
 b <- with(CoolingWater, temp)
 time <- with(CoolingWater, time)
 A <- cbind(1, exp(-0.019 * time))
@@ -214,32 +212,32 @@ Notice that `cbind()` automatically translated `1` into the vector of all ones.
 
 We are all set up to solve the target problem:
 
-```{r}
+```{webr-r}
 x <- qr.solve(A, b)
-```
-
-```{r echo=FALSE}
 x
 ```
 
+
 How good an answer is the `x` calculated by `qr.solve()`? Judge for yourself!
 
-```{r}
-gf_point(temp ~ time, data = CoolingWater, size=0) %>%
+::: {.column-page-right}
+```{webr-r}
+gf_point(temp ~ time, data = CoolingWater, size=0) |>
   slice_plot(25.92 + 61.26*exp(-0.019*time) ~ time,
              color="blue")
 ```
+:::
   
 You may recall from Block 1 the explanation for the poor match between the model and the data for early times: that the water cooled quickly when poured into the cool mug, but the mug-with-water cooled much slower into the room air.
 
 Let's augment the model by adding another vector with a much faster exponential cooling, say, $e^{-0.06 \mathtt{time}}$.
 
-```{r}
+```{webr-r}
 newA <- cbind(A, exp(-0.06*time))
 qr.solve(newA, b)
 ```
 
-```{r}
+```{webr-r}
 gf_point(temp ~ time, data = CoolingWater, size=0) %>%
   slice_plot(26.82 + 53.28*exp(-0.019*time) +
                12.67*exp(-0.06*time) ~ time,

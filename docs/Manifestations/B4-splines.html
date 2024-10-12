@@ -426,7 +426,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"xfun <- qspliner(x ~ t, data = Robot_stations)\nyfun <- qspliner(y ~ t, data = Robot_stations)","id":1,"options":{"fig-cap":"","comment":"","output":"true","message":"true","editor-quick-suggestions":"false","classes":"","context":"interactive","label":"unnamed-chunk-1","editor-max-height":"","read-only":"false","autorun":"false","editor-word-wrap":"true","warning":"true","editor-font-scale":"1","fig-width":7,"dpi":72,"fig-height":5,"out-width":"700px","results":"markup","out-height":""}},{"code":"# evaluate the functions for 1 < t < 16\nPath <- tibble(\n  t = seq(1,16,length=1000),\n  x = xfun(t),\n  y = yfun(t)\n)","id":2,"options":{"fig-cap":"","comment":"","output":"true","message":"true","editor-quick-suggestions":"false","classes":"","context":"interactive","label":"unnamed-chunk-2","editor-max-height":"","read-only":"false","autorun":"false","editor-word-wrap":"true","warning":"true","editor-font-scale":"1","fig-width":7,"dpi":72,"fig-height":5,"out-width":"700px","results":"markup","out-height":""}}];
+globalThis.qwebrCellDetails = [{"id":1,"options":{"autorun":"false","output":"true","results":"markup","editor-quick-suggestions":"false","dpi":72,"label":"unnamed-chunk-1","editor-font-scale":"1","out-height":"","comment":"","out-width":"700px","fig-height":5,"read-only":"false","classes":"","warning":"true","context":"interactive","fig-width":7,"message":"true","editor-max-height":"","editor-word-wrap":"true","fig-cap":""},"code":"xfun <- qspliner(x ~ t, data = Robot_stations)\nyfun <- qspliner(y ~ t, data = Robot_stations)"},{"id":2,"options":{"autorun":"false","output":"true","results":"markup","editor-quick-suggestions":"false","dpi":72,"label":"unnamed-chunk-2","editor-font-scale":"1","out-height":"","comment":"","out-width":"700px","fig-height":5,"read-only":"false","classes":"","warning":"true","context":"interactive","fig-width":7,"message":"true","editor-max-height":"","editor-word-wrap":"true","fig-cap":""},"code":"## Plot the x time series and the knots\nslice_plot(xfun(t) ~ t, domain(t = 1:16), npts=500) |>\n  gf_point(x ~ t, data = Robot_stations, \n           color=\"orange\", alpha=0.5, size=4) |>\n  gf_labs(y=\"x(t)\")"}];
 
 </script>
 <script type="module">
@@ -2108,12 +2108,11 @@ window.Quarto = {
   <li><a href="#generating-smooth-motion" id="toc-generating-smooth-motion" class="nav-link active" data-scroll-target="#generating-smooth-motion"><span class="header-section-number">49.1</span> Generating smooth motion</a></li>
   <li><a href="#piecewise-but-smooth" id="toc-piecewise-but-smooth" class="nav-link" data-scroll-target="#piecewise-but-smooth"><span class="header-section-number">49.2</span> Piecewise but smooth</a></li>
   <li><a href="#sec-cubic-splines" id="toc-sec-cubic-splines" class="nav-link" data-scroll-target="#sec-cubic-splines"><span class="header-section-number">49.3</span> C<sup>2</sup> smooth functions</a></li>
-  <li><a href="#bézier-splines" id="toc-bézier-splines" class="nav-link" data-scroll-target="#bézier-splines"><span class="header-section-number">49.4</span> Bézier splines</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Manifestations/B4-splines.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs/loader.js"></script>
 <script type="module" id="qwebr-monaco-editor-init">
 
@@ -2424,40 +2423,51 @@ www.mosaic-web.org/bezier-app.svg for the links to work. -->
 <p>This chapter introduces yet another important method for constructing functions that match with data. What’s different here is that each data point will be a <strong>mandate</strong>; the function is required to go through each and every data point exactly.</p>
 <section id="generating-smooth-motion" class="level2" data-number="49.1">
 <h2 data-number="49.1" class="anchored" data-anchor-id="generating-smooth-motion"><span class="header-section-number">49.1</span> Generating smooth motion</h2>
-<p>As a motivating example, consider the programming of robotic arms as in the video:</p>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/0L7Xk5_s3QQ?start=81" title="Robotic arms" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
-</iframe>
+<p>As a motivating example, consider the programming of robotic arms of the sort displayed in <a href="#fig-robot-movement-factory" class="quarto-xref">Figure&nbsp;<span>49.1</span></a>:</p>
+<div id="fig-robot-movement-factory" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-robot-movement-factory-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/0L7Xk5_s3QQ?start=81" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-robot-movement-factory-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;49.1: Robotic arms on the factory floor.
+</figcaption>
+</figure>
+</div>
 <p>Since this isn’t a robots course, we will simplify. The arm has a resting position. When a car frame comes into place, the arm moves so that its welding electrodes are at a specific, known place in space near the car body. Then it moves in sequence to other places where a weld is required, perhaps passing through waypoints to avoid obstacles.</p>
-<p>The problem of converting the discrete list of weld and waypoints into a continuous signal for the actuator is an instance of a mathematical process called <strong>interpolation</strong>. In real robot arms, there are multiple joints that need to be controlled simultaneously. For our illustration, we will use a simple setup (see <a href="#fig-x-y-cnc" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-x-y-cnc</span></a>) where the robot hand rolls along a set of rails in the y-direction and another x-rail running crosswise to the y direction.</p>
+<p>The problem of converting the discrete list of weld and waypoints into a continuous signal for the actuator is an instance of a mathematical process called <strong>interpolation</strong>. In real robot arms, there are multiple joints that need to be controlled simultaneously. For our illustration, we will use a simple setup (see <a href="#fig-x-y-cnc" class="quarto-xref">Figure&nbsp;<span>49.2</span></a>) where the robot hand rolls along a set of rails in the y-direction and another x-rail running crosswise to the y direction.</p>
 <div id="fig-x-y-cnc" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-x-y-cnc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="www/x-y-cnc.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-x-y-cnc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;49.1: A CNC (Computer Numerical Control) carving machine. The cutting head (which plays the role of our “hand” in the narrative) is at the bottom of the rig mounted vertically. It can ove left-to-right along the bar labeled “XCARVE”. That bar, in turn, can move to-and-fro along the two parallel panels.
+Figure&nbsp;49.2: A CNC (Computer Numerical Control) carving machine. The cutting head (which plays the role of our “hand” in the narrative) is at the bottom of the rig mounted vertically. It can ove left-to-right along the bar labeled “XCARVE”. That bar, in turn, can move to-and-fro along the two parallel panels.
 </figcaption>
 </figure>
 </div>
-<p>The task for our example robot will be to visit the points shown in <a href="#fig-robot-points" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-robot-points</span></a> in order, taking 15 seconds to traverse the whole path.</p>
-<div class="cell" data-layout-align="center">
-<pre><code>## Warning in (nudge_x != 0) || (nudge_y != 0): 'length(x) = 16 &gt; 1' in coercion
-## to 'logical(1)'</code></pre>
-<div class="cell-output-display">
-<div id="fig-robot-points" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<p>The task for our example robot will be to visit the points shown in <a href="#fig-robot-points" class="quarto-xref">Figure&nbsp;<span>49.3</span></a> in order, taking 15 seconds to traverse the whole path.</p>
+<div id="fig-robot-points" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-robot-points-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="B4-splines_files/figure-html/fig-robot-points-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-robot-points-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;49.2: The waypoints on a path the robot hand is supposed to follow. All the action is taking place in roughly 1x1 meter area.
-</figcaption>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B4-splines_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
 </div>
-<p><a href="#fig-robot-points" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-robot-points</span></a> shows a continuous path in <span class="math inline">\((x,y)\)</span> coordinates together with discrete labels indicating <em>when</em> each waypoint is to be reached. Note that the path is not a function <span class="math inline">\(y(x)\)</span>. Mathematical functions are required to be <strong><em>single valued</em></strong>, meaning that for each value of the input (in the function domain) there can be only one, unique output value. The path in <a href="#fig-robot-points" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-robot-points</span></a> often involves two or more different <span class="math inline">\(y\)</span> values for a single <span class="math inline">\(x\)</span> value. There is even a small domain of <span class="math inline">\(x\)</span> near <span class="math inline">\(x=900\)</span> where the path at any given <span class="math inline">\(x\)</span> crosses <em>six</em> different <span class="math inline">\(y\)</span>-values.</p>
-<p>Even so, functions can be a useful way of describing the <span class="math inline">\((x,y)\)</span> path. The key is the plural: function<strong>s</strong>. For the path in <a href="#fig-robot-points" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-robot-points</span></a> we need <em>two</em> quantities varying with time in a coordinated way. One approach, familiar to navigators, is to specify direction of movement and velocity at each instant of time. Perhaps not as familiar, but more fundamental mathematically, is to specify <span class="math inline">\(x\)</span> as a function of time and, separately, <span class="math inline">\(y\)</span> as a function of time. Using this formalism, the trajectory of the robot arm will consist of two functions, <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span>. To build those functions, well start with the waypoints stored in the data frame <code>Robot_stations</code>.</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-robot-points-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;49.3: The waypoints on a path the robot hand is supposed to follow. All the action is taking place in roughly 1x1 meter area.
+</figcaption>
+</figure>
+</div>
+<p><a href="#fig-robot-points" class="quarto-xref">Figure&nbsp;<span>49.3</span></a> shows a continuous path in <span class="math inline">\((x,y)\)</span> coordinates together with discrete labels indicating <em>when</em> each waypoint is to be reached. Note that the path is not a function <span class="math inline">\(y(x)\)</span>. Mathematical functions are required to be <strong><em>single valued</em></strong>, meaning that for each value of the input (in the function domain) there can be only one, unique output value. The path in <a href="#fig-robot-points" class="quarto-xref">Figure&nbsp;<span>49.3</span></a> often involves two or more different <span class="math inline">\(y\)</span> values for a single <span class="math inline">\(x\)</span> value. There is even a small domain of <span class="math inline">\(x\)</span> near <span class="math inline">\(x=900\)</span> where the path at any given <span class="math inline">\(x\)</span> crosses <em>six</em> different <span class="math inline">\(y\)</span>-values.</p>
+<p>Even so, functions can be a useful way of describing the <span class="math inline">\((x,y)\)</span> path. The key is the plural: function<strong>s</strong>. For the path in <a href="#fig-robot-points" class="quarto-xref">Figure&nbsp;<span>49.3</span></a> we need <em>two</em> quantities varying with time in a coordinated way. One approach, familiar to navigators, is to specify direction of movement and velocity at each instant of time. Perhaps not as familiar, but more fundamental mathematically, is to specify <span class="math inline">\(x\)</span> as a function of time and, separately, <span class="math inline">\(y\)</span> as a function of time. Using this formalism, the trajectory of the robot arm will consist of two functions, <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span>. To build those functions, we start with the waypoints stored in the data frame <code>Robot_stations</code>.</p>
+<div id="tab-robot-stations">
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <table class="lightable-classic lightable-hover caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -2506,102 +2516,123 @@ Figure&nbsp;49.2: The waypoints on a path the robot hand is supposed to follow. 
 </table>
 </div>
 </div>
+<p>The data frame `Robot_stations”</p>
+</div>
 <p>The <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> functions in this table aren’t complete enough to operate the robot. We need to provide the <span class="math inline">\(x,y\)</span>-location data in the form of two <strong>continuous</strong> functions of <span class="math inline">\(t\)</span> so that the robot, at any time <span class="math inline">\(t\)</span>, can look up where it is supposed to be, what its velocity should be, and how that velocity should be changing in time (acceleration).</p>
 <p>One strategy is to construct the functions as piecewise linear functions of <span class="math inline">\(t\)</span>, like this:</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-piecewise-linear-path" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-piecewise-linear-path" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-piecewise-linear-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="B4-splines_files/figure-html/fig-piecewise-linear-path-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-piecewise-linear-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;49.3: Two functions <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> which describe the path shown in <a href="#fig-robot-points" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-robot-points</span></a>.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>It can be difficult at first glance to see the relationship between the <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> functions and the path shown in <a href="#fig-robot-points" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-robot-points</span></a>. As an exercise, look specifically at the segment <span class="math inline">\(9 \leq t \leq 10\)</span>. In <a href="#fig-piecewise-linear-path" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-piecewise-linear-path</span></a>, this is the segment connecting points 9 and 10. In the path view, you can see that on this segment <span class="math inline">\(x\)</span> changes a lot while <span class="math inline">\(y\)</span> changes only a little. Correspondingly, in the function view, <span class="math inline">\(\partial_t x(t)\)</span> is large in magnitude compared to <span class="math inline">\(\partial_t y(t)\)</span>.</p>
-<p>Each functions in <a href="#fig-piecewise-linear-path" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-piecewise-linear-path</span></a> is an <strong><em>interpolating function</em></strong>. You’re entitled to think of the <span class="math inline">\(x(t)\)</span> function as connecting with lines the sequence of <span class="math inline">\(x\)</span> versus <span class="math inline">\(t\)</span> coordinates from the table and similarly for <span class="math inline">\(y(t)\)</span>. Each of the two functions is continuous. But, based on your work in Blocks 1 through 3, you have a richer set of concepts for interpreting those two functions.</p>
-<p>For instance, let’s look at <span class="math inline">\(\partial_t y(t)\)</span>. Since <span class="math inline">\(y\)</span> is a position along the cross rail, <span class="math inline">\(\partial_t y(t)\)</span> is the velocity in that direction. <a href="#fig-y-velocity" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-y-velocity</span></a> shows the velocity versus time for both the <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> components of the movement.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-y-velocity" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-y-velocity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="B4-splines_files/figure-html/fig-y-velocity-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-y-velocity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;49.4: Velocity versus time time along the path defined by <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> as shown in Figure <a href="#fig-piecewise-linear-path" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-piecewise-linear-path</span></a>.
-</figcaption>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B4-splines_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-piecewise-linear-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;49.4: Two functions <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> which describe the path shown in <a href="#fig-robot-points" class="quarto-xref">Figure&nbsp;<span>49.3</span></a>.
+</figcaption>
+</figure>
+</div>
+<p>It can be difficult at first glance to see the relationship between the <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> functions and the path shown in <a href="#fig-robot-points" class="quarto-xref">Figure&nbsp;<span>49.3</span></a>. As an exercise, look specifically at the segment <span class="math inline">\(9 \leq t \leq 10\)</span>. In <a href="#fig-piecewise-linear-path" class="quarto-xref">Figure&nbsp;<span>49.4</span></a>, this is the segment connecting points 9 and 10. In the path view, you can see that on this segment <span class="math inline">\(x\)</span> changes a lot while <span class="math inline">\(y\)</span> changes only a little. Correspondingly, in the function view, <span class="math inline">\(\partial_t x(t)\)</span> is large in magnitude compared to <span class="math inline">\(\partial_t y(t)\)</span>.</p>
+<p>Each functions in <a href="#fig-piecewise-linear-path" class="quarto-xref">Figure&nbsp;<span>49.4</span></a> is an <strong><em>interpolating function</em></strong>. You’re entitled to think of the <span class="math inline">\(x(t)\)</span> function as connecting with lines the sequence of <span class="math inline">\(x\)</span> versus <span class="math inline">\(t\)</span> coordinates from the table and similarly for <span class="math inline">\(y(t)\)</span>. Each of the two functions is continuous. But, based on your work in Blocks 1 through 3, you have a richer set of concepts for interpreting those two functions.</p>
+<p>For instance, let’s look at <span class="math inline">\(\partial_t y(t)\)</span>. Since <span class="math inline">\(y\)</span> is a position along the cross rail, <span class="math inline">\(\partial_t y(t)\)</span> is the velocity in that direction. <a href="#fig-y-velocity" class="quarto-xref">Figure&nbsp;<span>49.5</span></a> shows the velocity versus time for both the <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> components of the movement.</p>
+<div id="fig-y-velocity" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-y-velocity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B4-splines_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-y-velocity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;49.5: Velocity versus time time along the path defined by <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> as shown in Figure <a href="#fig-piecewise-linear-path" class="quarto-xref">Figure&nbsp;<span>49.4</span></a>.
+</figcaption>
+</figure>
 </div>
 <p>The speed of the robot arm maxes out at about 600 mm-per-second. You can get a sense for this by moving your finger two feet in 1 second: a normal human speed of movement.</p>
 <p>Since the original <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> functions are piecewise linear, it makes sense that the derivatives with respect to time are piecewise constant. But the robot hand is a physical thing; it has to have a velocity at every instant in time. It cannot instantaneously have an undefined velocity.</p>
-<p>Think about what it is that causes the change from one velocity step to another. There is a motor that is spinning and changing its rate of spin, perhaps using a pulley and a belt to move the robot hand to the right position at any instant of time. Changing the velocity requires a <strong>force</strong> to create an acceleration. We can differentiate the velocity to see what the acceleration must be to create the simple piecewise linear function shown in <a href="#fig-piecewise-linear-path" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-piecewise-linear-path</span></a>.</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-x-acceleration" class="quarto-float quarto-figure quarto-figure-center anchored" width="90%" data-fig-align="center">
+<p>Think about what it is that causes the change from one velocity step to another. There is a motor that is spinning and changing its rate of spin, perhaps using a pulley and a belt to move the robot hand to the right position at any instant of time. Changing the velocity requires a <strong>force</strong> to create an acceleration. We can differentiate the velocity to see what the acceleration must be to create the simple piecewise linear function shown in <a href="#fig-piecewise-linear-path" class="quarto-xref">Figure&nbsp;<span>49.4</span></a>.</p>
+<div id="fig-x-acceleration" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-x-acceleration-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="B4-splines_files/figure-html/fig-x-acceleration-1.png" id="fig-x-acceleration" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" style="width:90.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-x-acceleration-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>Mathematically, the second derivatives <span class="math inline">\(\partial_{tt} x(t)\)</span> and <span class="math inline">\(\partial_{tt} y(t)\)</span> do not exist, because <span class="math inline">\(\partial_{t} x(t)\)</span> and <span class="math inline">\(\partial_{t} y(t)\)</span> are discontinuous. There is no physical amount of force that will change the velocity in an instant.</p>
-<p>As an accommodation to the physical existence of the robot hand, we’ve softened the transition between consecutive velocity segments to allow it to take 0.2 seconds, ramping up from zero force 0.1 second before the hand reaches the station, to maximum force at the station, then back down to zero 0.1 second after the hand reaches the station. Consequently the actual motion is smoother and the maximum acceleration is about half that of gravity. <a href="#fig-ramp-force" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-ramp-force</span></a> shows the resulting trajectory which can be likened to that of a baseball player rounding a base.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-ramp-force" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-ramp-force-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="B4-splines_files/figure-html/fig-ramp-force-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ramp-force-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;49.6: A smoothed x-trajectory near station 2. The position of the station is marked with a dot.
-</figcaption>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B4-splines_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-x-acceleration-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;49.6: Acceleration in the x and the y direction for the piecewise linear path. There is a huge change in velocity at the juncture between linear segments.
+</figcaption>
+</figure>
+</div>
+<p>Mathematically, the second derivatives <span class="math inline">\(\partial_{tt} x(t)\)</span> and <span class="math inline">\(\partial_{tt} y(t)\)</span> do not exist, because <span class="math inline">\(\partial_{t} x(t)\)</span> and <span class="math inline">\(\partial_{t} y(t)\)</span> are discontinuous. There is no physical amount of force that will change the velocity in an instant.</p>
+<p>As an accommodation to the physical existence of the robot hand, we’ve softened the transition between consecutive velocity segments to allow it to take 0.2 seconds, ramping up from zero force 0.1 second before the hand reaches the station, to maximum force at the station, then back down to zero 0.1 second after the hand reaches the station. Consequently the actual motion is smoother and the maximum acceleration is about half that of gravity. <a href="#fig-ramp-force" class="quarto-xref">Figure&nbsp;<span>49.7</span></a> shows the resulting trajectory which can be likened to that of a baseball player rounding a base.</p>
+<div id="fig-ramp-force" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ramp-force-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B4-splines_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ramp-force-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;49.7: A smoothed x-trajectory near station 2. The position of the station is marked with a dot.
+</figcaption>
+</figure>
 </div>
 <p>A consequence of smoothing the trajectory is that the robot hand comes near, but does not touch the station. It misses by about 2 mm. For many human tasks that might be good enough, but for precision manufacturing a miss by 2 mm is about 1000 times more than allowed.</p>
 <p>If you like working with practical problems, you might find a simple solution to the problem. For instance, we could have aimed the robot hand 2 mm further to the right than the actual station. In falling short by 2mm, the hand would miss the new target but cross right over the originally intended station.</p>
 <p>Solutions like this are sometimes called <strong><em>ad hoc</em></strong>, meaning that they are so specifically tailored to one situation that they do not generalize well to slightly different problems. The next section introduces a superior approach that is much more general.</p>
 </section>
-<section id="piecewise-but-smooth" class="level2" data-number="49.2">
+<section id="piecewise-but-smooth" class="level2 page-columns page-full" data-number="49.2">
 <h2 data-number="49.2" class="anchored" data-anchor-id="piecewise-but-smooth"><span class="header-section-number">49.2</span> Piecewise but smooth</h2>
 <p>The approach we will take to smoothly connect the points on the path is based on ideas of derivatives and on the construction of low-order polynomials. In Block 2, we emphasized low-order polynomials up to the square term, and we will pick that up again here for demonstration purposes. For this example, we will construct only the <span class="math inline">\(y(t)\)</span> function. Constructing <span class="math inline">\(x(t)\)</span> would be done using the same procedure.</p>
-<p>Our task is to find a function <span class="math inline">\(y(t)\)</span> to interpolate discrete points such as those shown in <a href="#fig-quadratic-spline" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-quadratic-spline</span></a>. The discrete points are called <strong><em>knots</em></strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> in the language of interpolating functions. Each knot is a coordinate pair <span class="math inline">\((t_i, y(t_i))\)</span> shown as an orange dot in <a href="#fig-quadratic-spline" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-quadratic-spline</span></a>.</p>
+<p>Our task is to find a function <span class="math inline">\(y(t)\)</span> to interpolate discrete points such as those shown in <a href="#fig-quadratic-spline" class="quarto-xref">Figure&nbsp;<span>49.8</span></a>. The discrete points are called <strong><em>knots</em></strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> in the language of interpolating functions. Each knot is a coordinate pair <span class="math inline">\((t_i, y(t_i))\)</span> shown as an orange dot in <a href="#fig-quadratic-spline" class="quarto-xref">Figure&nbsp;<span>49.8</span></a>.</p>
 <p>The piecewise linear interpolating function is easily constructed and is shown as a dotted curve. As we saw in the previous section, such a function has a discontinuous first derivative. We would like something smoother, with a <strong>continuous</strong> first derivative. A curve such as the one we seek is shown as the multi-colored function.</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-quadratic-spline" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-quadratic-spline" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-quadratic-spline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="B4-splines_files/figure-html/fig-quadratic-spline-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quadratic-spline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;49.7: Two interpolating functions of the four discrete points (orange). One is piecewise linear (dotted curve), the other is piecewise quadratic (multi-color curve).
-</figcaption>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B4-splines_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
 </figure>
 </div>
 </div>
 </div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quadratic-spline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;49.8: Two interpolating functions of the four discrete points (orange). One is piecewise linear (dotted curve), the other is piecewise quadratic (multi-color curve).
+</figcaption>
+</figure>
+</div>
 <p>The framework we will adopt for the smooth interpolating function is piecewise quadratic segments between adjacent knots. There are four knots, requiring three segments. We will call the segment <span class="math inline">\(p_1(y)\)</span> connecting the first knot to the second, with <span class="math inline">\(p_2(y)\)</span> connecting the second to the third knot and <span class="math inline">\(p_3(y)\)</span> connecting the third to the fourth knot. Each of those segments will be a second-order polynomial. To keep things organized, we will use coefficient names systematically:</p>
-<p><span class="math display">\[p_1(t) \equiv a_1 + b_1 \left[t - t_1\right] + c_1 \left[t - t_1\right]^2\\
-p_2(t) \equiv a_2 + b_2 \left[t - t_2\right] + c_2 \left[t - t_2\right]^2\\
-p_3(t) \equiv a_3 + b_3 \left[t - t_3\right] + c_3 \left[t - t_3\right]^2\\\]</span> The four knots are <span class="math display">\[\left[\begin{array}{c}\left(t_1, x_1\right)\\
+<p><span class="math display">\[p_1(t) \equiv a_1 + b_1 \left[t - t_1\right] + c_1 \left[t - t_1\right]^2\]</span> <span class="math display">\[p_2(t) \equiv a_2 + b_2 \left[t - t_2\right] + c_2 \left[t - t_2\right]^2\]</span> <span class="math display">\[p_3(t) \equiv a_3 + b_3 \left[t - t_3\right] + c_3 \left[t - t_3\right]^2\]</span> The four knots are <span class="math display">\[\left[\begin{array}{c}\left(t_1, x_1\right)\\
 \left(t_2, y_2\right)\\
 \left(t_3, y_3\right)\\
 \left(t_4, y_4\right)\\
-\end{array}\right]\]</span> which you can think of as two columns of a data frame, one with the <span class="math inline">\(t\)</span>-coordinates of the knots and the other with the <span class="math inline">\(y\)</span>-coordinates. For the knots in <a href="#fig-quadratic-spline" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-quadratic-spline</span></a> the data table is</p>
+\end{array}\right]\]</span> which you can think of as two columns of a data frame, one with the <span class="math inline">\(t\)</span>-coordinates of the knots and the other with the <span class="math inline">\(y\)</span>-coordinates. For the knots in <a href="#fig-quadratic-spline" class="quarto-xref">Figure&nbsp;<span>49.8</span></a> the data table is</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
@@ -2641,26 +2672,18 @@ p_3(t) \equiv a_3 + b_3 \left[t - t_3\right] + c_3 \left[t - t_3\right]^2\\\]</s
 <li>The derivative (with respect to <span class="math inline">\(t\)</span>) should match where the segments join. That is, <span class="math inline">\(\partial_t p_1(t_1) = \partial_t p_2(t_2)\)</span> and <span class="math inline">\(\partial_t p_2(t_3) = \partial_t p_3(t_3)\)</span>. Thus, the function we want to build will be <span class="math inline">\(C^1\)</span>, that is, have a continuous first derivative.</li>
 </ol>
 <p>How to accomplish (1) and (2)?</p>
-<p>Notice first that because we wrote each of the polynomials in the style of Taylor polynomials, we can read the values of <span class="math inline">\(a_1\)</span>, <span class="math inline">\(a_2\)</span>, and <span class="math inline">\(a_3\)</span> directly from the data table: <span class="math display">\[p_1(t_1) = a_1 = y_1\\p_2(t_2) = a_2 = y_2\\p_3(t_3) = a_3 = y_3\\\]</span></p>
+<p>Notice first that because we wrote each of the polynomials in the style of Taylor polynomials, we can read the values of <span class="math inline">\(a_1\)</span>, <span class="math inline">\(a_2\)</span>, and <span class="math inline">\(a_3\)</span> directly from the data table:</p>
+<p><span class="math display">\[p_1(t_1) = a_1 = y_1\]</span> <span class="math display">\[p_2(t_2) = a_2 = y_2\]</span> <span class="math display">\[p_3(t_3) = a_3 = y_3\]</span></p>
 <p>We can find other coefficients from the requirement that the right side of each segment pass through the knot on that side. This gives:</p>
-<p><span class="math display">\[p_1(t_2) = y_2 = a_1 + b_1 \left[t_2-t_1\right] + c_1\left[t_2-t_1\right]^2\\
-p_2(t_c) = y_3 = a_2 + b_2 \left[t_3-t_2\right] + c_2\left[t_3-t_2\right]^2\\
-p_3(t_c) = y_4 = a_3 + b_3 \left[t_4-t_3\right] + c_3\left[t_4-t_3\right]^2\]</span> (Notice that <span class="math inline">\(t_2 - t_1\)</span> and the like are simply numbers that can be computed from the known knot points.)</p>
+<p><span class="math display">\[p_1(t_2) = y_2 = a_1 + b_1 \left[t_2-t_1\right] + c_1\left[t_2-t_1\right]^2\]</span> <span class="math display">\[p_2(t_c) = y_3 = a_2 + b_2 \left[t_3-t_2\right] + c_2\left[t_3-t_2\right]^2\]</span> <span class="math display">\[p_3(t_c) = y_4 = a_3 + b_3 \left[t_4-t_3\right] + c_3\left[t_4-t_3\right]^2\]</span> (Notice that <span class="math inline">\(t_2 - t_1\)</span> and the like are simply numbers that can be computed from the known knot points.)</p>
 <p>Another two conditions are that the derivatives of the polynomials from either side of each interior knot point must match at the knot point. Finding the derivatives of the segments is a simple exercise:</p>
-<p><span class="math display">\[\partial_t p_1(t) = b_1 + 2 c_1 \left[t - t_1\right]\\
-\partial_t p_1(t) = b_2 + 2 c_2 \left[t - t_2\right]\\
-\partial_t p_1(t) = b_3 + 2 c_3 \left[t - t_3\right]\]</span> Matching these derivatives at the <span class="math inline">\(t_2\)</span> and <span class="math inline">\(t_3\)</span> knot points—the interior knots where two segments come together—gives two more equations: <span class="math display">\[
-\partial_t p_1(t_2) = b_1 + 2 c_1 \left[t_2 - t_1\right] = b_2 = \partial_t p_2(t_2)\\
-\partial_t p_2(t_3) = b_2 + 2 c_2 \left[t_3 - t_2\right] = b_3 = \partial_t p_3(t_3) \]</span> All together, we have <strong>five</strong> equations in <strong>six</strong> unknowns: <span class="math inline">\(b_1, b_2, b_3\)</span> and <span class="math inline">\(c_1, c_2, c_3\)</span>.</p>
-<p>Plugging in the specific values <span class="math inline">\(t_1\)</span> through <span class="math inline">\(t_4\)</span>, and <span class="math inline">\(x_1\)</span> through <span class="math inline">\(x_4\)</span> from the data table translates the equations for the polynomial values and derivatives gives this system of equations: <span class="math display">\[
-b_1 + c_1 = x_2 - x_1 = \ \ \ \ \ \ 2\\
-b_2 + c_2 = x_3 - x_2 = -1.5\\
-b_3 + c_3 = x_4 - x_3= \ \ 1.2\\
-b_1 + 2 c_1 - b_2 = 0\\
-b_2 + 2 c_2 - b_3 = 0\]</span></p>
+<p><span class="math display">\[\partial_t p_1(t) = b_1 + 2 c_1 \left[t - t_1\right]\]</span> <span class="math display">\[\partial_t p_1(t) = b_2 + 2 c_2 \left[t - t_2\right]\]</span> <span class="math display">\[\partial_t p_1(t) = b_3 + 2 c_3 \left[t - t_3\right]\]</span></p>
+<p>Matching these derivatives at the <span class="math inline">\(t_2\)</span> and <span class="math inline">\(t_3\)</span> knot points—the interior knots where two segments come together—gives two more equations: <span class="math display">\[\partial_t p_1(t_2) = b_1 + 2 c_1 \left[t_2 - t_1\right] = b_2 = \partial_t p_2(t_2)\]</span> <span class="math display">\[\partial_t p_2(t_3) = b_2 + 2 c_2 \left[t_3 - t_2\right] = b_3 = \partial_t p_3(t_3) \]</span> All together, we have <strong>five</strong> equations in <strong>six</strong> unknowns: <span class="math inline">\(b_1, b_2, b_3\)</span> and <span class="math inline">\(c_1, c_2, c_3\)</span>.</p>
+<p>Plugging in the specific values <span class="math inline">\(t_1\)</span> through <span class="math inline">\(t_4\)</span>, and <span class="math inline">\(x_1\)</span> through <span class="math inline">\(x_4\)</span> from the data table translates the equations for the polynomial values and derivatives gives this system of equations:</p>
+<p><span class="math display">\[b_1 + c_1 = x_2 - x_1 = \ \ \ \ \ \ 2\]</span> <span class="math display">\[b_2 + c_2 = x_3 - x_2 = -1.5\]</span> <span class="math display">\[b_3 + c_3 = x_4 - x_3= \ \ 1.2\]</span> <span class="math display">\[b_1 + 2 c_1 - b_2 = 0\]</span> <span class="math display">\[b_2 + 2 c_2 - b_3 = 0\]</span></p>
 <p>This is not the place to go into the details of solving the five equations to find the six unknowns. (Block 5 introduces the mathematics of such things, which turns out to the same math used to find model parameters to “fit” data.) But there are some simple things to say about the task.</p>
 <p>First, you may recall being told in high-school mathematics that to find six unknowns you need six equations. We have only five equations to work with. But it is far from true that there is no solution for six unknowns with five equations. There are in fact an <em>infinite</em> number of solutions. (Again, Block 5 will show the mathematics behind this statement.) Essentially, all we need to do is make up a sixth equation to identify a particular one of the infinite number of solutions. It is nice if this made-up equation reflects something interpretable about the curve.</p>
-<p>We will choose to have the sixth equation specify what the derivative of the interpolating function should be at the far right end of the graph. That right-most derivative value will be <span class="math display">\[\partial_t p_3(t_4) = b_3 + 2 c_3 \left[t_4 - t_3\right]\ .\]</span> We can set this value to anything we like. For instance, in <a href="#fig-quadratic-spline" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-quadratic-spline</span></a> the right-most derivative is set to zero; you can see this from the curve being flat at the right-most knot point.</p>
+<p>We will choose to have the sixth equation specify what the derivative of the interpolating function should be at the far right end of the graph. That right-most derivative value will be <span class="math display">\[\partial_t p_3(t_4) = b_3 + 2 c_3 \left[t_4 - t_3\right]\ .\]</span> We can set this value to anything we like. For instance, in <a href="#fig-quadratic-spline" class="quarto-xref">Figure&nbsp;<span>49.8</span></a> the right-most derivative is set to zero; you can see this from the curve being flat at the right-most knot point.</p>
 <div id="fig-four-quads" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-four-quads-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -2672,7 +2695,30 @@ b_2 + 2 c_2 - b_3 = 0\]</span></p>
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="B4-splines_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+<p><img src="B4-splines_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B4-splines_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B4-splines_files/figure-html/unnamed-chunk-10-3.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="B4-splines_files/figure-html/unnamed-chunk-10-4.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
 </figure>
 </div>
 </div>
@@ -2680,7 +2726,7 @@ b_2 + 2 c_2 - b_3 = 0\]</span></p>
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-four-quads-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;49.8: Four different <span class="math inline">\(C^1\)</span> piecewise quadratic functions that interpolate the knot points. The functions have different values of the derivative at the right end of the domain.
+Figure&nbsp;49.9: Four different <span class="math inline">\(C^1\)</span> piecewise quadratic functions that interpolate the knot points. The functions have different values of the derivative at the right end of the domain.
 </figcaption>
 </figure>
 </div>
@@ -2697,48 +2743,39 @@ Try it!&nbsp;49.1
 </figcaption>
 </figure>
 </div>
-<div class="callout callout-style-default callout-important no-icon callout-titled">
+<div class="callout callout-style-default callout-important no-icon callout-titled page-columns page-full">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<a href="#try-quad-spline" class="quarto-xref">Try it!&nbsp;<span class="quarto-unresolved-ref">try-quad-spline</span></a> Splining through the robot stations
+<a href="#try-quad-spline" class="quarto-xref">Try it!&nbsp;<span>49.1</span></a> Splining through the robot stations
 </div>
 </div>
-<div class="callout-body-container callout-body">
+<div class="callout-body-container callout-body page-columns page-full">
 <p>Quadratic spline functions can be created with the R/mosaic <code>qspliner()</code> function. The second argument is a data frame giving the knot locations. The first argument is a tilde expression specifying the variables to use from the data frame.</p>
 <div id="qwebr-insertion-location-1"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>Having constructed the functions, we can plot them in the ordinary way, here adding <span style="color: orange;">orange</span> dots at the <span class="math inline">\(x\)</span>-values of the knots.</p>
+<div id="lst-find-the-path" class="column-page-right listing quarto-float quarto-figure quarto-figure-left anchored">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst quarto-uncaptioned" id="lst-find-the-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Active R chunk&nbsp;49.1
+</figcaption>
+<div aria-describedby="lst-find-the-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div id="qwebr-insertion-location-2"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<div id="fig-qspline-x" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-qspline-x-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="B4-splines_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</div>
 </figure>
 </div>
+<p>The graph produced by <a href="#lst-find-the-path" class="quarto-xref">Active R chunk&nbsp;<span>49.1</span></a> quadratic spline interpolation of the <span class="math inline">\(x\)</span>-coordinates of the robot-path knots. The data hardly speak for themselves, since the interpolationg function tends to alternate between concave up and concave down in adjacent segments between the knots.</p>
 </div>
 </div>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-qspline-x-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;49.9: A quadratic spline interpolation of the <span class="math inline">\(x\)</span>-coordinates of the robot-path knots. The data hardly speak for themselves, since the interpolationg function tends to alternate between concave up and concave down in adjacent segments between the knots.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>Putting together the <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> interpolating functions, each of which has that extremum between knot points, leads to an absurdly complicated path, as seen in <a href="#fig-quad-robot-points-quad" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-quad-robot-points-quad</span></a>.</p>
+<p>Putting together the <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> interpolating functions, each of which has that extremum between knot points, leads to an absurdly complicated path, as seen in <a href="#fig-quan-robot-points-quad" class="quarto-xref">Figure&nbsp;<span>49.10</span></a>.</p>
 <div id="fig-quan-robot-points-quad" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-quan-robot-points-quad-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell" data-layout-align="center">
-<pre><code>## Warning in (nudge_x != 0) || (nudge_y != 0): 'length(x) = 16 &gt; 1' in coercion
-## to 'logical(1)'</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -2753,13 +2790,13 @@ Figure&nbsp;49.10: Connecting the robot-path knots with a piecewise quadratic po
 </figcaption>
 </figure>
 </div>
-<p>Quadratic splines are rarely used in practice. (A <strong><em>cubic spline</em></strong> provides helpful flexibility. See <a href="#sec-cubic-splines" class="quarto-xref"><span class="quarto-unresolved-ref">sec-cubic-splines</span></a>.) In <a href="#fig-qspline-x" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-qspline-x</span></a> you can see one of the reasons: the quadratic form is so <strong><em>stiff</em></strong> that the interpolating function tends to shift from concave up to concave down (or vice versa) at each knot point. This results in the interpolating function tending to have a local minimum or maximum <em>between</em> adjacent knots, even if the data themselves to not indicate such a structure.</p>
+<p>Quadratic splines are rarely used in practice. (A <strong><em>cubic spline</em></strong> provides helpful flexibility. See <a href="#sec-cubic-splines" class="quarto-xref"><span>Section 49.3</span></a>.) In <a href="#fig-four-quads" class="quarto-xref">Figure&nbsp;<span>49.9</span></a> you can see one of the reasons: the quadratic form is so <strong><em>stiff</em></strong> that the interpolating function tends to shift from concave up to concave down (or vice versa) at each knot point. This results in the interpolating function tending to have a local minimum or maximum <em>between</em> adjacent knots, even if the data themselves to not indicate such a structure.</p>
 </section>
 <section id="sec-cubic-splines" class="level2" data-number="49.3">
 <h2 data-number="49.3" class="anchored" data-anchor-id="sec-cubic-splines"><span class="header-section-number">49.3</span> C<sup>2</sup> smooth functions</h2>
 <p>In the previous section, we arranged the functions <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> composed from the piecewise quadratic segments to be <span class="math inline">\(C^1\)</span> smooth. (Recall that <span class="math inline">\(C^1\)</span> smooth means that the derivatives <span class="math inline">\(\partial_t x(t)\)</span> and <span class="math inline">\(\partial_t y(t)\)</span> are continuous.) We established this continuity by make sure that each segment has a value of the derivative at its end-point know that matches the derivative of the adjacent segment.</p>
 <p>To arrange <span class="math inline">\(C^2\)</span> continuity requires that the segment include a new parameter. Most commonly, this is done by moving from quadratic segments to <strong><em>cubic segments</em></strong>. This can be done by an approach similar to that of the previous section but somewhat more elaborate. Such a <span class="math inline">\(C^2\)</span> interpolating function is called a <strong><em>cubic spline</em></strong>. Cubic splines are very commonly encountered in applications requiring interpolation.</p>
-<p>With the ability to match piecewise cubic polynomials to a set of knots, we can easily construct the smooth path to connect the knots in <a href="#fig-robot-points" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-robot-points</span></a>. <a href="#fig-smooth-robot-points" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-smooth-robot-points</span></a> shows a <span class="math inline">\(C^2\)</span> path connecting the knots. The path is constructed by plotting simultaneously the output of two functions, <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span>, with the input <span class="math inline">\(t\)</span> on the domain <span class="math inline">\(1 \leq t \leq 16\)</span>.</p>
+<p>With the ability to match piecewise cubic polynomials to a set of knots, we can easily construct the smooth path to connect the knots in <a href="#fig-robot-points" class="quarto-xref">Figure&nbsp;<span>49.3</span></a>. <a href="#fig-smooth-robot-points" class="quarto-xref">Figure&nbsp;<span>49.11</span></a> shows a <span class="math inline">\(C^2\)</span> path connecting the knots. The path is constructed by plotting simultaneously the output of two functions, <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span>, with the input <span class="math inline">\(t\)</span> on the domain <span class="math inline">\(1 \leq t \leq 16\)</span>.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2772,17 +2809,13 @@ Cubic splines have smoother joints
 <div class="callout-body-container callout-body">
 <p>Cubic spline functions can be created with the R/mosaic <code>spliner()</code> function. The second argument is a data frame giving the knot locations. The first argument is a tilde expression specifying the variables to use from the data frame.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>xfun <span class="ot">&lt;-</span> <span class="fu">spliner</span>(x <span class="sc">~</span> t, <span class="at">data =</span> Robot_stations)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>yfun <span class="ot">&lt;-</span> <span class="fu">spliner</span>(y <span class="sc">~</span> t, <span class="at">data =</span> Robot_stations)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>xfun <span class="ot">&lt;-</span> <span class="fu">spliner</span>(x <span class="sc">~</span> t, <span class="at">data =</span> Robot_stations)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>yfun <span class="ot">&lt;-</span> <span class="fu">spliner</span>(y <span class="sc">~</span> t, <span class="at">data =</span> Robot_stations)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="fig-smooth-robot-points" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-smooth-robot-points-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell" data-layout-align="center">
-<pre><code>## Warning in (nudge_x != 0) || (nudge_y != 0): 'length(x) = 16 &gt; 1' in coercion
-## to 'logical(1)'</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -2815,6 +2848,8 @@ Figure&nbsp;49.12: A cubic spline interpolation of the <span class="math inline"
 </figcaption>
 </figure>
 </div>
+</div>
+</div>
 <div id="thm-infinite-force" class="theorem" style="display: none;">
 <p><span class="theorem-title"><strong>Application area 49.1</strong></span> —Continuous second derivatives keep motion smooth.</p>
 </div>
@@ -2824,113 +2859,91 @@ Figure&nbsp;49.12: A cubic spline interpolation of the <span class="math inline"
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<a href="#thm-infinite-force" class="quarto-xref">Application area&nbsp;<span class="quarto-unresolved-ref">thm-infinite-force</span></a> Avoiding infinite force
+<a href="#thm-infinite-force" class="quarto-xref">Application area&nbsp;<span>49.1</span></a> Avoiding infinite force
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p>We saw that using a line-segment interpolation produces discontinuity in the derivative of the function. Mathematically, discontinuity in the velocity can be thought of as an infinite acceleration, requiring an infinite force. In the physical world, accelerations must be finite. Even if a force is large, there is often slack in connections between components and the components are not perfectly rigid.</p>
-<p>The video shows motion of a robotic dog. At the start, the motors in the robot are being asked to make a straight-line transition between waypoints. The result is vibration and a tremor-like movement.</p>
-<p>Then the motors are given a smoothly interpolated signal. (Much of the video hows the programming involved. You can skip directly to time 13:02 to see the motion with smoothly interpolated waypoints.) The smooth interpolation produces a gentle and vibration-free movement.</p>
-<iframe width="600" height="337" src="https://www.youtubetrimmer.com/view/?v=SgJcj2Gd0Rc&amp;start=695&amp;end=800&amp;loop=0" title="Motion without interpolation" frameborder="0" allow="accelerometer;  clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="">
-</iframe>
-<div class="cell" data-layout-align="center">
-<p>WHAT SHOULD GO HERE IN PDF?</p>
+<p><a href="#fig-dog-robot-video" class="quarto-xref">Figure&nbsp;<span>49.13</span></a> shows motion of a robotic dog. At the start, the motors in the robot are being asked to make a straight-line transition between waypoints. The result is vibration and a tremor-like movement.</p>
+<p>Then the motors are given a smoothly interpolated signal. (Much of the video shows the programming involved. You can skip directly to time 13:02 to see the motion with smoothly interpolated waypoints.) The smooth interpolation produces a gentle and vibration-free movement.</p>
+<div id="fig-dog-robot-video" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dog-robot-video-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/SgJcj2Gd0Rc?start=695" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
 </div>
-<p><a href="https://www.youtube.com/watch?v=SgJcj2Gd0Rc">Link to entire video</a> by James Bruton.</p>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dog-robot-video-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;49.13: <a href="https://www.youtube.com/watch?v=SgJcj2Gd0Rc">Link to entire video</a> by James Bruton.
+</figcaption>
+</figure>
 </div>
-</div>
-</section>
 <section id="bézier-splines" class="level2" data-number="49.4">
 <h2 data-number="49.4" class="anchored" data-anchor-id="bézier-splines"><span class="header-section-number">49.4</span> Bézier splines</h2>
 <p>The sort of interpolating functions described in the previous two sections were designed to be smooth at the <span class="math inline">\(C^1\)</span> level (quadratic spline) or the <span class="math inline">\(C^2\)</span> level (cubic spline). Such smoothness makes sense for, say, robotic motion where we want at all times to keep the force on each robot joint small.</p>
-<p>Not all path-related design problems require such smoothness. Indeed, in some settings, non-smoothness is called for. For instance, <a href="#fig-letter-e" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-letter-e</span></a> shows the outline of a familiar shape</p>
+<p>Not all path-related design problems require such smoothness. Indeed, in some settings, non-smoothness is called for. For instance, <a href="#fig-letter-e" class="quarto-xref">Figure&nbsp;<span>49.14</span></a> shows the outline of a familiar shape</p>
 <div id="fig-letter-e" class="quarto-float quarto-figure quarto-figure-center anchored" data-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-letter-e-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="www/bezier-e.png" class="img-fluid figure-img" style="width:40.0%" data-align="center">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-letter-e-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;49.13: The outline of a letter in a computer font is often specified by a series of knot points (red dots). The path passes smoothly through some of the knot points, but has a discontinuous derivative at others.
+Figure&nbsp;49.14: The outline of a letter in a computer font is often specified by a series of knot points (red dots). The path passes smoothly through some of the knot points, but has a discontinuous derivative at others.
 </figcaption>
 </figure>
 </div>
 <p>For both quadratic and the more commonly used cubic splines, matching the derivatives on either side of a knot is essential to constructing the function. For Bézier splines, each segment is mathematically independent from every other segment. It is up to the human designer of the curve to determine whether the curves derivative should be continuous or discontinuous at the knot point between two segments.</p>
-<p>The shape of a Bézier spline segment is established by four independent points. The first and last points determine the endpoints of the segment. Each endpoint is associated with a <strong><em>control point</em></strong> that sets the angle and “speed” with which the path leaves or enters the endpoint. You can interact with the graph in <a href="#fig-bezier-1" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-bezier-1</span></a> to develop an intuition.</p>
+<p>The shape of a Bézier spline segment is established by four independent points. The first and last points determine the endpoints of the segment. Each endpoint is associated with a <strong><em>control point</em></strong> that sets the angle and “speed” with which the path leaves or enters the endpoint. You can interact with the graph in <a href="#fig-bezier-1" class="quarto-xref">Figure&nbsp;<span>49.15</span></a> to develop an intuition.</p>
+<div id="fig-bezier-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bezier-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell" data-layout-align="center">
 <p align="center">
 <iframe width="540" height="540" src="http://www.mosaic-web.org/bezier-app.svg?a=0.3,0.2,0.5,0.5,0.8,0.4,0.9,0.7&amp;b=-100,-100,-100,-100&amp;c=-100,-100,-100,-100&amp;animate=0">
 </iframe>
 </p>
 </div>
-<div class="cell" data-layout-align="center">
-<p>Link to the Bezier app for PDF version</p>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-bezier-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-bezier-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="www/tiny-blank.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:1.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bezier-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;49.14: A single Bézier segment is defined by two endpoints and two control points. Drag the control points to see how the shape of the curve is defined by them.
+Figure&nbsp;49.15: A single Bézier segment is defined by two endpoints and two control points. Drag the control points to see how the shape of the curve is defined by them.
 </figcaption>
 </figure>
 </div>
-</div>
-</div>
-<p>The curve for a given segment is gratifyingly smooth. The real power of Bézier splines stems from how segments can be connected in various ways. <a href="#fig-bezier-2" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-bezier-2</span></a> shows two Bézier segments that have been initialized to have a smooth junction at endpoints 4 and 5. The smoothness is set by the corresponding control points (marked 3 and 6). So long as those four points (3, 4, 5, 6) are colinear and in order, the junction will be smooth. You can alter control points 2 and 7 in any way you like; the junction will remain smooth.</p>
+<p>The curve for a given segment is gratifyingly smooth. The real power of Bézier splines stems from how segments can be connected in various ways. <a href="#fig-bezier-2" class="quarto-xref">Figure&nbsp;<span>49.16</span></a> shows two Bézier segments that have been initialized to have a smooth junction at endpoints 4 and 5. The smoothness is set by the corresponding control points (marked 3 and 6). So long as those four points (3, 4, 5, 6) are colinear and in order, the junction will be smooth. You can alter control points 2 and 7 in any way you like; the junction will remain smooth.</p>
+<div id="fig-bezier-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bezier-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell" data-layout-align="center">
 <p align="center">
 <iframe width="540" height="540" src="http://www.mosaic-web.org/bezier-app.svg?a=.2,.2,.3,.3,.4,.4,.5,.5&amp;b=.5,.5,.7,.7,.8,.5,.9,.9&amp;c=-100,-100,-100,-100&amp;animate=0">
 </iframe>
 </p>
 </div>
-<div class="cell" data-layout-align="center">
-<p>WHAT TO PUT HERE FOR PDF version?</p>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-bezier-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-bezier-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="www/tiny-blank.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:1.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bezier-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;49.15: Two Bézier segments can be arranged in to create a smooth or non-smooth junction between them.
+Figure&nbsp;49.16: Two Bézier segments can be arranged in to create a smooth or non-smooth junction between them.
 </figcaption>
 </figure>
 </div>
-</div>
-</div>
-<p>Consider the path followed by a Bézier curve as it leaves one of the endpoints. <a href="#fig-bezier-2" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-bezier-2</span></a> has been initialized so that the tangent to the curve is horizontal at the right endpoint and almost vertical at the left endpoint. The further the control point is from the endpoint, the longer the Bézier curve will stay close to the tangent line. Another way to think of this is that the position of a control point has little impact on the shape of the curve near the opposite endpoint. You can observe this on the canvas by, say, moving control point 2 and observing the relatively little change near endpoint 4.</p>
-<div class="cell" data-layout-align="center">
+<p>Consider the path followed by a Bézier curve as it leaves one of the endpoints. <a href="#fig-bezier-2" class="quarto-xref">Figure&nbsp;<span>49.16</span></a> has been initialized so that the tangent to the curve is horizontal at the right endpoint and almost vertical at the left endpoint. The further the control point is from the endpoint, the longer the Bézier curve will stay close to the tangent line. Another way to think of this is that the position of a control point has little impact on the shape of the curve near the opposite endpoint. You can observe this on the canvas by, say, moving control point 2 and observing the relatively little change near endpoint 4.</p>
+<div id="fig-bezier-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bezier-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <p align="center">
 <iframe width="540" height="540" src="http://www.mosaic-web.org/bezier-app.svg?a=0.1,0.1,0.1,0.9,0.7,0.1,0.9,0.1&amp;b=-100,-100,-100,-100&amp;c=-100,-100,-100,-100&amp;animate=0">
 </iframe>
 </p>
-</div>
-<div class="cell" data-layout-align="center">
-<p>Provide link to bezier app</p>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-bezier-3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-bezier-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="www/tiny-blank.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:1.0%">
+<p>```</p>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bezier-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;49.16: A Bézier curve leaves each endpoint in a direction that is tangent to the line drawn between the endpoint and its control point.
+Figure&nbsp;49.17: A Bézier curve leaves each endpoint in a direction that is tangent to the line drawn between the endpoint and its control point.
 </figcaption>
 </figure>
 </div>
+</section>
 </div>
 </div>
 <p>Algebraically, each Bézier segement is a pair of cubic functions, <span class="math inline">\(x(t)\)</span> for the x-coordinate and <span class="math inline">\(y(t)\)</span> for the y-coordinate. The input <span class="math inline">\(t\)</span> varies between 0 and 1 for each segment. The coordinate pair <span class="math inline">\(\left({\large\strut} x(0), y(0)\right)\)</span> is one endpoint of the curve, while <span class="math inline">\(\left({\large\strut} x(1), y(1)\right)\)</span>. Each intermediate value of <span class="math inline">\(t\)</span> corresponds to a point on the interior of the curve.</p>
 <p>The <span class="math inline">\(x(t)\)</span> and <span class="math inline">\(y(t)\)</span> functions have the same form, the difference between the functions being only the values of the end values (<span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_4\)</span> for the <span class="math inline">\(x(t)\)</span> function, and similarly <span class="math inline">\(y_1\)</span> and <span class="math inline">\(y_4\)</span> for the <span class="math inline">\(y(t)\)</span> function), as well as the control-point values (<span class="math inline">\(x_2\)</span> and <span class="math inline">\(x_3\)</span> for one function, <span class="math inline">\(y_2\)</span> and <span class="math inline">\(y_3\)</span> for the other.)</p>
-<p><span class="math display">\[x(t) = (1-t)^3\, x_1 + 3(1-t)^2 t\, x_2 + 3(1-t) t^2\, x_3 + t^3\, x_4\\\text{and}\\
-y(t) = (1-t)^3\, y_1 + 3(1-t)^2 t\, y_2 + 3(1-t) t^2\, y_3 + t^3\, y_4\]</span></p>
+<p><span class="math display">\[x(t) = (1-t)^3\, x_1 + 3(1-t)^2 t\, x_2 + 3(1-t) t^2\, x_3 + t^3\, x_4\]</span> and <span class="math display">\[y(t) = (1-t)^3\, y_1 + 3(1-t)^2 t\, y_2 + 3(1-t) t^2\, y_3 + t^3\, y_4\]</span></p>
 <div class="callout callout-style-default callout-note no-icon callout-titled" data-latex="">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">

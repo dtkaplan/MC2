@@ -73,7 +73,7 @@ Showing a probability density function for the dart distance in two modes: 1) an
 ::: {#thm-jar-of-money style="display: none;"}
 :::
 ::: {.callout-note}
-## @thm-jar-of-money Winning a competition
+## @thm-jar-of-money How much money is in the jar?
 Consider a simple competition of the sort you might encounter at a fund-raising fair. There is a jar on display, filled with coins that have been donated by one of the fair's sponsors. You pay $1 (which goes to a good cause) to enter the contest. Your play is to describe how much money is in the jar, writing your description down along with your name on an entry form. At the end of the day, an official will open the jar, count the money, and announce who made the best estimate. The winner gets the money in the jar.
 
 ![](www/jar-coins.png){align="center"}
@@ -291,9 +291,13 @@ We always used parentheses to indicate that the enclosed quantity is the input t
 ## @try-gaussian-integrate Computing expected value
 
 Find the expected value of the gaussian probability density $\dnorm(x, \text{mean}=6.3, \text{sd}= 17.5)$. Using the R/mosaic `Integrate()` function, we have
+
+::: {.column-page-right}
 ```{webr-r}
 Integrate(x * dnorm(x, 6.3, 17.5) ~ x, domain(x=-Inf:Inf))
 ```
+:::
+
 The expected value of a gaussian is the same as the parameter called mean which describes the argmax of the gaussian.
 :::
 
@@ -309,9 +313,12 @@ $$\mathbb{E}\!\left[{\large\strut} (x - \mathbb{E}[x])^2\right] = \int_{-\infty}
 Compute the variance of a gaussian probability density $\dnorm(x, \text{mean}=6.3, \text{sd}= 17.5)$. 
 
 To do this, we must first know the mean, then we can carry out the integration.
+
 ```{webr-r}
-Integrate((x-6.3)^2 * dnorm(x, mean=6.3, sd=17.5) ~ x, domain(x=-Inf:Inf))
+Integrate((x-6.3)^2 * 
+  dnorm(x, mean=6.3, sd=17.5) ~ x, domain(x=-Inf:Inf))
 ```
+
 Again, you might have anticipated this result, since the variance is the square of the standard deviation (`sd`) and we were using a particular gaussian distribution with sd equaling 17.5. Of course, $17.5^2 = 306.25$.
 :::
 
@@ -319,16 +326,21 @@ Again, you might have anticipated this result, since the variance is the square 
 
 To illustrate the calculations in another setting, we will use an exponential probability function. Just as the R function `dnorm()` gives the density of the "normal"/gaussian distribution, the R function `dexp()` outputs the density of the exponential distribution. We used $k$ as the parameter in the exponential distribution. In R, the parameter is framed in terms of the `rate` at which events happen, that is, the expected number of events per unit time. For instance, the following integrals compute the mean and standard deviation of an exponential process where events happen on average twice per time unit.
 
+::: {.column-page-right}
 ```{webr-r}
 Integrate(x * dexp(x, rate=2) ~ x, domain(x=0:Inf))
 ```
-
+:::
 The result shouldn't surprise you. If events are occurring on average twice per unit time, the average time between events should be 0.5 time units.
 
 Here's the variance of the same distribution
+
+::: {.column-page-right}
 ```{webr-r}
 Integrate((x-0.5)^2 * dexp(x, rate=2) ~ x, domain(x=0:Inf))
 ```
+:::
+
 It works out that for an exponential distribution with parameter $k$, the mean is $1/k$ and the standard deviation (square root of the variance) is also $1/k$.
 
 Finally, let's look at the mean and variance of a uniform distribution with, say, $a=0$ and $b=10$. We can do this symbolically or numerically. For the mean:
@@ -343,10 +355,12 @@ For the variance,
 
 Or, numerically
 
+::: {.column-page-right}
 ```{webr-r}
 Integrate(x * dunif(x, 0, 10) ~ x, domain(x=0:Inf))
 Integrate((x-5)^2 * dunif(x, 0, 10) ~ x, domain(x=0:Inf))
 ```
+:::
 
 ::: {.callout-tip}
 ## Where to look first on an infinite domain?
@@ -410,7 +424,7 @@ First, we need to pick the relevant likelihood function. Common sense tells us t
 
 Here's the data: The officials have opened the jar and carefully counted the money. There was $32.14 in the jar. This tells us that the relevant likelihood function is ${\cal L}_{\$32.14}(\text{contestant})$.
 
-The output of ${\cal L}_{\$32.14}(\text{contestant})$ is the probability density assigned by the contestant to the observed value $32.14. You can read this from @fig-jar-functions2). For your convenience, the observation $32.14$  has been annotated with a faint brown vertical line. 
+The output of ${\cal L}_{\$32.14}(\text{contestant})$ is the probability density assigned by the contestant to the observed value 32.14. You can read this from @fig-jar-functions2. For your convenience, the observation $32.14$  has been annotated with a faint brown vertical line. 
 
 Here's a tabular version of  ${\cal L}_{\$32.14}(\text{contestant})$.
 
@@ -598,7 +612,7 @@ posterior <- function(prior, n=10, m=3) {
 ```
 
 ::: {#fig-after-1}
-```{r echo=FALSE, warning=FALSE}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
 #| layout-ncol: 3
 #| fig-subcap:
 #| - "Using prior (A)"
