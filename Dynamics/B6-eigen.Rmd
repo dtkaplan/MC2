@@ -57,14 +57,17 @@ Imagine that we choose, arbitrarily, $$\vec{u_1} = \color{magenta}{\left[\begin{
 For the example, we will calculate a trajectory starting at the initial condition $\vec{w(0)} = \left[\begin{array}{r}-1.1\\ 2.1\end{array}\right]$:
 
 ```{r results="hide", message=FALSE}
-traj <- integrateODE(dx ~ x + y, dy ~ 2*x, x=-1.1, y=2.1, domain(t=0:2))
+traj <- integrateODE(dx ~ x + y, dy ~ 2*x, # dynamics
+                     x=-1.1, y=2.1, # initial conditions
+                     domain(t=0:2))
 traj_plot(y(t) ~ x(t), traj)
 ```
 ::: {#fig-vec-example-1}
-traj_plot(y(t) ~ x(t), traj, inherit=FALSE, nt=2) %>%
-  gf_segment(0 + -3 ~ 0 + 1, color="magenta", inherit=FALSE, arrow=arrow(ends="last", type="closed", length=unit(2, "mm"))) %>%
-  gf_segment(0 + 0 ~ 0 + 1, color="blue", inherit=FALSE, arrow=arrow(ends="last",type="closed", length=unit(2, "mm"))) %>%
-  flow_field(dx ~ x + y, dy ~ 2*x, domain = bounds(x=-2:2, y=-3:2), color="gray", npts=15) %>%
+```{r echo=FALSE}
+traj_plot(y(t) ~ x(t), traj, inherit=FALSE, nt=2) |>
+  gf_segment(0 + -3 ~ 0 + 1, color="magenta", inherit=FALSE, arrow=arrow(ends="last", type="closed", length=unit(2, "mm"))) |>
+  gf_segment(0 + 0 ~ 0 + 1, color="blue", inherit=FALSE, arrow=arrow(ends="last",type="closed", length=unit(2, "mm"))) |>
+  flow_field(dx ~ x + y, dy ~ 2*x, domain = domain(x=-2:2, y=-3:2), color="gray", npts=15) |>
   gf_refine(coord_fixed())
 ```
 
@@ -74,39 +77,43 @@ The trajectory calculated starting at (-1.1, 2.1). The graph is annotated with t
 The initial condition (marked "0" in @fig-vec-example-1 is, like any other point in the state space, a linear combination of $\vec{u_1}$ and $\vec{u_2}$. We can find the scalar coefficients of the linear combination using any of the methods presented in Block 5, for instance the telescope method. 
 We will illustrate with `qr.solve()`:
 
-```{r}
+```{webr-r}
 M <- cbind(rbind(1,-3), rbind(1,0))
 w0 <- rbind(-1.1, 2.1)
 qr.solve(M, w0)
 ```
+
 So, $\vec{w(0)} = -0.7 \vec{u_1} - 0.4 \vec{u_2}$. Keep these scalar coefficients, $-0.7$ and $-0.4$ in mind for the next example.
 
 We can use `integrateODE()` to find the solution starting at any initial condition. In particular, we can find the solution $\vec{u_1}$ as the initial condition and, similarly, using $\vec{u_2}$ as the initial condition.
 
 ```{r message=FALSE}
-traj_u1 <- integrateODE(dx ~ x + y, dy ~ 2*x, x=1, y=-3, domain(t=0:2))
-traj_u2 <- integrateODE(dx ~ x + y, dy ~ 2*x, x=1, y= 0, domain(t=0:2))
+traj_u1 <- integrateODE(
+  dx ~ x + y, dy ~ 2*x, # dynamics
+  x=1, y=-3,  #initial conditions
+  domain(t = 0:2))
+traj_u2 <- integrateODE(
+  dx ~ x + y, dy ~ 2*x, #dynamics
+  x=1, y= 0,  #initial conditions
+  domain(t = 0:2))
 ```
 
 @fig-vec-example-2 shows these trajectories.
 
 ::: {#fig-vec-example-2}
 ```{r echo=FALSE}
-#| label: 
-#| fig-cap: ""
-#| 
-traj_plot(y(t) ~ x(t), traj_u1, bounds(t=0:1),  color="magenta", nt=1) %>%
-  traj_plot(y(t) ~ x(t), traj_u2, bounds(t=0:1), color="blue", nt=1) %>%
+traj_plot(y(t) ~ x(t), traj_u1, domain(t=0:1),  color="magenta", nt=1) |>
+  traj_plot(y(t) ~ x(t), traj_u2, domain(t=0:1), color="blue", nt=1) |>
   gf_segment(0 + -3 ~ 0 + 1, color="magenta", 
              inherit=FALSE, 
              arrow=arrow(ends="last", type="closed",
-                         length=unit(2, "mm"))) %>%
+                         length=unit(2, "mm"))) |>
   gf_segment(0 + 0 ~ 0 + 1, color="blue", inherit=FALSE,
              arrow=arrow(ends="last",type="closed", 
-                         length=unit(2, "mm"))) %>%
+                         length=unit(2, "mm"))) |>
   flow_field(dx ~ x + y, dy ~ 2*x, 
-             bounds(x=-3:5, y=-4:5), 
-             color="gray", npts=15) %>%
+             domain(x=-3:5, y=-4:5), 
+             color="gray", npts=15) |>
   gf_refine(coord_fixed())
 ```
 
@@ -127,9 +134,9 @@ The same will be true in general, that is, for the matrix $\left[\begin{array}{c
 
 In the previous section, we saw that the solution to any linear differential equation starting at any initial condition can be written as a linear combination $m_1 \vec{u_1(t)} + m_2 \vec{u_2(t)}$, where $\vec{u_1(t)}$ is the solution starting at an initial condition $\vec{u_1}$ and $\vec{u_2(t)}$ is the solution starting at $\vec{u_2}$. It does not matter how $\vec{u_1}$ and $\vec{u_2}$ are chosen, so long as they are not colinear, that is, so long as they span the state space.
 
-In this section, we will demonstrate that there is a particular way of selecting $\vec{u_1}$ and $\vec{u_2}$ that makes the solutions $\vec{u_1(t)}$ and $\vec{u_2(t)}$ have a very simple, purely exponential format. The vectors to be chosen are the ***eigenvectors*** of the matrix $\left[\begin{array}{cc}a&b\\c&d\end{array}\right]$. We will call these eigenvectors $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$. (This use of the Greek letter $\Lambda$ (capital "lambda") and it is lower-case version $\lambda$, is conventional in mathematics, physics, and engineering. So it is worth learning to identify the letters.) 
+In this section, we demonstrate that there is a particular way of selecting $\vec{u_1}$ and $\vec{u_2}$ that makes the solutions $\vec{u_1(t)}$ and $\vec{u_2(t)}$ have a very simple, purely exponential format. The vectors to be chosen are the ***eigenvectors*** of the matrix $\left[\begin{array}{cc}a&b\\c&d\end{array}\right]$. We will call these eigenvectors $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$. (This use of the Greek letter $\Lambda$ (capital "lambda") and it is lower-case version $\lambda$, is conventional in mathematics, physics, and engineering. So it is worth learning to identify the letters.) 
 
-Our task in this section is to show how to compute the eigenvectors $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$ and that the solutions $\vec{\Lambda_1(t)}$ and $\vec{\Lambda_2(t)}$ are in fact simple exponentials. @sec-second-order-de derives the formula for the eigenvectors. Here, we will use the R function `eigen()` to do the calculations for us.
+Our task in this section is to show how to compute the eigenvectors $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$ and that the solutions $\vec{\Lambda_1(t)}$ and $\vec{\Lambda_2(t)}$ are in fact simple exponentials. @sec-second-order-de derives the formula for the eigenvectors. Here, we use the R function `eigen()` to do the calculations for us.
 
 ::: {#try-eigenvectors style="display: none;"}
 :::
@@ -158,12 +165,9 @@ We can see what's special about $\vec{\Lambda_1}$ and $\vec{\Lambda_2}$ by plott
 
 ::: {#fig-eigen-flow}
 ```{r echo=FALSE}
-#| label: fig-eigen-flow
-#| fig-cap: ""
-#| 
-  gf_segment(0 + 0.7072 ~ 0 + 0.7071, color="magenta", inherit=FALSE, arrow=arrow(ends="last", type="closed", length=unit(2, "mm"))) %>%
-  gf_segment(0 + 0.8944 ~ 0 + -0.4472, color="blue", inherit=FALSE, arrow=arrow(ends="last",type="closed", length=unit(2, "mm"))) %>%
-  flow_field(dx ~ x + y, dy ~ 2*x, domain = bounds(x=-1:1, y=-1:1), color="black", npts=15) %>%
+  gf_segment(0 + 0.7072 ~ 0 + 0.7071, color="magenta", inherit=FALSE, arrow=arrow(ends="last", type="closed", length=unit(2, "mm"))) |>
+  gf_segment(0 + 0.8944 ~ 0 + -0.4472, color="blue", inherit=FALSE, arrow=arrow(ends="last",type="closed", length=unit(2, "mm"))) |>
+  flow_field(dx ~ x + y, dy ~ 2*x, domain = domain(x=-1:1, y=-1:1), color="black", npts=15) |>
   gf_refine(coord_fixed())
 ```
 
@@ -175,20 +179,32 @@ The eigenvectors mark the directions where the flow is either directly toward th
 The consequence of this alignment of the flow with the eigenvectors is that the trajectory from any initial condition $m_1 \vec{\Lambda_1}$ will have the form $m_1(t) \vec{\Lambda_1}$ and similarly for an initial condition $m_2(t) \vec{\Lambda_2}$. 
 
 
-As we did in the previous section, let's calculate the trajectories $\color{magenta}{\vec{\Lambda_1(t)}}$ and $\color{blue}{\vec{\Lambda_2(t)}}$ starting at the two eigenvectors and plot out the $y(t)$ component of the solution. Since we are anticipating an exponential form for the function, we will use semi-log axes, where an exponential will look like a straight line.
+As we did in the previous section, let's calculate the trajectories $\color{magenta}{\vec{\Lambda_1(t)}}$ and $\color{blue}{\vec{\Lambda_2(t)}}$ starting at the two eigenvectors and plot out the $y(t)$ component of the solution. Since we are anticipating an exponential form for the function, we use semi-log axes, where an exponential looks like a straight line.
 
-```{r eigen-time-series}
-traj_eigen1 <- integrateODE(dx ~ x + y, dy ~ 2*x, 
-                            bounds(t=0:1), 
-                            x=0.7071, y=0.7071)
-traj_eigen2 <- integrateODE(dx ~ x + y, dy ~ 2*x, 
-                            bounds(t=0:1),
-                            x=-0.4472, y=0.8944)
-traj_plot(y(t) ~ t, traj_eigen1, color="magenta") %>%
+
+```{r}
+traj_eigen1 <- integrateODE(
+  dx ~ x + y, dy ~ 2*x,  # dynamics
+  x = 0.7071, y = 0.7071, # initial conditions
+  domain(t = 0:1) 
+  )
+traj_eigen2 <- integrateODE(
+  dx ~ x + y, dy ~ 2*x,  # dynamics
+  x=-0.4472, y=0.8944,   # initial conditions
+  domain(t = 0:1))
+```
+
+::: {#fig-eigen-time-series}
+```{r}
+traj_plot(y(t) ~ t, traj_eigen1, color="magenta") |>
  traj_plot(y(t) ~ t, traj_eigen2, color="blue") |> 
   gf_refine(scale_y_log10(
     breaks=c(0.3290, 0.7071, 0.8944, 5.2248)))
 ```
+
+Two time series, one showing stability, the other instability.
+:::
+
 We have marked the $y$ axis with the starting and ending values of each function, so that you can find the exponential parameter $k$ for each function.
 
 $\color{magenta}{y_1(t) = 0.7071 e^{k_1 t}}$

@@ -27,7 +27,7 @@ Better than a picture of a summer melon, pick up a hardcover book and place it o
 If melons and basketballs are not your style, you can play the same game on an interactive graph of a function with two inputs. The snapshot below is a link to an applet that shows the graph of a function as a **blue** surface. You can specify a point on the surface by setting the value of the (x, y) input using the sliders. Display the tangent plane (which will be **green**) at that point by check-marking the "Tangent plane" input. (Acknowledgments to Alfredo Sánchez Alberca who wrote the applet using the GeoGebra math visualization system.) 
 
 ::: {#fig-tangent-app}
-[![](www/geogebra-tangent-app2.png){width="70%"}](https://www.geogebra.org/m/wTh7KKd3)
+[![](www/geogebra-tangent-app.png){width="70%"}](https://www.geogebra.org/m/wTh7KKd3)
 
 
 An interactive app for visualizing tangent planes. To open, go to <https://www.geogebra.org/m/wTh7KKd3>.or simply click on the image. You will want to mark the tangent-plane checkbox in the app to show the green tangent plane. 
@@ -45,7 +45,7 @@ Pts <- tibble::tribble(
   1.5, 1.2, "B",
   -1.7, -1.7, "C"
 )
-P <- contour_plot(g(x, y) ~ x + y, bounds(x=c(-3,3), y=c(-3,3))) %>%
+P <- contour_plot(g(x, y) ~ x + y, domain(x=c(-3,3), y=c(-3,3))) %>%
   gf_text(y ~ x, data = Pts, color="magenta", label=~label) %>%
   gf_refine(coord_fixed())
 dx <- D(g(x, y) ~ x)
@@ -53,11 +53,11 @@ dy <- D(g(x, y) ~ y)
 xA <- -1
 yA <- 1
 gA <- function(x, y) {g(xA, yA) + dx(xA, yA)*(x-xA) + dy(xA,yA)*(y-yA)}
-PA <- contour_plot(gA(x, y) ~ x + y, bounds(x=xA + 3*c(-.1, .1), y=yA +3*c(-.1, .1))) |>
+PA <- contour_plot(gA(x, y) ~ x + y, domain(x=xA + 3*c(-.1, .1), y=yA +3*c(-.1, .1))) |>
   gradient_plot(gA(x, y) ~ x + y, domain(x=xA + 3*c(-.15, .15)/2, y=yA + 3*c(-.15, .15)/2), 
                 bounds, npts=3, color="orange3", alpha=1) |>
   gf_refine(coord_fixed())
-PzA <- contour_plot(g(x, y) ~ x + y, bounds(x=xA + 3*c(-.1, .1), y=yA +3*c(-.1, .1))) |>
+PzA <- contour_plot(g(x, y) ~ x + y, domain(x=xA + 3*c(-.1, .1), y=yA +3*c(-.1, .1))) |>
   gradient_plot(g(x, y) ~ x + y, domain(x=xA + 3*c(-.15, .15)/2, y=yA +3*c(-.15, .15)/2), 
                 bounds, npts=3, color="orange3", alpha=1) |>
   gf_refine(coord_fixed())
@@ -65,11 +65,11 @@ PzA <- contour_plot(g(x, y) ~ x + y, bounds(x=xA + 3*c(-.1, .1), y=yA +3*c(-.1, 
 xB <- 1.5
 yB <- 1.2
 gB <- function(x, y) {g(xB, yB) + dx(xB, yB)*(x-xB) + dy(xB,yB)*(y-yB)}
-PB<-   contour_plot(gB(x, y) ~ x + y, bounds(x=c(xB-.25, xB+.25), y=c(yB-.25, yB+.25))) |>
+PB<-   contour_plot(gB(x, y) ~ x + y, domain(x=c(xB-.25, xB+.25), y=c(yB-.25, yB+.25))) |>
     gradient_plot(gB(x, y) ~ x + y, domain(x=xB + 1*c(-.25,.25)/2, y=yB +1*c(-.25,.25)/2), 
                 bounds, npts=3, color="orange3", alpha=1) |>
     gf_refine(coord_fixed())
-PzB <- contour_plot(g(x, y) ~ x + y, bounds(x=xB + 1*c(-.25,.25), y=yB +1*c(-.25,.25))) |>
+PzB <- contour_plot(g(x, y) ~ x + y, domain(x=xB + 1*c(-.25,.25), y=yB +1*c(-.25,.25))) |>
   gradient_plot(g(x, y) ~ x + y, domain(x=xB + 1*c(-.25,.25)/2, y=yB +1*c(-.25,.25)/2), 
                 bounds, npts=3, color="orange3", alpha=1) |>
   gf_refine(coord_fixed())
@@ -77,7 +77,7 @@ PzB <- contour_plot(g(x, y) ~ x + y, bounds(x=xB + 1*c(-.25,.25), y=yB +1*c(-.25
 xC <- -1.7
 yC <- -1.7
 gC<- function(x, y) {g(xC, yC) + dx(xC, yC)*(x-xC) + dy(xC,yC)*(y-yC)}
-bounds = bounds(x=c(xC-.1, xC+.1), y=c(yC-.1, yC+.1))
+bounds = domain(x=c(xC-.1, xC+.1), y=c(yC-.1, yC+.1))
 PC <- contour_plot(gC(x, y) ~ x + y, domain=bounds) |>
   gradient_plot(gC(x, y) ~ x + y, domain(x=xC + 1*c(-.1, .1)/2, y=yC +1*c(-.1, .1)/2), 
                 bounds, npts=3, color="orange3", alpha=1) |>
@@ -155,17 +155,17 @@ $$\text{plane}(x,y) \equiv a + b x + cy$$
 :::
 ::: {.callout-important icon=false}
 ## @try-plane-orientation R/mosaic: Orientation of a plane
-To explore the roles of the parameters $b$ and $c$ in setting the orientation of the plane, use @thm-plane-orientation.  The R/mosaic code defines `plane()`, a function of two inputs whose surface graph is a planar facet. Then this facet is graphed as a contour plot. Change the numerical values of $b$ and $c$ and observe how the orientation of the planar surface changes in the graphs. 
+To explore the roles of the parameters $b$ and $c$ in setting the orientation of the plane, use @lst-plane-orientation.  The R/mosaic code defines `plane()`, a function of two inputs whose surface graph is a planar facet. Then this facet is graphed as a contour plot. Change the numerical values of $b$ and $c$ and observe how the orientation of the planar surface changes in the graphs. 
 
 ::: {#lst-plane-orientation .column-page-right}
-```{r}
+```{webr-r}
 plane <- makeFun(a + b*x + c*y ~ x + y, 
                  a = 1, b = -2.5, c = 1.6)
 
 contour_plot(plane(x, y) ~ x + y, 
              domain(x=-2:2, y=-2:2)) |>
   gradient_plot(plane(x, y) ~ x + y, domain(x=-1:1, y=-1:1), 
-                bounds, npts=3, color="orange3", alpha=1) |>
+                npts=3, color="orange3", alpha=1) |>
   gf_refine(coord_fixed()) # make it look square
 ```
 :::
@@ -254,26 +254,29 @@ Note that $\nabla g(x,y)$ is a function of both $x$ and $y$, so in general the g
 
 The graphics convention for drawing a gradient vector for a particular input, that is, $\nabla g(x_0, y_0)$, puts an arrow with its root at $(x_0, y_0)$, pointing in direction $\nabla g(x_0, y_0)$, as in @fig-one-grad-arrow. 
 
+::: {#fig-one-grad-arrow}
 ```{r echo=FALSE, cache=FALSE,warning=FALSE}
-#| label: fig-one-grad-arrow 
-#| fig-cap: "The gradient vector $\\nabla g(x=1,y=2)$. The vector points in the steepest uphill direction. Consequently, it is perpendicular to the contour passing through its root."
 graw <- doodle_fun( ~ x + y, seed=562)
 g <- makeFun(graw(x, y)  ~ x & y)
-contour_plot(g(x, y+.2) ~ x + y, bounds(x=c(-2,2), y=c(0, 4))) %>%
+contour_plot(g(x, y+.2) ~ x + y, domain(x=c(-2,2), y=c(0, 4))) %>%
   gf_text(2 ~ 1, label= ~"(x=1,y=2)", color="orange3", hjust=0, vjust=-0.50) %>%
-  gradient_plot(g(x, y) ~ x + y, bounds(x=c(1,2), y=c(2, 3)), npts=1, color="orange3", alpha=1) %>%
+  gradient_plot(g(x, y) ~ x + y, domain(x=c(1,2), y=c(2, 3)), npts=1, color="orange3", alpha=1) %>%
   gf_refine(coord_fixed())
 ```
 
+The gradient vector $\nabla g(x=1,y=2)$. The vector points in the steepest uphill direction. Consequently, it is perpendicular to the contour passing through its root.
+:::
+
 A ***gradient field*** (see @fig-gradient-field-A) is the value of the gradient vector at each point in the function's domain. Graphically, to prevent over-crowding, the vectors are drawn at discrete points. The lengths of the drawn vectors are set proportional to the numerical length of $\nabla g(x, y)$, so a short vector means the surface is relatively level, a long vector means the surface is relatively steep.  
 
+::: {#fig-gradient-field-A}
 ```{r echo=FALSE, cache=FALSE, warning=FALSE}
-#| label: fig-gradient-field-A
-#| fig-cap: "A plot of the gradient field $\\nabla g(x,y)$." 
-contour_plot(g(x, y+.2) ~ x + y, bounds(x=-2:2, y=0:4)) %>%
-  gradient_plot(g(x, y) ~ x + y, bounds(x=-2:2, y=0:4),
+contour_plot(g(x, y+.2) ~ x + y, domain(x=-2:2, y=0:4)) %>%
+  gradient_plot(g(x, y) ~ x + y, domain(x=-2:2, y=0:4),
               color="orange3", alpha=1) %>%
   gf_refine(coord_fixed())
 ```
 
+A plot of the gradient field $\nabla g(x,y)$.
+:::
 

@@ -19,7 +19,12 @@ This chapter introduces yet another important method for constructing functions 
 
 As a motivating example, consider the programming of robotic arms as in the video:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/0L7Xk5_s3QQ?start=81" title="Robotic arms" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+::: {#fig-robot-movement-factory}
+
+{{< video https://www.youtube.com/embed/0L7Xk5_s3QQ start=81 >}}
+
+Robotic arms on the factory floor.
+:::
 
 Since this isn't a robots course, we will simplify. The arm has a resting position. When a car frame comes into place, the arm moves so that its welding electrodes are at a specific, known place in space near the car body. Then it moves in sequence to other places where a weld is required, perhaps passing through waypoints to avoid obstacles.
 
@@ -35,7 +40,7 @@ A CNC (Computer Numerical Control) carving machine. The cutting head (which play
 The task for our example robot will be to visit the points shown in @fig-robot-points in order, taking 15 seconds to traverse the whole path.
 
 ::: {#fig-robot-points}
-```{r echo=FALSE}
+```{r echo=FALSE, warning=FALSE}
 nudges <- rep(40, 16)
 nudges[c(3,12)] <- -40
 gf_path(y ~ x, data = Robot_stations, size = 2) %>%
@@ -50,7 +55,7 @@ The waypoints on a path the robot hand is supposed to follow. All the action is 
 
 @fig-robot-points shows a continuous path in $(x,y)$ coordinates together with discrete labels indicating *when* each waypoint is to be reached. Note that the path is not a function $y(x)$. Mathematical functions are required to be ***single valued***, meaning that for each value of the input (in the function domain) there can be only one, unique output value. The path in @fig-robot-points often involves two or more different $y$ values for a single $x$ value. There is even a small domain of $x$ near $x=900$ where the path at any given $x$ crosses *six* different $y$-values.
 
-Even so, functions can be a useful way of describing the $(x,y)$ path. The key is the plural: function**s**. For the path in @fig-robot-points  we need *two* quantities varying with time in a coordinated way. One approach, familiar to navigators, is to specify direction of movement and velocity at each instant of time. Perhaps not as familiar, but more fundamental mathematically, is to specify $x$ as a function of time and, separately, $y$ as a function of time. Using this formalism, the trajectory of the robot arm will consist of two functions, $x(t)$ and $y(t)$. To build those functions, well start with the waypoints stored in the data frame `Robot_stations`.
+Even so, functions can be a useful way of describing the $(x,y)$ path. The key is the plural: function**s**. For the path in @fig-robot-points  we need *two* quantities varying with time in a coordinated way. One approach, familiar to navigators, is to specify direction of movement and velocity at each instant of time. Perhaps not as familiar, but more fundamental mathematically, is to specify $x$ as a function of time and, separately, $y$ as a function of time. Using this formalism, the trajectory of the robot arm will consist of two functions, $x(t)$ and $y(t)$. To build those functions, we start with the waypoints stored in the data frame `Robot_stations`.
 
 ```{r echo=FALSE}
 TAB <- Znotes::and_so_on(Robot_stations)
@@ -168,9 +173,9 @@ Two interpolating functions of the four discrete points (orange). One is piecewi
 
 The framework we will adopt for the smooth interpolating function is piecewise quadratic segments between adjacent knots. There are four knots, requiring three segments. We will call the segment $p_1(y)$ connecting the first knot to the second, with $p_2(y)$ connecting the second to the third knot and $p_3(y)$ connecting the third to the fourth knot. Each of those segments will be a second-order polynomial. To keep things organized, we will use coefficient names systematically:
 
-$$p_1(t) \equiv a_1 + b_1 \left[t - t_1\right] + c_1 \left[t - t_1\right]^2\\
-p_2(t) \equiv a_2 + b_2 \left[t - t_2\right] + c_2 \left[t - t_2\right]^2\\
-p_3(t) \equiv a_3 + b_3 \left[t - t_3\right] + c_3 \left[t - t_3\right]^2\\$$
+$$p_1(t) \equiv a_1 + b_1 \left[t - t_1\right] + c_1 \left[t - t_1\right]^2$$
+$$p_2(t) \equiv a_2 + b_2 \left[t - t_2\right] + c_2 \left[t - t_2\right]^2$$
+$$p_3(t) \equiv a_3 + b_3 \left[t - t_3\right] + c_3 \left[t - t_3\right]^2$$
 The four knots are
 $$\left[\begin{array}{c}\left(t_1, x_1\right)\\
 \left(t_2, y_2\right)\\
@@ -245,7 +250,10 @@ for (k in 1:4) {
     gf_text(4 ~ 4, label=id) %>%
     gf_labs(y="y(t)")
 }
-gridExtra::grid.arrange(P[[1]], P[[2]], P[[3]], P[[4]], nrow=2)
+P[[1]]
+P[[2]]
+P[[3]]
+P[[4]]
 ```
 
 Four different $C^1$ piecewise quadratic functions that interpolate the knot points. The functions have different values of the derivative at the right end of the domain.
@@ -264,34 +272,32 @@ xfun <- qspliner(x ~ t, data = Robot_stations)
 yfun <- qspliner(y ~ t, data = Robot_stations)
 ```
 
+::: {#lst-find-the-path}
 ```{webr-r}
 # evaluate the functions for 1 < t < 16
 Path <- tibble(
-  t = seq(1,16,length=1000),
+  t = seq(1, 16, length = 1000),
   x = xfun(t),
   y = yfun(t)
 )
-```
-
-::: {#fig-qspline-x}
-```{r echo=FALSE}
-xfun <- qspliner(x ~ t, data = Robot_stations)
-yfun <- qspliner(y ~ t, data = Robot_stations)
-slice_plot(xfun(t) ~ t, bounds(t=1:16), npts=500) |>
+## Plot the x time series and the knots
+slice_plot(xfun(t) ~ t, domain(t = 1:16), npts=500) |>
   gf_point(x ~ t, data = Robot_stations, 
            color="orange", alpha=0.5, size=4) |>
   gf_labs(y="x(t)")
 ```
-
-A quadratic spline interpolation of the $x$-coordinates of the robot-path knots. The data hardly speak for themselves, since the interpolationg function tends to alternate between concave up and concave down in adjacent segments between the knots.
 :::
 
+
+The graph produced by @lst-find-the-path  quadratic spline interpolation of the $x$-coordinates of the robot-path knots. The data hardly speak for themselves, since the interpolationg function tends to alternate between concave up and concave down in adjacent segments between the knots.
+
+
 :::
 
-Putting together the $x(t)$ and $y(t)$ interpolating functions, each of which has that extremum between knot points, leads to an absurdly complicated path, as seen in @fig-quad-robot-points-quad.
+Putting together the $x(t)$ and $y(t)$ interpolating functions, each of which has that extremum between knot points, leads to an absurdly complicated path, as seen in @fig-quan-robot-points-quad.
 
 ::: {#fig-quan-robot-points-quad}
-```{r echo=FALSE}
+```{r echo=FALSE, warning=FALSE}
 xfun <- qspliner(x ~ t, data = Robot_stations)
 yfun <- qspliner(y ~ t, data = Robot_stations)
 Path <- tibble(
@@ -327,7 +333,7 @@ With the ability to match piecewise cubic polynomials to a set of knots, we can 
 ## Cubic splines have smoother joints
 Cubic spline functions can be created with the R/mosaic `spliner()` function. The second argument is a data frame giving the knot locations. The first argument is a tilde expression specifying the variables to use from the data frame.
 
-```{r results="hide"}
+```{r results="hide", warning=FALSE}
 xfun <- spliner(x ~ t, data = Robot_stations)
 yfun <- spliner(y ~ t, data = Robot_stations)
 ```
@@ -375,17 +381,13 @@ A cubic spline interpolation of the $x$-coordinates of the robot-path knots. The
 
 We saw that using a line-segment interpolation produces discontinuity in the derivative of the function. Mathematically, discontinuity in the velocity can be thought of as an infinite acceleration, requiring an infinite force. In the physical world, accelerations must be finite. Even if a force is large, there is often slack in connections between components and the components are not perfectly rigid.
 
-The video shows motion of a robotic dog. At the start, the motors in the robot are being asked to make a straight-line transition between waypoints. The result is vibration and a tremor-like movement. 
+@fig-dog-robot-video shows motion of a robotic dog. At the start, the motors in the robot are being asked to make a straight-line transition between waypoints. The result is vibration and a tremor-like movement. 
 
-Then the motors are given a smoothly interpolated signal. (Much of the video hows the programming involved. You can skip directly to time 13:02 to see the motion with smoothly interpolated waypoints.) The smooth interpolation produces a gentle and vibration-free movement.
+Then the motors are given a smoothly interpolated signal. (Much of the video shows the programming involved. You can skip directly to time 13:02 to see the motion with smoothly interpolated waypoints.) The smooth interpolation produces a gentle and vibration-free movement.
 
-<iframe width="600" height="337" src="https://www.youtubetrimmer.com/view/?v=SgJcj2Gd0Rc&start=695&end=800&loop=0" title="Motion without interpolation" frameborder="0" allow="accelerometer;  clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+::: {#fig-dog-robot-video}
+{{< video https://www.youtube.com/watch?v=SgJcj2Gd0Rc start=695 >}}
 
-
-
-```{asis eval=knitr::is_latex_output()}
-WHAT SHOULD GO HERE IN PDF?
-```
 
 [Link to entire video](https://www.youtube.com/watch?v=SgJcj2Gd0Rc) by James Bruton.
 :::
@@ -440,8 +442,8 @@ Algebraically, each Bézier segement is a pair of cubic functions, $x(t)$ for th
 
 The $x(t)$ and $y(t)$ functions have the same form, the difference between the functions being only the values of the end values ($x_1$ and $x_4$ for the $x(t)$ function, and similarly $y_1$ and $y_4$ for the $y(t)$ function), as well as the control-point values ($x_2$ and $x_3$ for one function, $y_2$ and $y_3$ for the other.) 
 
-$$x(t) = (1-t)^3\, x_1 + 3(1-t)^2 t\, x_2 + 3(1-t) t^2\, x_3 + t^3\, x_4\\\text{and}\\
-y(t) = (1-t)^3\, y_1 + 3(1-t)^2 t\, y_2 + 3(1-t) t^2\, y_3 + t^3\, y_4$$
+$$x(t) = (1-t)^3\, x_1 + 3(1-t)^2 t\, x_2 + 3(1-t) t^2\, x_3 + t^3\, x_4$$ $$ and
+$$y(t) = (1-t)^3\, y_1 + 3(1-t)^2 t\, y_2 + 3(1-t) t^2\, y_3 + t^3\, y_4$$
 
 
 

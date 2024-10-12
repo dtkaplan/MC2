@@ -69,12 +69,12 @@ $$\text{solve-step}(z) \equiv z + \frac{v-f(z)}{\partial_x f(z)}\ .$$
 
 This particular form of solve_step() is called a ***Newton step***. The idea is to take successive steps, each refining the previous approximation, to get closer and closer (hopefully!) to the actual answer $x^\star$:
 
-$$x_1 = \text{solve-step}(x_0)\\
-x_2 = \text{solve-step}(x_1)\\
-x_3 = \text{solve-step}(x_2)\\
-\vdots\\
-x_{i+1} = \text{solve-step}(x_{i})\\\ \\
-\text{until eventually}\ \|f(x_{i+1}) - v\|\ \text{is practically zero.}$$
+$$x_1 = \text{solve-step}(x_0)$$
+$$x_2 = \text{solve-step}(x_1)$$
+$$x_3 = \text{solve-step}(x_2)$$
+$$\vdots$$
+$$x_{i+1} = \text{solve-step}(x_{i})$$
+$$\text{until eventually}\ \|f(x_{i+1}) - v\|\ \text{is practically zero.}$$
 
 
 ::: {#fig-newton-step}
@@ -100,7 +100,7 @@ slice_plot(fun(x) ~ x, bounds(x=-2:5), color="brown", label_text="f(x)", label_v
   theme(axis.text.x = element_text(size = 15))
 ```
 
-A Newton-step calculation seen graphically. The brown function is approximated as a straight-line function at the initial point $x_0$. The resulting $x_1$ is where that straight line crosses the value $v$ on the output scale. Here, $x_1$ is a little to the left of the actual place where $f()$ crosses $v$. The Newton step produced an improved guess, since $\|x_1 - x^\\star\|$ is smaller than $\| x_0 - x^\star\|$.
+A Newton-step calculation seen graphically. The brown function is approximated as a straight-line function at the initial point $x_0$. The resulting $x_1$ is where that straight line crosses the value $v$ on the output scale. Here, $x_1$ is a little to the left of the actual place where $f()$ crosses $v$. The Newton step produced an improved guess, since $\|x_1 - x^\star\|$ is smaller than $\| x_0 - x^\star\|$.
 :::
 
 ::: {#try-newton-step style="display: none;"}
@@ -139,7 +139,7 @@ After the first Newton step, producing $x_1 = 2.666666$, the function output and
 
 Newton's method involves creating a custom `solve_step()` function for each new problem. The process is simple enough that we can create such functions automatically:
 
-```{r}
+```{webr-r}
 make_solve_step_fun <- function(tilde, v) {
   f <- makeFun(tilde)
   df <- D(tilde)
@@ -150,19 +150,19 @@ make_solve_step_fun <- function(tilde, v) {
 ```
 Let's test it out with this function:
 
-```{r}
+```{webr-r}
 f <- makeFun(x^2 - x ~ x)
 ```
 
 Construct the take-a-step function:
 
-```{r} 
+```{webr-r} 
 take_step <- make_solve_step_fun(f(x) ~ x, v=4)
 ```
 
 Take three steps starting at $x_0 = 3$:
 
-```{r} 
+```{webr-r} 
 x0 <- 3
 x1 <- take_step(x0)
 x2 <- take_step(x1)
@@ -172,12 +172,13 @@ f(x3)
 
 The Newton-step process is not guaranteed to work. By exploring cases where it fails, ***computational mathematicians***^[A traditional name for such a person is "numerical analyst."] have developed strategies for increasing the range of situations for which it works. Some of these strategies are incorporated in the R/mosaic function `Zeros()`.
 
-::: {.rmosaic data-latex=""}
-
+::: {.callout-tip}
+## `Zeros()`
 `Zeros()` takes two arguments: a function and a domain. The function is specified, as with other R/mosaic operators such as `D()`, `slice_plot()`, etc., as a tilde expression. `Zeros()` searches the domain for an input which makes the value of the function zero. If, instead, you want to find an input that makes the function value some other value, say $f(x^\star) = v$, you construct an intermediate expression `f(x) - v ~ x`. Finding the zero of the intermediate function corresponds to finding $f(x^star) = v$. 
 
 Sometimes there will be multiple zeros on the specified domain. To handle such situations, `Zeros()` returns a data frame with two columns. The first gives input values that correspond to an output near zero. The second column, named `.output.` calculates the output (and will be near zero). 
 We will illustrate by solving $x^3 = 6$ for $x$.
+:::
 
 ::: {#try-zero-finding style="display: none;"}
 :::
@@ -264,21 +265,30 @@ The R/mosaic function `Iterate()` provides a very simple way to see the results 
 
 `Iterate()` takes arguments specifying the function to be iterated (as a tilde expression), the starting $x_0$, and the number $n$ of steps to take. To illustrate, we will iterate a famous function called the ***logistic map***: $f(x) \equiv \mu x (1-x)$. Depending on the value of the parameter $\mu$, the iterates can show different patterns.
 
-Eventually reaching a ***fixed point***:
-```{r}
+Eventually reaching a ***fixed point***, as in @lst-fixed-point-iterate
+
+::: {#lst-fixed-point-iterate}
+```{webr-r}
 Iterate(2*x*(1-x) ~ x, x0=0.3, n=10)
 ```
+:::
 
-Eventually reaching a periodic oscillation:
-```{r}
+Eventually reaching a periodic oscillation, as in @lst-periodic-iterate:
+
+::: {#lst-periodic-iterate}
+```{webr-r}
 Iterate(3.2*x*(1-x) ~ x, x0=0.3, n=50) |> tail()
 ```
+:::
 
-A never-ending, random-seeming fluctuation, called mathematical ***chaos***:
+Or even a never-ending, random-seeming fluctuation, called mathematical ***chaos***, as in @lst-iterate-chaos
 
-```{r}
+::: {#lst-iterate-chaos}
+```{webr-r}
 Iterate(4.0*x*(1-x) ~ x, x0=0.3, n=5000) |> tail()
 ```
+:::
+
 :::
 
 
