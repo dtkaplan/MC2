@@ -4,7 +4,7 @@
 source("../starter.R")
 ```
 
-Note: *This chapter revisits ideas of linear combinations and orthogonality in the context of *functions* rather than numerical vectors.*
+Note: *This chapter revisits ideas of linear combinations and orthogonality in the context of* functions* *rather than* numerical vectors.
 
 Starting with @sec-vectors, we have been working with the ***dot product***, an operation that combines two vectors to produce a scalar. $$\vec{b}\bullet\vec{a} \equiv 
 \left[\begin{array}{c}b_1\\b_2\\\vdots\\b_n\end{array}\right] \bullet
@@ -26,6 +26,7 @@ We will revisit the idea of linear combinations of functions using our new tools
 
 Given two functions, $f(t)$ and $g(t)$ defined over some domain $D$, we will compute the dot product of the functions as a sum of the product of the two functions, that is:
 $$f(t) \bullet g(t) \equiv \int_{D} f(t)\,g(t)\,dt\ .$$
+
 ::: {#try-function-length style="display: none;"}
 <!-- don't show -->
 :::
@@ -440,10 +441,10 @@ $$f(x) \approx f(x_0) + \frac{f'(x_0)}{1} \left[x-x_0\right] + \frac{f''(x_0)}{2
 Using polynomials as approximating functions has been an important theme in mathematics history. Brook Taylor was neither the first nor the last to take on the problem.
 
 In 1795, [Joseph-Louis Lagrange](https://en.wikipedia.org/wiki/Joseph-Louis_Lagrange)
-(1736 – 1813) published another method for constructing an approximating polynomial of order $n$. Whereas the Taylor polynomial builds the polynomial that exactly matches the first $n$ derivatives at the center point $x_0$, the Lagrange polynomial has a different objective: to match exactly the values of the target function $f(x)$ at a set of ***knots*** (input values) $x_0$, $x_1$, $x_2$, $\ldots, x_n$. @fig-lagrange-sine shows the situation with the knots shown as orange dots.
+(1736 – 1813) published another method for constructing an approximating polynomial of order $n$. Whereas the Taylor polynomial builds the polynomial that exactly matches the first $n$ derivatives at the center point $x_0$, the Lagrange polynomial has a different objective: to match exactly the values of the target function $f(x)$ at a set of ***knots*** (input values) $x_0$, $x_1$, $x_2$, $\ldots, x_n$. @fig-lagrange-sin shows the situation with the knots shown as orange dots.
 
 ::: {#fig-lagrange-sin}
-```{r echo=FALSE}
+```{r echo=FALSE, warning=FALSE}
 f <- sin
 make_lagrange_unit <- function(x, x0) {
   bottom <- paste("(",
@@ -500,11 +501,26 @@ Can you see why?
 :::
 
 
-## Time and tide
+## Time and tide {#sec-time-and-tide}
 
-Periodicities from <https://tidesandcurrents.noaa.gov/harcon.html?id=8451552&type=>
+@fig-ri-tide-periods shows the tides rising and falling over four days. Isaac Newton (1643-1727) was the first to propose that the Moon, orbiting around the Earth, causes the tides. (After all, Newton was the first to realize that the Moon pulls gravitationally on the Earth.) 
 
-```{r}
+Predicting tides is important to mariners, so considerable effort has been put into building models. In @fig-ri-tide-periods, we have modelled the signal as a linear combination of four sinusoids, although only two of these account for most of the model. The periods and amplitudes of the sinusoids are given in @tbl-tide-constituents. 
+
+::: {#tbl-tide-constituents}
+Period (hrs) | Amplitude (feet) | Name
+------|------|----------------------------
+- 12.41 & 0.44 & principal lunar semi-diurnal constituent
+- 12.66 & 0.23 & larger lunar elliptic semi-diurnal constituent
+- 12.00 & 0.14 & principal solar semi-diurnal constituent
+- 23.94 & 0.05 & lunar diurnal constituent
+
+Sinusoidal components of the tide model shown in [magenta]{style="color: magenta;"}. The names are those used in tide research ([source](https://tidesandcurrents.noaa.gov/harcon.html?id=8451552&type=)).
+:::
+
+Lunar and solar in @tbl-tide-constituents refer, of course, to the moon and sun. "Diurnal" means "approximately one day long," and "semi-diurnal" means approximately half-a-day long. Notice that the periods for the semi-diurnal and diurnal lunar constituents are about half a day and a full day, respectively. (The position of the Moon to a viewer at a fixed place on Earth has a period slightly longer than a 24-hour day.) The solar constituent, however, is exactly 12 hours, because the day-length is defined by the position of the sun.
+
+```{r echo=FALSE}
 hour <- with(RI_tide, hour)
 b    <- with(RI_tide, level)
 sin1 <- sin(2*pi*hour/12.41)
@@ -520,46 +536,32 @@ mod1 <- b %onto% cbind(1, sin1, cos1)
 mod2 <- b %onto% cbind(1, sin1, cos1, sin2, cos2)
 x <- qr.solve(A, b)
 mod3 <- A %*% x
-gf_point(level ~ hour, data = RI_tide)  %>%
-  gf_line(mod3 ~ hour, color="magenta")
-
 ```
 
-Anchorage, AK
-
-Components:
-- M2 12.42 hours
-- S2 12 hours
-- N2 12.658 hours
-- K1 23.935 hours
-
-```{r}
-hour <- with(Anchorage_tide, hour)
-b    <- with(Anchorage_tide, level)
-sin1 <- sin(2*pi*hour/12.42)
-cos1 <- cos(2*pi*hour/12.42)
-sin2 <- sin(2*pi*hour/23.935)
-cos2 <- cos(2*pi*hour/23.935)
-sin3 <- sin(2*pi*hour/12)
-cos3 <- cos(2*pi*hour/12)
-sin4 <- sin(2*pi*hour/12.658)
-cos4 <- cos(2*pi*hour/12.658)
-A <- cbind(1, sin1, cos1, sin2, cos2, sin3, cos3, sin4, cos4)
-mod1 <- b %onto% cbind(1, sin1, cos1)
-mod2 <- b %onto% cbind(1, sin1, cos1, sin2, cos2)
-x <- qr.solve(A, b)
-mod3 <- A %*% x
-resid <- b - mod3
-gf_line(level ~ hour, data = Anchorage_tide)  %>%
-  gf_line(mod3 ~ hour, color="magenta") %>%
-  gf_lims(x = c(0,1000))
-gf_line(resid ~ hour) 
-
+::: {#fig-ri-tide-periods}
+```{r echo=FALSE, warning=FALSE}
+gf_point(level ~ hour, data = RI_tide, alpha=0.3)  %>%
+  gf_line(mod3 ~ hour, color="magenta", linewidth=1.5, alpha=0.7) |>
+  gf_labs(y = "Tide level (ft)")
 ```
+
+A 100-hour record of tide levels (black). A model ([magenta]{style="color: magenta;}) consisting of a linear combination of four sinusoids. These data are from Bristol Ferry, Rhode Island, USA, but any other sea-shore location would show much the same thing. [Source: NOAA](https://tidesandcurrents.noaa.gov/harcon.html?id=8451552&type=)
+:::
+
+Our 4-component tide model has merits and demerits. The times of low and high tides are captured almost perfectly. The model doesn't reproduce so well the high-tide level, but suggests that the day-to-day fluctuations in tide level are not simply random, for instance, caused entirely by the weather.
+
+What to make of the residual between the tide record and the model? As described in @sec-modeling-science-method, a model residual can be a source for hypotheses about what is missing in the model. Among the factors not in our simple model are the "solar annual constituent" (with a period of 365.24 days), and a "solar semi-annual constituent." These arise from the elliptical shape of the Earth's orbit around the Sun. Another missing component is the "shallow water overtides of principal lunar constituent" with a period of 6.2 hours. There are 37 named constituents of tide levels, most of which participate in a very small way and can only be accurately estimated from years of data, not the short 100-hour record we have used.
 
 ## Fourier transform
 
-```{r}
+Block 3 introduced the idea of projecting a vector onto a subspace defined by other vectors. Naturally, when defining the subspace it is necessary to say what those other vectors are.
+
+In the context of *functions*, a set of functions that is incredibly useful in many applications was discovered by Jean-Baptiste Joseph Fourier (1768-1830) in his studies of how heat diffuses in, say, a metal bar. These functions are, simply enough, the sinusoids of different periods.
+
+A "**fourier transform**" is a projection of a function onto the subspace spanned by Fourier's sinusoids. That this idea is 200 years old belies its incredible importance today. @fig-fourier-tides shows the fourier transform of the tide data from @sec-time-and-tide. For each sinusoid---$A \sin\left(\strut\frac{2\pi}{P}(t - t_0\right)$---the graph plots $A$ agains $P$, that is, closely aligned is the sinusoid of period $P$ to the tide signal. 
+
+::: {#fig-fourier-tides}
+```{r echo=FALSE, warning=FALSE}
 # Fill in the missing data
 Raw <- Anchorage_tide |> select(hour, level) %>%
   mutate(hour = round(hour, 1))
@@ -581,5 +583,15 @@ FFT2 <-
   mutate(period = 24/freq) %>%
   mutate(amp = ifelse(amp < .3e4, 0, amp)) %>%
   mutate(speed = 360/period)
-gf_line(amp ~ period, size=.1,data = FFT2 |> filter(period<100)) |> gf_lims(x=c(10, 14))
+gf_line(amp ~ period, size=.1,
+        data = FFT2 |> filter(period<100)) |> 
+  gf_lims(x=c(10, 14)) |>
+  gf_labs(x="Period of sinusoid (hrs)", "Amplitude of sinusoid")
 ```
+:::
+
+Reading @fig-fourier-tides, you can see two exceptionally tall spikes, one at a period of 12 hours and a much taller one at a period a little less than 12.5 hours. It's not a coincidence that these are the periods identified in @sec-time-and-tide as primary components of the tide time series.
+
+It suffices for us here to say that a fourier transform is a tool for identifying the periodic components in any signal. But it is also used for many other important tasks in science and engineering. The field of fourier transforms is rich and complex; too much so for us to cover it here.
+
+
