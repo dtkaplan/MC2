@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.55">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>54&nbsp; Diffusion – MOSAIC Calculus</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../Glossary.html" rel="next">
+<link href="../Manifestations/52-mechanics.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+</head><body class="nav-sidebar floating nav-fixed"><span class="math inline" style="display: none;">
+\(\newcommand{\line}{\text{line}}
+\newcommand{\hump}{\text{hump}}
+\newcommand{\sigmoid}{\text{sigmoid}}
+\newcommand{\recip}{\text{recip}}
+\newcommand{\diff}[1]{{\cal D}_#1}
+\newcommand{\pnorm}{\text{pnorm}}
+\newcommand{\dnorm}{\text{dnorm}}
+\let\origvec\vec
+\let\origmathit\mathit
+\let\orighat\hat
+\let\origbar\bar
+\newcommand{\vec}[1]{\overset{{\rule[-1pt]{0mm}{1mm}}\rightharpoonup}{\mathbf{#1}}}
+\newcommand{\bar}[1]{\overset{{\rule[-1pt]{12pt}{.5mm}}}{\mathbf{#1}}}
+\newcommand{\mathit}[1]{\underset{\leftharpoondown}{\overset{{\rightharpoonup}}{\large\mathbf #1}}}
+\newcommand{\hat}[1]{\widehat{\ \mathbf#1\ }}
+\newcommand{\len}[1]{{\|{\mathbf #1}\|}}
+\newcommand{\tvec}[1]{\overset{\uparrow}{\mathbf #1}}
+\newcommand{\tmat}[1]{\overset{\leftrightarrows}{\mathbf #1}}
+\newcommand{\perpendicularto}[2]{#1\!\perp\!#2}
+\newcommand{\modeledby}[2]{#1\!\sim\!#2}
+\newcommand{\CC}[1]{\color{#648fff}{#1}}
+\newcommand{\CE}[1]{\color{#785ef0}{#1}}
+\newcommand{\CA}[1]{\color{#dc267f}{#1}}
+\newcommand{\CB}[1]{\color{#fe6100}{#1}}
+\newcommand{\CD}[1]{\color{#ffb000}{#1}}\)
+</span>
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../mosaic-calc-style.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../www/Cover-1.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">MOSAIC Calculus</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+    <a href="https://github.com/dtkaplan/MC2/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../manifestations-part.html">BLOCK VI. Manifestations</a></li><li class="breadcrumb-item"><a href="../Manifestations/53-diffusion.html"><span class="chapter-number">54</span>&nbsp; <span class="chapter-title">Diffusion</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../preliminaries-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">PRELIMINARIES</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/01-quant-fun-space.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Quantity, function, space</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/02-notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Notation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/03-computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Computing with R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/04-graphs-and-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualizing functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/05-pattern-book-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Pattern-book functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/06-describing-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Describing functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Preliminaries/07-data-functions-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data, functions, graphics</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../modeling-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK I. Modeling</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/08-parameters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Parameters</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/09-assembling-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Assembling functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/10-functions-with-multiple-inputs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Functions with multiple inputs</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/11-fitting-features.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Fitting features</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/12-low-order-polynomials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Low-order polynomials</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/13-operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Operations on functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/14-magnitudes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Magnitude</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/15-dimensions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Dimensions and units</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Modeling/16-modeling-scientific-method.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Modeling and the scientific method</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../differentiation-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK II. Differentiation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/17-continuous-change.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Continuous change</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/18-rate-of-change.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Rate of change</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/19-evanescent-h.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Evanescent h</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/20-computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Constructing derivatives</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/21-concavity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Concavity and curvature</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/22-cont-and-smooth.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Continuity and smoothness</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/23-rules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Derivatives of assembled functions (optional)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/24-optim.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Optimization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/25-partial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Partial change and the gradient vector</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/26-approximation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Local approximations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/27-taylor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Polynomials</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Differentiation/Differentiation-projects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Differentiation projects</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../linear-combinations-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK III. Vectors and linear combinations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/28-Vectors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Vectors</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/29-linear-combinations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Linear combinations of vectors</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/30-projection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Projection &amp; residual</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/31-target-problem.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">The target problem</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Linear-combinations/32-stat-modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Statistical modeling and R<sup>2</sup></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../accumulation-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK IV. Accumulation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/33-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Change &amp; accumulation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/34-visualizing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Totaling the little bits</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/35-integration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Integration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/36-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Functions as vectors</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/37-euler.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Integrals step-by-step</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Accumulation/38-symbolic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Symbolic anti-differentiation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../dynamics-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK V. Dynamics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/39-diff-eq.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Differential equations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/40-solution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Finding a “solution”</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/41-flow-on-line.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Flows on the line</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/42-flow-on-plane.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Flows on the plane</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/43-modeling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">44</span>&nbsp; <span class="chapter-title">Modeling dynamics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/44-equilibria.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">45</span>&nbsp; <span class="chapter-title">Equilibrium and transient</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/45-eigen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">46</span>&nbsp; <span class="chapter-title">Eigenvalues, eigenvectors</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Dynamics/46-second-order.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">47</span>&nbsp; <span class="chapter-title">Force-balance equations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../manifestations-part.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">BLOCK VI. Manifestations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/47-operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">48</span>&nbsp; <span class="chapter-title">Operations on functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/48-splines.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">49</span>&nbsp; <span class="chapter-title">Data-driven functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/49-optimization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">50</span>&nbsp; <span class="chapter-title">Optimization and constraint</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/50-probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">51</span>&nbsp; <span class="chapter-title">Probability and evidence</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/51-future-value.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">52</span>&nbsp; <span class="chapter-title">Present and future value</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/52-mechanics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">53</span>&nbsp; <span class="chapter-title">Mechanics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Manifestations/53-diffusion.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">54</span>&nbsp; <span class="chapter-title">Diffusion</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">55</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#origins-of-the-gaussian-function" id="toc-origins-of-the-gaussian-function" class="nav-link active" data-scroll-target="#origins-of-the-gaussian-function"><span class="header-section-number">54.1</span> Origins of the gaussian function</a></li>
+  <li><a href="#net-flux" id="toc-net-flux" class="nav-link" data-scroll-target="#net-flux"><span class="header-section-number">54.2</span> Net flux</a></li>
+  <li><a href="#diffusion" id="toc-diffusion" class="nav-link" data-scroll-target="#diffusion"><span class="header-section-number">54.3</span> Diffusion</a></li>
+  <li><a href="#dynamics-of-variance" id="toc-dynamics-of-variance" class="nav-link" data-scroll-target="#dynamics-of-variance"><span class="header-section-number">54.4</span> Dynamics of variance</a></li>
+  <li><a href="#random-walk" id="toc-random-walk" class="nav-link" data-scroll-target="#random-walk"><span class="header-section-number">54.5</span> Random walk</a></li>
+  <li><a href="#investment-volatility" id="toc-investment-volatility" class="nav-link" data-scroll-target="#investment-volatility"><span class="header-section-number">54.6</span> Investment volatility</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Manifestations/53-diffusion.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../manifestations-part.html">BLOCK VI. Manifestations</a></li><li class="breadcrumb-item"><a href="../Manifestations/53-diffusion.html"><span class="chapter-number">54</span>&nbsp; <span class="chapter-title">Diffusion</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">54</span>&nbsp; <span class="chapter-title">Diffusion</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+In Draft
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This chapter is still in a draft state.</p>
+</div>
+</div>
+<section id="origins-of-the-gaussian-function" class="level2" data-number="54.1">
+<h2 data-number="54.1" class="anchored" data-anchor-id="origins-of-the-gaussian-function"><span class="header-section-number">54.1</span> Origins of the gaussian function</h2>
+<p>From the start of <em>MOSAIC Calculus</em> we have used a small set of basic modeling functions which will by now be familiar to you:</p>
+<ul>
+<li>exponential</li>
+<li>logarithm: inverse to exponentials</li>
+<li>power-law</li>
+<li>sinusoid</li>
+<li>gaussian and sigmoid</li>
+</ul>
+<p>This chapter gives a more detailed introduction to the gaussian function and provides a specific algebraic formula that composes an exponential with a low-order polynomial.</p>
+<p>Start with the low-order polynomial: <span class="math display">\[h(x) = - \frac{(x-\mu)^2}{2 \sigma^2}\]</span> This is, of course a parabola with an argmax <span class="math inline">\(x^\star = \mu\)</span> and a maximum value 0. It is written this way by convention, the point of which is to give names to two features of the function:</p>
+<ul>
+<li>The <strong>mean</strong>, <span class="math inline">\(\mu\)</span>, is the argmax of the function.</li>
+<li>The <strong>variance</strong>, <span class="math inline">\(\sigma^2\)</span>, how “fat” the parabola is.</li>
+</ul>
+<p>(Recall that the Greek letters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> are pronounced “mu” and “sigma” respectively.)</p>
+<p>A reasonable person can point out that the domain of the low-order polynomial is <span class="math inline">\(-\infty &lt; x &lt; \infty\)</span>. It is sensible to define “width” to refer to that part of the domain where the function’s value is non-zero and, better, where “most” of the function is. One way to define “how much” of the function there is uses the area under the curve. The convention that you are about to see defines the width as the domain that contains the central 2/3 of the overall area.</p>
+<p>The sandbox defines the function <span class="math inline">\(h(x)\)</span> and graphs it, with particular emphasis on the range (vertical scale!) from -1 to 0. The graph is annotated with blue and red horizontal lines with y-intercept of 0 and <span class="math inline">\(-\frac{1}{2}\)</span> respectively.</p>
+<div class="cell" data-layout-align="center" data-exercise="true" data-exercise.cap="Parameters mu and sigma" data-exercise.nlines="8">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(  <span class="sc">-</span>(x<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma<span class="sc">^</span><span class="dv">2</span>) <span class="sc">~</span> x, <span class="at">mu=</span>mu, <span class="at">sigma=</span>sigma)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">h</span>(x) <span class="sc">~</span> x, <span class="fu">bounds</span>(<span class="at">x=</span>sigma<span class="sc">*</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="sc">-</span><span class="fl">0.5</span>), <span class="at">color=</span><span class="fu">c</span>(<span class="st">"dodgerblue"</span>, <span class="st">"orange3"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <em>width</em> of the parabola is based on the length of the horizontal line segment between the two branches of the parabola. Specifically, the width is defined as <em>half the length of this line segment</em>. to avoid confusion, we will use “width” in the usual English sense and a special term, <strong>standard deviation</strong>, to refer to half the length of the line segment. (“Standard deviation” is a good candidate for the worst name ever for a simple concept: a length. Another, equivalent term you will hear for this length is “root mean square,” which is almost as bad. Still, those are the standard terms and you should be careful to use instead of non-standard alternatives.)</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part A**  In the above sandbox, set `sigma &lt;- 2`. What *standard deviation* corresponds to $\sigma = 2$? </code></pre>
+<p>1/4 1 <span class="math inline">\(\sqrt{2}\)</span> 2 4</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part B**  Still holding $\sigma = 2$, what is the *variance* of the function? </code></pre>
+<p>1/4 1 <span class="math inline">\(\sqrt{2}\)</span> 2 4</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part C**  Set $\sigma = 3$, and read off the graph what is the *standard deviation* of the function? </code></pre>
+<p>1/3 1 <span class="math inline">\(\sqrt{3}\)</span> 3 9</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part D**  When $\sigma = 3$, what is the *variance* parameter? </code></pre>
+<p>1/3 1 <span class="math inline">\(\sqrt{3}\)</span> 3 9</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part E**  Pick a $\sigma$ of your choice, try a few non-zero values for $\mu$. Read off from the graph the standard deviation. How does the standard deviation depend on $\mu$? </code></pre>
+<ol type="a">
+<li>The standard deviation is <span class="math inline">\(\mu + \sigma\)</span>.</li>
+<li>The standard deviation is <span class="math inline">\(\sqrt{\strut\mu + \sigma^2}\)</span>.</li>
+<li>The standard deviation is <span class="math inline">\(\ln(\mu + e^\sigma)\)</span>.</li>
+<li>The standard deviation is not affected by <span class="math inline">\(\mu\)</span>.</li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part F**  What is the relationship between the *variance* $\sigma^2$ and the *standard deviation* $\sigma$?  </code></pre>
+<ol type="a">
+<li>The standard deviation is the square root of the variance.</li>
+<li>The standard deviation is 1 over the variance.</li>
+<li>They are completely unconnected concepts.</li>
+<li>The variance is the square of the mean, <span class="math inline">\(\mu\)</span>.</li>
+</ol>
+</div>
+</div>
+<p>One of the features that make bump functions useful is that they are <strong>local</strong>, the function is practically zero except on a domain of limited width. The parabola <span class="math inline">\(h(x) \equiv - \frac{(x - \mu)^2}{2 \sigma^2}\)</span> is non-zero everywhere except at <span class="math inline">\(x = \mu\)</span>, so not at all local.</p>
+<p>To produce our pattern-book bump function, we compose an exponential function <span class="math inline">\(e^x\)</span> with the polynomial <span class="math inline">\(h(x)\)</span> to get <span class="math display">\[f(x) \equiv e^{h(x)} = \exp\left(-\frac{(x - \mu)^2}{2 \sigma^2}\right)\]</span> This is not yet the “official” gaussian function, but are getting close!</p>
+<p>The sandbox defines <span class="math inline">\(f(x)\)</span> and graphs it. As with the previous sandbox, the graph is annotated with a blue horizontal line that touches the curve at the argmax and a red horizontal line with a y-intercept at <span class="math inline">\(e^{-1/2}\)</span>.</p>
+<div class="cell" data-layout-align="center" data-exercise="true" data-exercise.cap="Parameters mu and sigma" data-exercise.nlines="10">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">makeFun</span>(  <span class="fu">exp</span>( <span class="sc">-</span>(x<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma<span class="sc">^</span><span class="dv">2</span>) ) <span class="sc">~</span> x, <span class="at">mu=</span>mu, <span class="at">sigma=</span>sigma)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">f</span>(x) <span class="sc">~</span> x, <span class="fu">bounds</span>(<span class="at">x=</span>sigma<span class="sc">*</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">3.5</span>, <span class="fl">3.5</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span>)), <span class="at">color=</span><span class="fu">c</span>(<span class="st">"dodgerblue"</span>, <span class="st">"orange3"</span>))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>sigmoid <span class="ot">&lt;-</span> <span class="fu">antiD</span>(<span class="fu">g</span>(x) <span class="sc">~</span> x, <span class="at">lower.bound =</span> <span class="sc">-</span><span class="cn">Inf</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Graph the sigmoid on the domain -10 &lt; x &lt; 10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice that the vertical range of the function is <span class="math inline">\(0 &lt;  f(x) \leq 1\)</span>. The argmax is <span class="math inline">\(\mu\)</span>, so <span class="math inline">\(f(\mu) = 1\)</span>. This seems easy and convenient, but one of the purposes of the standard gaussian function is to define a standard <em>sigmoid</em> function. It is the sigmoid that we want to have a range from 0 to 1.</p>
+<p>How to scale the gaussian <span class="math inline">\(f(x)\)</span> to produce a sigmoid with the range 0 to 1? Recall that a sigmoid is the anti-derivative of the corresponding gaussian. In the sandbox, we use <code>antiD()</code> to compute <span class="math display">\[\int_{-\infty}^x f(u) du\]</span>, which we called <code>sigmoid()</code>. From the graph of <code>sigmoid()</code> you can read off the scaling factor that will make the vertical range of the resulting sigmoid zero to one.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part G**  Where did the variable $u$ come from in $$\int_{-\infty}^x f(u) du ?$$ </code></pre>
+<ol type="a">
+<li>The instructors made a mistake. They will try to be more careful in the future!</li>
+<li>You can use any name for the variable of integration. The function <span class="math inline">\(\int_{-\infty}^x f(u) du\)</span> will be a function of <span class="math inline">\(u\)</span>, not <span class="math inline">\(x\)</span>.</li>
+<li>You can use any name for the variable of integration. The function <span class="math inline">\(\int_{-\infty}^x f(u) du\)</span> will be a function of <span class="math inline">\(x\)</span>, not <span class="math inline">\(u\)</span>.</li>
+<li><span class="math inline">\(u\)</span> is the Latin equivalent of <span class="math inline">\(\mu\)</span>.</li>
+</ol>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part H**  This question will take a bit of detective work in the sandbox. Make a table of a few combinations of different values for $\mu$ and $\sigma$. For each combination, find the maximum value of the corresponding `sigmoid()` function. Using this data, choose the correct formula for the maximum value of the sigmoid as a function of $\mu$ and $\sigma$. </code></pre>
+<ol type="a">
+<li><span class="math inline">\(\sqrt{\strut 2 \pi \sigma^2}\)</span></li>
+<li><span class="math inline">\(\pi \sigma\)</span></li>
+<li><span class="math inline">\(\sqrt(\strut \mu \pi \sigma)\)</span></li>
+<li><span class="math inline">\(\sqrt(\strut \pi \sigma^2 / \mu)\)</span></li>
+</ol>
+</div>
+</div>
+<p>Putting all this together, we arrive at our “official” standard gaussian function, called the <em>Gaussian</em> function:</p>
+<p><span class="math display">\[g(x) \equiv \frac{1}{\sqrt{\strut2\pi\sigma^2}} e^{-(x-\mu)^2 / 2 \sigma^2}\]</span> The Gaussian function is important to many quantitative disciplines and has a central role in statistics. The function is named after physicist and mathematician Carl Friedrick Gauss (1777-1855). But in the social sciences, it is usually called the “normal” function; that is how common it is.</p>
+<p>In R, the Gaussian function is provided as <code>dnorm(x, mu, sigma)</code>. (The corresponding sigmoid, that is, the anti-derivative of <code>dnorm()</code> with respect to <code>x</code> is available as <code>pnorm(x, mu, sigma)</code>.</p>
+<p>The Gaussian function is so important, that it is worth pointing out some recognizable landmarks in the algebraic expression. Knowing to look for such things is one trait that defines an expert.</p>
+<ol type="1">
+<li>The term <span class="math inline">\(1/\sqrt{2 \pi \sigma^2}\)</span> is not a function of <span class="math inline">\(x\)</span>, it is a constant related to the <em>variance</em> <span class="math inline">\(\sigma^2\)</span>. It is just a number arranged to make <span class="math display">\[\int_{-\infty}^\infty g(x) dx = 1 .\]</span></li>
+<li>The exponential means that, whatever the values of <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>, the function value <span class="math inline">\(0 &lt; g(x)\)</span>.</li>
+<li>The argmax is at <span class="math inline">\(x^\star = \mu\)</span>. This is also the “center” of the function, which is symmetrical around the argmax.</li>
+<li>The <em>variance</em> <span class="math inline">\(\sigma^2\)</span> appears directly in the formula. In no place does <span class="math inline">\(\sigma\)</span>, the <em>standard deviation</em>, appear without the exponent 2. This is a hint that the variance is more fundamental than the standard deviation.</li>
+</ol>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part I**  Go back to the sandbox where we defined the function `f(x)` and graphed it. The function has a distinctive shape which is almost always described in terms of a familiar word. Which one is it? </code></pre>
+<p>breadloaf-shaped ghost-shaped bell-shaped sombrero-shaped</p>
+</div>
+</div>
+<p><strong>Optional background</strong>. Now for a bit of irony. We’ve taken a lot of care to define a specific form of gaussian function with a formula that strikes many people as complicated. It must be that all these specifics are important, right? In reality, any function with a roughly similar shape would work in pretty much the same way. We could have defined our “official” gaussian function in any of a number of ways, some of which would be algebraically simpler. But the specific gaussian shape is a kind of fixed point in the differential equation that we will study next.</p>
+<!--
+The Gaussian shape is preferred in much the same way as the "natural logarithm" is natural. The "natural" only makes sense in terms of the results of a specific operation, differentiation, which has a particularly simple form for $\ln(x)$. As you recall, $\partial_x \ln(x) = 1/x$. Although the derivatives of log-base 2 and log-base 10 (and any other log) are similar, they have slightly more complicated derivatives: 
+
+- $\partial_x\, \ln(x) = 1/x$
+- $\partial_x\, \log_{10}(x) = 1 / \ln(10) x$
+- $\partial_x\, \log_2(x) = 1 / \ln(2) x$
+
+In a bit, you will see that something similar is going on with the Gaussian function: it is exact and simple in a particular context in a way that other similarly shaped functions are not.
+
+-->
+</section>
+<section id="net-flux" class="level2" data-number="54.2">
+<h2 data-number="54.2" class="anchored" data-anchor-id="net-flux"><span class="header-section-number">54.2</span> Net flux</h2>
+<p>Recall Newton’s Law of Cooling, <span class="math inline">\(\dot{T} = - k (T - T_a)\)</span> Although temperature was hardly understood as a physical phenomenon in Newton’s era, with today’s sensibility you can understand that energy is flowing into or out of the object from the ambient environment. The word <em>flux</em> is often used in mathematics to refer to such flows.</p>
+<p>We’ve studied cooling in a spatially discrete context, the cooling of a single point (e.g.&nbsp;“a cup of coffee”) in an environment that has only one property, the “ambient” temperature.</p>
+<p>Let’s switch to a spatially <em>continuous</em> context, a bar of iron with one end lying in a bed of hot coals and the other end in the open air, as in the picture:</p>
+<div id="fig-hot-iron" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig.align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hot-iron-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="www/hot-iron.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hot-iron-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;54.1: <a href="https://www.brilliantdiy.com/tabletop-charcoal-forge/"><em>Source</em></a>
+</figcaption>
+</figure>
+</div>
+<p>The iron rod is incandescent at the right end and cooler toward the left. If the picture were a movie, you likely would be able to predict what the action will be: Heat will flow down the rod from right to left. The free end of the rod will eventually get burning hot.</p>
+<p>The temperature <span class="math inline">\(T\)</span> at each point <span class="math inline">\(x\)</span> in the rod is a function of position. But at any given position, the temperature is a function of time <span class="math inline">\(t\)</span>. That is, the temperature of the rod is a function of two variables: <span class="math inline">\(T(x,t)\)</span>.</p>
+<p>If we were thinking about the movie frame-by-frame, we might prefer to treat <span class="math inline">\(t\)</span> as a discrete variable and could write <span class="math inline">\(T(x,t)\)</span> as <span class="math inline">\(T_t(x)\)</span>. It does not really matter which, but it helps to think about <span class="math inline">\(T()\)</span> as a function of <span class="math inline">\(x\)</span> whose shape evolving in time.</p>
+<p>Now back to Newton’s Law of Cooling. The flux of heat is the difference between the object’s temperature and the ambient temperature. But in the continuous spatial system, the <em>difference</em> in temperature between two infinitely close neighboring points is zero. That suggests no flux. Of course, a major theme in Calculus is to provide means to discuss the <em>rate of difference</em> of a value at two infinitely close points: the derivative <span class="math inline">\(\partial_x T(x, t)\)</span>. This derivative gives the flux of heat from right to left.</p>
+<div class="cell" data-layout-align="center">
+<pre><code>## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+## ℹ Please use `linewidth` instead.</code></pre>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="53-diffusion_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It might be tempting to translate this directly into the terms of Newton’s Law of Cooling and claim, <strong>wrongly</strong> that <span class="math inline">\(\partial_t T(x, t) = -k \partial_x T(x, t)\)</span>. Why is this wrong? In the spatially discrete setting—cup of coffee, ambient environment—there are only two spatial points of interest. But along the continuous iron rod, there are at least <strong>three</strong> points to be considered. Let’s call them <span class="math inline">\(x_A\)</span>, <span class="math inline">\(x_B\)</span>, and <span class="math inline">\(x_C\)</span> as in the diagram. We are interested in <span class="math inline">\(\partial_t T(x_B, t)\)</span>. This change in temperature at point B is driven by the flux from point C to point B and is proportional to <span class="math inline">\(\partial_x T(x_B, t)\)</span>. But the change in temperature at point B is equally influenced by the flux from B to A. That is, the change in temperature at point B is set by the <em>difference in flux</em>, the flux coming from A to B and the flux going from B to C.</p>
+<p>In the spatially continuous context, the <em>net flux</em> or <em>difference in differences</em> (A to B, B to C) is represented by the <strong>second derivative</strong> with respect to <span class="math inline">\(x\)</span>. That is, along the rod, Newton’s Law of Cooling amounts to <span class="math display">\[\partial_t T(x, t) = k\, \partial_{xx} T(x, t)\]</span> This is called the <strong>heat equation</strong> and was introduced in 1807 by Jean-Baptiste Joseph Fourier (1786-1830). The same equation is now also called the <strong>diffusion equation</strong>.</p>
+<p>Some people might be more comfortable thinking about the discrete-time dynamics of the movie, which could be written <span class="math display">\[T_{t+h}(x) \approx T_t(x) + h\,k\, \partial_{xx} T_t(x)\]</span></p>
+<p>Exercise: Turn away from the iron rod of the picture and imagine being presented with four new rods each of which has been heated in some way to produce a temperature profile at time 0, that is <span class="math inline">\(T_0(x)\)</span> as shown in the four graphs below.</p>
+<div id="fig-over-time" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-over-time-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+
+</div>
+<div class="cell quarto-layout-panel" data-layout-align="center" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="53-diffusion_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="53-diffusion_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="53-diffusion_files/figure-html/unnamed-chunk-3-3.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="53-diffusion_files/figure-html/unnamed-chunk-3-4.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-over-time-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;54.2
+</figcaption>
+</figure>
+</div>
+<ol type="1">
+<li>For the function <span class="math inline">\(T(x, t=0)\)</span> shown in Graph (A), how will the temperature at <span class="math inline">\(x=0\)</span> change instantaneously? (That is, what is <span class="math inline">\(\\partial_t T(x, t=0)\)</span>?)</li>
+</ol>
+<p>“+Temperature decreases+”, “No change in temperature”, “Temperature increases”, “Temperature oscillates” = “The temperature cannot oscillate <em>instantaneously</em>. The value of a derivative function at a point is a real number, not an oscillation.” , random_answer_order = FALSE )</p>
+<ol start="2" type="1">
+<li><p>For the function <span class="math inline">\(T(x, t=0)\)</span> shown in Graph (B), how will the temperature at <span class="math inline">\(x=0\)</span> change instantaneously? (That is, what is <span class="math inline">\(\\partial_t T(x, t=0)\)</span>?) “Temperature decreases”, “No change in temperature”, “+Temperature increases+”, “Temperature oscillates” = “The temperature cannot oscillate <em>instantaneously</em>. The value of a derivative function at a point is a real number, not an oscillation.” , random_answer_order = FALSE )</p></li>
+<li><p>For the function <span class="math inline">\(T(x, t=0)\)</span> shown in Graph (C), how will the temperature at <span class="math inline">\(x=0\)</span> change instantaneously? (That is, what is <span class="math inline">\(\\partial_t T(x, t=0)\)</span>?) “Temperature decreases”, “+No change in temperature+”, “Temperature increases”, “Temperature oscillates” = “The temperature cannot oscillate <em>instantaneously</em>. The value of a derivative function at a point is a real number, not an oscillation.” , random_answer_order = FALSE )</p></li>
+</ol>
+<p>askMC( 4. For the function <span class="math inline">\(T(x, t=0)\)</span> shown in Graph (D), how will the temperature at <span class="math inline">\(x=0\)</span> change instantaneously? (That is, what is <span class="math inline">\(\\partial_t T(x, t=0)\)</span>?) “Temperature decreases”, “+No change in temperature+”, “Temperature increases”, “Temperature oscillates” = “The temperature cannot oscillate <em>instantaneously</em>. The value of a derivative function at a point is a real number, not an oscillation.” , random_answer_order = FALSE )</p>
+</section>
+<section id="diffusion" class="level2" data-number="54.3">
+<h2 data-number="54.3" class="anchored" data-anchor-id="diffusion"><span class="header-section-number">54.3</span> Diffusion</h2>
+<p>Recall that the heat equation describes how the temperature along a approximately 1-dimensional object—an iron bar, for example—changes with time due to spatial differences in temperature from point to point. The heat equation is</p>
+<p><span class="math display">\[\underbrace{\partial_t T(x, t)}_\text{change in time} = \ \ \ k\, \underbrace{\partial_{xx} T(x, t)}_\text{pattern in space}\]</span></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part J**  Suppose the inputs to the temperature function have units centimeters (for $x$) and seconds (for $t$) and that the output is in degrees Kelvin (which we will write "K"). What are the units of the coefficient $k$? </code></pre>
+<p><span class="math inline">\(K cm^{1}\)</span> <span class="math inline">\(K cm^{2} s^{-1}\)</span> <span class="math inline">\(cm^{2} s^{-1}\)</span> <span class="math inline">\(s cm^{2}\)</span></p>
+</div>
+</div>
+<p>At the time Fourier was working, there was no molecular theory of matter and very little understanding of what the “heat substance” might consist of. Now we know that heat is the energy of molecular vibrations. This energy diffuses through the material.</p>
+<p>Similarly, “diffusion” is one mode of physical motion of material, for example movement of sugar molecules within a cell. Other things can diffuse as well, for example the action of viscosity in fluids can be seen as the diffusion of momentum.</p>
+<p>Starting in the 20th century and in support of the developing molecular theory of gasses, mathematicians and physicists undertook to follow the trajectories of individual diffusing particles and to develop a means to describe them mathematically. This included the concept of a “random walk,” movement of a particle shifting direction and speed randomly as it collides with other moving molecules and particles in its environment.</p>
+<p>The movie shows a simulation of a few particle (in yellow) undergoing a random walk. The path followed by each diffusing particle is shown in blue; the velocity of one particle is indicated with a red vector.</p>
+<p><img src="www/Brownianmotion5particles150frameSLOW.gif" class="img-fluid"></p>
+<p><a href="https://creativecommons.org/licenses/by-sa/3.0" title="Creative Commons Attribution-Share Alike 3.0">CC BY-SA 3.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=19140415">Link</a></p>
+<p>The idea of random walks has become especially important in economics and finance. The walking “particle” might be the price of a stock or other derivative asset. The “collisions” happen as individual trades are made in the market, each trade being influenced by some news or situation or the passing whims, fancies, or fears of investors. The work on this point of view started about 1900 by a mathematics graduate student, Louis Bachelier, who undertook to study the movements of the <em>Bourse</em>, the Parisian stock exchange. The 1997 Nobel Prize in economics was awarded for a “new method to determine the value of [market] derivatives.”</p>
+<p>For these reasons, we will focus and the mathematics of diffusion instead of the equivalent but historically prior mathematics of heat. We will work with a function <span class="math inline">\(C(x, t)\)</span> which stands for the <em>concentration</em> of particles in some medium such as a gas as a function of space and time. In economics, <span class="math inline">\(x\)</span> will stand for the value of some asset such as an investment, and <span class="math inline">\(C()\)</span> gives a probability density for each possible value of <span class="math inline">\(x\)</span>.</p>
+<p>For the sake of visualization, suppose some odor molecules are released in at the midpoint of a pipe with absolutely still air. Over time, the molecules will diffuse throughout the along the extent of the pipe.</p>
+<p>If <span class="math inline">\(C(x, t)\)</span> is the <em>concentration</em> of odor molecules at each point <span class="math inline">\(x\)</span> and time <span class="math inline">\(t\)</span>, then the change in concentration with time is:</p>
+<p><span class="math display">\[\partial_t C(x, t) = D\, \partial_{xx} C(x, t)\]</span> This is called the “Diffusion equation.” <span class="math inline">\(D\)</span> is called the “diffusion coefficient” and depends on the size of the molecule and the temperature in the pipe. The “diffusion equation” is the same as the “heat equation,” with different names used for the quantities involved.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<pre><code>**Part K**  Suppose the inputs to the concentration function have units centimeters (for $x$) and seconds (for $t$) and that the output is in nanograms per cubic centimeter ($ng\ cm^{-3}$) . What are the units of the coefficient $k$? </code></pre>
+<p><span class="math inline">\(ng cm^{-1}\)</span> <span class="math inline">\(ng cm^{1} s^{-1}\)</span> <span class="math inline">\(cm^{2} s^{-1}\)</span> <span class="math inline">\(s cm^{1}\)</span></p>
+</div>
+</div>
+<p>Many people have difficulty imagining the sorts of frequent collisions that are behind diffusion. They think, for instance, that in still air the molecules are pretty much still. This is wrong. A typical velocity of a water molecule in air at room temperature and pressure is 650 m/sec.&nbsp;(The speed of sound is about 350 m/sec.) But the time between molecular collisions is on the order of <span class="math inline">\(10^{-10}s\)</span>, so the typical distance travelled between collisions is about <span class="math inline">\(10^{-7}m\)</span>. For a root mean square distance of 1m, we need roughly <span class="math inline">\(10^{14}\)</span> collisions, which would occur in <span class="math inline">\(10^{4}\)</span> seconds (a couple of hours).</p>
+</section>
+<section id="dynamics-of-variance" class="level2" data-number="54.4">
+<h2 data-number="54.4" class="anchored" data-anchor-id="dynamics-of-variance"><span class="header-section-number">54.4</span> Dynamics of variance</h2>
+<p>In this section, we will explore the connection between diffusion and the gaussian function. Recall that we modeled the <em>temperature</em> along a one-dimensional spatial domain (a “bar of iron”) as it evolves in time as a function of both position and time: <span class="math inline">\(C(x, t)\)</span>. The same sort of function—of position and time—can be used to describe the <em>concentation</em> of particles freely diffusing along a medium such as air in a pipe.</p>
+<p>We constructed a differential equation to describe the dynamics of <span class="math inline">\(C(x, t)\)</span> called the “heat” equation or the “diffusion” equation, depending on context. Before using that differential equation, let’s explore a little bit what we might mean about the “dynamics of a function.”</p>
+<p>In studing dynamics we worked first with time taken discretely, e.g.&nbsp;a sequence of states <span class="math inline">\({\mathbf x}_0\)</span>, <span class="math inline">\({\mathbf x}_1\)</span>, <span class="math inline">\({\mathbf x}_2\)</span>, <span class="math inline">\(\ldots\)</span>, <span class="math inline">\({\mathbf x}_n\)</span>, <span class="math inline">\(\ldots\)</span>. The vector <span class="math inline">\({\mathbf x}_n\)</span> is the “state” of the system at time step <span class="math inline">\(n\)</span>. In our work, we looked at 1-dimensional and 2-dimensional states, tracing out a trajectory from one time step to the next and the next and so on. Exactly the same ideas would apply to 3- and higher-dimensional states, say an ecosystem involving growing grass, and populations of mice, rabbits, foxes, birds, and so on.</p>
+<p>In our present contexts, heat or diffusion, we are working with <em>functions</em>. Let’s return to the earlier metaphor of a movie of <span class="math inline">\(C(x, t)\)</span> with the frames taken every <span class="math inline">\(h\)</span> seconds. The movie is the sequence of frames <span class="math inline">\(C_0(x)\)</span>, <span class="math inline">\(C_h(x)\)</span>, <span class="math inline">\(C_{2h}(x)\)</span>, <span class="math inline">\(\ldots\)</span>, <span class="math inline">\(C_t(x)\)</span>, <span class="math inline">\(\ldots\)</span>.</p>
+<p>To describe the dynamics—that is, the change from frame to frame in the movie—we write a finite-difference equation, generically: <span class="math display">\[C_{n+1}(x) = f(C_n(x))\]</span> In the movie of diffusion, that equation will be this:</p>
+<p><span class="math display">\[C_{t+h}(x) = C_n(x) + h\, \alpha\,  \partial_{xx} C_n(x)\]</span> The term <span class="math inline">\(\partial_{xx} C(x)\)</span> tells us the net flux of heat/particles/probability into the point <span class="math inline">\(x\)</span>.</p>
+<p>In English, this says, “The concentration at <span class="math inline">\(x\)</span> in one frame of the movie is the amount that was there in the previous frame plus the net flux of heat/particles from the neighboring points.”</p>
+<p>Now imagine making the movie using an ultra-high-speed camera that takes a new frame every <span class="math inline">\(h\)</span> microseconds. We will label the time of one frame as <span class="math inline">\(t\)</span> and the time of the next frame as <span class="math inline">\(t+h\)</span>. The frame-to-frame change is therefore <span class="math display">\[C_{t+h}(x) = C_t(x) + h\, \alpha \partial_{xx} C_t(x)\]</span> We can equally well write <span class="math inline">\(C_t(x)\)</span> as <span class="math inline">\(C(x, t)\)</span>, our notation for functions on a continuous domain. Doing this, and re-arranging the formula, gives: <span class="math display">\[\frac{C(x,t+h) - C(x,t)}{h} = \alpha \partial_{xx} C(x, t)\]</span> The left side of this equation is the differencing operator applied to <span class="math inline">\(C(x, t)\)</span> (with respect to <span class="math inline">\(t\)</span>). In the limit as <span class="math inline">\(h\rightarrow 0\)</span> (that is, as you turn the video frame rate faster and faster) we can replace the left side of the equation with the partial derivative <span class="math inline">\(\partial_t C(x,t)\)</span>. That is the heat/diffusion equation.</p>
+<p>We will find the solution <span class="math inline">\(C(x,t)\)</span> to the differential equation using Euler’s method. In other words, we will make movies of the function<strong>s</strong> <span class="math inline">\(C_t(x)\)</span> one frame at a time. We know the dynamics; to start we need is an initial condition, the function <span class="math inline">\(C_0(x)\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>C_funs <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>flux_funs <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>xpts <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">50</span>, <span class="dv">50</span>, <span class="at">length=</span><span class="dv">1000</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>C_funs[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> xpts,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">dnorm</span>(x, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">500</span>) {</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> <span class="fu">spliner</span>(y <span class="sc">~</span> x, <span class="at">data =</span> C_funs[[k]])</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  foo <span class="ot">&lt;-</span> flux_funs[[k]] <span class="ot">&lt;-</span> <span class="fu">D</span>(<span class="fu">tmp</span>(x) <span class="sc">~</span> x <span class="sc">+</span> x, <span class="at">.hstep=</span><span class="dv">1</span>)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  C_funs[[k<span class="sc">+</span><span class="dv">1</span>]] <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> xpts,</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">tmp</span>(x) <span class="sc">+</span> <span class="fl">0.1</span><span class="sc">*</span><span class="fu">foo</span>(x)</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Imagine that we have a long, thin pipe filled with still air and we inject at position <span class="math inline">\(x=0\)</span> a concentration of particles, say 1600 per cm^3. Equivalent, you could picture a freezing-cold iron bar and, at time <span class="math inline">\(t=0\)</span>, we place a white-hot coal on the center point, heating it to 1600 (deg C) and then removing the coal. The initial condition looks like this:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>top <span class="ot">&lt;-</span> <span class="fu">max</span>(C_funs[[<span class="dv">1</span>]]<span class="sc">$</span>y)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_line</span>(y <span class="sc">~</span> x, <span class="at">data =</span> C_funs[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">abs</span>(x) <span class="sc">&lt;</span> <span class="dv">25</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">y=</span><span class="st">"Temperature (deg C)"</span>, <span class="at">x=</span><span class="st">"Position along bar"</span>, <span class="at">title=</span><span class="st">"Initial condition C(x,t=0)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_hline</span>(<span class="at">yintercept =</span> <span class="fu">exp</span>(<span class="sc">-</span>.<span class="dv">5</span>)<span class="sc">*</span>top, <span class="at">color=</span><span class="st">"orange3"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The red horizontal line is positioned to enable you to read off the standard deviation of the bell-shaped function.</p>
+<p>The next frame of the movie will show <span class="math inline">\(C_h(x)\)</span>. To construct that, we will compute the net flux into each point on the bar.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> <span class="fu">spliner</span>(y <span class="sc">~</span> x, <span class="at">data =</span> C_funs[[<span class="dv">1</span>]])</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>foo <span class="ot">&lt;-</span> <span class="fu">D</span>(<span class="fu">tmp</span>(x) <span class="sc">~</span> x <span class="sc">&amp;</span> x, <span class="at">.hstep=</span><span class="dv">1</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">slice_plot</span>(<span class="fu">foo</span>(x) <span class="sc">~</span> x, <span class="fu">bounds</span>(<span class="at">x=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>, <span class="dv">25</span>)), <span class="at">npts=</span><span class="dv">500</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">y=</span><span class="st">"Net flux (deg C/cm^2)"</span>, <span class="at">x=</span><span class="st">"Position along bar"</span>, <span class="at">title=</span><span class="st">"Net flux at time t=0"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You can see that there is a strong net flux <em>out</em> of the center point and a net flux in to neighboring regions: the heat will be spreading out. Far from the center point, the net flux is zero. In the next graphs, we will zoom in on the center of the domain, <span class="math inline">\(-2.5 \leq x \leq 2.5\)</span>.</p>
+<p>To find the next Euler step, that is, the function <span class="math inline">\(C_h(x)\)</span>, we add the net flux (scaled by <span class="math inline">\(h \alpha\)</span>) to <span class="math inline">\(C_0(x)\)</span>. As usual, we take one Euler step after the other to reach whatever time <span class="math inline">\(t\)</span> we want.</p>
+<p>Here is the solution <span class="math inline">\(C(x, t=0.5)\)</span> shown with <span class="math inline">\(C(x, t=0)\)</span> superimposed in blue. (We set <span class="math inline">\(\alpha=2\)</span> and used 5 Euler steps with <span class="math inline">\(h=0.1\)</span>.)</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>draw_C <span class="ot">&lt;-</span> <span class="cf">function</span>(n, <span class="at">compare_n=</span><span class="dv">1</span>, <span class="at">show_sd=</span><span class="cn">TRUE</span>, <span class="at">domain=</span><span class="dv">5</span>) {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  Dat <span class="ot">&lt;-</span> C_funs[[n]] <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">abs</span>(x) <span class="sc">&lt;</span> domain)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  ylab <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">"C(x, t={(n-1)*0.1}) in deg C."</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  title <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">"C(x, t={(n-1)*0.1})"</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  redline <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span>) <span class="sc">*</span> <span class="fu">max</span>(Dat<span class="sc">$</span>y)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  P <span class="ot">&lt;-</span> <span class="fu">gf_line</span>(y <span class="sc">~</span> x, <span class="at">data =</span> C_funs[[n]] <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">abs</span>(x) <span class="sc">&lt;</span> domain)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gf_labs</span>(<span class="at">y=</span>ylab, </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">x=</span><span class="st">"Position along bar"</span>, <span class="at">title=</span>title) </span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (compare_n <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    P <span class="ot">&lt;-</span> P <span class="sc">|&gt;</span> </span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">gf_line</span>(y <span class="sc">~</span> x, <span class="at">alpha=</span><span class="fl">0.5</span>, <span class="at">color=</span><span class="st">"dodgerblue"</span>, </span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> C_funs[[compare_n]] <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">abs</span>(x) <span class="sc">&lt;</span> domain)) </span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (show_sd) {</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    P <span class="sc">|&gt;</span> <span class="fu">gf_hline</span>(<span class="at">yintercept=</span>redline, <span class="at">color=</span><span class="st">"orange3"</span>)</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    P</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_C</span>(<span class="dv">6</span>, <span class="at">domain=</span><span class="dv">25</span>, <span class="at">show_sd=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>At time <span class="math inline">\(t=0.5\)</span> , the temperature at the center has gone down. Less obviously, <span class="math inline">\(C(x, h)\)</span> is a tiny bit wider than <span class="math inline">\(C(x,t=0)\)</span>. That is, heat has spread out a bit from the center.</p>
+<p>Here is the function <span class="math inline">\(C(x,t)\)</span> at <span class="math inline">\(t=1, 2, 3, 4\)</span>. You can see the function spreading out as <span class="math inline">\(t\)</span> increases. We’ve zoomed in on the x-axis to where the action is.</p>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>axis5 <span class="ot">&lt;-</span> <span class="cf">function</span>(P, <span class="at">xlim=</span><span class="dv">5</span>, <span class="at">dxlim=</span>xlim<span class="sc">/</span><span class="dv">50</span>) {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  P <span class="sc">|&gt;</span> <span class="fu">gf_refine</span>(<span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span>(<span class="sc">-</span>xlim)<span class="sc">:</span>xlim, </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                               <span class="at">minor_breaks =</span> <span class="fu">seq</span>(<span class="sc">-</span>xlim,xlim,<span class="at">by=</span>dxlim)))</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_C</span>(<span class="dv">11</span>, <span class="at">domain=</span><span class="dv">5</span>, <span class="at">show_sd=</span><span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">axis5</span>()</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_C</span>(<span class="dv">21</span>, <span class="at">domain=</span><span class="dv">5</span>, <span class="at">show_sd=</span><span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">axis5</span>()</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_C</span>(<span class="dv">31</span>, <span class="at">domain=</span><span class="dv">5</span>, <span class="at">show_sd=</span><span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">axis5</span>()</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_C</span>(<span class="dv">41</span>, <span class="at">domain=</span><span class="dv">5</span>, <span class="at">show_sd=</span><span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">axis5</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell quarto-layout-panel" data-layout-align="center" data-layout-ncol="2">
+
+</div>
+<p>Use the intersection between the red horizontal line and the black curve to find the width of the black curve, that is, the standard deviation. Which of these sequences correspond to the standard deviation at times 1, 2, 3, and 4?</p>
+<p>“<span class="math inline">\(\\sigma_1 = 1.7, \\sigma_2 = 2.1, \\sigma_3 = 2.5, \\sigma_4 = 2.9\)</span>”, “+<span class="math inline">\(\\sigma_1 = 1.7, \\sigma_2 = 2.2, \\sigma_3 = 2.6, \\sigma_4 = 2.9\)</span>+”, “<span class="math inline">\(\\sigma_1 = 1.7, \\sigma_2 = 2.2, \\sigma_3 = 2.7, \\sigma_4 = 3.2\)</span>”, “<span class="math inline">\(\\sigma_1 = 1.7, \\sigma_2 = 2.2, \\sigma_3 = 2.8, \\sigma_4 = 3.5\)</span>”,</p>
+<p>Here is a similar set of graphs for <span class="math inline">\(t=10, 20, 30, 40\)</span>:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_C</span>(<span class="dv">101</span>,<span class="dv">0</span>, <span class="at">domain=</span><span class="dv">15</span>, <span class="at">show_sd=</span><span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">axis5</span>(<span class="at">xlim=</span><span class="dv">15</span>, <span class="at">dxlim=</span><span class="fl">0.5</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_C</span>(<span class="dv">201</span>,<span class="dv">0</span>, <span class="at">domain=</span><span class="dv">15</span>, <span class="at">show_sd=</span><span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">axis5</span>(<span class="at">xlim=</span><span class="dv">15</span>, <span class="at">dxlim=</span><span class="fl">0.5</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_C</span>(<span class="dv">301</span>,<span class="dv">0</span>, <span class="at">domain=</span><span class="dv">15</span>, <span class="at">show_sd=</span><span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">axis5</span>(<span class="at">xlim=</span><span class="dv">15</span>, <span class="at">dxlim=</span><span class="fl">0.5</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_C</span>(<span class="dv">401</span>,<span class="dv">0</span>, <span class="at">domain=</span><span class="dv">15</span>, <span class="at">show_sd=</span><span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">axis5</span>(<span class="at">xlim=</span><span class="dv">15</span>, <span class="at">dxlim=</span><span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Which of these sequences correspond to the standard deviation at times 10, 20, 30, and 40?</p>
+<p>“+<span class="math inline">\(\\sigma_{10} = 4.5, \\sigma_{20} = 6.4, \\sigma_{30} = 7.7, \\sigma_{40} = 9.0\)</span>+”, “<span class="math inline">\(\\sigma_{10}=  4.5, \\sigma_{20} = 6.0, \\sigma_{30} = 7.5, \\sigma_{40} = 9.0\)</span>”, “<span class="math inline">\(\\sigma_{10} = 4.5, \\sigma_{20} = 5.8, \\sigma_{30} = 7.1, \\sigma_{40} = 8.4\)</span>”, “<span class="math inline">\(\\sigma_{10} = 4.9, \\sigma_{20} = 6.0, \\sigma_{30} = 7.9, \\sigma_{40} = 9.3\)</span>”,</p>
+<p>The standard deviation increases with time. Which one of these power-law relationships best corresponds to the standard deviations you measured off the graphs?</p>
+<p>“<span class="math inline">\(\\sigma_t = k t\)</span>”, “<span class="math inline">\(\\sigma_t = k t^2\)</span>”, “+<span class="math inline">\(\\sigma_t = k \\sqrt{t}\)</span>+”, “<span class="math inline">\(\\sigma_t = k t^{1.5}\)</span>”</p>
+<p><strong>Essay</strong>: A more fundamental way to measure the increase in width of <span class="math inline">\(C(x, t)\)</span> with time is to use the <strong>variance</strong> rather than the standard deviation. Describe briefly the very simple pattern that the variance of <span class="math inline">\(C(x, t)\)</span> follows over time. (You don’t have to give a formula, just say what function it is.)</p>
+</section>
+<section id="random-walk" class="level2" data-number="54.5">
+<h2 data-number="54.5" class="anchored" data-anchor-id="random-walk"><span class="header-section-number">54.5</span> Random walk</h2>
+<p>The solution to diffusion differential equation gives the concentration of the diffusing particles <span class="math inline">\(C(x, t)\)</span> at any <span class="math inline">\(x\)</span> and <span class="math inline">\(t\)</span>. At any given value of <span class="math inline">\(t= t_1\)</span>, the shape of <span class="math inline">\(C(x,t=t_1)\)</span> tends to a smooth bell-shaped curve: the gaussian function. The width of the gaussian is a function of <span class="math inline">\(t\)</span>. Conventionally, the width corresponds to the variance parameter <span class="math inline">\(\sigma^2\)</span>. This changes with <span class="math inline">\(t\)</span> in a very simple way: <span class="math display">\[\sigma(t)^2 = D t\]</span></p>
+<p>Everything is smooth and nicely behaved. But this is an abstraction which summarizes the concentation of a theoretically infinite population of particles. Looking at the position of a single particle as a function of time gives a very different impression. The figure shows individually the trajectories of 50 (randomly selected) particles.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="53-diffusion_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Do take note that the position of each particle in the pipe at time <span class="math inline">\(t\)</span> is shown on the <em>vertical axis</em>.</p>
+<p>Each of the trajectories is called a <strong>random walk</strong>, as if a walker were randomly taking steps forward or backward.</p>
+<p>r insert_calcZ_exercise(“XX.XX”, “KktWcD”, “Exercises/Dynamics/fox-write-oven.Rmd”)</p>
+</section>
+<section id="investment-volatility" class="level2" data-number="54.6">
+<h2 data-number="54.6" class="anchored" data-anchor-id="investment-volatility"><span class="header-section-number">54.6</span> Investment volatility</h2>
+<p>When people invest money, they expect a return. Generally, the return is measured as a percentage per year. An <span class="math inline">\(r=10\%\)</span> annual return—that is pretty high these days—means that at the end of the year your investment of, say, $500 will be worth $550. And remember, saying <span class="math inline">\(r=10\%\)</span> is the same thing as saying <span class="math inline">\(r=0.10\)</span>.</p>
+<p>Banks and such do things in discrete time, e.g.&nbsp;crediting your savings account with interest once a month. But this is calculus, so we focus on continuous time. (And, of course, Nature does things in continuous time!)</p>
+<p>If <span class="math inline">\(S\)</span> is the amount of money you have invested at a return of <span class="math inline">\(r\)</span>, the evolution of <span class="math inline">\(S\)</span> over time is given by a familiar, linear differential equation: <span class="math display">\[\dot{S} =  r S\ \ \ \implies \ \ \  S(t) = S_0 e^{r t}\]</span></p>
+<p><strong>Quick review questions</strong>:</p>
+<ol type="1">
+<li>Which of those two equations is the differential equation and which is the solution?</li>
+<li>What symbol is being used to stand for the “state” of the system?</li>
+<li>What is the form of the dynamical function of state?</li>
+<li>Is there a fixed point? If so, is it stable?</li>
+</ol>
+<p>Investments in the stock market provide two types of return. We will focus on the return that comes from the changing price of the stock, which can go up or down from day to day. The other kind of return is dividends, the typically quarterly payment made by the company to stock holders. In investments, dividends should not be ignored, but we aren’t interested in them here.</p>
+<p>Now imagine that you expect, for whatever reason, the stock price to go up by 2% per year (<span class="math inline">\(r=0.02\)</span>) on average. Of course, the price is volatile so the 2% is by no means guaranteed. We will imagine the volatility is 25% per year.</p>
+<p>This situation, which includes volatility, is modeled by a modification of differential equations called “stochastic differential equations.” (“Stochastic” comes from the Greek word for “aiming”, as in aiming an arrow at a target. You won’t necessarily hit exactly.) The math is more advanced and we will not go into details. Our point here is to warn you: Now that you are expert about (ordinary) differential equations, you need to be aware that things are somewhat different in a stochastic situation.</p>
+<p>To that end, we will show you trajectories that follow the mathematics of stochastic exponential growth (with <span class="math inline">\(r=0.2\)</span> per year and volatility <span class="math inline">\(\sigma = 0.25\)</span> per year). On top of that, we will show in red the trajectory from (ordinary, non-stochastic) exponential dynamics <span class="math inline">\(\dot{S} = r S\)</span>. In blue, we will show the theoretical average stochastic dynamics. In all cases, we will set the initial condition to be <span class="math inline">\(S_0 = 100\)</span>. We will follow the trajectories for three years.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="53-diffusion_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The eye is drawn to the trajectories leading to large returns. That is misleading. Although there are a few trajectories that show a 3-year return above 50% (that is, to $150 or higher) in fact the majority of trajectories fall <em>below</em> that of a purely deterministic <span class="math inline">\(r=2\%\)</span> annual return exponential process. The volatility causes a <em>decrease</em> in the median return.</p>
+<p>It is easy to understand why the stochastic shocks cause a loss in return. Consider a stock with an initial price of $100 that in two successive days goes up by 50% and down by 50%. These ups and downs should cancel out, right? that is not what happens:</p>
+<p><span class="math inline">\(\$100 \times 1.5 \times 0.5 = \$75\)</span></p>
+<div class="forinstructor">
+<p>Some class notes in <code>www/2021-03-31-classnotes.Rmd</code></p>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/dtkaplan\.github\.io\/MC2\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../Manifestations/52-mechanics.html" class="pagination-link" aria-label="Mechanics">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">53</span>&nbsp; <span class="chapter-title">Mechanics</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../Glossary.html" class="pagination-link" aria-label="Glossary">
+        <span class="nav-page-text"><span class="chapter-number">55</span>&nbsp; <span class="chapter-title">Glossary</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/dtkaplan/MC2/edit/main/Manifestations/53-diffusion.Rmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>

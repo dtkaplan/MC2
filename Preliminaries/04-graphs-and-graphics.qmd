@@ -1,8 +1,21 @@
+---
+execute:
+  keep-md: true
+---
+
 # Visualizing functions {#sec-graphs-and-graphics}
 
 ```{r include=FALSE}
 source("../starter.R")
 ```
+
+Although functions are often defined using a formula, humans are particularly adept at interpreting functions when presented graphically. This chapter is about two basic modes of function graphics, that is graphics which present the relationship between function input(s) and the output.
+
+The first graphical model, called a **graph**, is most appropriate when the function has only one input. The second graphical model, called a **contour plot**, works well for functions with two inputs.
+
+When it comes to functions with more than two inputs, a good strategy is  to simplify by taking a one- or two-dimensional **slice** through the input space. On this slice, the function can be presented using either a graph or a contour plot. 
+
+## Graphics for functions with a single input
 
 Most readers will have encountered **graphs** of functions in high-school or earlier. @fig-function-graph-3 shows an example: a graph of a function named `g()`. There is only one input to `g()`.
 
@@ -16,68 +29,102 @@ slice_plot(g(x) ~ x, domain(x=1:7), npts=1000) +
 Graph of `g()`, a function with one input.
 :::
 
-As you know, humans can use the function graph as a scaffold for an algorithm for finding the output corresponding to any given input. Your skills at this may already be quite strong, but for the sake of completeness I provide this description of the algorithm:
+Many calculus concepts can be made intuitive by referring to the shapes of function graphs. For now, however, we focus on a simple task: finding from a graph the output values corresponding to a given input. At the risk of telling you what you already know, the process is:
 
 1. Find the horizontal location that corresponds to the given input and draw a vertical line through that location.
 2. Mark the point where the vertical line in (1) intersects the curve.
-3. Read off the vertical location of the point in (2).
+3. Read off the output as the vertical location of the point in (2).
 
-## Drawing function graphs with R/mosaic
-
-In technical vocabulary, the word "**graph**" refers to the kind of display in @fig-function-graph-3. The word "**graphic**" is not technical and is more general than *graph*. A "graphic" is any kind of visual presentation of art or information. This is important to note, since the majority of graphics in this Calculus book will not be "graphs." 
-
-A "graph" is a suitable format for displaying a function with one *input*. (Remember, *all* functions in this book will have one *output*.) In modeling, it's typical to use functions of multiple inputs. Consequently, graphics involving functions will typically *not* be "graphs." But, the reader is undoubted familiar with graphs from high school, so we start there so that we can focus on the computer commands before we introduce other modes.
-
-@lst-first-graph shows an R/mosaic graphics command that produces a *graphic* showing the *graph* of a function. (Make sure to press "Run code" to see the graphic.)
+@lst-first-graph shows an R/mosaic graphics command that draws a *graph* of a function. 
 
 ::: {#lst-first-graph}
 ```{webr-r}
-slice_plot(3*cos(z) + 7 ~ z, domain(z = 0:10))
+#| autorun: true
+slice_plot(3*cos(z) + 7 ~ z, 
+           domain(z = 0:10))
 ```
 :::
 
-You see the typical components of an R/mosaic command: a function name (`slice_plot()`) followed by a pair of parentheses. Inside the parentheses are *two* arguments, both of which are required.
+You see the typical components of an R/mosaic command: a function name (`slice_plot()`) followed by a pair of parentheses. Inside the parentheses are *two* arguments, both of which are required. As it happens, the second argument is being placed on a new line, indented to align with the first argument, but this is solely for human readability. The two arguments are:
 
 1. a tilde expression for the **function** you wish to graph
 2. the **graphical domain** to be covered by the horizontal axis
 
-A tilde expression suitable for `slice_plot()` must have a single input name on the right-hand side. The left-hand side is an expression of the sort you have already used in `makeFun()`.
-
-The second argument to `slice_plot()` will always be `domain()` with a named argument matching the name from the tilde expression RHS. The *value* given for the named argument contains the left- and right-bounds for the horizontal axis.
+A tilde expression suitable for `slice_plot()` must have a single input name on the right-hand side, as with the `~ z` in @lst-first-graph. Other than this restriction, the tilde expression is the same sort you have already used in `makeFun()`.
 
 Remember that a function's domain is the space of all possible valid inputs to the function. The domain for most of the functions you studied in high school is infinite, for instance extending from $-\infty$ to $\infty$. A graphical domain, in contrast, is usually a finite part of the function domain.
 
-The R/mosaic command you will use to graph a mathematical function is `slice_plot()`. (We will get into the reasons for this name later.) `slice_plot()` takes **two** arguments which are, as always, separated by a comma. Here are two examples producing graphs of different functions:
+You set the graphical domain via the second argument to `slice_plot()`. This argument will always involve the use of `domain()`, a function which takes its own argument, which takes the form of a *named argument*, here `z = 0:10`. In @lst-first-graph we use `z` as the name of the argument because `z` has already been specified by the tilde expression as the input to the function being graphed. The name of the argument to `domain()` will always correspond to the name used on the right-hand side of the tilde expression. The low and high bounds of the graphical domain are given as numbers. In `domain()`, the two numbers are separated by a colon, as in `0:10`, that is, "low : high."^[R experts should note that the colon has a different meaning within `domain()` than it does generally in R.]
 
-a. `slice_plot(sin(x) ~ x, domain(x = 0 : 5)`
-b. `slice_plot(3 * y + b  ~ y, domain(y = -3.5 : 3)`
+Sometimes the tilde expression will involve parameters, as with `3 * y + b ~ y`. You can tell that `b` is a parameter because it is *not* listed as an input on the righthand side of the tilde.
+
+When plotting a parameterized function, you must give a numerical value for each parameter. @lst-slice-parameter gives and example of one what to do this, including the parameter values as named arguments *after* the domain, that is, *outside* of the parentheses used with `domain()`.
+
+::: {#lst-slice-parameter}
+```{webr-r}
+slice_plot(3 * y + b  ~ y, domain(y = -2:5), b=8)
+```
+:::
+
+
     
-The first argument to `slice_plot()` tells what function is to be plotted. The argument is a tilde expression of the same sort you saw in @sec-computing-with-r. 
-
-The second element establishes the graphics domain. It will always be the name `domain()` with a named argument that matches the name for the input on the RHS of the tilde expression. In (a) the argument name is `x` while in (b) the argument name is `y`.
-
-Named arguments always consist of a name followed by an equal sign. After the equal sign comes the value of the argument. In (a), the value is `0 : 5` which means "zero to five." In (b), the value is `-3.5 : 3` standing for "minus three-point-five to three." Each of these values is written with a colon (**`:`**). This is a bit of punctuation meaning "to," as in "zero **to** five."^[R experts should note that the colon has a different meaning within `domain()` than it does generally in R.]
-
-## Drawing contour plots of functions {#sec-drawing-contour-plots}
+## Graphics for functions with two inputs {#sec-drawing-contour-plots}
 
 In general, the functions we use in modeling can have multiple inputs. So best not to get to fixated on the format in @lst-first-graph. That format is appropriate only for functions that have **one** input.
 
-Our preferred visual format for a function of *two* inputs is the "**contour plot**." You might be familiar with the idea if you have ever had to use a topographic map for hiking. @fig-contour-1 gives an example:
+Our preferred visual format for a function of *two* inputs is the "**contour plot**." You might be familiar with the idea if you have ever had to use a topographic map for hiking. @lst-contour-1 gives an example:
 
-::: {#fig-contour-1}
-```{r warning=FALSE}
-h <- makeFun(3*x - 2*x*y - y^2 ~ x & y)
-contour_plot(h(x, y) ~ x & y, domain(x = -1:1, y = 0:2))
+::: {#lst-contour-1}
+```{webr-r}
+#| autorun: true
+contour_plot(3*x - 2*x*y - y^2 ~ x & y, 
+             domain(x = -1:1, y = 0:2))
 ```
 
 A contour plot
 :::
 
-The function being plotted is named `h()`. Since `h()` takes two inputs, the graphical domain needs to be a space with two dimensions. We signal this by giving two arguments to `domain()`, one for each dimension of the input space. Of course, the names used within `domain()` have to match the names used in the tilde expression. Note that we use only one `domain()` call but it has two arguments: one for the horizontal axis, the other for the vertical axis.
+Notice that the righthand side of the tilde expression includes the names of two inputs. Consequently the graphical domain needs to be a space with two dimensions. We signal this by giving two arguments to `domain()`, one for each dimension of the input space. Of course, the names used within `domain()` have to match the names used in the tilde expression. Note that we use only one `domain()` call but it has two arguments: one for the horizontal axis, the other for the vertical axis.
+
+As you move through *MOSAIC Calculus* you will learn to identify the shapes found in contour plots. As you might expect, some calculus concepts will be easily interpreted in terms of those shapes. But for now, consider a basic task that can be accomplished using contour plots: reading off the output value corresponding to given values of the inputs.
+
+To understand this, note that the output values are *not* displayed as position along an axis. Since there are two inputs to the function, we need both axes for input values. The output values are displayed by the contour lines of the plot. 
+
+Here's the algorithm:
+
+1. Find the position in the input space at the coordinates of the given input values. For example, in the graph from @fig-contour-1, the inputs $x=0, y=1$ correspond to the point right in the middle of the graphics domain.
+2. Read off the output as the value of the contour line passing through that point. As it happens, the contour passing through $x=0, y=1$ is not labeled. You need to infer the label from the labels on neighboring contours. These neighbors have labels "0" and "-2". Correspondingly, the contour of interest corresponds to the value -1.
+
+What to do when there is no contour passing through the input point? For example, in @lst-contour-1 the position for input values $x=0, y = 1.5$ does not have a contour. You can see, however, that the position lies between two contours, the one for value -2 and the (unlabelled) one for value -3. Thus, you can infer that the output value at the position  $x=0, y = 1.5$ is somewhere between -3 and -2. 
+
+When starting out with contour plots, you might prefer to show more contours and make sure that every contour is labeled. You can accomplish this with additional arguments to `contour_plot()`, as in @lst-contour-2.
+
+::: {#lst-contour-2}
+```{webr-r}
+contour_plot(3*x - 2*x*y - y^2 ~ x & y, 
+             domain(x = -1:1, y = 0:2),
+             skip = 0,
+             n_contours = 50)
+```
+:::
+
+Such graphics are tediously crowded. Some improvement can be found by skipping the labels on contours. For instance, try @lst-contour-2 with `skip = 5`.
+
+::: {.callout-tip}
+## Giving functions names
+
+It can be handy to give a function a name before plotting it. This also helps when evaluating the function at a specific set of inputs. Like this:
+
+```{webr-r}
+h <- makeFun(3*x - 2*x*y - y^2 ~ x & y)
+contour_plot(h(x, y) ~ x & y, domain(x = -1:1, y = 0:2))
+h(x=0, y=1.5)
+```
+:::
 
 ## Spaces and graphs of functions
 
-We are going to step back from the instructions for drawing graphics like @lst-first-graph in order to give you a better perspective on the essentials of making graphical displays of functions. This will help in reading and interpreting graphics, especially graphics for functions of multiple inputs such as in @fig-contour-1.
+We are going to step back from the instructions for drawing graphics like @lst-first-graph in order to give you a better perspective on the essentials of making graphical displays of functions. This will help in reading and interpreting graphics, especially graphics for functions of multiple inputs such as in @lst-contour-1.
 
 As you know, the domain of a function is the set of all possible valid inputs to that function. @sec-quantity-function-space  defines a **space** to be a set of possibilities. Thus, a function domain can be seen as a space, namely, the "input space" for the function.
 
@@ -93,6 +140,8 @@ There is also an **output space** for a function, the set of all possible output
 
 ::: {#fig-output-space}
 ![](www/Output-space.png){width="50%"}
+
+A space suitable for representing output values.
 :::
 
 The function itself tells us, for every point in the input space, what is the corresponding point in the output space. @fig-show-lines-function gives an example. The input and output spaces are shown as number lines, while the function is indicated by the thin colored lines.
@@ -176,7 +225,7 @@ The mapping from @fig-show-lines-function translated into the form of a graph. T
 :::
 ## Input and output spaces
 
-This background about spaces is important for understanding functions because, for functions with two or more inputs, the input space and the output space can be depicted in different ways. For example, in the contour plot of @fig-contour-1, the input space is the two-dimensional space in the plane of the display (that is, the paper or screen depending on how you are reading this). The output space for the contour plot is depicted using curves, colors, and labels. There is one curve for each output value. Only a handful of output values are shown, but you can get pretty close to estimating the output value even for inputs not on the curve.
+This background about spaces is important for understanding functions because, for functions with two or more inputs, the input space and the output space can be depicted in different ways. For example, in the contour plot of @lst-contour-1, the input space is the two-dimensional space in the plane of the display (that is, the paper or screen depending on how you are reading this). The output space for the contour plot is depicted using curves, colors, and labels. There is one curve for each output value. Only a handful of output values are shown, but you can get pretty close to estimating the output value even for inputs not on the curve.
 
 The space of all possibilities (y, z, output) is three-dimensional, but very few of those possibilities are consistent with the function to be graphed. You can imagine our putting dots at all of those consistent-with-the-function points, or our drawing lots and lots of continuous curves through those dots, but the cloud of dots forms a ***surface***; a continuous cloud of points floating over the (y, z) input space.
 
@@ -208,7 +257,7 @@ The function from @fig-first-surface shown in contour-plot format.
 
 
 
-## Why "slice_plot()"?
+## Slicing input spaces
 
 Saying "graph" for a display of $f(x)$ versus $x$ is correct and reasonable. But in *MOSAIC Calculus* we have another point to make.
 
@@ -286,7 +335,7 @@ slice_plot(f2(input_1 = 0 , input_2) ~ input_2,
 Another one-dimensional slice through the graph of a function with two inputs.
 :::
 
-
+In much the same way, a function with three or more inputs can be graphed by taking a one- or two-dimensional slice. 
 
 
 

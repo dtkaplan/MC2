@@ -196,29 +196,70 @@ Sigmoid | $[\text{sigmoid}(a)] =  [1]$ | $[a] = [1]$ |celibate
 : Conditions under which functions can be applied to dimensionful quantitities. Note that $[a] = [b]$ means that the *dimension* of $a$ and of $b$ are the same. For instance, even though 1 mm and 500 miles are very different distances, [1 mm]$=$[500 miles]. Both [1 mm] and [500 miles] are dimension L. {#tbl-allowed-operations}
 :::
 
+## Dimensionless numbers
 
-## Example: Dimensional analysis {#sec-pendulum-dimensions}
+In many STEM fields, worker use special, usually named quantities that are dimensionless. Being dimensionless is different from having no units. For instance, an angle is a dimensionless quantity (arc length divided by radius length) but is stated in units. For instance, 90 degrees is the same as $\pi$ radians. (More obscurely, some fields use "grads." A grad is one-hundredth of a right angle, that is, a little less than a degree.) Many people have heard of the  "[*mach*](https://en.wikipedia.org/wiki/Mach_number)" and that 1 mach corresponds to the speed of sound. But speed has dimension---L/T, as in meters per second or miles per hour. And *mach* is a dimensionless quantity. How is *mach* constructed to be dimensionless and yet still be about speed? 
 
-We want to relate the **period** (in T) of a pendulum to its **length** and **mass**. Acceleration ($\text{L}\cdot \text{T}^{-2}$) due to **gravity** also plays a role. For simplicity, we will assume that only the bob at the end of the pendulum cable or rod has mass.   
+*Mach* is actually a *ratio* of speeds, the speed of an object such as an airplane divided by the speed of sound. In the division, the dimensions of the two quantities cancel out to produce a quantity of dimension L/T / (L/T) = [1]. Dimensionless. *Mach* is useful in aerodynamics because the speed of an object is an important determiner of the pattern of flow through or around the object. It is simpler to describe the pattern of flow in terms of an object's speed *relative* to the speed of sound in the medium. This is why words like "supersonic" and "subsonic" (and even "transonic" and "hypersonic") are often heard when talking about aircraft, missles, and meteoriods.
 
-The analysis strategy is to combine the four quantities we think play a role into one total quantity that is **dimensionless**. Since it is dimensionless, it can be constant regardless of the mass, length, period, or gravity of each situation.
+Only rarely do science workers invent a useful new dimensionless quantity, but this does sometimes happen and we all have a shared [historical legacy of such inventions](https://en.wikipedia.org/wiki/Dimensionless_numbers_in_fluid_mechanics) to build on. My goal here is to relate the motivation for dimensionless quantities. 
 
-$$\text{[Period]}^a \cdot \text{[Mass]}^b \cdot \text{[Length]}^c \cdot \text{[Gravity]}^d = T^a \cdot M^b \cdot L^c \cdot L^d \cdot T^{-2d} = [1]$$
-To be dimensionless:
+Recall from @sec-parameters the framework we use for turning pattern-book functions into models of the real world. All the pattern-book functions take a pure number (dimensionless) as input and produce a pure number (dimensionless) as output. We used *input scaling* to translate between a dimensionful quantity (e.g. time, speed, density, and so on) and the dimensionless input needed for a pattern-book function. Similarly, we used *output scaling* to translate between the dimensionless *output* of a pattern-book function and the dimensional quantity that we want to model with the function. This is an important technique that you will use often.
 
-- $c = -d$, cancel out the L
-- $a = 2d$, cancel out the T
-- $b=0$, there is no other mass term, and we need to cancel out the M
+But consider an alternative framework for doing things. You will not need this except in this demonstration, but it does serve to motivate why dimensionless quantities are so important. In this alternative approach, we stipulate that modeling functions will always take dimensionless inputs and produce a dimensionless output. Such a modeling function, let's call our example $g()$ will do any input scaling internally, perhaps by parameters hidden to the user. To create a dimensionful output, we'll continue to use output scaling. So, a model constructed with a generic function of this sort will look like $A g(x, y, z, ...) + B$. The output scaling parameters will always have the same dimensions and units as the quantity we want to model as the output. But we insist---within this alternative framework---that all inputs, $x, y, z, ...$ be **dimensionless**. 
 
-All of the exponents can be put in terms of $d$. That does not tell us what $d$ should be, but whatever value for $d$ we decide to choose, we get a ratio that is  equivalent to:  
+For the sake of demonstration, let's build a model in this framework that describes the motion of a pendulum. The output variable will be the *period* of the pendulum, that is, the time to complete a full cycle or, more realistically for a pendulum, to go through a complete back-and-forth motion (the amplitude of which is often decreasing in the familiar way as time goes by). Because of this choice, the period is one of the dimensionful quantities that are involved in the model.
 
-$$ \frac{[\text{Gravity}]\cdot [\text{Period}]^2}{[\text{Length}]} = [1]$$
+i. period $p$, dimension T,  units might be seconds.
 
-This is a relationship between *dimensions* of quantities. To render it into a formula involving the quantities themselves we need to take into account the units. 
+But there are other dimensionful quantities that characterize a pendulum. Let's list the main ones:
 
-$$ \frac{\text{Gravity}\cdot \text{Period}^2}{\text{Length}} = B$$
+ii. length of the rod, $r$, with dimension L, units might be meters
+iii. mass of the bob at the end of the rod, $m$, units might be kg
+iv. the force of gravity on the bob, $m g$, with units M L T^-2^. The quantity $g$ is called the "acceleration due to gravity." On Earth, the value of this is roughly 9.8 m/s^2^ (meters per second-squared). The *force*, as Newton defined, is mass times acceleration.
+v. the angle the pendulum swings through, $\theta$. 
 
-We can experimentally determine the numerical value of the dimensionless constant $B$ by measuring the period and length of a pendulum and (on Earth) recognizing that gravitational acceleration on Earth's surface is 9.8 meters-per-second-squared. Such experiments and mathematical models using differential equations give $B = (2\pi)^2$.
+As for (v), Galileo famously established, by measuring with his pulse the period of several swinging candelabras in Pisa Cathedral, some of which had a wide swing and others with a narrow swing, that $\theta$ doesn't enter into things. And, naturally, there are undoubtedly other quantities that influence the period of the pendulum such as air resistence, the Earth's spin, and so on. For simplicity, we will ignore these as we start to build our model. Then, once we have a model to work with, we can use the techniques in @sec-modeling-science-method to see if the discrepancies between our model results and observations in the real world are so substantial that we need to take them into account. If not, the simple model will do.
+
+In the input-scaling framework from @sec-parameters, we would be tempted to write down the name and arguments of the model function, choose an appropriate pattern-book or composed function and then think about input scaling. That is, the model function of period might be defined as $$period(r, m, m g) \equiv \text{some function of } r, m, \text{and } g.$$ But right now we are using the pure-number input framework: $$A\ g(x, y, z) + B$$ where $x$, $y$ and $z$ are dimensionless quantities.
+
+The challenge is to figure out how to construct the dimensionless inputs ($x, y, z$) out of the dimensionful quantities that we can measure from a real-world pendulum on Earth. 
+
+The main way to create something of a new dimension is to multiply (or divide) things with the old dimensions. The things we are working with are 
+
+quantities: | $\text{period}$ | $r$ | $m$ | $m \ g$
+--------|-----|-----|-----|-----
+dimension:  | T | L | M | M L T^-2^
+
+Let's get to work. To start, we'll see what happens when we divide period by the rod length. The dimension of this will be T / L. That's not dimensionless! Neither would be period times rod length or period times mass or period times gravitational force.
+
+Perhaps there is no combination of the four quantities that will come out as dimensionless. Surprisingly, if this were the case it would be a hint that we have left an important quantity out of our model, or that we have included a quantity that doesn't contribute. (This is an amazing power of *dimensional analysis*, to be able to check whether the set of input quantities we have selected is self-consistent!)
+
+Systematic search reveals that there is a dimensionless quantity to be made by combining period, rod length, mass of the bob, and gravitational force $m g$. This is
+
+period^2^ $\times$ gravitational force / (rod length $\times$ mass)
+
+Written out in terms of fundamental dimensions, this is 
+
+(T^2^ $\times$ M L / T^2^ ) / (L $\times$ M)  , or, rearranging, T^2^/T^2 $\times$ M / M $\times L / L. That is, [1]: dimensionless.
+
+This tells us that there can be only one dimensionless input to $g()$. This dimensionless input must be 
+
+$$\frac{\text{period}^2 m\ g}{m\ r}\ \text{where } \left[\frac{\text{period}^2 m\ g}{m\ r}\right] = [1].$$  
+Since we create new dimensions by multiplying and dividing old ones, it's the case that
+
+$\frac{\left[\text{period}\right]^2 [m]\ [g]}{[m]\ [r]} = [1].$$ 
+
+Re-arranging in the usual algebraic way, we have
+
+$$\left[\text{period}\right]^2 = \frac{[r]}{[g]}\ \ \ \text{or }\ \  \left[period\right] = \sqrt{\frac{[r]}{[g]}}.$$
+Now that we know that only the single quantity $\sqrt{[r] / [g]}$ is involved in making the period, it's time to abandon the methodological scaffolding we set up for this model. We'll say simply,
+"period must be a function of $\sqrt{\frac{\strut r}{g}}$," a formula you can find in many physics books. Remarkably, according to our dimensional analysis, the mass of the pendulum bob doesn't make a difference to the period of the pendulum.
+
+What is the function that takes $\sqrt{[r] / [g]}$ as input and produces period as the output. We don't know yet. There's more work to do, along the lines of @sec-data-and-data-graphics. Being on Earth, we can't readily change the value of gravitational acceleration $g$, but we can change the rod length easily. Make some measurements of the period for different rod lengths, plot the period versus $\sqrt{r/g}$, and we'll know what the function looks like. SPOILER ALERT: It turns out to be well approximated as a straight line, at least when our measurements are made with pendula swinging through a small angle. 
+
+There are [dozens of named dimensionless quantities](https://en.wikipedia.org/wiki/Dimensionless_numbers_in_fluid_mechanics), usually called "numbers." For instance, the [Archimedes number](https://en.wikipedia.org/wiki/Archimedes_number), the [Biot number](https://en.wikipedia.org/wiki/Biot_number), the [Bond number](https://en.wikipedia.org/wiki/Bond_number). People who work with water, waves, and air---for instance, geophysicists, meteorologists, and people who design ships and airplanes---frequenly run into the [Rossby number](https://en.wikipedia.org/wiki/Rossby_number), the [Reynolds number](https://en.wikipedia.org/wiki/Reynolds_number), and the [Froude number](https://en.wikipedia.org/wiki/Froude_number).
+
 
 
 
