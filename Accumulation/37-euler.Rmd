@@ -111,7 +111,8 @@ To translate this into a numerical method for computing $F(t)$, let's write thin
 - we will substitute the limit $\lim_{h\rightarrow 0}$ with an understanding that $dt$ will be something "small." How small? we will deal with that question when we have to tools to answer it.
 
 With these changes, we have $$f(t_0) = \frac{F(t_0+dt) - F(t_0)}{dt}\ .$$
-The one quantity in this relationship that we do not yet know is $F(t_0 + dt)$. So re-arrange the equation so that we can calculate the unknown in terms of the known. $$F(t_0 + dt) = F(t_0) + f(t_0)\, dt\ .$$
+The one quantity in this relationship that we do not yet know is $F(t_0 + dt)$. So re-arrange the equation so that we can calculate the unknown $F(t_0 + dt)$ from the known $F(t_0)$ and $f(t_0)$. That is,
+$$F(t_0 + dt) = F(t_0) + f(t_0)\, dt\ .$$
 
 ::: {.callout-tip}
 Let's consider finding the anti-derivative of $\dnorm()$, that is, $\int_0^t \dnorm(x) dx$. In one sense, you already know the answer, since $\partial_x \pnorm(x) = \dnorm(x)$. But $\pnorm()$ is just a name. Beneath the name we know $\pnorm()$ only because it has been numerically constructed by integrating $\dnorm()$. The $\pnorm()$ function is so important that the numerically constructed answer has been memorized by software.
@@ -241,7 +242,7 @@ Another problem is that area is a physical quantity, with dimension L$^2$. The q
 
 ## The Euler Step
 
-The previous section a visualization of an integral in terms of an area on a graph. As you know, a definite integral $\int_a^b f(t) dt$ can also be computed by constructing the anti-derivative $F(t) \equiv \int f(t) dt$ and evaluating it at the upper and lower bounds of integration: $F(b) - F(a)$.  In this section, we will look at the numerical process of constructing an anti-derivative function, which uses many of the same concepts as those involved in finding an integral by combining areas of rectangles.
+Without invoking "areas," a definite integral $\int_a^b f(t) dt$ can be computed by constructing the anti-derivative $F(t) \equiv \int f(t) dt$ and evaluating it at the upper and lower bounds of integration: $F(b) - F(a)$.  In this section, we will look at the numerical process of constructing an anti-derivative function, which uses many of the same concepts as those involved in finding an integral by combining areas of rectangles.
 
 ```{webr-r}
 #| context: setup
@@ -304,10 +305,9 @@ Pts
 ```
 
 
-We used the name `step` to identify the product of the height and spacing of the pickets to help you think about the overall calculation as accumulating a series of steps. Each step provides a little more information about the anti-derivative that we will now calculate. In terms of the area metaphor for integration, each step is the area of one vertical bar of the sort presented in the previous section.
+We used the name `step` to identify the product of the height and spacing of the pickets to help you think about the overall calculation as accumulating a series of steps. Each step provides a little more information about the anti-derivative that we will now calculate. In the area metaphor for integration, each step is the area of one vertical bar of the sort presented in the previous section.
 
 We will call these ***Euler steps***, a term that will be especially appropriate when, in Block 6, we use integration to calculate the trajectories of systems---such as a ball in flight---that change in time.
-
 
 The final step in constructing the anti-derivative is to add up the steps. This is simple addition. But we will arrange the addition one step at a time. That is, for the second row, the result will be the sum of the first *two* steps. For the third row, the result will be the sum of the first *three* steps. And so on. The name for this sort of accumulation of the previous steps is called a ***cumulative sum***. Another name for a cumulative sum is a "running sum": the sum-so-far as we move down the column of steps.  Cumulative sums are computed in R by using `cumsum()`. Here, we are calling the result of the cumulative sum `F` to emphasize that it is the result of anti-differentiating $f()$. But keep in mind that the anti-derivative is not just the `F` column, but the table with both `t` and `F` columns. That is, the table has a column for the input as well as the output. That is what it takes to be a function.
 

@@ -45,7 +45,7 @@ In this chapter, we will study second-order differential equations in a variety 
 In general, a force-balance equation has the form
 $$\partial_{tt} x = f(\partial_t x, x)$$, the acceleration is a function both of position and velocity. In the above example, the dynamical function has a particularly simple form: $f(\partial_t x, x) \equiv -g$.
 
-Second-order differential equations can always be written as a pair of first-order differential equations. To see this, let one of the first-order equations be $$\partial_t x = v\ .$$ The other equation, $\partial_{tt} x = f(\partial_t x, x)$ can be re-written in terms of $v$:
+Second-order differential equations can always be written as a pair of first-order differential equations. To see this, let one of the first-order equations be $$\partial_t x = v\ .$$ The other equation, $\partial_{tt} x = f(\partial_t x, x)$ can be re-written using $v$:
 $$\partial_t v = f(v, x)\ .$$
 
 Since we know how to solve sets of first-order differential equations by Euler's method, we can always find the solution $x(t)$ to any second-order differential equation.
@@ -182,12 +182,12 @@ According to Hooke's Law, a stretched or compressed spring exerts a force that i
 $$m\, \partial_{tt} y = - s\, y\ ,$$ where $m$ is the amount of mass and $s$ is the stiffness of the spring.
 This force-balance equation corresponds to the second-order differential equation $$\partial_{tt} y = - \frac{s}{m} y\ .$$
 
-You can see that the motion is oscillatory, which suggests that the solution to the differential equation will be of the form $y(t) = A \sin(\omega t)$. Taking this as an ***ansatz*** leads to finding a value of $\omega$, which is called the ***angular frequency*** of the oscillation. (In terms of the period of oscillation $P$, the angular frequency is $\omega = 2 \pi/P$.)
+You can see that the motion is oscillatory, which suggests that the solution to the differential equation will be of the form $y(t) = A \sin(\omega t)$. Taking this as an ***ansatz*** leads to finding a value of $\omega$, which is called the ***angular frequency*** of the oscillation. (The period of oscillation $P$ corresponds to the angular frequency is $\omega = 2 \pi/P$.)
 
 To find $\omega$, plug in the ansatz to the differential equation:
 
 $$\partial_{tt} A \sin(\omega t) = - \frac{s}{m}\, A \sin(\omega t)$$ 
-Differentiating $\sin(\omega t)$ once let's us re-write the left-hand side of the equation in terms of a *first derivative*
+Differentiating $\sin(\omega t)$ once let's us re-write the left-hand side of the equation as a *first derivative*
 
 $$\partial_{t} A \omega\, \cos(\omega t) = - \frac{s}{m}\, A \sin(\omega t)$$
 Differentiating again gives
@@ -289,11 +289,11 @@ As always, this second-order differential equation can be written as a pair of f
 $$\partial_t y = v\ ,$$, which is just the definition of velocity $v$. The other first-order equation will be
 $$\partial_t v = -r v  - b y\ .$$ Both equations are linear.
 
-In the previous chapter, we wrote such a pair of linear first-order differential equations in terms of a vector
+In the previous chapter, we wrote such a pair of linear first-order differential equations as a vector
 $$\vec{w(t)} = \left[\begin{array}{c}v(t)\\y(t)\end{array}\right]\ .$$
-In terms of the vector $\vec{w(t)}$ the dynamics can be written in vector/matrix form:
+Using the vector $\vec{w(t)}$, the dynamics can be written in vector/matrix form:
 $$\partial_t \vec{w} = \left[\begin{array}{c}-r \ \ \  -b\ \ \\1 \ \ \ \ \ \ \ 0\end{array}\right]\, \vec{w}\ .$$
-This form suggests, at least  to the avid reader of the previous chapter, that we look for a solution $y(t) = m_1\, e^{\lambda_1\, t} + m_2\, e^{\lambda_2\, t}$ in terms of the eigenvectors and eigenvalues of the matrix $\left[\begin{array}{cc}r & b\\1 & 0\end{array}\right]$.
+This form suggests, at least to the avid reader of the previous chapter, that we look for a solution $y(t) = m_1\, e^{\lambda_1\, t} + m_2\, e^{\lambda_2\, t}$ written using the eigenvectors and eigenvalues of the matrix $\left[\begin{array}{cc}r & b\\1 & 0\end{array}\right]$.
 
 We used the R function `eigen()` to compute the eigenvalues and eigenvectors of the matrix, given numerical values for $r$ and $b$. Let's now try to find an algebraic formula for the eigenvalues. After all, it is the eigenvalues that determine the stability of the fixed point.
 
@@ -379,14 +379,14 @@ M <- cbind(rbind(-2,1), rbind(3,0))
 eigen(M)
 ```
 
-Although R is doing all the calculations for us, it is possible to write the directions of the eigenvectors only in terms of the eigenvectors:
+Although R is doing all the calculations for us, it is possible to write the direction corresponding to an eigenvalue using the the corresponding eigenvector:
 $$\vec{\Lambda_1} = \left[\begin{array}{c}\lambda_1\\1\end{array}\right]\ \ \text{and}\ \ \vec{\Lambda_2} = \left[\begin{array}{c}\lambda_2\\1\end{array}\right]$$
 
 For the system with $\lambda_1 = 3$ and $\lambda_2 = -1$, you can confirm that the eigenvectors calculated with this formula point in the same directions as the eigenvectors reported by `eigen()`.
 :::
 
 
-Let's return to the car-following control system introduced in @sec-eigenvalues. Recall that $x$ was defined to be the distance between two cars and $x_0$ the distance to be maintained. In terms of $y = x - x_0$ the system was $$\partial_{tt} y = - b y\ .$$
+Let's return to the car-following control system introduced in @sec-eigenvalues. Recall that $x$ was defined to be the distance between two cars and $x_0$ the distance to be maintained. Translated to a new variable $y = x - x_0$ the system was $$\partial_{tt} y = - b y\ .$$
 You can see that this system *has no damping*; $y(t)$ will be a sinusoidal oscillation. The ride will be more pleasant, however, if the oscillations can be damped out. To accomplish this, we should add a new term to the second-order differential equation, a damping term to give
 $$\partial_{tt} y = -a\, \partial_t y- b\, y\ .$$
 We should set the parameters $a$ and $b$ to make the real part of the eigenvalues negative. Only then will we have designed a workable control system.
