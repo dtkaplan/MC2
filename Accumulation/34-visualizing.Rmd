@@ -10,11 +10,11 @@ You already know the notation meaning "$F(x)$ is the anti-derivative of $f(x)$":
 In drawing a graph of $F(x)$, we will of course want to use coordinate axes where the quantity $x$ is represented on the horizontal axis and the quantity of the output $F(x)$ is on the vertical axis:
 
 ::: {#fig-F-blank-axes}
-```{r echo=FALSE}
+```{r echo=FALSE, warning=FALSE}
 slice_plot(cos(2*pi*x/10) ~ x, bounds(x=-5:5), alpha=0) %>%
   gf_lims(x=c(-5,5), y=c(-1,1)) %>%
-  slice_plot(0.1 + cos(2*pi*x/6) ~ x, bounds(x=-2.5:-2.0), color="gray", size=2) %>%
-  gf_errorbarh(0 ~ -2.5 + -2.0, color="blue", width=2) %>%
+  slice_plot(0.1 + cos(2*pi*x/6) ~ x, bounds(x=-2.5:-2.0), color="gray", linewidth=2) %>%
+  gf_errorbar(0 ~ -2.5 + -2.0, color="blue", width=2) %>%
   gf_text(0 ~ -2.25, label="dx", color="blue", vjust=-1) %>%
   gf_labs(y="Output of F(x)")
 ```
@@ -30,14 +30,14 @@ But we can draw $f(x)$ as the slope of a short segment of horizontal extent $dx$
 
 
 ::: {#fig-F-blank-axes2}
-```{r  echo=FALSE}
+```{r  echo=FALSE, warning=FALSE}
 Pts <- Znotes::segmentize(cos(2*pi*x/10) ~ x, h=0.5, bounds(x=-5:5), npts=100)
 
 
 slice_plot(cos(2*pi*x/10) ~ x, bounds(x=-5:5), alpha=0) %>%
-  gf_segment(ymin + ymax ~ xmin + xmax, data = Pts, color="gray", size=2) %>%
+  gf_segment(ymin + ymax ~ xmin + xmax, data = Pts, color="gray", linewidth=2) %>%
   gf_lims(x=c(-5,5), y=c(-1,1)) %>%
-  gf_errorbarh(0 ~ -2.5 + -2.0, color="blue", width=2) %>%
+  gf_errorbar(0 ~ -2.5 + -2.0, color="blue", width=2) %>%
   gf_text(0 ~ -2.25, label="dx", color="blue", vjust=-1) %>%
   gf_labs(y="Output of F(x)")
 ```
@@ -63,7 +63,7 @@ P2 <- gf_segment(ymin + ymax ~ xmin + xmax, data = Pts) %>%
   gf_hline(yintercept = ~ 7.072, color="blue", alpha=0.25) %>%
   gf_labs(x = "x", y = "output", title="Sliced F(x)") %>%
   gf_refine(scale_x_continuous(breaks=-5:5)) %>%
-  gf_errorbarh(-8 ~ -3 + -1, color="orange") %>%
+  gf_errorbar(-8 ~ -3 + -1, color="orange") %>%
   gf_text(-8 ~ -2, label="dx=2", color="orange", vjust=1.5)
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
@@ -89,7 +89,7 @@ P1 <- gf_segment(ymin + ymax ~ xmin + xmax, data = One) %>%
   gf_point(4.198 ~ -.9919, color="blue", size=2) %>%
   gf_hline(yintercept = ~ 4.198, color="blue", alpha=0.25) %>%
   gf_labs(x = "x", y="output") %>%
-  gf_errorbarh(-8 ~ -3 + -1, color="orange") %>%
+  gf_errorbar(-8 ~ -3 + -1, color="orange") %>%
   gf_text(-8 ~ -2, label="dx=2", color="orange", vjust=1.5)
 Two <- One |> mutate(add = 4.198*(segnum==2), 
                       ymin=ymin + add,
@@ -100,7 +100,7 @@ P2 <- gf_segment(ymin + ymax ~ xmin + xmax, data = Two) %>%
   gf_point(4.802 ~ 1.012, color="blue", size=2) %>%
   gf_hline(yintercept = ~ 4.802, color="blue", alpha=0.25) %>%
   gf_labs(x = "x", y="output")%>%
-  gf_errorbarh(-8 ~ -3 + -1, color="orange") %>%
+  gf_errorbar(-8 ~ -3 + -1, color="orange") %>%
   gf_text(-8 ~ -2, label="dx=2", color="orange", vjust=1.5)
 gridExtra::grid.arrange(P1, P2, nrow=2)
 ```
@@ -123,15 +123,15 @@ P1 <-
   gf_rect(1.1 + -2.2 ~ -1 + 1, fill="orange", color=NA, alpha=0.2) %>%
   gf_segment(ymin + ymax ~ xmin + xmax, data = Pts) %>%
   gf_labs(x="x", y="output") %>%
-  gf_errorbarh( -0.8 ~ -2.5 + -2.25, color="blue") %>%
-  gf_text(-0.8 ~ -2., label="dx=0.25", color="blue", hjust=0)
+  gf_errorbar( -0.8 ~ -2.5 + -2.25, color="blue", inherit=FALSE) %>%
+  gf_text(-0.8 ~ -2., label="dx=0.25", color="blue", hjust=0, inherit=FALSE)
 Pts <- Znotes::segmentize(F(x) ~ x, h=0.1, bounds(x=c(-1,1)), npts=20)
 P2 <- 
   gf_rect(0.4 + -0.6 ~ -1 + 1, fill="orange", color=NA, alpha=0.1) %>%
   gf_rect(0.4 + -0.6 ~ 0.25 + 0.50, fill="red", color=NA, alpha=0.1) %>%
   gf_segment(ymin + ymax ~ xmin + xmax, data = Pts) %>%
   gf_labs(x="x", y="output") %>%
-  gf_errorbarh( -0.1 ~ -0.5 + -0.4, color="blue", height=0.05) %>%
+  gf_errorbar( -0.1 ~ -0.5 + -0.4, color="blue", height=0.05, inherit=FALSE) %>%
   gf_text(-0.1 ~ -0.35, label="dx=0.1", color="blue", hjust=0) 
   
 Pts <- Znotes::segmentize(F(x) ~ x, h=0.01, bounds(x=c(0.25,0.5)), npts=20)
@@ -139,8 +139,8 @@ P3 <-
   gf_rect(0.01 + -0.013 ~ 0.25 + 0.50, fill="red", color=NA, alpha=0.1) %>%
   gf_segment(ymin + ymax ~ xmin + xmax, data = Pts) %>%
   gf_labs(x="x", y="output") %>%
-  gf_errorbarh(-0.005 ~ .32 + .33, color="blue", width=0.01) %>%
-  gf_text(-0.005 ~ .34, label="dx=0.01", color="blue", hjust=0)
+  gf_errorbar(-0.005 ~ .32 + .33, color="blue", width=0.01, inherit=FALSE) %>%
+  gf_text(-0.005 ~ .34, label="dx=0.01", color="blue", hjust=0, inherit=FALSE)
 gridExtra::grid.arrange(P1, P2, P3, nrow=3)
 ```
 
@@ -170,7 +170,7 @@ $$\large \underbrace{\underbrace{\Large\color{magenta}{\int}}_{\color{magenta}{\
 Returning to the example with which we started the chapter, here are the little segments of the slope function shown in @fig-F-blank-axes2 assembled together to produce the anti-derivative function.
 
 ::: {#fig-show-bits2}
-```{r echo=FALSE}
+```{r echo=FALSE, warning=FALSE}
 Pts <- Znotes::segmentize(cos(2*pi*x/10) ~ x, h=0.5, bounds(x=-5:5), npts=1) %>%
   mutate(top = cumsum(ymax - ymin), bottom=top - (ymax-ymin))
 
@@ -179,7 +179,7 @@ slice_plot(cos(2*pi*x/10) ~ x, bounds(x=-5:5), alpha=0) %>%
   gf_segment(ymin + ymax ~ xmin + xmax, data = Pts, color="gray", size=1.5) %>%
   gf_segment(bottom + top ~ xmin + xmax, data = Pts) %>%
   #gf_lims(x=-5:5, y=c(-1,1)) %>%
-  gf_errorbarh(0 ~ -2.5 + -2.0, color="blue", width=2) %>%
+  gf_errorbar(0 ~ -2.35 + -1.85, color="blue", width=2) %>%
   gf_text(0 ~ -2.25, label="dx", color="blue", vjust=-1) %>%
   gf_labs(y="Output of F(x)")
 ```
