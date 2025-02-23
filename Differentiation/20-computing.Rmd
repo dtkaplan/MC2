@@ -85,9 +85,11 @@ D(g(t) ~ t)
 
 When differentiating a function with two (or more) inputs, the function definition will have the names of the inputs on the right-hand side of the tilde expression, as in @lst-xy-arguments-diff where the two arguments to `f()` are named `x` and `y`. But notice that in the use of `D()`, the right-hand side of the tilde expression lists only the "with respect to" variable, in this case, `x`.
 
-::: {#lst-xy-arguments-diff .column-page-right}  
+::: {#lst-xy-arguments-diff }  
 ```{webr-r}
-f <- makeFun(sqrt(y * pnorm(1 + x^2, mean=2, sd=y)) ~ x & y)
+f <- makeFun(
+  sqrt(y * pnorm(1 + x^2, mean=2, sd=y)) ~ 
+    x & y)
 dx_f <- D(f(x, y) ~ x)
 dx_f
 ```
@@ -112,7 +114,7 @@ Try the other eight pattern-book functions. For seven of these, `D()` produces a
 
 ## Finite-difference derivatives {#sec-finite-difference-derivatives}
 
-Whenever you have a formula amenable to the construction of a symbolic derivative, that is  what you should use. Finite-difference derivatives are useful in those situation where you don't have such a formula. The calculation is simple but has a weakness that points out the advantages of the evanescent-$h$ approach.
+Whenever you have a formula amenable to the construction of a symbolic derivative, that is  what you should use. Finite-difference derivatives are useful in those many situations where you don't have such a formula. The calculation is simple but has a weakness that points out the advantages of the evanescent-$h$ approach.
 
 For a function $f(x)$ and a "small," non-zero number $h$, the finite-difference approximates the derivative with this formula:
 
@@ -122,45 +124,71 @@ To demonstrate, let's construct the finite-difference approximation to $\partial
 We will call the finite-difference approximation `fd_sine()` and use `makeFun()` to construct it:
 
 ```{r echo=FALSE}
-fd_sine <- makeFun((sin(x+h)- sin(x-h))/(2*h) ~ x, h=0.01)
+fd_sine <- 
+  makeFun(
+    (sin(x+h)- sin(x-h))/(2*h) ~ x, 
+    h=0.01
+    )
 ```
 
+::: {#lst-fd-sin-01}
 ```{webr-r}
-fd_sine <- makeFun((sin(x+h)- sin(x-h))/(2*h) ~ x, h=0.01)
+#| autorun: true
+fd_sine <- 
+  makeFun(
+    (sin(x+h)- sin(x-h))/(2*h) ~ x, 
+    h=0.01
+    )
+fd_sine # printing, so you can see the result
 ```
-
-
-Notice that `fd_sine()` has a parameter, `h` whose default value is being set to `0.01`. Whether 0.01 is "small" or not depends on the context. Operationally, we define "small" to be a value that gives practically the same result even if it is made smaller by a factor of 2 or 10.
-
-As a demonstration that `fd_sine()` with $h=0.01$ approximates the genuine $\partial_x \sin(x)$, we exploit our knowledge that $\partial_x \sin(x) = \cos(x)$. @fig-confirm-fq-sin plots out the difference between the $h=0.01$ approximation and the genuine derivative.
-
-::: {#fig-confirm-fq-sin}
-```{r echo=FALSE, layout-ncol: 2}
-#| fig-subcap:
-#| - "`fd_sine()` itself"
-#| - "Error from true value."
-slice_plot(fd_sine(x, h=0.01) ~ x, bounds(x=-10:10), linewidth=2, npts=300) |>
-  slice_plot(fd_sine(x, h=0.001) ~ x, color="magenta", npts=300) 
-
-slice_plot(fd_sine(x, h=0.01) - cos(x) ~ x, bounds(x=-10:10)) |>
-  slice_plot(fd_sine(x, h=0.001) - cos(x) ~ x, color="magenta") |>
-  gf_labs(y="")
-```
-
-Subtracting out the (known) symbolic derivative from the finite-difference derivative. Black: $h=0.01$; [Magenta]{style="color: magenta;"}: $h=0.001$.
 :::
 
-Comparing `fd_sine()` to the symbolic $\partial_x \sin(x)$  for two values of $h$: $h=0.01$ and  $h=0.001$. 
+Notice that `fd_sine()` has a parameter, `h` whose default value is being set to `0.01`. Whether 0.01 is "small" or not depends on the context. 
+
+To demonstrate that `fd_sine()` is a good approximation to the symbolic derivative $\partial_x \sin(x)$, which is already known to us to be $\cos(x)$, @lst-fdsine-vs-sin plots out both functions on one graph. The symbolic derivative is plotted in [magenta]{style="color: magenta;"}; the finite-difference derivative in black. The difference between them is slight, and is shown in [blue]{style="color: blue;"}
+
+::: {#lst-fdsine-vs-sin}
+```{webr-r}
+h <- 0.01
+slice_plot(
+  cos(x) ~ x, 
+    bounds(x=-10:10), color="magenta",
+    linewidth=3, npts = 500) |>
+  slice_plot(
+    fd_sine(x, h = h) ~ x, 
+      npts = 500) |>
+  slice_plot(
+    cos(x) - fd_sine(x, h = h) ~ x,
+      color = "blue", npts = 500)
+```
 :::
 
-A glance at @fig-confirm-fq-sin(a) shows that the finite-difference derivative for $h=0.01$ (black) is essentially the same as for $h=0.001$. Thus, $h=0.01$ is good enough. @fig-confirm-fq-sin(b) highlights this, showing the error between the finite-difference derivative and the (known) symbolic derivative $\cos(x)$.
-You will need to look carefully at the vertical axis scales in @fig-confirm-fq-sin to see what's happening. For $h=0.01$, `fd_sine()` is not exactly the same as `cos()`, but it is close, always being within $\pm$0.000017. For many purposes, this would be accurate enough. But not for all purposes. We can make the approximation better by using a smaller $h$. For instance, the $h=0.001$ version of `fd_sine()` is one-hundred times more accurate: to within $\pm$0.00000017.
+Typically when using finite-difference derivatives, you do not have the symbolic derivative to compare it to as was done in @lst-fdsine-vs-sin. This would be the case, for example, if the function is a sound wave recorded in the form of an MP3 audio file. How would we know the finite-difference method is reliable in such a case.
 
-In practical use, one employs the finite-difference method in those cases where one does *not already know* the exact derivative function. This would be the case, for example, if the function is a sound wave recorded in the form of an MP3 audio file.
+Operationally, we can define "small $h$" to be a value that gives practically the same result even if it is made smaller by a factor of 2 or 10. @lst-fdsine-and-h plots out the difference between the finite-difference derivatives with $h=0.001$ and $h-0.01$. 
+
+::: {#lst-fdsine-and-h}
+```{webr-r}
+slice_plot(
+  fd_sine(x, h = 0.001) - 
+    fd_sine(x, h = 0.01)  ~ x, 
+  bounds(x=-10:10),  npts = 500
+  ) 
+```
+:::
+
+Look carefully at the vertical axis scale in the output from @lst-fdsine-and-h. The tick marks are at $\pm 0.0001$. The difference between the two finite-difference functions is practically zero. And if for some purpose even greater accuracy is required, make $h$ even smaller. You can try this in @lst-fdsine-and-h, say, by setting the $h$ values to 0.0001 and 0.001. The difference between the two finite-difference derivatives will be roughly 100 times *smaller*.
+
+
+
+
+
+In practical use, one employs the finite-difference method in those cases where one does *not already know* the exact derivative function. 
 
 In such situations, a practical way to determine what is a small $h$ is to pick one based on your understanding of the situation. For example, much of what we perceive of sound involves mixtures of sinusoids with periods longer than one-two-thousandth of a second, so you might start with $h$ of 0.002 seconds. Use this guess about $h$ to construct a candidate finite-difference approximation. Then, construct another candidate using a smaller `h`, say, 0.0002 seconds. If the two candidates are a close match to one another, then you have confirmed that your choice of $h$ is adequate.
 
 It is tempting to think that the approximation gets better and better as `h` is made even smaller. But that is not necessarily true for computer calculations. The reason is that quantities on the computer have only a limited precision: about 15 digits. To illustrate, let's calculate a simple quantity, $(\sqrt{3})^2 - 3$. Mathematically, this quantity is exactly zero. However, on the computer, as in @lst-not-quite-zero, it is not quite zero:
+
 
 ::: {#lst-not-quite-zero}
 ```{webr-r}
@@ -168,21 +196,19 @@ sqrt(3)^2 - 3
 ```
 :::
 
-We can see this loss of precision at work if we make `h` very small in the finite-difference approximation to $\partial_x \sin(x)$. In @fig-too-small-h we are using `h = 0.000000000001`. The result is unsatisfactory.
+Using the finite-difference derivatives, you can see this loss of precision if we make `h` too small. # small in the finite-difference approximation to $\partial_x \sin(x)$. In @lst-fdsine-and-tiny-h we've tried `h = 0.000000000001`. You can see the loss of precision and back off to a bigger, more satisfactory value of $h$.
 
-::: {#fig-too-small-h}
-```{r echo=FALSE}
-slice_plot(  fd_sine(x, h=0.000000000001) - cos(x) ~ x, 
-           bounds(x=-10:10)) %>%
-  slice_plot(fd_sine(x, h=0.0000000000001) - cos(x) ~ x,
-             color="magenta") %>%
-  gf_labs(y="Error from true value.")
+::: {#lst-fdsine-and-tiny-h}
+```{webr-r}
+slice_plot(
+  fd_sine(x, h = 0.000000000001) - 
+    fd_sine(x, h = 0.00000000001)  ~ x, 
+  bounds(x=-10:10),  npts = 500
+  ) 
 ```
-
-In computer calculations, using too small an `h` ($h=0.0000000000001$, magenta compared to ($h=0.000000000001$, black) leads to a loss of accuracy in the finite-difference approximation due to machine round-off error.
 :::
 
-Evanescent $h$ doesn't produce reliable results in the machine arithmetic for finite-difference derivatives, which involves subtracting two almost-identical values!
+This process of using a small and an even smaller $h$ is reminiscent of evanescent $h$. But stop making $h$ smaller before you see the kind of outcome in @lst-fdsine-and-tiny-h.
 
 ## Second and higher-order derivatives
 
