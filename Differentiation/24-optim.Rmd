@@ -25,11 +25,11 @@ This section introduces several important terms relating to optimization. Become
 - *argmax* and *argmin*
 :::
 
-In an optimization problem, there is one or more input quantities whose value you have to choose. The amount of salt; the years to wait from planting to harvesting a tree; the angle of the trail with respect to the slope. We will call this the ***decision quantity***.  
+In an optimization problem, there is one or more input quantities whose values you have to choose. The amount of salt; the years to wait from planting to harvesting a tree; the angle of the trail with respect to the slope. We will call this the ***decision quantity***.  
 
 Similarly, there is one or more output quantity that you value and want to make as good as possible. The taste of the stew; the amount of usable wood harvested; the time it takes to walk up the hill. The output quantities are called the ***objectives***.  
 
-This chapter deals with optimization problems that involve only a single objective. Problems with multiple objectives are among the most interesting and important in real-world decision making. Single-objective optimization techniques are a component of the more complex decision making, but they are a good place to get started. 
+Problems with multiple objectives are among the most interesting and important in real-world decision making. This chapter deals with single-objective optimization just as a way to help you start to learn the nomenclature in simple settings. We will turn to the multiple-objective setting in @sec-optimization-and-constraint.
 
 The model that relates inputs to the objective output is the ***objective function***. Solving an optimization problem---once the modeling phase is complete---amounts to finding a value for the decision quantity (the input to the objective function) that produces the best output from the objective function. 
 
@@ -55,30 +55,36 @@ The mathematics of such problems involves an area called ***differential equatio
 $$\text{duration}(v_0, \theta) = 2 \frac{v_0}{g} \sin(\theta)$$ $g$ is the acceleration due to gravity, which is about $9.8 \text{m}\text{s}^{-2}$, assuming that the contest is being held on Earth.
 
 The horizontal distance travelled by the tennis ball will be $$\text{distance}(v_0, \theta) = \cos(\theta) v_0\times \text{duration}(v_0, \theta) = 2 \frac{v_0^2}{g} \cos(\theta)\sin(\theta) / g$$
-Our objective function is distance(), and we seek to find the argmax. Distance() has two inputs, but let's assume there is only one decision quantity $\theta$ and that $v_0$ is fixed. @fig-ball-theta is drawn for $v_0 = $ cm/sec. 
+Our objective function is distance(), and we seek to find the argmax. Distance() has two inputs, but let's assume there is only one decision quantity $\theta$ and that $v_0$ is fixed.
 
-Finding the argmax can be accomplished simply by plotting the function $\text{distance}(v_0, \theta)$ with 5061 cm/sec.
+A simple plot suffices to locate the argmax. @fig-ball-theta is drawn for $v_0 = 50$ m/sec. 
 
-::: {#fig-ball-theta layout-ncol=2}
 ```{r echo=FALSE}
+#| label: fig-ball-theta
+#| layout-ncol: 2
+#| fig-cap: The objective function for $v_0 = 50$ m/s.
 #| fig-subcap: 
 #| - From 0 to 90 degrees
+#| - "Zooming in to the blue-shaded region in (a)"
 f <- makeFun(5227*cos(pi*theta/180)*sin(pi*theta/180) ~ theta)
+zoomed_area <- 
+  data.frame(xmin=40, xmax=50,
+             ymin = 2500, ymax = 2800)
 slice_plot(f(theta) ~ theta, bounds(theta=c(0,90))) %>%
-  gf_labs(x = "Angle θ (deg)", y= "Distance travelled (cm)")
-```
-```{r echo=FALSE, out.width="60%" }
-#| label: fig-ball-theta-zoom
-#| fig-subcap:
-#| - "Zooming in around the argmax: 40 to 50 degrees"
-slice_plot(f(theta) ~ theta, bounds(theta = c(40, 50)), color="blue") %>%
+  gf_labs(x = "Angle θ (deg)", y= "Distance travelled (cm)") |> 
+  gf_rect(data = zoomed_area, ymin + ymax ~ xmin + xmax, 
+          color=NA, fill = rgb(0,0,1,.2),
+           inherit = FALSE)
+slice_plot(f(theta) ~ theta, bounds(theta = c(40, 50)), color="black") %>%
   gf_labs(x = "Angle θ (deg)", y= "Distance travelled (yards)") |>
-  gf_theme(aspect.ratio = .15) +
+  gf_rect(data = zoomed_area, ymin + ymax ~ xmin + xmax, 
+          color=NA, fill = rgb(0,0,1,.2), inherit = FALSE) |>
+  gf_theme(aspect.ratio = .45) +
   scale_x_continuous(breaks=c(40,45,50)) +
-  scale_y_continuous(limits = c(2500, 2800), breaks = c(2500, 2600, 2700,  2800))
+  scale_y_continuous(limits = c(2500, 2800), breaks = c(2500, 2600, 2700,  2800)) 
 ```
-Zooming in on the argmax of the objective function. It is important to look at the scale of the vertical axis. Any value of $\theta$ between about 40 and 50 degrees gives a close approximation to the maximum.
-:::
+
+
 
 In the simple model of  a tennis ball launched at an angle $\theta$ from the horizontal, the distance travelled  is $$\text{distance}(\theta) \equiv 2 \frac{v_0^2}{g}\, \cos(\theta)\sin(\theta)$$.
 
@@ -86,7 +92,7 @@ In the simple model of  a tennis ball launched at an angle $\theta$ from the hor
 
 You can see that the maximum distance is about 2600 cm and that this occurs at an argmax $\theta^\star$ that is a bit less than 50$^\circ$.
 
-Zooming in on the $\theta$ axis (@fig-ball-theta-zoom) let's you find the argmax with more precision: the argmax is $\theta^\star = 45^\circ$.
+Zooming in on the $\theta$ axis (@fig-ball-theta(b)) let's you find the argmax with more precision: the argmax is $\theta^\star = 45^\circ$.
 
 ::: {.callout-tip}
 ## Interpreting the argmax
@@ -230,12 +236,12 @@ knitr::include_graphics("www/cournot-demand-curve.png")
 
 In 1836, early economist Antoine-Augustin Cournot published a theory of revenue versus demand based on his conception that demand will be a monotonically decreasing function of price. (That is, higher price means lower demand.) we will write as $\text{Demand}(p)$ demand as a function of price.
 
-The ***revenue*** generated at price $p$ is $R(p) \equiv p \text{Demand}(p)$: price times demand.
+The ***revenue*** generated at price $p$ is $R(p) \equiv p\ \text{Demand}(p)$. In words: revenue is price times demand at that price.
 
 To find the revenue-maximizing demand, differentiate $R(p)$ with respect to $p$ and find the argmax $p^\star$ at with $\partial_p R(p^\star) = 0).$ This can be done with the product rule.
 
 $$\partial_p R(p) = p \ \partial_p \text{Demand}(p) + \text{Demand}(p)$$
-At the argmax $p^\star$ we have: $$p^\star \partial_p \text{Demand}(p^\star) + \text{Demand}(p^\star) = 0 \ \ \stackrel{\text{solving for}\ p^\star}{\Longrightarrow} \ \ p^\star = - \frac{\text{Demand}(p^\star)}{\partial_p \text{Demand}(p^\star)}$$
+At the argmax $p^\star$ we have: $$p^\star \partial_p \text{Demand}(p^\star) + \text{Demand}(p^\star) = 0.$$ Solving for $p^\star$ gives $$p^\star = - \frac{\text{Demand}(p^\star)}{\partial_p \text{Demand}(p^\star)}$$
 
 If the monopolist knows the demand function $D(p)$, finding the revenue maximizing price is a simple matter. But in general, the monopolist does not know the demand function in advance. Instead, an informed guess is made to set the initial price $p_0$. Measuring sales $D(p_0)$ gives one point on the demand curve. Then, try another price $p_1$. This gives another point on the demand curve as well as an estimate 
 $$\partial_p D(p_0) = \frac{D(p_1) - D(p_0)}{p_1 - p_0}$$
@@ -271,7 +277,7 @@ Recall the setting for calculus-type maximization. You have a function with one 
 
 If you can graph the function (feasible for one- or two-input functions), you can often easily scan the graph by eye to find the peak.  The basis of the calculus techniques is the observation that, at the argmax of a smooth function, the derivative of the function is 0. 
 
-For example, consider [a style problem that often appears in calculus textbooks](https://www.dummies.com/education/math/calculus/calculate-the-optimum-volume-of-a-soup-can-practice-question/).  Suppose you have been tasked to design a container for a large volume V of liquid. The design specifications call for the weight of the container to be as little as possible. (This is a *minimization* problem, then.) In classical textbook fashion, the specifications might also stipulate that the container is to be a cylinder made out of a particular metal of a particular thickness. 
+For example, consider [a style of problem that often appears in calculus textbooks](https://www.dummies.com/education/math/calculus/calculate-the-optimum-volume-of-a-soup-can-practice-question/).  Suppose you have been tasked to design a container for a large volume V of liquid. The design specifications call for the weight of the container to be as little as possible. (This is a *minimization* problem, then.) In classical textbook fashion, the specifications might also stipulate that the container is to be a cylinder made out of a particular metal of a particular thickness. 
 
 The above is a lovely geometry/calculus problem. Whether it is relevant to any genuine, real-world problem is another question.
 
