@@ -5,7 +5,7 @@ source("../starter.R")
 ```
 
 
-As you saw in the previous chapter, each differential equation in a dynamical system relates the derivative of a function to the function itself. For instance, in $$\partial_t x = x\,(1-x)$$ left-hand side of the equation involves the function $x(t)$. The equation dictates that whatever $x(t)$ might be, it has to be such that $\partial_t x(t)$ is exactly equal to the function $x(t)\,\left(\strut 1- x(t)\right)$  *Solving* a differential equation is the phrase used for finding such self-consistent functions. This chapter is about techniques for finding solutions.
+As you saw in the previous chapter, each differential equation in a dynamical system relates the derivative of a function to the function itself. For instance, in $$\partial_t x = x\,(1-x)$$ the left-hand side of the equation involves the function $x(t)$. The equation dictates that whatever $x(t)$ might be, it has to be such that $\partial_t x(t)$ is exactly equal to the function $x(t)\,\left(\strut 1- x(t)\right)$  *Solving* a differential equation is the phrase used for finding such self-consistent functions. This chapter is about techniques for finding solutions.
 
 ::: {.callout-tip}
 In high-school mathematics, many algebraic problems were of the form, "Solve for $x$." In such problems, the answer you got was all you were looking for: the complete answer to the problem.
@@ -35,11 +35,12 @@ $$\frac{dx}{dt} = x (1-x)\ .$$
 This is exactly equivalent to our notation $\partial_t x$.
 
 
-An even more concise notation, originated by Isaac Newton, is to replace the $\partial_t$ with a simple dot over the function being differentiated as in $\Large\dot{x}$.  With this notation the equation looks like
+An even more concise notation, originated by Isaac Newton, is to replace the $\partial_t$ with a simple dot over the function being differentiated as in $\Large\dot{x}$.  Dot notation is still in wide use, especially in physics. 
+
+With dot notation the equation looks like
 $$\dot{x} = x (1-x)\ ,$$ about as simple as it gets. 
 
-This dot notation is even more expressive when working with second-order differential equations involving second derivative. In the dot notation, $\partial_{tt} x$ is written $\ddot{x}$. Dot notation is also in wide use. Again, it is exactly equivalent to our $\partial_t x$.
-:::
+Dot notation is even more expressive in second-order differential equations, that is, differential equations involving second derivatives. For the second derivative of the function $x$, write $\ddot{x}$, which means the sam as $\partial_{tt} x$ is written $\ddot{x}$.
 
 ## The flow field
 
@@ -53,9 +54,9 @@ A case in point is the rabbit-fox system. The axes in the rabbit-fox state space
 
 To to find the state velocity at, say, $r=2, f=1/4$, plug those values into the right-hand side: 
 
-$\partial_t r  = 1.33 - 0.66   = 0.66\ \ \ $rabbit density per month
+i. $\partial_t r  = 1.33 - 0.66   = 0.66\ \ \ $change in rabbit density per month
 
-$\partial_t f  = -0.25 + 0.5 = 0.25\ \ \ $fox density per month.
+ii. $\partial_t f  = -0.25 + 0.5 = 0.25\ \ \ $change in fox density per month.
 
 Once you know the numerical vector value of the state velocity, you need to convert it to a form suitable for plotting in the state space. The conversion is needed because the state space is denominated in *rabbit density* and *fox density*, not in *rabbit density per month* or *fox density per month*. The conversion is accomplished by multiplying the state velocity vector by a small $dt$, say, 0.1 months. 
 
@@ -77,25 +78,24 @@ The flow arrow for the state value $(r=2, f=1/4)$ using $dt=0.1$ month.
 :::
 To draw the entire flow field, repeat this process at many other points in the state space as in @fig-rf-flow-field.
 
-::: {#fig-rf-flow-field .column-page-right fig-cap-location="bottom" layout-ncol=2}
 ```{r echo=FALSE, warning=FALSE}
+#| layout-ncol: 2
+#| label: fig-rf-flow-field
+#| fig-cap: Two depictions of the rabbit-fox flow field.
 #| fig-subcap:
-#|   - "The flow field depicted by drawing the state velocity vector (multiplied by $dt = 0.1$ to turn it into a length) for many points in the state space."
-#|   - "Instead of plotting the state velocity vector, small snippets of trajectories of duration 0.1 are shown."
+#|   - "The *instantaneous* flow depicted by drawing the state velocity vector (multiplied by $dt = 0.1$ to turn it into a length) for many isolated points in the state space."
+#|   - "Instead the instantaneous velocity vector, we follow the flow for an extended time, here 0.1 time unit."
 vectorfield_plot(r ~ 0.66*r - 1.33*r*f,
                  f ~ -f + r*f,
-                 bounds(r=0.1:3, f=0.1:1), transform=I,
-                 npts=15) %>%
-  gf_labs(subtitle="Flow field")
+                 domain(r=0.01:3.1, f=0.1:1.25), 
+                 npts=15) |>
+  gf_refine(coord_fixed(ratio = 3))
 streamlines(dr ~ 0.66*r - 1.33*r*f, 
             df ~ -f + r*f,
-            domain = bounds(r=0.1:3, f=0.1:1),
-            dt=0.01, nsteps=10, npts=15) %>%
-  gf_labs(subtitle="Trajectory segments")
+            domain = domain(r=0.1:3, f=0.1:1),
+            dt=0.01, nsteps=10, npts=15) |>
+    gf_refine(coord_fixed(ratio=3))
 ```
-
-The flow in the rabbit-fox system shown in two ways.
-:::
 
 
 Some people prefer a visualization of short segments of actual trajectories, as in the right panel in @fig-rf-flow-field, rather than the state velocity vector. This is a matter of personal preference.
@@ -242,23 +242,23 @@ To illustrate, this command will solve the differential equation $\partial_t x =
 
 ```{webr-r}
 Soln2 <- integrateODE(dx ~ x*(1-x), x = 0.2,
-                      bounds(t=0:10), dt=0.01)
+                      domain((t=0:10), dt=0.01)
 ```
 
 The first argument is a tilde expression, but in a form that is  different from from that used in functions such as `D()` or `contour_plot()`, etc. To the left of the tilde is a single name composed of the state variable---`x` here---prefixed by a `d`. The `d` is just a reminder that we are describing not `x` itself, but $\partial_t\ \mathtt{x}$. On the right of the tilde is the function from the differential equation, in this case, $x(1-x)$.
 
-The next argument is the initial condition. We are starting the integration at $x=0.2$. The `bounds()` sets the time interval for the integration and `dt` sets the time step..
+The next argument is the initial condition. We are starting the integration at $x=0.2$. The `domain(()` sets the time interval for the integration and `dt` sets the time step.
 
 The output of `integrateODE()` is an R structure of a type called a "list" that is new to us. The list contains the function(s) created by `integrateODE()` which you refer to by name (`x`) using a special form of R punctuation `$` suited to lists.. In other words, `Soln2$x` will be a function, which you can plot like any other function, for instance:
 
 ```{webr-r}
-slice_plot(Soln2$x(t) ~ t, bounds(t=0:10))
+slice_plot(Soln2$x(t) ~ t, domain((t=0:10))
 ```
 
 This use of the R symbol `$` is new to us. We won't emphasize it here. Instead, we'll use the `traj_plot()` graphics function (introduced in @sec-splines) which already knows how to access the functions created by `integrateODE()`. 
 
 ```{webr-r}
-traj_plot(x(t) ~ t, Soln2, bounds(t=0:10))
+traj_plot(x(t) ~ t, Soln2, domain((t=0:10))
 ```
 
 An important feature of `integrateODE()` is its ability to handle *sets* of first-order differential equations. For instance, the rabbit/fox system $$\partial_t r = 0.66\, r - 1.33\, r f\\
@@ -269,15 +269,15 @@ Eco_soln <- integrateODE(
   dr ~ 0.66*r - 1.33*r*f, 
   df ~     -f +      r*f,
   r = 2, f = 0.5, #initial conditions
-  bounds(t=0:5), dt=0.1)
+  domain((t=0:5), dt=0.1)
 ```
 You can plot the time series using `slice_plot()`
 
 ```{webr-r}
-traj_plot(r(t) ~ t, Eco_soln, bounds(t=0:5)) |>
+traj_plot(r(t) ~ t, Eco_soln, domain((t=0:5)) |>
   gf_labs(title="Rabbits")
 
-traj_plot(f(t) ~ t, Eco_soln, bounds(t=0:5)) |>
+traj_plot(f(t) ~ t, Eco_soln, domain((t=0:5)) |>
   gf_labs(title="Foxes")
 ```
 
@@ -311,28 +311,39 @@ $$dx = x(1-x) dt \ \ \ \implies \ \ \ \frac{1}{x(x-1)}dx = dt\ \ \ \implies\ \ \
 
 The integral on the right side, $\int dt$, should be easily recognizable, giving $\int dt = t + F$, where $F$ is the "constant of integration."
 
-The integral on the left side may not be as familiar, but the person solving this problem for the second time will remember that $$\frac{1}{x(1-x)} = \frac{1}{x} + \frac{1}{1-x}$$ as you can confirm by putting the right side over a common denominator. Each of $1/x$ and $1/(1-x)$ have integrals that are logs: $\int dx/x = \ln(x) + D$ and $\int dx/(1-x) = - \ln(1-x) + E$. Putting the equation back together again, produces 
+The integral on the left side is not so familiar, but it becomes easier if you re-write the integrand: $$\frac{1}{x(1-x)} = \frac{1}{x} + \frac{1}{1-x}\ .$$ Each of $1/x$ and $1/(1-x)$ have integrals that are logs: $\int dx/x = \ln(x) + D$ and $\int dx/(1-x) = - \ln(1-x) + E$. Putting the equation back together again, produces 
 $$\ln(x) + D - \ln(1-x) + E = t + F\ .$$ 
-At this point, move all the constants of integration over to the right side and consolate them into a single constant of integration $C$. At the same time, collect together the two logarithmic terms, giving:
-$$\ln\left(\frac{x}{1-x}\right) = t + C\ .$$ Exponentiate both sides to get:
-$$\frac{x}{1-x} = \underbrace{e^C}_{A} e^t\  .$$ Since $e^C$ is just a constant, we will write it more simply as $A$.
+At this point, move all the constants of integration over to the right side and consolate them into a single constant of integration $C$:
+$$\ln(x) - \ln(1-x) = t + C\ .$$ 
 
-Now we have $$x = Ae^t - x A e^t \ \ \implies\ \ \ x (1 + Ae^t) = Ae^t$$ which gives our solution $$x = \frac{Ae^t}{1 + Ae^t}\ .$$ To find the initial condition symbolically, plug in $t=0$, giving $x_0 = A/(1+A)$ or, equivalently $A = x_0/(1-x_0)$. Our previous examples used $x_0 = 0.2$, for which $A = 0.2/0.8 = 0.25$. Graphing this solution gives us the familiar sigmoid:
+Collect together the two logarithmic terms, giving:
+$$\ln\left(\frac{x}{1-x}\right) = t + C\ .$$ Exponentiate both sides to get:
+$$\frac{x}{1-x} = \underbrace{e^C\!\!\!}_{A} e^t\  .$$ Since $e^C$ is just a constant, we will write it more simply as $A$.
+
+Now we have $$x = Ae^t - x A e^t \ \ \implies\ \ \ x (1 + Ae^t) = Ae^t$$ which gives our solution $$x = \frac{Ae^t}{1 + Ae^t}\ .$$ To find the initial condition symbolically, plug in $t=0$, giving $x_0 = A/(1+A)$ or, equivalently $A = x_0/(1-x_0)$. Our previous examples used $x_0 = 0.2$, for which $A = 0.2/0.8 = 0.25$. We'll call this solution `Symb_soln`. For comparison, here is an Euler-method solution, again starting at $x_0 = 0.2$.
+
+
 
 ```{r}
 Symb_soln = makeFun(A*exp(t)/(1 + A*exp(t)) ~ t)
-slice_plot(Symb_soln(t, A=0.2) ~ t, bounds(t=-5:10))
 ```
 
-Not all differential equations can be separated in this way, and even for those that can, the integrals may not be tractable. So this route to a solution is not a general-purpose one, unlike the Euler method. Still, the Euler method gives only an approximate solution, so with Euler we need to take care that the approximation is close enough for the purpose at hand. In this case, we have both an Euler solution (with $dt=0.1$) and a symbolic solution. @fig-diff-Euler-separation shows the *difference* between the two solutions, which ideally should be zero. To show more of the time domain of the solution, we will reset the initial condition to $x_0 = 0.01$. This corresponds to $A = 1/99$.
-
-::: {#fig-diff-Euler-separation}
-```{r echo=FALSE, message=FALSE}
-Euler <- integrateODE(dx ~ x*(1-x), x=0.01, 
-                      bounds(t=0:20), dt=0.1)
-traj_plot((Symb_soln(t, A=1/99) - x(t))/Symb_soln(t, A=1/99) ~ t, 
-          Euler, bounds(t=0:20))
+```{r}
+Euler_soln <- 
+  integrateODE(dx ~ x*(1-x), 
+               domain(t=0:20), 
+               x=0.2, dt=0.01)
 ```
+
+Let's compare the two solutions, with the symbolic solution in blue and the Euler solution in [red]{style="color: tomato;"}
+
+```{r}
+slice_plot(Symb_soln(t, A=0.25) ~ t, domain(t = 0:10),
+           linewidth = 1.5) |>
+  slice_plot(Euler_soln$x(t) ~ t, color = "tomato",
+             linewidth = 0.5)
+```
+
 
 The difference between the Euler and the symbolic solution to $\partial_t x = x (1-x)$ as a fraction of the symbolic solution. At the worst, the Euler solution is off by 1.5 parts in one-million.
 :::
